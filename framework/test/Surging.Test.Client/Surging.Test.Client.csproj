@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.Consul\Surging.Core.Consul.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.CPlatform\Surging.Core.CPlatform.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.DotNetty\Surging.Core.DotNetty.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.EventBusRabbitMQ\Surging.Core.EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.ProxyGenerator\Surging.Core.ProxyGenerator.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.ServiceHosting\Surging.Core.ServiceHosting.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.Swagger\Surging.Core.Swagger.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.System\Surging.Core.System.csproj" />
+  </ItemGroup>
+
+</Project>

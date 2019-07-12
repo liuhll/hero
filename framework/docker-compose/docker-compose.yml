@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  surging.test.server:
+    image: surging.engine/surging.test.server:${TAG:-latest}
+    build:
+      context: ..
+      dockerfile: test/Surging.Test.Server/Dockerfile
+      args:
+        host_workdir: test/Surging.Test.Server/Surging.Test.Server
+        host_name: Surging.Test.Server.dll
+        sln_name: Surging.sln
+    volumes:
+      - ${LOG_DIR:-/var/logs}/server:/app/logs
+    networks:
+      - surging_test_service_net
+
+  surging.test.client:
+    image: surging.engine/surging.test.server:${TAG:-latest}
+    build:
+      context: ..
+      dockerfile: test/Surging.Test.Client/Dockerfile
+      args:
+        host_workdir: test/Surging.Test.Client/Surging.Test.Client
+        host_name: Surging.Test.Client.dll
+        sln_name: Surging.sln
+    volumes:
+      - ${LOG_DIR:-/var/logs}/client:/app/logs
+    networks:
+      - surging_test_service_net
+      
+networks:
+  surging_test_service_net: 
+    external:
+      name: surging_test_service_net
