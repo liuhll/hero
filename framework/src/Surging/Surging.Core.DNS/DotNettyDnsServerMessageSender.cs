@@ -27,7 +27,7 @@ namespace Surging.Core.DNS
 
         public async Task SendAndFlushAsync(TransportMessage message)
         {
-            var response=await  WriteResponse(message);
+            var response = await WriteResponse(message);
             await _context.WriteAndFlushAsync(response);
         }
 
