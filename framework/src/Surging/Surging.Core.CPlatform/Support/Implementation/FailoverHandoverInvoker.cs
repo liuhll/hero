@@ -1,4 +1,5 @@
 ﻿using Surging.Core.CPlatform.Convertibles;
+using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Messages;
 using Surging.Core.CPlatform.Runtime.Client;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Surging.Core.CPlatform.Support.Implementation
 {
-    public class FailoverHandoverInvoker: IClusterInvoker
+    public class FailoverHandoverInvoker : IClusterInvoker
     {
         #region Field
         private readonly IRemoteInvokeService _remoteInvokeService;
@@ -38,8 +39,15 @@ namespace Surging.Core.CPlatform.Support.Implementation
             do
             {
                 message = await _breakeRemoteInvokeService.InvokeAsync(parameters, serviceId, _serviceKey, decodeJOject);
+
                 if (message != null && message.Result != null)
+                {
+                    if (message.StatusCode != StatusCode.OK && time >= command.FailoverCluster)
+                    {
+                        throw new CPlatformException(message.ExceptionMessage, message.StatusCode);
+                    }
                     result = (T)_typeConvertibleService.Convert(message.Result, typeof(T));
+                }
             } while (message == null && ++time < command.FailoverCluster);
             return result;
         }
@@ -47,10 +55,22 @@ namespace Surging.Core.CPlatform.Support.Implementation
         public async Task Invoke(IDictionary<string, object> parameters, string serviceId, string _serviceKey, bool decodeJOject)
         {
             var time = 0;
-            var vtCommand = _commandProvider.GetCommand(serviceId);
-            var command = vtCommand.IsCompletedSuccessfully ? vtCommand.Result : await vtCommand;
-            while (await _breakeRemoteInvokeService.InvokeAsync(parameters, serviceId, _serviceKey, decodeJOject) == null && ++time < command.FailoverCluster) ;
+            var command = await _commandProvider.GetCommand(serviceId);
+            RemoteInvokeResultMessage message = null;
+            do
+            {
+                message = await _breakeRemoteInvokeService.InvokeAsync(parameters, serviceId, _serviceKey, decodeJOject);
+                if (message != null && message.Result != null)
+                {
+                    if (message.StatusCode != StatusCode.OK && time >= command.FailoverCluster)
+                    {
+                        throw new CPlatformException(message.ExceptionMessage, message.StatusCode);
+                    }
+                }
+            }
+            while (message == null && ++time < command.FailoverCluster);
         }
+
     }
 
 }

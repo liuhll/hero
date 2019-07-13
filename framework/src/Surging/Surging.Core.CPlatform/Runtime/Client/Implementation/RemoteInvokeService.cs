@@ -109,7 +109,7 @@ namespace Surging.Core.CPlatform.Runtime.Client.Implementation
             var vt =  _addressResolver.Resolver(invokeMessage.ServiceId, item);
             var address = vt.IsCompletedSuccessfully ? vt.Result : await vt;
             if (address == null)
-                throw new CPlatformException($"无法解析服务Id：{invokeMessage.ServiceId}的地址信息。");
+                throw new CPlatformException($"无法解析服务Id：{invokeMessage.ServiceId}的地址信息。", StatusCode.CPlatformError);
             return address;
         }
 

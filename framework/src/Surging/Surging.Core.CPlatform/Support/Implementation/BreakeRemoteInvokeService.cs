@@ -14,6 +14,7 @@ using Autofac;
 using System.Threading;
 using Surging.Core.CPlatform.Filters.Implementation;
 using System.Runtime.CompilerServices;
+using Surging.Core.CPlatform.Exceptions;
 
 namespace Surging.Core.CPlatform.Support.Implementation
 {
@@ -66,7 +67,7 @@ namespace Surging.Core.CPlatform.Support.Implementation
                 {
                     if (intervalSeconds * 1000 > command.BreakeSleepWindowInMilliseconds)
                     {
-                        return await MonitorRemoteInvokeAsync(parameters, serviceId, serviceKey, decodeJOject, command.ExecutionTimeoutInMilliseconds, item);
+                        return await MonitorRemoteInvokeAsync(parameters, serviceId, serviceKey, decodeJOject, command.ExecutionTimeoutInMilliseconds, item, true);
                     }
                     else
                     {
@@ -81,7 +82,7 @@ namespace Surging.Core.CPlatform.Support.Implementation
             }
         }
 
-        private async Task<RemoteInvokeResultMessage> MonitorRemoteInvokeAsync(IDictionary<string, object> parameters, string serviceId, string serviceKey, bool decodeJOject, int requestTimeout, string item)
+        private async Task<RemoteInvokeResultMessage> MonitorRemoteInvokeAsync(IDictionary<string, object> parameters, string serviceId, string serviceKey, bool decodeJOject, int requestTimeout, string item, bool isAbnormalRequest = false)
         {
             CancellationTokenSource source = new CancellationTokenSource();
             var token = source.Token;
@@ -124,6 +125,28 @@ namespace Surging.Core.CPlatform.Support.Implementation
                     return v;
                 });
                 await ExecuteExceptionFilter(ex, invokeMessage, token);
+                if (ex.GetGetExceptionStatusCode() == StatusCode.BusinessError ||
+                    ex.GetGetExceptionStatusCode() == StatusCode.ValidateError ||
+                    ex.GetGetExceptionStatusCode() == StatusCode.UserFriendly)
+                {
+                    return new RemoteInvokeResultMessage()
+                    {
+                        ExceptionMessage = ex.GetExceptionMessage(),
+                        Result = null,
+                        StatusCode = ex.GetGetExceptionStatusCode()
+                    };
+                }
+
+                if (isAbnormalRequest)
+                {
+                    return new RemoteInvokeResultMessage()
+                    {
+                        ExceptionMessage = ex.GetExceptionMessage(),
+                        Result = null,
+                        StatusCode = ex.GetGetExceptionStatusCode()
+                    };
+                }
+
                 return null;
             }
         }

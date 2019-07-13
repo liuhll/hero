@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Surging.Core.CPlatform.Address;
 using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.CPlatform.Messages;
 using Surging.Core.CPlatform.Runtime.Client;
-using Surging.Core.CPlatform.Runtime.Client.Address.Resolvers;
 using Surging.Core.CPlatform.Runtime.Client.HealthChecks;
 using Surging.Core.CPlatform.Transport;
 using Surging.Core.CPlatform.Utilities;

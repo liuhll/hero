@@ -13,7 +13,7 @@
         /// <summary>
         /// 状态码
         /// </summary>
-        public int StatusCode { get; set; } = 200;
+        public StatusCode StatusCode { get; set; } = StatusCode.OK;
         /// <summary>
         /// 结果内容。
         /// </summary>

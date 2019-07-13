@@ -1,4 +1,5 @@
-﻿using Surging.Core.CPlatform.Ioc;
+﻿using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Ioc;
 using Surging.Core.ProxyGenerator;
 using Surging.Test.Server.Demo.Dtos;
 using System;
@@ -16,6 +17,11 @@ namespace Surging.Test.Server.Demo
                 UserName = "zhangsan",
                 ChineseName = "张三"
             };
+        }
+
+        public async Task<string> TestError()
+        {
+            throw new UserFriendlyException("测试抛出异常");
         }
     }
 }

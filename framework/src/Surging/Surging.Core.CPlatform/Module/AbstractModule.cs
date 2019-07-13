@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Core.Lifetime;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Messages;
 using Surging.Core.CPlatform.Utilities;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ namespace Surging.Core.CPlatform.Module
             }
             catch (Exception ex)
             {
-                throw new CPlatformException(string.Format("注册模块组件类型时发生错误：{0}", ex.Message));
+                throw new CPlatformException(string.Format("注册模块组件类型时发生错误：{0}", ex.Message),StatusCode.CPlatformError);
             }
         }
 
@@ -160,13 +161,13 @@ namespace Surging.Core.CPlatform.Module
             if (this.Identifier == Guid.Empty || string.IsNullOrEmpty(this.ModuleName) || string.IsNullOrEmpty(this.TypeName)
                 || string.IsNullOrEmpty(this.Title))
             {
-                throw new CPlatformException("模块属性：Identifier，ModuleName，TypeName，Title 是必须的不能为空！");
+                throw new CPlatformException("模块属性：Identifier，ModuleName，TypeName，Title 是必须的不能为空！", StatusCode.CPlatformError);
             }
 
             Regex regex = new Regex(@"^[a-zA-Z][a-zA-Z0-9_]*$");
             if (!regex.IsMatch(this.ModuleName))
             {
-                throw new CPlatformException("模块属性：ModuleName 必须为字母开头数字或下划线的组合！");
+                throw new CPlatformException("模块属性：ModuleName 必须为字母开头数字或下划线的组合！", StatusCode.CPlatformError);
             }
         }
 

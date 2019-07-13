@@ -66,8 +66,24 @@ namespace Surging.Test.Client
             {
                 Console.WriteLine($"服务调用者启动成功，{DateTime.Now}。");
 
+                TestExceptionThrow();
                 TestRpcCallByProxyFactory();
                 TestRpcCallByProxyProvider();
+               
+            }
+        }
+
+        private static void TestExceptionThrow()
+        {
+            var logger = ServiceLocator.GetService<ILogger<Program>>();
+            var serviceProxyFactory = ServiceLocator.GetService<IServiceProxyFactory>();
+            var demoProxy = serviceProxyFactory.CreateProxy<IDemoApplication>("demo.v1");
+            try
+            {
+                var userInfo = demoProxy.TestError().Result;
+            } catch (Exception ex)
+            {
+                logger.LogError("异常类型为:" + ex.GetType() ,ex);
             }
         }
 

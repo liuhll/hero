@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static Surging.Core.CPlatform.Utilities.FastInvoke;
+using Surging.Core.CPlatform.Exceptions;
 
 namespace Surging.Core.KestrelHttpServer
 {
@@ -131,13 +132,13 @@ namespace Surging.Core.KestrelHttpServer
                         resultMessage.Data = taskType.GetProperty("Result").GetValue(task);
                 }
                 resultMessage.IsSucceed = resultMessage.Data != null;
-                resultMessage.StatusCode = resultMessage.IsSucceed ? (int)StatusCode.Success : (int)StatusCode.RequestError;
+                resultMessage.StatusCode = resultMessage.IsSucceed ? StatusCode.OK : StatusCode.RequestError;
             }
             catch (Exception ex)
             {
                 if (_logger.IsEnabled(LogLevel.Error))
                     _logger.LogError(ex, "执行远程调用逻辑时候发生了错误。");
-                resultMessage = new HttpResultMessage<object> { Data = null, Message = "执行发生了错误。", StatusCode = (int)StatusCode.RequestError };
+                resultMessage = new HttpResultMessage<object> { Data = null, Message = ex.GetExceptionMessage(), StatusCode = ex.GetGetExceptionStatusCode() };
             }
             return resultMessage;
         }
@@ -162,14 +163,14 @@ namespace Surging.Core.KestrelHttpServer
                         resultMessage.Data = taskType.GetProperty("Result").GetValue(task);
                 }
                 resultMessage.IsSucceed = resultMessage.Data != null;
-                resultMessage.StatusCode = resultMessage.IsSucceed ? (int)StatusCode.Success : (int)StatusCode.RequestError;
+                resultMessage.StatusCode = resultMessage.IsSucceed ? StatusCode.OK : StatusCode.RequestError;
             }
             catch (Exception exception)
             {
                 if (_logger.IsEnabled(LogLevel.Error))
                     _logger.LogError(exception, "执行本地逻辑时候发生了错误。");
-                resultMessage.Message = "执行发生了错误。";
-                resultMessage.StatusCode = exception.HResult;
+                resultMessage.Message = exception.GetExceptionMessage();
+                resultMessage.StatusCode = exception.GetGetExceptionStatusCode();
             }
             return resultMessage;
         }

@@ -20,7 +20,7 @@ namespace Surging.Core.CPlatform.Filters.Implementation
             var result = OnAuthorization(serviceRouteContext);
             if (!result)
             {
-                serviceRouteContext.ResultMessage.StatusCode = 401;
+                serviceRouteContext.ResultMessage.StatusCode = Messages.StatusCode.UnAuthentication;
                 serviceRouteContext.ResultMessage.ExceptionMessage = "令牌验证失败.";
             }
         }

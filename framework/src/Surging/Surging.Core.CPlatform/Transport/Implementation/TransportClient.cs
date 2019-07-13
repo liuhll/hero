@@ -122,6 +122,26 @@ namespace Surging.Core.CPlatform.Transport.Implementation
                 var result = await task.AwaitValue(cancellationToken);
                 return result.GetContent<RemoteInvokeResultMessage>();
             }
+            catch (CPlatformException ex)
+            {
+                if (_logger.IsEnabled(LogLevel.Error))
+                    _logger.LogError(ex.Message, ex);
+                return new RemoteInvokeResultMessage()
+                {
+                    ExceptionMessage = ex.Message,
+                    StatusCode = ex.ExceptionCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                if (_logger.IsEnabled(LogLevel.Error))
+                    _logger.LogError(ex.Message, ex);
+                return new RemoteInvokeResultMessage()
+                {
+                    ExceptionMessage = ex.Message,
+                    StatusCode = ex.GetGetExceptionStatusCode(),
+                };
+            }
             finally
             {
                 //删除回调任务
@@ -143,13 +163,47 @@ namespace Surging.Core.CPlatform.Transport.Implementation
             if (message.IsInvokeResultMessage())
             {
                 var content = message.GetContent<RemoteInvokeResultMessage>();
-                if (!string.IsNullOrEmpty(content.ExceptionMessage))
+                //if (!string.IsNullOrEmpty(content.ExceptionMessage))
+                //{
+                //    task.SetException(new CPlatformCommunicationException(content.ExceptionMessage,content.StatusCode));
+                //}
+                //else
+                //{
+                //    task.SetResult(message);
+                //}
+
+                switch (content.StatusCode)
                 {
-                    task.SetException(new CPlatformCommunicationException(content.ExceptionMessage,content.StatusCode));
-                }
-                else
-                {
-                    task.SetResult(message);
+                    case StatusCode.OK:
+                        task.SetResult(message);
+                        break;
+                    case StatusCode.CPlatformError:
+                        task.SetException(new CPlatformException(content.ExceptionMessage, StatusCode.CPlatformError));
+                        break;
+                    case StatusCode.BusinessError:
+                        task.SetException(new BusinessException(content.ExceptionMessage));
+                        break;
+                    case StatusCode.CommunicationError:
+                        task.SetException(new CPlatformCommunicationException(content.ExceptionMessage));
+                        break;
+                    case StatusCode.DataAccessError:
+                        task.SetException(new DataAccessException(content.ExceptionMessage));
+                        break;
+                    case StatusCode.ValidateError:
+                        task.SetException(new ValidateException(content.ExceptionMessage));
+                        break;
+                    case StatusCode.UserFriendly:
+                        task.SetException(new UserFriendlyException(content.ExceptionMessage));
+                        break;
+                    case StatusCode.UnAuthorized:
+                        task.SetException(new UnAuthorizedException(content.ExceptionMessage));
+                        break;
+                    case StatusCode.UnAuthentication:
+                        task.SetException(new UnAuthenticationException(content.ExceptionMessage));
+                        break;
+                    default:
+                        task.SetException(new Exception(content.ExceptionMessage));
+                        break;
                 }
             }
             if (_serviceExecutor != null && message.IsInvokeMessage())

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Filters;
 using Surging.Core.CPlatform.Messages;
 using Surging.Core.CPlatform.Routing;
@@ -91,7 +92,7 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation
             if (entry.Descriptor.WaitExecution())
             {
                 //执行本地代码。
-                await  LocalExecuteAsync(entry, remoteInvokeMessage, resultMessage);
+                await LocalExecuteAsync(entry, remoteInvokeMessage, resultMessage);
                 //向客户端发送调用结果。
                 await SendRemoteInvokeResult(sender, message.Id, resultMessage);
             }
@@ -103,7 +104,7 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation
                 await Task.Factory.StartNew(async () =>
                 {
                     //执行本地代码。
-                  await   LocalExecuteAsync(entry, remoteInvokeMessage, resultMessage);
+                  await LocalExecuteAsync(entry, remoteInvokeMessage, resultMessage);
             }, TaskCreationOptions.LongRunning);
         }
         }
@@ -141,8 +142,8 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation
             {
                 if (_logger.IsEnabled(LogLevel.Error))
                     _logger.LogError(exception, "执行本地逻辑时候发生了错误。");
-                resultMessage.ExceptionMessage = GetExceptionMessage(exception);
-                resultMessage.StatusCode = exception.HResult;
+                resultMessage.ExceptionMessage = exception.GetExceptionMessage();
+                resultMessage.StatusCode = exception.GetGetExceptionStatusCode();
             }
         }
          
@@ -164,18 +165,6 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation
             }
         } 
 
-        private static string GetExceptionMessage(Exception exception)
-        {
-            if (exception == null)
-                return string.Empty;
-
-            var message = exception.Message;
-            if (exception.InnerException != null)
-            {
-                message += "|InnerException:" + GetExceptionMessage(exception.InnerException);
-            }
-            return message;
-        }
 
         #endregion Private Method
     }

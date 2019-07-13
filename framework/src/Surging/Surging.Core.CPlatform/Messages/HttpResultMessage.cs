@@ -91,7 +91,7 @@ namespace Surging.Core.CPlatform.Messages
         /// <summary>
         /// 状态码
         /// </summary>
-        public int StatusCode { get; set; }
+        public StatusCode StatusCode { get; set; }
     }
 }
  

@@ -9,5 +9,7 @@ namespace Surging.Test.Server.Demo
     public interface IDemoApplication : IServiceKey
     {
         Task<GetUserInfoOutput> GetUserInfo(string userId);
+
+        Task<string> TestError();
     }
 }
