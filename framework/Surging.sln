@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Core.KestrelHttpSer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Core.Log4net", "src\Surging\Surging.Core.Log4net\Surging.Core.Log4net.csproj", "{C92C7778-2210-476E-99BF-815EE08AFB70}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Core.Nlog", "src\Surging\Surging.Core.NLog\Surging.Core.Nlog.csproj", "{E9E94792-390B-4118-BC73-292400852D5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Core.NLog", "src\Surging\Surging.Core.NLog\Surging.Core.NLog.csproj", "{E9E94792-390B-4118-BC73-292400852D5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Core.Protocol.Http", "src\Surging\Surging.Core.Protocol.Http\Surging.Core.Protocol.Http.csproj", "{A870A266-698E-471A-B315-B0945FF17E20}"
 EndProject

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Description>构建dns协议主机</Description>
   </PropertyGroup>
 
   <ItemGroup>
