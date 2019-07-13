@@ -24,6 +24,8 @@ services:
         host_workdir: test/Surging.Test.Client/Surging.Test.Client
         host_name: Surging.Test.Client.dll
         sln_name: Surging.sln
+    depends_on:
+      - surging.test.server
     volumes:
       - ${LOG_DIR:-/var/logs}/client:/app/logs
     networks:

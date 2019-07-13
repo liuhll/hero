@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\src\Surging\Surging.Core.CPlatform\Surging.Core.CPlatform.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.DotNetty\Surging.Core.DotNetty.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.EventBusRabbitMQ\Surging.Core.EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.Log4net\Surging.Core.Log4net.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.ProxyGenerator\Surging.Core.ProxyGenerator.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.ServiceHosting\Surging.Core.ServiceHosting.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.Swagger\Surging.Core.Swagger.csproj" />
