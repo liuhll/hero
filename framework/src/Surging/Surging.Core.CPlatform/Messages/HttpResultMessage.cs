@@ -9,22 +9,22 @@ namespace Surging.Core.CPlatform.Messages
         /// <summary>
         /// 数据集
         /// </summary>
-        public T Entity { get; set; }
+        public T Data { get; set; }
 
         /// <summary>
         /// 生成自定义服务数据集
         /// </summary>
         /// <param name="successd">状态值（true:成功 false：失败）</param>
         /// <param name="message">返回到客户端的消息</param>
-        /// <param name="entity">返回到客户端的数据集</param>
+        /// <param name="data">返回到客户端的数据集</param>
         /// <returns>返回信息结果集</returns>
-        public static HttpResultMessage<T> Create(bool successd, string message, T entity)
+        public static HttpResultMessage<T> Create(bool successd, string message, T data)
         {
             return new HttpResultMessage<T>()
             {
                 IsSucceed = successd,
                 Message = message,
-                Entity = entity
+                Data = data
             };
         }
 
@@ -39,7 +39,7 @@ namespace Surging.Core.CPlatform.Messages
             return new HttpResultMessage<T>()
             {
                 IsSucceed = successd,
-                Entity = entity
+                Data = entity
             };
         }
     }
