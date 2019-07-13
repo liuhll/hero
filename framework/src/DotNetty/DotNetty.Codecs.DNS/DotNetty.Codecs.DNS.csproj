@@ -4,6 +4,15 @@
     <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.1</NetStandardImplicitPackageVersion>
+    <Version>0.6.0</Version>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <PackageIconUrl>https://raw.githubusercontent.com/surging-cloud/Surging.Hero/develop/res/assets/img/surging-logo.jpg</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/surging-cloud/Surging.Hero</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/surging-cloud/Surging.Hero/develop/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/surging-cloud/Surging.Hero.git</RepositoryUrl>
+	<Company>surging-cloud</Company>
+	<Authors>fanly</Authors>
   </PropertyGroup>
 
   <ItemGroup>
