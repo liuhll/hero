@@ -6,10 +6,10 @@ services:
       LogPath: /app/configs/log4net.config
     volumes:
       - ../test/Surging.Test.Server/configs:/app/configs
-      - ../src/annotationxmldir:/app/annotationxmldir
+      - ../annotationxmldir:/app/annotationxmldir
   surging.test.client:
     environment:
       LogPath: /app/configs/log4net.config
     volumes:
       - ../test/Surging.Test.Client/configs:/app/configs
-      - ../src/annotationxmldir:/app/annotationxmldir
+      - ../annotationxmldir:/app/annotationxmldir

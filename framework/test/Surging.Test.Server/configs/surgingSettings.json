@@ -1,6 +1,6 @@
 {
   "Surging": {
-    "Ip": "${Surging_Server_IP}|127.0.0.1",
+    "Ip": "${Surging_Server_IP}|0.0.0.0",
     "WatchInterval": 30,
     "Port": "${Surging_Server_Port}|98",
     "MappingIp": "${Mapping_ip}",
@@ -18,7 +18,7 @@
     "IsModulePerLifetimeScope": false,
     "ReloadOnChange": false,
     "Ports": {
-      "HttpPort": "${HttpPort}|280",
+      "HttpPort": "${HttpPort}|8080",
       "WSPort": "${WSPort}|96",
       "MQTTPort": "${MQTTPort}|97"
     },

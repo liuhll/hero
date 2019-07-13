@@ -20,14 +20,11 @@ namespace Surging.Test.Client
         private ContainerBuilder _builder;
         public Startup(IConfigurationBuilder config)
         {
-            ConfigureEventBus(config);
-            ConfigureCache(config);
         }
 
         public IContainer ConfigureServices(ContainerBuilder builder)
         {
             var services = new ServiceCollection();
-            ConfigureLogging(services);
             builder.Populate(services);
             _builder = builder;
             ServiceLocator.Current = builder.Build();
@@ -39,29 +36,6 @@ namespace Surging.Test.Client
 
         }
 
-        /// <summary>
-        /// 配置日志服务
-        /// </summary>
-        /// <param name="services"></param>
-        private void ConfigureLogging(IServiceCollection services)
-        {
-            services.AddLogging();
-        }
-
-        private static void ConfigureEventBus(IConfigurationBuilder build)
-        {
-            build
-            .AddEventBusFile("eventBusSettings.json", optional: false);
-        }
-
-        /// <summary>
-        /// 配置缓存服务
-        /// </summary>
-        private void ConfigureCache(IConfigurationBuilder build)
-        {
-            build
-              .AddCacheFile("cacheSettings.json", optional: false);
-        }
 
     }
 }
