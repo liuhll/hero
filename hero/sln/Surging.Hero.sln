@@ -59,6 +59,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Position.IAppl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.PositionHost", "..\src\Services\Position\Surging.Hero.PositionHost\Surging.Hero.PositionHost.csproj", "{A92E6BE1-B59C-4D65-AF65-C730C611DF20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surging.Hero.IntercepteModule", "..\src\CommonComponents\Surging.Hero.IntercepteModule\Surging.Hero.IntercepteModule.csproj", "{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,10 @@ Global
 		{A92E6BE1-B59C-4D65-AF65-C730C611DF20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A92E6BE1-B59C-4D65-AF65-C730C611DF20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A92E6BE1-B59C-4D65-AF65-C730C611DF20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -181,6 +187,7 @@ Global
 		{615B56BE-D39A-40E2-9958-57F144B5C2BB} = {F00D7F53-1EF8-48C7-A083-4746803E9837}
 		{323A7C50-7C83-4D82-990C-81AC6D425789} = {F00D7F53-1EF8-48C7-A083-4746803E9837}
 		{A92E6BE1-B59C-4D65-AF65-C730C611DF20} = {F00D7F53-1EF8-48C7-A083-4746803E9837}
+		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5} = {C88BC2F6-63DC-4035-A1A9-A1095C310E3E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F2C335F-D290-4020-B3F5-14AD7D97EF33}
