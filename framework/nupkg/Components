@@ -21,3 +21,6 @@ Surging.Core.Zookeeper
 Surging.Core.AutoMapper
 Surging.Core.DNS
 Surging.Core.Abp
+Surging.Core.Domain
+Surging.Core.Dapper
+Surging.Core.Validation
