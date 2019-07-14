@@ -11,7 +11,7 @@ namespace Surging.Core.CPlatform.Exceptions
         {
         }
 
-        public AuthException(string message, Exception innerException = null, StatusCode status = StatusCode.UnAuthentication) : base(message, innerException, status)
+        public AuthException(string message, Exception innerException, StatusCode status = StatusCode.UnAuthentication) : base(message, innerException, status)
         {
         }
     }

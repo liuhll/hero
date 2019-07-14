@@ -2,11 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Surging.Core.CPlatform;
+using Surging.Core.CPlatform.Jwt;
+using Surging.Core.CPlatform.Jwt.Implementation;
 using Surging.Core.CPlatform.Module;
 using Surging.Core.CPlatform.Runtime.Server;
 using Surging.Core.KestrelHttpServer;
 using Surging.Core.Swagger.Builder;
 using Surging.Core.Swagger.Internal;
+using Surging.Core.Swagger.Middlewares;
 using Surging.Core.Swagger.SwaggerUI;
 using System;
 using System.Collections.Generic;
@@ -41,6 +44,11 @@ namespace Surging.Core.Swagger
                     c.SwaggerEndpoint($"../swagger/{info.Version}/swagger.json", info.Title, areaName);
                     c.SwaggerEndpoint(_serviceEntryProvider.GetALLEntries(), areaName);
                 });
+
+                if (AppConfig.SwaggerOptions.Authorization.EnableAuthorization)
+                {
+                    context.Builder.UseAuthentication();
+                }
             }
         }
 
@@ -89,9 +97,19 @@ namespace Surging.Core.Swagger
             {
                 AppConfig.SwaggerOptions = section.Get<Info>();
                 AppConfig.SwaggerConfig = section.Get<DocumentConfiguration>();
+
+                if (AppConfig.SwaggerOptions.Authorization == null)
+                {
+                    AppConfig.SwaggerOptions.Authorization = new Authorization() { EnableAuthorization = false };
+                }
+                if (AppConfig.SwaggerOptions.Authorization.EnableAuthorization)
+                {
+                    builder.RegisterType(typeof(AuthorizationServerProvider)).As(typeof(IAuthorizationServerProvider));
+                }
+
             }
             builder.RegisterType(typeof(DefaultServiceSchemaProvider)).As(typeof(IServiceSchemaProvider)).SingleInstance();
-
+            builder.RegisterType(typeof(JwtTokenProvider)).As(typeof(IJwtTokenProvider)).SingleInstance();
         }
     }
 }

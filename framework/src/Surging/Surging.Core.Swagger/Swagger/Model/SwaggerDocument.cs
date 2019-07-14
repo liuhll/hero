@@ -83,6 +83,19 @@ namespace Surging.Core.Swagger
 
         [JsonExtensionData]
         public Dictionary<string, object> Extensions { get; private set; }
+
+        public Authorization Authorization { get; set; }
+    }
+
+    public class Authorization
+    {
+        public bool EnableAuthorization { get; set; }
+
+        public string CacheMode { get; set; }
+        public string AuthorizationRoutePath { get; set; }
+        public string AuthorizationServiceKey { get; set; }
+
+        public string SecretKey { get; set; }
     }
 
     public class Contact

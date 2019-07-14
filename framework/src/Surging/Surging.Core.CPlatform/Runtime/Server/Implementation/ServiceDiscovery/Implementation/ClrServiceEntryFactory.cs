@@ -4,6 +4,8 @@ using Surging.Core.CPlatform.Filters.Implementation;
 using Surging.Core.CPlatform.Ids;
 using Surging.Core.CPlatform.Routing.Template;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Core.CPlatform.Serialization;
+using Surging.Core.CPlatform.Transport.Implementation;
 using Surging.Core.CPlatform.Utilities;
 using System;
 using System.Collections.Generic;
@@ -110,8 +112,24 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.
                      }
                      var value = parameters[parameterInfo.Name];
                      var parameterType = parameterInfo.ParameterType;
-                     var parameter = _typeConvertibleService.Convert(value, parameterType);
-                     list.Add(parameter);
+                     if (value != null)
+                     {
+                         var parameter = _typeConvertibleService.Convert(value, parameterType);
+                         list.Add(parameter);
+                     }
+                     else
+                     {
+                         list.Add(value);
+                     }
+                     if (parameters.ContainsKey("payload"))
+                     {
+                         if (RpcContext.GetContext().GetAttachment("payload") == null)
+                         {
+                             var serializer = ServiceLocator.GetService<ISerializer<string>>();
+                             var payloadString = serializer.Serialize(parameters["payload"], true);
+                             RpcContext.GetContext().SetAttachment("payload", payloadString);
+                         }
+                     }
                  }
                  var result = fastInvoker(instance, list.ToArray());
                  return Task.FromResult(result);

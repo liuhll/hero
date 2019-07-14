@@ -4,6 +4,8 @@ using Surging.Core.ApiGateWay.OAuth;
 using Surging.Core.ApiGateWay.ServiceDiscovery;
 using Surging.Core.ApiGateWay.ServiceDiscovery.Implementation;
 using Surging.Core.CPlatform;
+using Surging.Core.CPlatform.Jwt;
+using Surging.Core.CPlatform.Jwt.Implementation;
 using Surging.Core.CPlatform.Routing;
 using Surging.Core.CPlatform.Runtime.Client.HealthChecks;
 using Surging.Core.CPlatform.Runtime.Client.HealthChecks.Implementation;
@@ -32,6 +34,7 @@ namespace Surging.Core.ApiGateWay
             services.RegisterType<ServiceSubscribeProvider>().As<IServiceSubscribeProvider>().SingleInstance();
             services.RegisterType<ServiceCacheProvider>().As<IServiceCacheProvider>().SingleInstance();
             services.RegisterType<ServicePartProvider>().As<IServicePartProvider>().SingleInstance();
+            services.RegisterType<JwtTokenProvider>().As<IJwtTokenProvider>().SingleInstance();
             if (config != null)
             {
                 AppConfig.AccessTokenExpireTimeSpan = config.AccessTokenExpireTimeSpan;
