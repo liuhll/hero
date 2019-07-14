@@ -1,0 +1,41 @@
+<Project>
+  <ItemGroup>
+    <PackageReference Include="Surging.Core.Caching" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.Consul" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.CPlatform" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.DotNetty" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.KestrelHttpServer" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.Log4net" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.0-bate.1" />
+    <PackageReference Include="Surging.Core.Swagger" Version="2.0.0-bate.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />
+    <Compile Include="..\..\..\Shared\CSharpScripts\SurgingServiceEngine.cs" Link="SurgingServiceEngine.cs" />
+    <Compile Include="..\..\..\Shared\CSharpScripts\Startup.cs" Link="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Shared\Configs\cacheSettings.json" Link="configs\cacheSettings.json" >
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\Shared\Configs\consul.json" Link="configs\consul.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\Shared\Configs\eventBusSettings.json" Link="configs\eventBusSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\Shared\Configs\surgingSettings.json" Link="configs\surgingSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\Shared\Configs\log4net.config" Link="configs\log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+</Project>
+

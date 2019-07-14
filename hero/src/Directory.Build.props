@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.0.1-bate.1</Version>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <PackageIconUrl>https://raw.githubusercontent.com/surging-cloud/Surging.Hero/develop/res/assets/img/surging-logo.jpg</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/surging-cloud/Surging.Hero</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/surging-cloud/Surging.Hero/develop/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/surging-cloud/Surging.Hero.git</RepositoryUrl>
+	<Company>surging-cloud</Company>
+	<Authors>surging-cloud tearm</Authors>
+    <Product>Surging Hero</Product>
+    <Copyright>Copyright © Surging Cloud All Rights Reserved.</Copyright>
+	<PackageTags>surging;surging-cloud;surging-hero</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' ">
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+ 
+
+</Project>

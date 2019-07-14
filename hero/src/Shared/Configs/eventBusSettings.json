@@ -1,0 +1,12 @@
+{
+  "EventBusConnection": "${EventBusConnection}|127.0.0.1",
+  "EventBusUserName": "${EventBusUserName}|guest", //用户名
+  "EventBusPassword": "${EventBusPassword}|guest", //密码
+  "VirtualHost": "${VirtualHost}|/",
+  "MessageTTL": "${MessageTTL}|30000", //消息过期时间，比如过期时间是30分钟就是1800000
+  "RetryCount": "${RetryCount}|1", //重试次数，这里设置的延迟队列，只能设置为1
+  "FailCount": "${FailCount}|3", //处理失败流程重试次数，如果出现异常，会进行重试
+  "PrefetchCount": "${PrefetchCount}|0", //设置均匀分配消费者消息的个数
+  "BrokerName": "srcp_demo",
+  "Port": "${EventBusPort}|5672"
+}

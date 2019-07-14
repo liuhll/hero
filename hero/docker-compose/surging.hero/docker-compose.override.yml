@@ -1,0 +1,71 @@
+version: '3.7'
+
+services:
+  surging.hero.auth:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${NORMAL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      Environment: ${ENVIRONMENT:-Development}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      SwaggerTitle: "surging.hero.auth"
+      SwaggerDes: "身份认证与授权组件API文档"
+      SupportName: "liuhongliang"
+      SupportEmail: "1029765111@qq.com"
+    ports:
+      - "18081:8080"
+
+  surging.hero.basicdata:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${NORMAL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      SwaggerTitle: "surging.hero.basicdata"
+      SwaggerDes: "技术数据服务与配置服务组件API文档"
+      SupportName: "liuhongliang"
+      SupportEmail: "1029765111@qq.com"
+    ports:
+      - "18082:8080"
+
+  surging.hero.organization:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${NORMAL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      SwaggerTitle: "surging.hero.organization"
+      SwaggerDes: "组织机构服务组件API文档"
+      SupportName: "liuhongliang"
+      SupportEmail: "1029765111@qq.com"
+    ports:
+      - "18083:8080"
+
+  surging.hero.position:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${NORMAL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      SwaggerTitle: "surging.hero.position"
+      SwaggerDes: "职位服务组件API文档"
+      SupportName: "liuhongliang"
+      SupportEmail: "1029765111@qq.com"
+    ports:
+      - "18084:8080"

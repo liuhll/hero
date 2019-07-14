@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  hero.consul:
+    image: consul:latest
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    command: "agent -server -bootstrap-expect 1 -ui -client 0.0.0.0"
+    networks:
+      - surging_hero_service_net
+  hero.redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - surging_hero_service_net
+  hero.rabbitmq:
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - surging_hero_service_net
+      
+networks:
+  surging_hero_service_net: 
+    driver: bridge
+    name: surging_hero_service_net
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.22.0.1/16

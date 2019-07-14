@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Surging.Hero.Position.Domain.Shared\Surging.Hero.Position.Domain.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

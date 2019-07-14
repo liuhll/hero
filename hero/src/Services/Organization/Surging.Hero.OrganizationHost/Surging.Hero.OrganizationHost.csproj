@@ -1,8 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\Shared\Props\hostpackage.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Surging.Hero.Organization.Application\Surging.Hero.Organization.Application.csproj" />
+  </ItemGroup>
 
 </Project>

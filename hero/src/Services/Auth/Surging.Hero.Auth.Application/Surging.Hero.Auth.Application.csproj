@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Surging.Hero.Auth.Domain\Surging.Hero.Auth.Domain.csproj" />
+    <ProjectReference Include="..\Surging.Hero.Auth.IApplication\Surging.Hero.Auth.IApplication.csproj" />
+  </ItemGroup>
+
 </Project>
