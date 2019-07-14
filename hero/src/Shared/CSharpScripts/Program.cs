@@ -61,7 +61,7 @@ namespace Surging.Hero.ServiceHost
 
             using (host.Run())
             {
-                Console.WriteLine($"·şÎñ¶ËÆô¶¯³É¹¦£¬{DateTime.Now}¡£");
+                Console.WriteLine($"æœåŠ¡ä¸»æœºå¯åŠ¨æˆåŠŸ{DateTime.Now}ã€‚");
             }
         }
     }
