@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Surging.Core.ApiGateWay.Configurations;
+using Surging.Core.ApiGateWay.OAuth.Implementation.Configurations;
 using Surging.Core.CPlatform.Utilities;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,8 @@ namespace Surging.Core.ApiGateWay
     {
         public static IConfigurationRoot Configuration { get; set; }
 
-
         private static string _authorizationServiceKey;
+
         public static string AuthorizationServiceKey
         {
             get
@@ -22,12 +23,26 @@ namespace Surging.Core.ApiGateWay
             }
             internal set
             {
-
                 _authorizationServiceKey = value;
             }
         }
 
+        private static string _authenticationServiceKey;
+
+        public static string AuthenticationServiceKey
+        {
+            get
+            {
+                return Configuration["AuthenticationServiceKey"] ?? _authenticationServiceKey;
+            }
+            internal set
+            {
+                _authenticationServiceKey = value;
+            }
+        }
+
         private static string _authorizationRoutePath;
+
         public static string AuthorizationRoutePath
         {
             get
@@ -36,12 +51,12 @@ namespace Surging.Core.ApiGateWay
             }
             internal set
             {
-
                 _authorizationRoutePath = value;
             }
         }
 
         private static TimeSpan _accessTokenExpireTimeSpan = TimeSpan.FromMinutes(30);
+
         public static TimeSpan AccessTokenExpireTimeSpan
         {
             get
@@ -59,31 +74,44 @@ namespace Surging.Core.ApiGateWay
             }
         }
 
-        private static string _tokenEndpointPath = "oauth2/token";
+        private static string _authenticationRoutePath = "oauth2/token";
 
-        public static string  TokenEndpointPath
+        public static string AuthenticationRoutePath
         {
             get
             {
-                return Configuration["TokenEndpointPath"] ?? _tokenEndpointPath;
+                return Configuration["AuthenticationRoutePath"] ?? _authenticationRoutePath;
             }
             internal set
             {
-                _tokenEndpointPath = value;
+                _authenticationRoutePath = value;
             }
         }
+
+        //private static string _thirdPartyAuthenticationRoutePath = "oauth2/thirdparty/token";
+
+        //public static string ThirdPartyAuthenticationRoutePath
+        //{
+        //    get
+        //    {
+        //        return Configuration["ThirdPartyAuthenticationRoutePath"] ?? _thirdPartyAuthenticationRoutePath;
+        //    }
+        //    internal set
+        //    {
+        //        _thirdPartyAuthenticationRoutePath = value;
+        //    }
+        //}
 
         public static Register Register
         {
             get
             {
                 var result = new Register();
-                var section= Configuration.GetSection("Register");
+                var section = Configuration.GetSection("Register");
                 if (section != null)
-                    result=  section.Get<Register>();
+                    result = section.Get<Register>();
                 return result;
             }
-
         }
 
         public static ServicePart ServicePart
@@ -110,6 +138,32 @@ namespace Surging.Core.ApiGateWay
             }
         }
 
+        public static JwtConfig JwtConfig
+        {
+            get
+            {
+                var result = new JwtConfig();
+                var section = Configuration.GetSection("JwtConfig");
+                if (section != null)
+                    result = section.Get<JwtConfig>();
+                return result;
+            }
+        }
+
+        public static IEnumerable<string> WhiteList
+        {
+            get
+            {
+                IEnumerable<string> whiteList = new List<string>();
+                if (Configuration.GetSection("WhiteList").Exists())
+                {
+                    whiteList = Configuration.GetSection("WhiteList").Get<ICollection<string>>();
+                }
+
+                return whiteList;
+            }
+        }
+
         private static string _cacheMode = "MemoryCache";
 
         public static string CacheMode
@@ -118,7 +172,6 @@ namespace Surging.Core.ApiGateWay
             {
                 return Configuration["CacheMode"] ?? _cacheMode;
             }
-           
         }
     }
 }

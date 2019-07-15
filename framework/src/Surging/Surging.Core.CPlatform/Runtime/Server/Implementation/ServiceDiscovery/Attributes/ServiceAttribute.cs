@@ -43,6 +43,9 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.
         /// 日期
         /// </summary>
         public string Date { get; set; }
+
+        public bool AllowPermission { get; set; } = false;
+
         #region Overrides of DescriptorAttribute
 
         /// <summary>
@@ -57,7 +60,8 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.
                 .DisableNetwork(DisableNetwork)
                 .Director(Director)
                 .GroupName(Name)
-                .Date(Date);
+                .Date(Date)
+                .AllowPermission(AllowPermission);
         }
 
         #endregion Overrides of ServiceDescriptorAttribute

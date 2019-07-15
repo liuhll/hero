@@ -166,6 +166,17 @@ namespace Surging.Core.CPlatform
         {
             return descriptor.GetMetadata("WaitExecution", true);
         }
+
+        public static bool AllowPermission(this ServiceDescriptor descriptor)
+        {
+            return descriptor.GetMetadata("AllowPermission", false);
+        }
+
+        public static ServiceDescriptor AllowPermission(this ServiceDescriptor descriptor, bool allowPermission)
+        {
+            descriptor.Metadatas["AllowPermission"] = allowPermission;
+            return descriptor;
+        }
     }
 
     /// <summary>
