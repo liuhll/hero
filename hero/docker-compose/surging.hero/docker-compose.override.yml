@@ -12,6 +12,8 @@ services:
       EventBusPort: ${RABBITMQ_PORT:-5672}
       Environment: ${ENVIRONMENT:-Development}
       ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      DbType: ${AUTH_DB_TYPE:-Mysql}
+      ConnectionString: ${AUTH_DB_CONN}
       SwaggerTitle: "surging.hero.auth"
       SwaggerDes: "身份认证与授权组件API文档"
       SupportName: "liuhongliang"
@@ -29,6 +31,8 @@ services:
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
       ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      DbType: ${BASICDATA_DB_TYPE:-Mysql}
+      ConnectionString: ${BASICDATA_DB_CONN}
       SwaggerTitle: "surging.hero.basicdata"
       SwaggerDes: "技术数据服务与配置服务组件API文档"
       SupportName: "liuhongliang"
@@ -46,6 +50,8 @@ services:
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
       ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      DbType: ${ORGANIZATION_DB_TYPE:-Mysql}
+      ConnectionString: ${ORGANIZATION_DB_CONN}
       SwaggerTitle: "surging.hero.organization"
       SwaggerDes: "组织机构服务组件API文档"
       SupportName: "liuhongliang"
@@ -63,6 +69,8 @@ services:
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
       ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      DbType: ${POSITION_DB_TYPE:-Mysql}
+      ConnectionString: ${POSITION_DB_CONN}
       SwaggerTitle: "surging.hero.position"
       SwaggerDes: "职位服务组件API文档"
       SupportName: "liuhongliang"

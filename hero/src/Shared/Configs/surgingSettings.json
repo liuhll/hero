@@ -30,6 +30,10 @@
       }
     ]
   }, //如果引用多个同类型的组件，需要配置Packages，如果是自定义按需引用，无需配置Packages
+  "DbSetting": {
+    "DbType": "${DbType}|MySql", //MySql SqlServer, Oracle, Postgres
+    "ConnectionString": "${ConnectionString}|Server=mysql;Database=surging_demo;Uid=root;Port=3306;Pwd=Surging!P4ss"
+  },
   "Stage": {
     "EnableHttps": true, // 不设置ports，默认httpsPort:443
     "CertificateFileName": "${CertificateFileName}|",
