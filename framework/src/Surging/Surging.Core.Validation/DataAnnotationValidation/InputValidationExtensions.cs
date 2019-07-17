@@ -1,28 +1,61 @@
 ﻿using FluentValidation.Results;
+using Surging.Core.CPlatform.Exceptions;
+using System.Linq;
+using System.Text;
 
 namespace Surging.Core.Validation.DataAnnotationValidation
 {
-
-    /// <summary>
-    /// 验证DTO，INPUT对象
-    /// </summary>
     public static class InputValidationExtensions
     {
-       
+        public static void CheckValidResult(this ValidationResult validationResult, bool isAll = false)
+        {
+            if (!validationResult.IsValid)
+            {
+                string errorMessage = string.Empty;
+                if (isAll)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var error in validationResult.Errors)
+                    {
+                        sb.Append(error.ErrorMessage + "|");
+                    }
+                    errorMessage = sb.ToString().Remove(sb.Length - 1);
+                }
+                else
+                {
+                    errorMessage = validationResult.Errors.First().ErrorMessage;
+                }
 
-        /// <summary>
-        /// Class的Data Annotation属性验证
-        /// </summary>
-        /// <param name="instance">class</param>
-        /// <returns></returns>
-        public static BaseValidation DataAnnotationsCheck(this object instance)
+                throw new ValidateException(errorMessage);
+            }
+        }
+
+        public static BaseValidation CheckDataAnnotations(this object instance)
         {
             return new DataAnnotationsValidation(instance);
         }
 
-        public static BaseValidation DataAnnotationsCheck(this ValidationResult validationResult)
+        public static void CheckValidResult(this BaseValidation validation, bool isAll = false)
         {
-            return new DataAnnotationsValidation(validationResult);
+            if (!validation.IsValid)
+            {
+                string errorMessage = string.Empty;
+                if (isAll)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var error in validation.ErrorMessages)
+                    {
+                        sb.Append(error + "|");
+                    }
+                    errorMessage = sb.ToString().Remove(sb.Length - 1);
+                }
+                else
+                {
+                    errorMessage = validation.PrimaryErrorMessage;
+                }
+
+                throw new ValidateException(errorMessage);
+            }
         }
     }
 }
