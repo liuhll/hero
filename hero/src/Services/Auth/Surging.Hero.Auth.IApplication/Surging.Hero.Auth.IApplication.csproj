@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\CommonComponents\Surging.Hero.Common\Surging.Hero.Common.csproj" />
+    <ProjectReference Include="..\Surging.Hero.Auth.Domain.Shared\Surging.Hero.Auth.Domain.Shared.csproj" />
   </ItemGroup>
 
 </Project>
