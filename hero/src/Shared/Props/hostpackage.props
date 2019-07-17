@@ -1,15 +1,15 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Surging.Core.Caching" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.Consul" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.CPlatform" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.DotNetty" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.KestrelHttpServer" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.Log4net" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.Swagger" Version="2.0.0-bate.2" />
+    <PackageReference Include="Surging.Core.Caching" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.Consul" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.CPlatform" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.DotNetty" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.KestrelHttpServer" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.Log4net" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.Swagger" Version="2.0.0-bate.4" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />

@@ -1,9 +1,10 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Surging.Core.AutoMapper" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.CPlatform" Version="2.0.0-bate.2" />
-    <PackageReference Include="Surging.Core.System" Version="2.0.0-bate.2" />
-	<PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.0-bate.2" />
+    <PackageReference Include="Surging.Core.AutoMapper" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.CPlatform" Version="2.0.0-bate.4" />
+    <PackageReference Include="Surging.Core.System" Version="2.0.0-bate.4" />
+	<PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.0-bate.4" />
+	<PackageReference Include="Surging.Core.Validation" Version="2.0.0-bate.4" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>..\..\..\annotationxmldir\$(AssemblyName).xml</DocumentationFile>

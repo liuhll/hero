@@ -34,6 +34,9 @@
     "DbType": "${DbType}|MySql", //MySql SqlServer, Oracle, Postgres
     "ConnectionString": "${ConnectionString}|Server=mysql;Database=surging_demo;Uid=root;Port=3306;Pwd=Surging!P4ss"
   },
+  "Automapper": {
+    "Assemblies": "Surging.Hero.*.Application;Surging.Hero.Common;Surging.*.Common;"
+  },
   "Stage": {
     "EnableHttps": true, // 不设置ports，默认httpsPort:443
     "CertificateFileName": "${CertificateFileName}|",
