@@ -26,7 +26,7 @@ namespace Surging.Hero.Auth.Application.User
         }
 
 
-        public async Task<string> CreateUser(CreateUserInput input)
+        public async Task<string> Create(CreateUserInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
             var existUser = await _userRepository.FirstOrDefaultAsync(p => p.UserName == input.UserName);
@@ -49,7 +49,7 @@ namespace Surging.Hero.Auth.Application.User
             return "新增员工成功";
         }
 
-        public async Task<string> UpdateUser(UpdateUserInput input)
+        public async Task<string> Update(UpdateUserInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
             var updateUser = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
@@ -79,7 +79,7 @@ namespace Surging.Hero.Auth.Application.User
         }
 
 
-        public async Task<string> DeleteUser(DeleteByIdInput input)
+        public async Task<string> Delete(DeleteByIdInput input)
         {
             var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
             if (userInfo == null)

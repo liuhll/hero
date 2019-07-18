@@ -9,11 +9,10 @@ namespace Surging.Hero.Auth.IApplication.User
     [ServiceBundle("v1/api/user")]
     public interface IUserAppService : IServiceKey
     {
-        Task<string> CreateUser(CreateUserInput input);
+        Task<string> Create(CreateUserInput input);
 
-        Task<string> UpdateUser(UpdateUserInput input);
-
+        Task<string> Update(UpdateUserInput input);
         
-        Task<string> DeleteUser(DeleteByIdInput input);
+        Task<string> Delete(DeleteByIdInput input);
     }
 }
