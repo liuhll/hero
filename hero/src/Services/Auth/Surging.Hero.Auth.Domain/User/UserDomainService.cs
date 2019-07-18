@@ -25,5 +25,11 @@ namespace Surging.Hero.Auth.Domain.User
             userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);
             await _userRepository.InsertAsync(userInfo);
         }
+
+        public async Task ResetPassword(UserInfo userInfo, string newPassword)
+        {
+            userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, newPassword);
+            await _userRepository.UpdateAsync(userInfo);
+        }
     }
 }

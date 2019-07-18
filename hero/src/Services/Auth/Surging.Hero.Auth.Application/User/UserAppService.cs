@@ -120,5 +120,16 @@ namespace Surging.Hero.Auth.Application.User
             }
             return tips;
         }
+
+        public async Task<string> ResetPassword(ResetPasswordInput input)
+        {
+            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (userInfo == null)
+            {
+                throw new BusinessException($"不存在Id为{input.Id}的账号信息");
+            }
+            await _userDomainService.ResetPassword(userInfo, input.NewPassword);
+            return "重置该员工密码成功";
+        }
     }
 }
