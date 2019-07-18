@@ -13,6 +13,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         [Required(ErrorMessage = "员工名称不允许为空")]
         public string ChineseName { get; set; }
 
+        [EmailAddress(ErrorMessage = "电子邮箱格式不正确")]
         public string Email { get; set; }
 
         [RegularExpression("^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$", ErrorMessage = "手机号码格式不正确")]
