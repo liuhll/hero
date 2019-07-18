@@ -17,5 +17,7 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<string> Delete(DeleteByIdInput input);
 
         Task<IPagedResult<GetUserOutput>> Query(QueryUserInput query);
+
+        Task<string> UpdateStatus(UpdateUserStatusInput input);
     }
 }

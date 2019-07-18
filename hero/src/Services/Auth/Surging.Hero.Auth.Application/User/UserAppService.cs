@@ -13,6 +13,7 @@ using Surging.Hero.Common.Dtos;
 using Surging.Core.Domain.PagedAndSorted;
 using System.Collections.Generic;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
+using Surging.Hero.Common.Enums;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -101,6 +102,23 @@ namespace Surging.Hero.Auth.Application.User
                && p.Email.Contains(query.Email)
                && p.Phone.Contains(query.Phone));         
             return userList.MapTo<IEnumerable<GetUserOutput>>().PageBy(query);
+        }
+
+        public async Task<string> UpdateStatus(UpdateUserStatusInput input)
+        {
+            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (userInfo == null)
+            {
+                throw new BusinessException($"不存在Id为{input.Id}的账号信息");
+            }
+            userInfo.Status = input.Status;
+            await _userRepository.UpdateAsync(userInfo);
+            var tips = "账号激活成功";
+            if (input.Status == Status.InValid)
+            {
+                tips = "账号冻结成功";
+            }
+            return tips;
         }
     }
 }
