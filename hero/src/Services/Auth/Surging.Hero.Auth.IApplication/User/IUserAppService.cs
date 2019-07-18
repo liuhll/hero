@@ -9,5 +9,7 @@ namespace Surging.Hero.Auth.IApplication.User
     public interface IUserAppService : IServiceKey
     {
         Task<string> CreateUser(CreateUserInput input);
+
+        Task<string> UpdateUser(UpdateUserInput input);
     }
 }
