@@ -9,6 +9,7 @@ using Surging.Core.AutoMapper;
 using Surging.Hero.Auth.Domain.User;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Hero.Common.Dtos;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -75,6 +76,18 @@ namespace Surging.Hero.Auth.Application.User
             updateUser = input.MapTo(updateUser);
             await _userRepository.UpdateAsync(updateUser);
             return "更新员工信息成功";
+        }
+
+
+        public async Task<string> DeleteUser(DeleteByIdInput input)
+        {
+            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (userInfo == null)
+            {
+                throw new BusinessException($"不存在Id为{input.Id}的账号信息");
+            }
+            await _userRepository.DeleteAsync(p => p.Id == input.Id);
+            return "删除员工成功";
         }
     }
 }
