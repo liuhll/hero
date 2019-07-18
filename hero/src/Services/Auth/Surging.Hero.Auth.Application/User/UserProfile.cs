@@ -10,6 +10,7 @@ namespace Surging.Hero.Auth.Application.User
         {
             CreateMap<CreateUserInput, UserInfo>();
             CreateMap<UpdateUserInput, UserInfo>();
+            CreateMap<UserInfo, GetUserOutput>();
         }
     }
 }

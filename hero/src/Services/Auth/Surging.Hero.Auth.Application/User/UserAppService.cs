@@ -10,6 +10,9 @@ using Surging.Hero.Auth.Domain.User;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Hero.Common.Dtos;
+using Surging.Core.Domain.PagedAndSorted;
+using System.Collections.Generic;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -88,6 +91,16 @@ namespace Surging.Hero.Auth.Application.User
             }
             await _userRepository.DeleteAsync(p => p.Id == input.Id);
             return "删除员工成功";
+        }
+
+        public async Task<IPagedResult<GetUserOutput>> Query(QueryUserInput query)
+        {
+            // :todo 待优化
+            var userList = await _userRepository.GetAllAsync(p => p.UserName.Contains(query.UserName)
+               && p.ChineseName.Contains(query.ChineseName)
+               && p.Email.Contains(query.Email)
+               && p.Phone.Contains(query.Phone));         
+            return userList.MapTo<IEnumerable<GetUserOutput>>().PageBy(query);
         }
     }
 }
