@@ -2,9 +2,10 @@
 /* DBMS name:      MySQL 5.0                                    */
 /* Created on:     2019/7/16 22:44:42                           */
 /*==============================================================*/
-
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 drop database if exists hero_organization;
-create database hero_organization default character set utf8mb4 collate utf8mb4_general_ci;
+create database hero_organization;
 use hero_organization;
 
 drop table if exists Corporation;
