@@ -164,6 +164,7 @@ alter table Permission comment '权限表';
 create table Role
 (
    Id                   bigint not null auto_increment comment '主键',
+   DeptId               bigint comment '组织机构Id',
    Name                 varchar(50) not null comment '角色名称',
    Memo                 varchar(100) comment '备注',
    Status               int not null comment '状态',
