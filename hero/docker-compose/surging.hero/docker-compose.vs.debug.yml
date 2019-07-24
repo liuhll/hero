@@ -21,10 +21,3 @@ services:
     volumes:
       - ../../src/Shared/Configs:/app/configs
       - ../annotationxmldir:/app/annotationxmldir
-
-  surging.hero.position:
-    environment:
-      LogPath: /app/configs/log4net.config
-    volumes:
-      - ../../src/Shared/Configs:/app/configs
-      - ../annotationxmldir:/app/annotationxmldir

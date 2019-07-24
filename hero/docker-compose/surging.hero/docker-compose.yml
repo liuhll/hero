@@ -43,19 +43,6 @@ services:
     networks:
       - surging_hero_service_net      
 
-  surging.hero.position:
-    image: surgingcloud/surging.hero.position:${TAG:-latest}
-    build:
-      context: ../..
-      dockerfile: src/Services/Position/Surging.Hero.PositionHost/Dockerfile
-      args:
-        host_workdir: src/Services/Position/Surging.Hero.PositionHost
-        host_name: Surging.Hero.PositionHost.dll
-        sln_name: sln/Surging.Hero.sln
-    volumes:
-      - ${LOG_DIR:-/var/logs}/position:/app/logs
-    networks:
-      - surging_hero_service_net  
 networks:
   surging_hero_service_net: 
     external:

@@ -70,26 +70,3 @@ services:
       AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
     ports:
       - "18083:8080"
-
-  surging.hero.position:
-    environment:
-      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
-      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
-      UseEngineParts: ${NORMAL_SERVER_ENGINE}
-      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
-      EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
-      EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
-      EventBusPort: ${RABBITMQ_PORT:-5672}
-      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
-      DbType: ${POSITION_DB_TYPE:-Mysql}
-      ConnectionString: ${POSITION_DB_CONN}
-      SwaggerTitle: "surging.hero.position"
-      SwaggerDes: "职位服务组件API文档"
-      SupportName: "liuhongliang"
-      SupportEmail: "1029765111@qq.com"
-      EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
-      SecretKey: ${SECRETKEY}
-      AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
-      AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
-    ports:
-      - "18084:8080"
