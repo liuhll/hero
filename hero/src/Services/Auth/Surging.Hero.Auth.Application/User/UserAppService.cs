@@ -6,7 +6,6 @@ using Surging.Hero.Auth.IApplication.User.Dtos;
 using System.Threading.Tasks;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Core.AutoMapper;
-using Surging.Hero.Auth.Domain.User;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Hero.Common.Dtos;
@@ -14,6 +13,7 @@ using Surging.Core.Domain.PagedAndSorted;
 using System.Collections.Generic;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.Common.Enums;
+using Surging.Hero.Auth.Domain.Authorization.Users;
 
 namespace Surging.Hero.Auth.Application.User
 {

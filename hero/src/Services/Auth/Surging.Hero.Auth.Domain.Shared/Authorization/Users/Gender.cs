@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Surging.Hero.Auth.Domain.Shared.User
+namespace Surging.Hero.Auth.Domain.Shared.Authorization.Users
 {
     public enum Gender
     {

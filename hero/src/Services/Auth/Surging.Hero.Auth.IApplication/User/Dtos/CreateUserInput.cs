@@ -1,7 +1,4 @@
-﻿using Surging.Hero.Auth.Domain.Shared.User;
-using Surging.Hero.Common.Enums;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
