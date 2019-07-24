@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Surging.Hero.Auth.Domain.Authorization.Users
+namespace Surging.Hero.Auth.Domain.Users
 {
     public class PasswordHelper : IPasswordHelper
     {

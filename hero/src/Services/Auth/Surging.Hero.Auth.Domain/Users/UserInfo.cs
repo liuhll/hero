@@ -1,9 +1,9 @@
 ﻿using Surging.Core.Domain.Entities.Auditing;
-using Surging.Hero.Auth.Domain.Shared.Authorization.Users;
+using Surging.Hero.Auth.Domain.Shared.Users;
 using Surging.Hero.Common.Enums;
 using System;
 
-namespace Surging.Hero.Auth.Domain.Authorization.Users
+namespace Surging.Hero.Auth.Domain.Users
 {
     public class UserInfo : FullAuditedEntity<long>
     {

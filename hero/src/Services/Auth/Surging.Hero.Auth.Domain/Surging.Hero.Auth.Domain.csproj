@@ -9,4 +9,11 @@
     <ProjectReference Include="..\Surging.Hero.Auth.Domain.Shared\Surging.Hero.Auth.Domain.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Roles\" />
+    <Folder Include="Permissions\" />
+    <Folder Include="Usergroups\" />
+    <Folder Include="Menus\" />
+  </ItemGroup>
+
 </Project>

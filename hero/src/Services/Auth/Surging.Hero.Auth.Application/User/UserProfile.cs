@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Surging.Hero.Auth.Domain.Authorization.Users;
+using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 
 namespace Surging.Hero.Auth.Application.User
