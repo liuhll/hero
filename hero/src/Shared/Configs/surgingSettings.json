@@ -67,7 +67,17 @@
     "Options": {
       "IgnoreFullyQualified": false
       // "IngressName": "Notice"
-    }
+    },
+    "Authorization": {
+      "EnableAuthorization": "${EnableAuthorization}|false",
+      "SecretKey": "${SecretKey}",
+      "AuthorizationRoutePath": "${AuthorizationRoutePath}",
+      "AuthorizationServiceKey": "${AuthorizationServiceKey}"
+    },
+    "AnnotationXmlDir": "/app/annotationxmldir",
+    "DtoXmls": [
+      "Surging.Hero.Common.xml"
+    ]
   },
   "WebSocket": {
     "WaitTime": 2,
