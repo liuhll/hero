@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Surging.Core.CPlatform.Filters.Implementation;
+using Surging.Core.CPlatform.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -225,7 +226,7 @@ namespace Surging.Core.CPlatform
             if (!Metadatas.ContainsKey(name))
                 return def;
 
-            return (T)Metadatas[name];
+            return Metadatas[name].ConventTo<T>();
         }
 
         #region Equality members

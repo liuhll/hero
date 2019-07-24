@@ -71,19 +71,23 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.
             {
                 Id = serviceId,
                 RoutePath = RoutePatternParser.Parse(routeTemplate, serviceName, method.Name)
-            };
+            };           
+            var authorization = attributes.Where(p => p is AuthorizationFilterAttribute).FirstOrDefault();
+            if (authorization != null)
+            {
+                serviceDescriptor.EnableAuthorization(true);
+                serviceDescriptor.AuthType(((authorization as AuthorizationAttribute)?.AuthType)
+                ?? AuthorizationType.AppSecret);
+            }
+            else
+            {
+                serviceDescriptor.EnableAuthorization(true);
+                serviceDescriptor.AuthType(AuthorizationType.JWT);
+            }
             var descriptorAttributes = method.GetCustomAttributes<ServiceDescriptorAttribute>();
             foreach (var descriptorAttribute in descriptorAttributes)
             {
                 descriptorAttribute.Apply(serviceDescriptor);
-            }
-            var authorization = attributes.Where(p => p is AuthorizationFilterAttribute).FirstOrDefault();
-            if (authorization != null)
-                serviceDescriptor.EnableAuthorization(true);
-            if (authorization != null)
-            {
-                serviceDescriptor.AuthType(((authorization as AuthorizationAttribute)?.AuthType)
-                    ?? AuthorizationType.AppSecret);
             }
             var fastInvoker = GetHandler(serviceId, method);
             return new ServiceEntry

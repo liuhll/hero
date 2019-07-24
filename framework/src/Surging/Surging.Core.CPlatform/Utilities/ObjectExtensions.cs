@@ -20,6 +20,10 @@ namespace Surging.Core.CPlatform.Utilities
             {
                 return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(obj.ToString());
             }
+            if (typeof(T).IsEnum)
+            {
+                return (T)Enum.Parse(typeof(T), obj as string);
+            }
 
             return (T)Convert.ChangeType(obj, typeof(T), CultureInfo.InvariantCulture);
         }
@@ -31,6 +35,10 @@ namespace Surging.Core.CPlatform.Utilities
                 if (typeof(T) == typeof(Guid))
                 {
                     return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(obj.ToString());
+                }
+                if (typeof(T).IsEnum)
+                {
+                    return (T)Enum.Parse(typeof(T), obj as string);
                 }
 
                 return (T)Convert.ChangeType(obj, typeof(T), CultureInfo.InvariantCulture);
