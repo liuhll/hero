@@ -18,6 +18,10 @@ services:
       SwaggerDes: "身份认证与授权组件API文档"
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
+      EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
+      SecretKey: ${SECRETKEY}
+      AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
+      AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
     ports:
       - "18081:8080"
 
@@ -37,6 +41,10 @@ services:
       SwaggerDes: "技术数据服务与配置服务组件API文档"
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
+      EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
+      SecretKey: ${SECRETKEY}
+      AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
+      AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
     ports:
       - "18082:8080"
 
@@ -56,6 +64,10 @@ services:
       SwaggerDes: "组织机构服务组件API文档"
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
+      EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
+      SecretKey: ${SECRETKEY}
+      AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
+      AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
     ports:
       - "18083:8080"
 
@@ -75,5 +87,9 @@ services:
       SwaggerDes: "职位服务组件API文档"
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
+      EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
+      SecretKey: ${SECRETKEY}
+      AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
+      AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
     ports:
       - "18084:8080"
