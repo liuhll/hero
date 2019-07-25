@@ -70,3 +70,9 @@ services:
       AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
     ports:
       - "18083:8080"
+
+  surging.hero.gateway:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-consul:8500}
+    ports:
+      - "10080:80"

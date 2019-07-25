@@ -21,3 +21,6 @@ services:
     volumes:
       - ../../src/Shared/Configs:/app/configs
       - ../annotationxmldir:/app/annotationxmldir
+  surging.hero.gateway:
+    volumes:
+      - ../../src/Shared/Configs:/app/configs

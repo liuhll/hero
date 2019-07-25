@@ -42,7 +42,19 @@ services:
       - ${LOG_DIR:-/var/logs}/organization:/app/logs
     networks:
       - surging_hero_service_net      
-
+  surging.hero.gateway:
+    image: surgingcloud/surging.hero.gateway:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Gateway/Surging.Hero.WebApi/Dockerfile
+      args:
+        sln_name: sln/Surging.Hero.sln
+        host_workdir: src/Gateway/Surging.Hero.WebApi
+        host_name: Surging.Hero.WebApi.dll
+    volumes:
+      - ${LOG_DIR:-/var/logs}/gateway:/app/logs
+    networks:
+      - surging_hero_service_net
 networks:
   surging_hero_service_net: 
     external:
