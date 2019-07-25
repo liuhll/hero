@@ -38,9 +38,10 @@ drop table if exists UsergroupRole;
 create table Action
 (
    Id                   bigint not null auto_increment comment '主键',
+   ServiceHost          varchar(50) not null comment '服务主机',
+   Application          varchar(50) not null comment '所属应用服务',
    Name                 varchar(50) not null comment '名称',
    WebApi               varchar(50) not null comment 'webapi',
-   Method               int not null comment '请求方法',
    DisableNetwork       bit comment '是否禁用外网',
    EnableAuthorization  bit comment '是否需要认证',
    AllowPermission      bit comment '是否需要鉴权',
