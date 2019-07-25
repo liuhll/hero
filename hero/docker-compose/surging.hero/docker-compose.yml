@@ -38,6 +38,8 @@ services:
         host_workdir: src/Services/Organization/Surging.Hero.OrganizationHost
         host_name: Surging.Hero.OrganizationHost.dll
         sln_name: sln/Surging.Hero.sln
+    depends_on:
+      - surging.hero.auth
     volumes:
       - ${LOG_DIR:-/var/logs}/organization:/app/logs
     networks:
@@ -51,6 +53,8 @@ services:
         sln_name: sln/Surging.Hero.sln
         host_workdir: src/Gateway/Surging.Hero.WebApi
         host_name: Surging.Hero.WebApi.dll
+    depends_on:
+      - surging.hero.auth
     volumes:
       - ${LOG_DIR:-/var/logs}/gateway:/app/logs
     networks:
