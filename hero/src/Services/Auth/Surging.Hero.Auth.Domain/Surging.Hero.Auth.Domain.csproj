@@ -12,8 +12,4 @@
     <ProjectReference Include="..\Surging.Hero.Auth.IApplication\Surging.Hero.Auth.IApplication.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Menus\" />
-  </ItemGroup>
-
 </Project>

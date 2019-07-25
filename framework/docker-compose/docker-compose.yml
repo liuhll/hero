@@ -34,4 +34,4 @@ services:
 networks:
   surging_test_service_net: 
     external:
-      name: surging_test_service_net
+      name: ${SURGING_SERVICE_NET:-surging_test_service_net}

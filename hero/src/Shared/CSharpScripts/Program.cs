@@ -62,6 +62,10 @@ namespace Surging.Hero.ServiceHost
             using (host.Run())
             {
                 Console.WriteLine($"服务主机启动成功{DateTime.Now}。");
+
+#if DEBUG
+                Startup.UpdateHostActions();
+#endif
             }
         }
     }

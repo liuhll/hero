@@ -62,6 +62,10 @@ namespace Surging.Test.Server
             using (host.Run())
             {
                 Console.WriteLine($"服务提供者启动成功，{DateTime.Now}。");
+
+#if DEBUG
+                 Startup.UpdateHostActions();
+#endif
             }
         }
     }

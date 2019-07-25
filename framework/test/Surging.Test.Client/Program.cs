@@ -66,9 +66,9 @@ namespace Surging.Test.Client
             {
                 Console.WriteLine($"服务调用者启动成功，{DateTime.Now}。");
 
-                TestExceptionThrow();
-                TestRpcCallByProxyFactory();
-                TestRpcCallByProxyProvider();
+                //TestExceptionThrow();
+                //TestRpcCallByProxyFactory();
+                //TestRpcCallByProxyProvider();
                
             }
         }
