@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Surging.Core.CPlatform.Messages;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -96,6 +97,6 @@ namespace Surging.Core.ApiGateWay
         /// <summary>
         /// 状态码
         /// </summary>
-        public int StatusCode { get; set; }
+        public StatusCode StatusCode { get; set; }
     }
 }
