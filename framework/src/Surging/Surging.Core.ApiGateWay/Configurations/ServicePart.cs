@@ -10,6 +10,6 @@ namespace Surging.Core.ApiGateWay.Configurations
 
         public bool EnableAuthorization { get; set; }
 
-       public List<Services> Services { get; set; }
+        public ICollection<Services> Services { get; set; } = new List<Services>();
     }
 }

@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using Surging.Core.CPlatform;
+using Surging.Core.Domain.PagedAndSorted;
 
 namespace Surging.Core.ProxyGenerator.Implementation
 {
@@ -170,6 +171,7 @@ namespace Surging.Core.ProxyGenerator.Implementation
                     UsingDirective(IdentifierName("System")),
                     UsingDirective(GetQualifiedNameSyntax("System.Threading.Tasks")),
                     UsingDirective(GetQualifiedNameSyntax("System.Collections.Generic")),
+                    UsingDirective(GetQualifiedNameSyntax(typeof(IPagedResult<>).Namespace)),
                     UsingDirective(GetQualifiedNameSyntax(typeof(ITypeConvertibleService).Namespace)),
                     UsingDirective(GetQualifiedNameSyntax(typeof(IRemoteInvokeService).Namespace)),
                     UsingDirective(GetQualifiedNameSyntax(typeof(CPlatformContainer).Namespace)),
