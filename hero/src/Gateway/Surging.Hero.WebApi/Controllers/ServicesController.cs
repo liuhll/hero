@@ -87,10 +87,10 @@ namespace Hl.Gateway.WebApi.Controllers
                 {
                     try
                     {
-                        var tOKen = await _authorizationServerProvider.GenerateTokenCredential(rpcParams);
-                        if (tOKen != null)
+                        var token = await _authorizationServerProvider.GenerateTokenCredential(rpcParams);
+                        if (token != null)
                         {
-                            result = ServiceResult<object>.Create(true, tOKen);
+                            result = ServiceResult<object>.Create(true, token);
                             result.StatusCode = MessageStatusCode.OK;
                         }
                         else

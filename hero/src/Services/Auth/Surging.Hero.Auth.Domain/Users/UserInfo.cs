@@ -50,6 +50,8 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public Status Status { get; set; }
 
+        public long DeptId { get; set; }
+
     }
 }
 

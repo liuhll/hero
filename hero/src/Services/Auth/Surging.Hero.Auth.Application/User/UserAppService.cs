@@ -114,7 +114,7 @@ namespace Surging.Hero.Auth.Application.User
             userInfo.Status = input.Status;
             await _userRepository.UpdateAsync(userInfo);
             var tips = "账号激活成功";
-            if (input.Status == Status.InValid)
+            if (input.Status == Status.Invalid)
             {
                 tips = "账号冻结成功";
             }

@@ -6,7 +6,7 @@ namespace Surging.Hero.Common.Enums
 {
     public enum Status
     {
-        InValid = 0,
+        Invalid = 0,
         Valid = 1,
     }
 }

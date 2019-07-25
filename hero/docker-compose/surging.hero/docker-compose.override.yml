@@ -23,7 +23,7 @@ services:
       AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
       AuthorizationServiceKey: ${AUTHORIZATION_SERVICEKEY}
     ports:
-      - "18081:8080"
+      - "18087:8080"
 
   surging.hero.basicdata:
     environment:
