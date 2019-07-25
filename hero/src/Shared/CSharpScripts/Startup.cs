@@ -15,7 +15,7 @@ namespace Surging.Hero.ServiceHost
     {
         private readonly IConfigurationBuilder _configurationBuilder;
         private const string updateHostActionRoute = "v1/api/action/updateappactions";
-        private const int HostNameSegmentLength = 3;
+        private const int hostNameSegmentLength = 3;
 
         public Startup(IConfigurationBuilder config)
         {
@@ -55,12 +55,12 @@ namespace Surging.Hero.ServiceHost
 
         private static string GetApplication(string serviceFullName)
         {
-            return serviceFullName.Split(".")[3];
+            return serviceFullName.Split(".")[hostNameSegmentLength];
         }
 
         private static string GetServiceHost(string serviceFullName)
         {
-            return string.Join('.', serviceFullName.Split(".").Take(3));
+            return string.Join('.', serviceFullName.Split(".").Take(hostNameSegmentLength));
         }
     }
 }

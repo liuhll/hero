@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Surging.Hero.Auth.IApplication.Action.Dtos
 {
-    public abstract class ActionDto
+    public abstract class ActionDtoBase
     {
         public string ServiceHost { get; set; }
         public string Application { get; set; }
