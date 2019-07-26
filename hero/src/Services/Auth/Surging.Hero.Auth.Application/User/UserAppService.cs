@@ -96,12 +96,11 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<IPagedResult<GetUserOutput>> Query(QueryUserInput query)
         {
-            // :todo 待优化
-            var userList = await _userRepository.GetAllAsync(p => p.UserName.Contains(query.UserName)
-               && p.ChineseName.Contains(query.ChineseName)
-               && p.Email.Contains(query.Email)
-               && p.Phone.Contains(query.Phone));         
-            return userList.MapTo<IEnumerable<GetUserOutput>>().PageBy(query);
+            var queryResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
+               || p.ChineseName.Contains(query.SearchKey)
+               || p.Email.Contains(query.SearchKey)
+               || p.Phone.Contains(query.SearchKey),query.PageIndex,query.PageCount);         
+            return queryResult.Item1.MapTo<IEnumerable<GetUserOutput>>().GetPagedResult(queryResult.Item2);
         }
 
         public async Task<string> UpdateStatus(UpdateUserStatusInput input)
