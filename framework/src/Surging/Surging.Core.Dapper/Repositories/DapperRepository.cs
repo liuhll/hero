@@ -646,7 +646,7 @@ namespace Surging.Core.Dapper.Repositories
             }
         }
 
-        public Task<IEnumerable<TEntity>> GetPageAsync(Expression<Func<TEntity, bool>> predicate, int index, int count, IDictionary<string, SortType> sortProps)
+        public Task<Tuple<IEnumerable<TEntity>, int>> GetPageAsync(Expression<Func<TEntity, bool>> predicate, int index, int count, IDictionary<string, SortType> sortProps)
         {
             try
             {
@@ -666,10 +666,20 @@ namespace Surging.Core.Dapper.Repositories
                             sorts.Add(sort);
                         };
                     }
+                    else
+                    {
+                        sorts.Add(new Sort()
+                        {
+                            PropertyName = "Id",
+                            Ascending = true
+                        });
+                    }
+                   
                     predicate = _softDeleteQueryFilter.ExecuteFilter<TEntity, TPrimaryKey>(predicate);
                     var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                    var list = conn.GetPage<TEntity>(predicate, sorts, index, count);
-                    return Task.FromResult(list);
+                    var pageList = conn.GetPage<TEntity>(pg, sorts, index - 1, count);
+                    var totalCount = conn.Count<TEntity>(pg);
+                    return Task.FromResult(new Tuple<IEnumerable<TEntity>, int>(pageList, totalCount));
                 }
             }
             catch (Exception ex)
@@ -684,12 +694,12 @@ namespace Surging.Core.Dapper.Repositories
 
         }
 
-        public Task<IEnumerable<TEntity>> GetPageAsync(Expression<Func<TEntity, bool>> predicate, int index, int count)
+        public Task<Tuple<IEnumerable<TEntity>, int>> GetPageAsync(Expression<Func<TEntity, bool>> predicate, int index, int count)
         {
             return GetPageAsync(predicate, index, count, null);
         }
 
-        public Task<IEnumerable<TEntity>> GetPageAsync(int index, int count, IDictionary<string, SortType> sortProps)
+        public Task<Tuple<IEnumerable<TEntity>, int>> GetPageAsync(int index, int count, IDictionary<string, SortType> sortProps)
         {
             try
             {
@@ -709,10 +719,18 @@ namespace Surging.Core.Dapper.Repositories
                             sorts.Add(sort);
                         };
                     }
+                    else {
+                        var sort = new Sort()
+                        {
+                            PropertyName = "Id",
+                            Ascending = true
+                        };
+                    }
                     var predicate = _softDeleteQueryFilter.ExecuteFilter<TEntity, TPrimaryKey>();
                     var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                    var list = conn.GetPage<TEntity>(predicate, sorts, index, count);
-                    return Task.FromResult(list);
+                    var pageList = conn.GetPage<TEntity>(pg, sorts, index - 1, count);
+                    var totalCount = conn.Count<TEntity>(pg);
+                    return Task.FromResult(new Tuple<IEnumerable<TEntity>,int>(pageList,totalCount));
                 }
             }
             catch (Exception ex)
@@ -727,7 +745,7 @@ namespace Surging.Core.Dapper.Repositories
 
         }
 
-        public Task<IEnumerable<TEntity>> GetPageAsync(int index, int count)
+        public Task<Tuple<IEnumerable<TEntity>, int>> GetPageAsync(int index, int count)
         {
             return GetPageAsync(index, count, null);
         }

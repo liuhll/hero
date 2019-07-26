@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Surging\Surging.Core.Consul\Surging.Core.Consul.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.CPlatform\Surging.Core.CPlatform.csproj" />
+    <ProjectReference Include="..\..\src\Surging\Surging.Core.Dapper\Surging.Core.Dapper.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.DotNetty\Surging.Core.DotNetty.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.EventBusRabbitMQ\Surging.Core.EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\Surging\Surging.Core.Log4net\Surging.Core.Log4net.csproj" />
