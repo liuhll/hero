@@ -5,6 +5,7 @@ using Surging.Core.CPlatform.Filters;
 using Surging.Core.CPlatform.Messages;
 using Surging.Core.CPlatform.Routing;
 using Surging.Core.CPlatform.Runtime.Client;
+using Surging.Core.CPlatform.Serialization;
 using Surging.Core.CPlatform.Transport;
 using Surging.Core.CPlatform.Transport.Implementation;
 using Surging.Core.CPlatform.Utilities;
@@ -24,6 +25,7 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation
         private readonly ILogger<DefaultServiceExecutor> _logger;
         private readonly IServiceRouteProvider _serviceRouteProvider;
         private readonly IAuthorizationFilter _authorizationFilter;
+        private readonly ISerializer<string> _serializer;
 
         #endregion Field
 
@@ -31,12 +33,14 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation
 
         public DefaultServiceExecutor(IServiceEntryLocate serviceEntryLocate, IServiceRouteProvider serviceRouteProvider,
             IAuthorizationFilter authorizationFilter,
-            ILogger<DefaultServiceExecutor> logger)
+            ILogger<DefaultServiceExecutor> logger, 
+            ISerializer<string> serializer)
         {
             _serviceEntryLocate = serviceEntryLocate;
             _logger = logger;
             _serviceRouteProvider = serviceRouteProvider;
             _authorizationFilter = authorizationFilter;
+            _serializer = serializer;
         }
 
         #endregion Constructor
@@ -135,7 +139,7 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation
 
                 if (remoteInvokeMessage.DecodeJOject && !(resultMessage.Result is IConvertible && UtilityType.ConvertibleType.GetTypeInfo().IsAssignableFrom(resultMessage.Result.GetType())))
                 {
-                    resultMessage.Result = JsonConvert.SerializeObject(resultMessage.Result);
+                    resultMessage.Result = _serializer.Serialize(resultMessage.Result, true); //JsonConvert.SerializeObject(resultMessage.Result);
                 }
             }
             catch (Exception exception)
