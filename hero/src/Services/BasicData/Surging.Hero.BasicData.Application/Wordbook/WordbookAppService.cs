@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Surging.Core.AutoMapper;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.BasicData.Domain.Wordbooks;
@@ -27,6 +31,12 @@ namespace Surging.Hero.BasicData.Application.Wordbook
         {
             await _wordbookDomainService.DeleteWordbook(input.Id);
             return "删除字典类型成功";
+        }
+
+        public async Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query)
+        {
+            var queryResult = await _wordbookDomainService.QueryWordbooks(query);
+            return queryResult.Item1.MapTo<IEnumerable<GetWordbookOutput>>().GetPagedResult(queryResult.Item2);
         }
 
         public async Task<string> Update(UpdateWordbookInput input)

@@ -13,6 +13,7 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             });
 
             CreateMap<UpdateWordbookInput, Domain.Wordbooks.Wordbook>();
+            CreateMap<Domain.Wordbooks.Wordbook,GetWordbookOutput>();
         }
     }
 }

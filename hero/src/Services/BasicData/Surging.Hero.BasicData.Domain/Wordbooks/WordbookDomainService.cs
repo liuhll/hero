@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Repositories;
@@ -37,6 +39,12 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
                 throw new BusinessException($"不允许删除系统预设的字典类型");
             }
             await _wordbookRepository.DeleteAsync(wordbook);
+        }
+
+        public async Task<Tuple<IEnumerable<Wordbook>, int>> QueryWordbooks(QueryWordbookInput query)
+        {
+            var queryResult = await _wordbookRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) || p.Code.Contains(query.SearchKey) || p.Memo.Contains(query.SearchKey),query.PageIndex,query.PageCount);
+            return queryResult;
         }
 
         public async Task UpdateWordbook(UpdateWordbookInput input)
