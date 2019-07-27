@@ -336,14 +336,13 @@ namespace Surging.Core.SwaggerGen
 
         private IParameter CreateNonBodyParameter(ServiceEntry serviceEntry, ParameterInfo parameterInfo, ISchemaRegistry schemaRegistry)
         {
-            string reg = @"(?<={)[^{}]*(?=})";
             var nonBodyParam = new NonBodyParameter
             {
                 Name = parameterInfo.Name, 
                 In= "query",
                 Required = true,
             };
-            if (Regex.IsMatch(serviceEntry.RoutePath,reg))
+            if (GetParameters(serviceEntry.RoutePath).Contains(parameterInfo.Name))
             {
                 nonBodyParam.In = "path";
             }
@@ -384,6 +383,18 @@ namespace Surging.Core.SwaggerGen
                 nonBodyParam.PopulateFrom(schema);
             }
             return nonBodyParam;
+        }
+
+        private static List<string> GetParameters(string text)
+        {
+            var matchVale = new List<string>();
+            string Reg = @"(?<={)[^{}]*(?=})";
+            string key = string.Empty;
+            foreach (Match m in Regex.Matches(text, Reg))
+            {
+                matchVale.Add(m.Value);
+            }
+            return matchVale;
         }
 
         private IParameter CreateParameter(
