@@ -33,6 +33,11 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             return "删除字典类型成功";
         }
 
+        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
+        {
+            return await _wordbookDomainService.GetWordbookItems(wordbookId);
+        }
+
         public async Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query)
         {
             var queryResult = await _wordbookDomainService.QueryWordbooks(query);

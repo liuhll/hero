@@ -3,11 +3,12 @@ using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attr
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
 using Surging.Hero.Common.Dtos;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook
 {
-    [ServiceBundle("v1/api/wordbook")]
+    [ServiceBundle("v1/api/wordbook/{method}")]
     public interface IWordbookAppService : IServiceKey
     {
         Task<string> Create(CreateWordbookInput input);
@@ -17,5 +18,8 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         Task<string> Delete(DeleteByIdInput input);
 
         Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query);
+
+        [ServiceRoute("{wordbookId}")]
+        Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
@@ -12,8 +13,11 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
     public class WordbookDomainService : IWordbookDomainService
     {
         private readonly IDapperRepository<Wordbook, long> _wordbookRepository;
-        public WordbookDomainService(IDapperRepository<Wordbook, long> wordbookRepository) {
+        private readonly IDapperRepository<WordbookItem, long> _wordbookItemRepository;
+        public WordbookDomainService(IDapperRepository<Wordbook, long> wordbookRepository,
+            IDapperRepository<WordbookItem, long> wordbookItemRepository) {
             _wordbookRepository = wordbookRepository;
+            _wordbookItemRepository = wordbookItemRepository;
         }
 
         public async Task CreateWordbook(CreateWordbookInput input)
@@ -39,6 +43,18 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
                 throw new BusinessException($"不允许删除系统预设的字典类型");
             }
             await _wordbookRepository.DeleteAsync(wordbook);
+        }
+
+        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
+        {
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == wordbookId);
+            if (wordbook == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{wordbookId}的字典类型");
+            }
+            var wordbookItems = await _wordbookItemRepository.GetAllAsync(p => p.WordbookId == wordbookId);
+            var wordbookItemOutputs = wordbookItems.MapTo<IEnumerable<GetWordbookItemOutput>>().Select(p => { p.WordbookCode = wordbook.Code; return p; }).OrderBy(p=>p.Sort);
+            return wordbookItemOutputs;
         }
 
         public async Task<Tuple<IEnumerable<Wordbook>, int>> QueryWordbooks(QueryWordbookInput query)
