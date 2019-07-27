@@ -6,7 +6,7 @@ namespace Surging.Hero.BasicData.Domain.Shared.Wordbooks
 {
     public enum WordbookType
     {
-        System,
+        System = 1,
 
         Business
     }

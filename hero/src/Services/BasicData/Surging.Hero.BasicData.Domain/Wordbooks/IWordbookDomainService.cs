@@ -7,5 +7,6 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
     public interface IWordbookDomainService : ITransientDependency
     {
         Task CreateWordbook(CreateWordbookInput input);
+        Task UpdateWordbook(UpdateWordbookInput input);
     }
 }

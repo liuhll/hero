@@ -10,6 +10,6 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
     {
         Task<string> Create(CreateWordbookInput input);
 
-        
+        Task<string> Update(UpdateWordbookInput input);
     }
 }

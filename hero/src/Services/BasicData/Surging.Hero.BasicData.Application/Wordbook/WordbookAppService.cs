@@ -23,6 +23,11 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             return "新增字典类型成功";
         }
 
-      
+        public async Task<string> Update(UpdateWordbookInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _wordbookDomainService.UpdateWordbook(input);
+            return "修改字典类型成功";
+        }
     }
 }

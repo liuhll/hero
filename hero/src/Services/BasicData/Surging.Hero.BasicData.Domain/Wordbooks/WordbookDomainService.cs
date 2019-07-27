@@ -17,10 +17,21 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
         {
             var wordbook = await _wordbookRepository.FirstOrDefaultAsync(p => p.Code == input.Code);
             if (wordbook != null) {
-                throw new BusinessException($"系统中已经存在{input.Code}的字典类型");
+                throw new BusinessException($"系统中已经存在code为{input.Code}的字典类型");
             }
             wordbook = input.MapTo<Wordbook>();
             await _wordbookRepository.InsertAsync(wordbook);
+        }
+
+        public async Task UpdateWordbook(UpdateWordbookInput input)
+        {
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (wordbook == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{input.Id}的字典类型");            
+            }
+            wordbook = input.MapTo(wordbook);
+            await _wordbookRepository.UpdateAsync(wordbook);
         }
     }
 }
