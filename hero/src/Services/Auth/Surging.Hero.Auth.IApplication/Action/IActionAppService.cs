@@ -11,6 +11,6 @@ namespace Surging.Hero.Auth.IApplication.Action
     public interface IActionAppService : IServiceKey
     {
         [Service(DisableNetwork = true)]
-        Task<string> UpdateAppActions(ICollection<CreateActionInput> actions);
+        Task<string> InitActions(ICollection<InitActionActionInput> actions);
     }
 }

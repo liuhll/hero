@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  surging.hero.auth:
+    image: surgingcloud/surging.hero.auth:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Services/Auth/Surging.Hero.AuthHost/Dockerfile
+      args:
+        host_workdir: src/Services/Auth/Surging.Hero.AuthHost
+        host_name: Surging.Hero.AuthHost.dll
+        sln_name: sln/Surging.Hero.sln
+    volumes:
+      - ${LOG_DIR:-/var/logs}/auth:/app/logs
+    networks:
+      - surging_hero_service_net
+networks:
+  surging_hero_service_net: 
+    external:
+      name: surging_hero_service_net

@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  surging.hero.auth:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${NORMAL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      Environment: ${ENVIRONMENT:-Development}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      DbType: ${AUTH_DB_TYPE:-Mysql}
+      ConnectionString: ${AUTH_DB_CONN}
+      InitAction: "${INIT_ACTION:-false}"

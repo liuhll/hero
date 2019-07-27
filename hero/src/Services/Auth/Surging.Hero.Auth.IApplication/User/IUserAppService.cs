@@ -3,6 +3,7 @@ using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attr
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common.Dtos;
+using Surging.Hero.Common.Maintenance;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.User
@@ -10,6 +11,7 @@ namespace Surging.Hero.Auth.IApplication.User
     [ServiceBundle("v1/api/user")]
     public interface IUserAppService : IServiceKey
     {
+        [Service(Director = Maintainer.Liuhll)]
         Task<string> Create(CreateUserInput input);
 
         Task<string> Update(UpdateUserInput input);

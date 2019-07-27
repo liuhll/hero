@@ -23,12 +23,14 @@
       "MQTTPort": "${MQTTPort}|97"
     },
     "RequestCacheEnabled": false,
+    "Environment": "${Environment}|Development",
     "Packages": [
       {
         "TypeName": "EnginePartModule",
         "Using": "${UseEngineParts}|DotNettyModule;NLogModule;MessagePackModule;ConsulModule;WSProtocolModule;MqttProtocolModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;DnsProtocolModule;SwaggerModule;"
       }
-    ]
+    ],
+    "InitAction": "${InitAction}|false"
   }, //如果引用多个同类型的组件，需要配置Packages，如果是自定义按需引用，无需配置Packages
   "DbSetting": {
     "DbType": "${DbType}|MySql", //MySql SqlServer, Oracle, Postgres

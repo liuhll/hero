@@ -8,6 +8,7 @@ namespace Surging.Hero.Auth.IApplication.Action.Dtos
 {
     public abstract class ActionDtoBase
     {
+        public string ServiceId { get; set; }
         public string ServiceHost { get; set; }
         public string Application { get; set; }
         public string Name { get; set; }
@@ -19,7 +20,9 @@ namespace Surging.Hero.Auth.IApplication.Action.Dtos
         public bool EnableAuthorization { get; set; }
 
         public bool AllowPermission { get; set; }
+        public string Developer { get; set; }
 
-        public Status Status { get; set; }
+        public DateTime? Date { get; set; }
+        
     }
 }

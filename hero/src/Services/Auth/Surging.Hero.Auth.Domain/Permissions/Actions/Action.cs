@@ -1,11 +1,13 @@
 ﻿
 using Surging.Core.Domain.Entities.Auditing;
 using Surging.Hero.Common.Enums;
+using System;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Actions
 {
-    public class Action : FullAuditedEntity<long>
+    public class Action : AuditedEntity<long>
     {
+        public string ServiceId { get; set; }
         public string ServiceHost { get; set; }
         public string Application { get; set; }
         public string Name { get; set; }
@@ -17,6 +19,10 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         public bool EnableAuthorization { get; set; }
 
         public bool AllowPermission { get; set; }
+
+        public string Developer { get; set; }
+
+        public DateTime? Date { get; set; }
 
         public Status Status { get; set; }
     }

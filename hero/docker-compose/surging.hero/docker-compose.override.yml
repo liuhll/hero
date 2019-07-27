@@ -15,9 +15,10 @@ services:
       DbType: ${AUTH_DB_TYPE:-Mysql}
       ConnectionString: ${AUTH_DB_CONN}
       SwaggerTitle: "surging.hero.auth"
-      SwaggerDes: "身份认证与授权组件API文档"
+      SwaggerDes: "身份认证与授权服务组件API文档"
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
+      InitAction: "${INIT_ACTION:-false}"
       EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
       SecretKey: ${SECRETKEY}
       AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
@@ -38,9 +39,10 @@ services:
       DbType: ${BASICDATA_DB_TYPE:-Mysql}
       ConnectionString: ${BASICDATA_DB_CONN}
       SwaggerTitle: "surging.hero.basicdata"
-      SwaggerDes: "技术数据服务与配置服务组件API文档"
+      SwaggerDes: "系统基础数据服务组件API文档"
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
+      InitAction: "${INIT_ACTION:-false}"
       EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
       SecretKey: ${SECRETKEY}
       AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}
@@ -61,9 +63,10 @@ services:
       DbType: ${ORGANIZATION_DB_TYPE:-Mysql}
       ConnectionString: ${ORGANIZATION_DB_CONN}
       SwaggerTitle: "surging.hero.organization"
-      SwaggerDes: "组织机构服务组件API文档"
+      SwaggerDes: "组件机构服务组件API文档"
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
+      InitAction: "${INIT_ACTION:-false}"
       EnableAuthorization: ${ENABLE_AUTHORIZATION:-false}
       SecretKey: ${SECRETKEY}
       AuthorizationRoutePath: ${AUTHORIZATION_ROUTE}

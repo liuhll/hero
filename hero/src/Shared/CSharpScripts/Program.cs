@@ -9,6 +9,7 @@ using Surging.Core.EventBusRabbitMQ.Configurations;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.ServiceHosting;
 using Surging.Core.ServiceHosting.Internal.Implementation;
+using SurgingConfig = Surging.Core.CPlatform.AppConfig;
 using System;
 
 namespace Surging.Hero.ServiceHost
@@ -64,7 +65,10 @@ namespace Surging.Hero.ServiceHost
                 Console.WriteLine($"服务主机启动成功{DateTime.Now}。");
 
 #if DEBUG
-                Startup.UpdateHostActions();
+                if (SurgingConfig.ServerOptions.InitAction)
+                {
+                    Startup.InitActions();
+                }               
 #endif
             }
         }
