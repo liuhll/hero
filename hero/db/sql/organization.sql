@@ -14,8 +14,6 @@ drop table if exists Department;
 
 drop table if exists DeptPosition;
 
-drop table if exists DeptUser;
-
 drop table if exists Position;
 
 /*==============================================================*/
@@ -94,26 +92,6 @@ create table DeptPosition
 );
 
 alter table DeptPosition comment '部门岗位关系表';
-
-/*==============================================================*/
-/* Table: DeptUser                                              */
-/*==============================================================*/
-create table DeptUser
-(
-   Id                   bigint not null auto_increment comment '主键',
-   DeptId               bigint not null comment '部门Id',
-   UserId               bigint not null comment '用户Id',
-   PositionId           bigint not null comment '职位Id',
-   DirectLeaderId       bigint comment '直属领导Id',
-   CreateBy             bigint comment '创建人',
-   CreateTime           datetime comment '创建日期',
-   UpdateBy             bigint comment '修改人',
-   UpdateTime           datetime comment '修改日期',
-   primary key (Id),
-   key AK_Key_1 (Id)
-);
-
-alter table DeptUser comment '部门用户关系表';
 
 /*==============================================================*/
 /* Table: Position                                              */

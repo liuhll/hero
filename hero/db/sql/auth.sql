@@ -8,12 +8,6 @@ drop database if exists hero_auth;
 create database hero_auth;
 use hero_auth;
 
-/*==============================================================*/
-/* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2019/7/27 12:53:51                           */
-/*==============================================================*/
-
-
 drop table if exists Action;
 
 drop table if exists File;
@@ -233,6 +227,7 @@ create table UserInfo
    Id                   bigint not null auto_increment comment '主键',
    UserName             varchar(50) not null comment '用户名',
    DeptId               bigint not null comment '所属部门Id',
+   PositionId           bigint comment '职位Id',
    Password             varchar(100) not null comment '密码',
    ChineseName          varchar(50) not null comment '中文名',
    Email                varchar(50) not null comment '电子邮件',

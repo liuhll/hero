@@ -8,6 +8,7 @@ drop database if exists hero_basicdata;
 create database hero_basicdata;
 use hero_basicdata;
 
+
 drop table if exists SystemConfig;
 
 drop table if exists Wordbook;
@@ -20,11 +21,12 @@ drop table if exists WordbookItem;
 create table SystemConfig
 (
    Id                   bigint not null auto_increment comment '主键',
-   ConfigName           varchar(50) not null comment '配置名称',
-   ConfigCode           varchar(50) not null comment '配置值',
-   ConfigValue          varchar(50) not null comment '配置值',
-   Seq                  int not null comment '序号',
-   IsSysPreSet          int not null comment '0. 否 1.是',
+   SysName              varchar(50) not null comment '系统名称',
+   DomainName           varchar(50) comment '域名',
+   Administrator        varchar(50) comment '管理员',
+   Logo                 varchar(50) comment 'login',
+   LogoPosition         varchar(100) comment 'login存放位置',
+   LogoSite             varchar(50) comment 'logosite',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
@@ -80,3 +82,4 @@ create table WordbookItem
 );
 
 alter table WordbookItem comment '字典项表';
+
