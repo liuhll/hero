@@ -49,7 +49,7 @@ create table Action
    ServiceId            varchar(100) not null comment '服务id',
    ServiceHost          varchar(50) not null comment '服务主机',
    Application          varchar(50) not null comment '所属应用服务',
-   Name                 varchar(50) not null comment '名称',
+   Name                 varchar(50) comment '名称',
    WebApi               varchar(50) not null comment 'webapi',
    DisableNetwork       bit comment '是否禁用外网',
    EnableAuthorization  bit comment '是否需要认证',
@@ -61,7 +61,8 @@ create table Action
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
    UpdateTime           datetime comment '修改日期',
-   primary key (Id)
+   primary key (Id),
+   unique key AK_Key_2 (ServiceId)
 );
 
 alter table Action comment '功能表';
