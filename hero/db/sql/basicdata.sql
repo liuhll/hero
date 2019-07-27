@@ -72,6 +72,7 @@ create table WordbookItem
    `Key`                  varchar(50) not null comment 'Key值',
    `Value`                varchar(50) not null comment 'Value值',
    Memo                 varchar(100) comment '备注',
+   Sort                 int comment '排序',
    IsDeleted            int not null default 0 comment '软删除标识',
    DeleteBy             bigint comment '删除用户',
    DeleteTime           datetime comment '删除时间',
