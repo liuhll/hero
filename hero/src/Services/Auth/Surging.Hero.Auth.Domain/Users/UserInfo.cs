@@ -1,6 +1,6 @@
 ﻿using Surging.Core.Domain.Entities.Auditing;
 using Surging.Hero.Auth.Domain.Shared.Users;
-using Surging.Hero.Common.Enums;
+using Surging.Hero.Common;
 using System;
 
 namespace Surging.Hero.Auth.Domain.Users

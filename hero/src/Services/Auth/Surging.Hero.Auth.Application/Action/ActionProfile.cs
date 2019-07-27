@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Surging.Hero.Auth.IApplication.Action.Dtos;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Application.Action
 {
@@ -9,7 +10,7 @@ namespace Surging.Hero.Auth.Application.Action
         {
             CreateMap<InitActionActionInput, Domain.Permissions.Actions.Action>()
                 .AfterMap((src,dest)=> {
-                    dest.Status = Common.Enums.Status.Valid;
+                    dest.Status = Status.Valid;
                 });
         }
     }

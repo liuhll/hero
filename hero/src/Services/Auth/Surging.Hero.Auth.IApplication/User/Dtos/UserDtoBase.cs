@@ -1,5 +1,5 @@
 ﻿using Surging.Hero.Auth.Domain.Shared.Users;
-using Surging.Hero.Common.Enums;
+using Surging.Hero.Common;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,7 +14,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         [EmailAddress(ErrorMessage = "电子邮箱格式不正确")]
         public string Email { get; set; }
 
-        [RegularExpression("^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$", ErrorMessage = "手机号码格式不正确")]
+        [RegularExpression(RegExpConstants.Phone, ErrorMessage = "手机号码格式不正确")]
         public string Phone { get; set; }
 
         [Required(ErrorMessage = "性别不允许为空")]

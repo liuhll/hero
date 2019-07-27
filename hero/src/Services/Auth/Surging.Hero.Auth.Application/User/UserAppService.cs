@@ -12,8 +12,8 @@ using Surging.Hero.Common.Dtos;
 using Surging.Core.Domain.PagedAndSorted;
 using System.Collections.Generic;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
-using Surging.Hero.Common.Enums;
 using Surging.Hero.Auth.Domain.Users;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Application.User
 {

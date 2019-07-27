@@ -1,5 +1,5 @@
 ﻿using Surging.Core.CPlatform;
-using Surging.Hero.Common.Enums;
+using Surging.Hero.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;

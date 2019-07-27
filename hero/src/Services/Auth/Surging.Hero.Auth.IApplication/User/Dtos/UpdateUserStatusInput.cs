@@ -1,7 +1,4 @@
-﻿using Surging.Hero.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.User.Dtos
 {

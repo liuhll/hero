@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.Dapper.Repositories;
-using Surging.Hero.Common.Enums;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Users
 {
