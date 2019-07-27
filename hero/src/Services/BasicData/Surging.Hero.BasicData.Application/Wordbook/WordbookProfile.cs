@@ -8,7 +8,9 @@ namespace Surging.Hero.BasicData.Application.Wordbook
     {
         public WordbookProfile()
         {
-            CreateMap<CreateWordbookInput, Domain.Wordbooks.Wordbook>();
+            CreateMap<CreateWordbookInput, Domain.Wordbooks.Wordbook>().AfterMap((src,dest)=> {
+                dest.IsSysPreset = false;
+            });
 
             CreateMap<UpdateWordbookInput, Domain.Wordbooks.Wordbook>();
         }

@@ -12,5 +12,7 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
         public WordbookType Type { get; set; }
 
         public string Memo { get; set; }
+
+        public bool IsSysPreset { get; set; } = false;
     }
 }

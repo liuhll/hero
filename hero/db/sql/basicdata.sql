@@ -49,6 +49,7 @@ create table Wordbook
    Name                 varchar(50) not null comment '字典名称',
    Type                 int not null comment '1. 系统类型字典 2. 业务类型字典',
    Memo                 varchar(100) comment '备注',
+   IsSysPreset          bit not null comment '是否系统预设',
    IsDeleted            int not null default 0 comment '软删除标识',
    DeleteBy             bigint comment '删除用户',
    DeleteTime           datetime comment '删除时间',
