@@ -51,5 +51,7 @@ namespace Surging.Core.CPlatform.Configurations
         public RuntimeEnvironment Environment { get; set; } = RuntimeEnvironment.Production;
 
         public bool ForceDisplayStackTrace { get; set; } = false;
+
+        public bool InitAction { get; set; } = false;
     }
 }
