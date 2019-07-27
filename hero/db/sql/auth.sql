@@ -8,6 +8,12 @@ drop database if exists hero_auth;
 create database hero_auth;
 use hero_auth;
 
+/*==============================================================*/
+/* DBMS name:      MySQL 5.0                                    */
+/* Created on:     2019/7/27 12:53:51                           */
+/*==============================================================*/
+
+
 drop table if exists Action;
 
 drop table if exists File;
@@ -15,6 +21,8 @@ drop table if exists File;
 drop table if exists Menu;
 
 drop table if exists Operation;
+
+drop table if exists OperationActionRelation;
 
 drop table if exists Permission;
 
@@ -38,6 +46,7 @@ drop table if exists UsergroupRole;
 create table Action
 (
    Id                   bigint not null auto_increment comment '主键',
+   ServiceId            varchar(100) not null comment '服务id',
    ServiceHost          varchar(50) not null comment '服务主机',
    Application          varchar(50) not null comment '所属应用服务',
    Name                 varchar(50) not null comment '名称',
@@ -45,14 +54,13 @@ create table Action
    DisableNetwork       bit comment '是否禁用外网',
    EnableAuthorization  bit comment '是否需要认证',
    AllowPermission      bit comment '是否需要鉴权',
+   Developer            varchar(50) comment '开发者',
+   Date                 date comment '开发日期',
    Status               int not null comment '状态',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
    UpdateTime           datetime comment '修改日期',
-   IsDeleted            int comment '软删除标识',
-   DeleteBy             bigint comment '删除用户',
-   DeleteTime           datetime comment '删除时间',
    primary key (Id)
 );
 
@@ -136,6 +144,24 @@ create table Operation
 );
 
 alter table Operation comment '操作表';
+
+/*==============================================================*/
+/* Table: OperationActionRelation                               */
+/*==============================================================*/
+create table OperationActionRelation
+(
+   Id                   bigint not null auto_increment comment '主键',
+   OperationId          bigint not null comment '操作Id',
+   ActionId             bigint not null comment 'ActionId',
+   ServiceId            varchar(100) not null comment '服务Id',
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
+   primary key (Id)
+);
+
+alter table OperationActionRelation comment '操作功能关系表';
 
 /*==============================================================*/
 /* Table: Permission                                            */
