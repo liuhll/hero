@@ -310,7 +310,7 @@ namespace Surging.Core.SwaggerGen
              return parameterInfo !=null && parameterInfo.Any(p =>
              ! UtilityType.ConvertibleType.GetTypeInfo().IsAssignableFrom(p.ParameterType) && p.ParameterType.Name != "HttpFormCollection") 
              ? new List<IParameter> { CreateServiceKeyParameter() }.Union(parameterInfo.Select(p=> CreateBodyParameter(p,schemaRegistry))).ToList():
-            new List<IParameter> { CreateServiceKeyParameter() }.Union(parameterInfo.Select(p => CreateNonBodyParameter(p, schemaRegistry))).ToList();
+            new List<IParameter> { CreateServiceKeyParameter() }.Union(parameterInfo.Select(p => CreateNonBodyParameter(serviceEntry, p, schemaRegistry))).ToList();
         }
 
         private IParameter CreateBodyParameter(ParameterInfo  parameterInfo, ISchemaRegistry schemaRegistry)
@@ -334,14 +334,19 @@ namespace Surging.Core.SwaggerGen
             return nonBodyParam;
         }
 
-        private IParameter CreateNonBodyParameter(ParameterInfo parameterInfo, ISchemaRegistry schemaRegistry)
+        private IParameter CreateNonBodyParameter(ServiceEntry serviceEntry, ParameterInfo parameterInfo, ISchemaRegistry schemaRegistry)
         {
+            string reg = @"(?<={)[^{}]*(?=})";
             var nonBodyParam = new NonBodyParameter
             {
                 Name = parameterInfo.Name, 
                 In= "query",
                 Required = true,
             };
+            if (Regex.IsMatch(serviceEntry.RoutePath,reg))
+            {
+                nonBodyParam.In = "path";
+            }
 
             if (parameterInfo.ParameterType == null)
             {
