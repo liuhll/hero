@@ -2,6 +2,7 @@
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
 
 namespace Surging.Hero.BasicData.Domain.Wordbooks
@@ -23,12 +24,31 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             await _wordbookRepository.InsertAsync(wordbook);
         }
 
+        public async Task DeleteWordbook(long id)
+        {
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (wordbook == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{id}的字典类型");
+            }
+       
+            if (wordbook.IsSysPreset)
+            {
+                throw new BusinessException($"不允许删除系统预设的字典类型");
+            }
+            await _wordbookRepository.DeleteAsync(wordbook);
+        }
+
         public async Task UpdateWordbook(UpdateWordbookInput input)
         {
             var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
             if (wordbook == null)
             {
                 throw new BusinessException($"系统中不存在Id为{input.Id}的字典类型");            
+            }
+            if (wordbook.IsSysPreset)
+            {
+                throw new BusinessException($"不允许修改系统预设的字典类型");
             }
             wordbook = input.MapTo(wordbook);
             await _wordbookRepository.UpdateAsync(wordbook);

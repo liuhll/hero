@@ -4,6 +4,7 @@ using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.BasicData.Domain.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
+using Surging.Hero.Common.Dtos;
 
 namespace Surging.Hero.BasicData.Application.Wordbook
 {
@@ -21,6 +22,11 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             input.CheckDataAnnotations().CheckValidResult();
             await _wordbookDomainService.CreateWordbook(input);
             return "新增字典类型成功";
+        }
+        public async Task<string> Delete(DeleteByIdInput input)
+        {
+            await _wordbookDomainService.DeleteWordbook(input.Id);
+            return "删除字典类型成功";
         }
 
         public async Task<string> Update(UpdateWordbookInput input)

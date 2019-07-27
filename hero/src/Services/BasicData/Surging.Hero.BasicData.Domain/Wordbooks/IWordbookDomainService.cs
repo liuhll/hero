@@ -8,5 +8,6 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
     {
         Task CreateWordbook(CreateWordbookInput input);
         Task UpdateWordbook(UpdateWordbookInput input);
+        Task DeleteWordbook(long id);
     }
 }
