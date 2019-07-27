@@ -23,5 +23,10 @@ namespace Surging.Test.Server.Demo
         {
             throw new UserFriendlyException("测试抛出异常");
         }
+
+        public async Task<string> TestServiceRoute(long workbooId)
+        {
+            return workbooId.ToString();
+        }
     }
 }
