@@ -2,13 +2,14 @@
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
+using Surging.Hero.Common;
 using Surging.Hero.Common.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook
 {
-    [ServiceBundle("v1/api/{appservice}/{method}")]
+    [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IWordbookAppService : IServiceKey
     {
         Task<string> Create(CreateWordbookInput input);

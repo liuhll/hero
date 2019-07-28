@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.User
 {
-    [ServiceBundle("v1/api/user")]
+    [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IUserAppService : IServiceKey
     {
         [Service(Director = Developers.Liuhll)]

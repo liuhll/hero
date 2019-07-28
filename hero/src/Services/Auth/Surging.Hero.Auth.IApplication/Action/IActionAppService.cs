@@ -2,12 +2,13 @@
 using Surging.Core.CPlatform.Runtime.Server;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Hero.Auth.IApplication.Action.Dtos;
+using Surging.Hero.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.Action
 {
-    [ServiceBundle("v1/api/action")]
+    [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IActionAppService : IServiceKey
     {
         [Service(DisableNetwork = true)]
