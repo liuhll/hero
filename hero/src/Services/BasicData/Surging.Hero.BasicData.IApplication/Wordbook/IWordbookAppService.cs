@@ -19,6 +19,9 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
 
         Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query);
 
+        [ServiceRoute("{id}")]
+        Task<GetWordbookOutput> Get(long id);
+
         [ServiceRoute("{wordbookId}")]
         Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId);
     }

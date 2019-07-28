@@ -45,6 +45,16 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             await _wordbookRepository.DeleteAsync(wordbook);
         }
 
+        public async Task<Wordbook> GetWordbook(long id)
+        {
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (wordbook == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{id}的字典类型");
+            }
+            return wordbook;
+        }
+
         public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
         {
             var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == wordbookId);
