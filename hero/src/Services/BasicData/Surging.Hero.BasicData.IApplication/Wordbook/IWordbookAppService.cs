@@ -31,5 +31,8 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         Task<string> UpdateWordbookItem(UpdateWordbookItemInput input);
 
         Task<string> DeleteWordbookItem(DeleteByIdInput input);
+
+        [ServiceRoute("{id}")]
+        Task<GetWordbookItemOutput> GetWordbookItem(long id);
     }
 }

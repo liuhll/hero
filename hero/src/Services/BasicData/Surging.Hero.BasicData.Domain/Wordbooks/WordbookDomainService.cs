@@ -68,7 +68,6 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             {
                 throw new BusinessException($"系统中不存在Id为{id}的字典项");
             }
-
           
             await _wordbookItemRepository.DeleteAsync(wordbookItem);
         }
@@ -81,6 +80,19 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
                 throw new BusinessException($"系统中不存在Id为{id}的字典类型");
             }
             return wordbook;
+        }
+
+        public async Task<GetWordbookItemOutput> GetWordbookItem(long id)
+        {
+            var wordbookItem = await _wordbookItemRepository.GetAsync(id);     
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == wordbookItem.WordbookId);
+            if (wordbook == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{wordbookItem.WordbookId}的字典类型");
+            }
+            var wordbookItemOutput = wordbookItem.MapTo<GetWordbookItemOutput>();
+            wordbookItemOutput.WordbookCode = wordbook.Code;
+            return wordbookItemOutput;
         }
 
         public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
