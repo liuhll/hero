@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Surging.Core.ApiGateWay;
@@ -54,6 +55,7 @@ namespace Hl.Gateway.WebApi.Controllers
                     {
                         rpcParams[n] = this.Request.Query[n].ToString();
                     }
+                    rpcParams = await ParserRpcParamsFromPath(path, rpcParams);
                     break;
                 case "POST":
                     if (model == null || !model.Any())
@@ -148,13 +150,13 @@ namespace Hl.Gateway.WebApi.Controllers
         private async Task<bool> GetAllowRequest(string path)
         {
 
-            var route = await _serviceRouteProvider.GetRouteByPath(path);
+            var route = await _serviceRouteProvider.GetRouteByPathRegex(path);
             return !route.ServiceDescriptor.DisableNetwork();
         }
         private bool OnAuthorization(string path, Dictionary<string, object> model, ref ServiceResult<object> result)
         {
             bool isSuccess = false;
-            var route = _serviceRouteProvider.GetRouteByPath(path).Result;
+            var route = _serviceRouteProvider.GetRouteByPathRegex(path).Result;
             if (route.ServiceDescriptor.EnableAuthorization())
             {
                 isSuccess = route.ServiceDescriptor.AuthType() == AuthorizationType.JWT.ToString()
@@ -276,6 +278,40 @@ namespace Hl.Gateway.WebApi.Controllers
                 Console.Error.WriteLine(e.StackTrace);
                 return null;
             }
+        }
+
+        private async Task<Dictionary<string, object>> ParserRpcParamsFromPath(string path, Dictionary<string, object> rpcParams)
+        {
+            var route = _serviceRouteProvider.GetRouteByPathRegex(path).Result;
+            var routeTemplet = route.ServiceDescriptor.RoutePath;
+            var parameters = routeTemplet.Split(@"/");
+            var pathSegments = path.Split(@"/");
+            var index = 0;
+            foreach (var parameter in parameters)
+            {
+                var param = GetParameters(parameter).FirstOrDefault();
+                if (param == null)
+                {
+                    index++;
+                    continue;
+                }
+                rpcParams[param] = pathSegments[index];
+                index++;
+            }
+            return rpcParams;
+        }
+
+        private static List<string> GetParameters(string text)
+        {
+           
+            var matchVale = new List<string>();
+            string reg = @"(?<={)[^{}]*(?=})";
+            string key = string.Empty;
+            foreach (Match m in Regex.Matches(text, reg))
+            {
+                matchVale.Add(m.Value);
+            }
+            return matchVale;
         }
 
         private ServiceResult<object> CreateServiceResult(object data)
