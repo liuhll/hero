@@ -61,6 +61,18 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             await _wordbookRepository.DeleteAsync(wordbook);
         }
 
+        public async Task DeleteWordbookItem(long id)
+        {
+            var wordbookItem = await _wordbookItemRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (wordbookItem == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{id}的字典项");
+            }
+
+          
+            await _wordbookItemRepository.DeleteAsync(wordbookItem);
+        }
+
         public async Task<Wordbook> GetWordbook(long id)
         {
             var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == id);
@@ -102,6 +114,22 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             }
             wordbook = input.MapTo(wordbook);
             await _wordbookRepository.UpdateAsync(wordbook);
+        }
+
+        public async Task UpdateWordbookItem(UpdateWordbookItemInput input)
+        {
+            var wordbookItem = await _wordbookItemRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (wordbookItem == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{input.Id}的字典项");
+            }
+            var wordbook = await _wordbookItemRepository.SingleOrDefaultAsync(p => p.Id == wordbookItem.WordbookId);
+            if (wordbookItem == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{wordbookItem.WordbookId}的字典类型");
+            }
+            wordbookItem = input.MapTo(wordbookItem);
+            await _wordbookItemRepository.UpdateAsync(wordbookItem);
         }
     }
 }

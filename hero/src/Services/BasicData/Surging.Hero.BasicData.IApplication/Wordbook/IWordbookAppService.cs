@@ -27,5 +27,9 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId);
 
         Task<string> CreateWordbookItem(CreateWordbookItemInput input);
+
+        Task<string> UpdateWordbookItem(UpdateWordbookItemInput input);
+
+        Task<string> DeleteWordbookItem(DeleteByIdInput input);
     }
 }

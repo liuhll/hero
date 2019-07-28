@@ -15,5 +15,6 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
         Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long id);
         Task<Wordbook> GetWordbook(long wordbookId);
         Task CreateWordbookItem(CreateWordbookItemInput input);
+        Task UpdateWordbookItem(UpdateWordbookItemInput input);
     }
 }

@@ -18,6 +18,8 @@ namespace Surging.Hero.BasicData.Application.Wordbook
                 .ForMember(p=>p.WordbookCode,opt=>opt.Ignore());
 
             CreateMap<CreateWordbookItemInput, Domain.Wordbooks.WordbookItem>();
+            CreateMap<UpdateWordbookItemInput, Domain.Wordbooks.WordbookItem>();
+
         }
     }
 }

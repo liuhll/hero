@@ -41,6 +41,12 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             return "删除字典类型成功";
         }
 
+        public async Task<string> DeleteWordbookItem(DeleteByIdInput input)
+        {
+            await _wordbookDomainService.DeleteWordbookItem(input.Id);
+            return "删除字典项目成功";
+        }
+
         public async Task<GetWordbookOutput> Get(long id)
         {
             return (await _wordbookDomainService.GetWordbook(id)).MapTo<GetWordbookOutput>();
@@ -62,6 +68,13 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             input.CheckDataAnnotations().CheckValidResult();
             await _wordbookDomainService.UpdateWordbook(input);
             return "修改字典类型成功";
+        }
+
+        public async Task<string> UpdateWordbookItem(UpdateWordbookItemInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _wordbookDomainService.UpdateWordbookItem(input);
+            return "修改字典项成功";
         }
     }
 }
