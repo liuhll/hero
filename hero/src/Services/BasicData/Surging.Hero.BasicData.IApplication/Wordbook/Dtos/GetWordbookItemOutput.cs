@@ -4,8 +4,9 @@
     {
         public long Id { get; set; }
 
-        public string WordbookCode { get; set; }
+        public string Key { get; set; }
 
-        public int Sort { get; set; }
+        public string WordbookCode { get; set; }
+      
     }
 }

@@ -27,6 +27,14 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             await _wordbookDomainService.CreateWordbook(input);
             return "新增字典类型成功";
         }
+
+        public async Task<string> CreateWordbookItem(CreateWordbookItemInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _wordbookDomainService.CreateWordbookItem(input);
+            return "新增字典项成功";
+        }
+
         public async Task<string> Delete(DeleteByIdInput input)
         {
             await _wordbookDomainService.DeleteWordbook(input.Id);
