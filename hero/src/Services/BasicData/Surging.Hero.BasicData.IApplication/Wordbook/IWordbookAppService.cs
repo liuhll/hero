@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook
 {
-    [ServiceBundle("v1/api/wordbook/{method}")]
+    [ServiceBundle("v1/api/{appservice}/{method}")]
     public interface IWordbookAppService : IServiceKey
     {
         Task<string> Create(CreateWordbookInput input);
