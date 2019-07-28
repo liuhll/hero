@@ -63,7 +63,7 @@ namespace Surging.Core.Swagger.Middlewares
             {
                 var serviceRouteProvider = ServiceLocator.GetService<IServiceRouteProvider>();
                 var routPath = GetRoutePath(context.Request.Path.ToString());
-                var commandInfo = await serviceRouteProvider.GetRouteByPath(routPath);
+                var commandInfo = await serviceRouteProvider.GetRouteByPathRegex(routPath);
                 if (commandInfo == null)
                 {
                     throw new CPlatformException($"系统中不存在{routPath}的路由信息", StatusCode.CPlatformError);

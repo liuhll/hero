@@ -19,7 +19,7 @@ namespace Surging.Core.ProxyGenerator.Implementation
 
         public  async Task<T> Invoke<T>(IDictionary<string, object> parameters, string routePath)
         {
-           var serviceRoute= await _serviceRouteProvider.GetRouteByPath(routePath.ToLower());
+           var serviceRoute= await _serviceRouteProvider.GetRouteByPathRegex(routePath.ToLower());
             T result = default(T);
             if (parameters.ContainsKey("serviceKey"))
             {
@@ -48,7 +48,7 @@ namespace Surging.Core.ProxyGenerator.Implementation
 
         public async Task<T> Invoke<T>(IDictionary<string, object> parameters, string routePath, string serviceKey)
         {
-            var serviceRoute = await _serviceRouteProvider.GetRouteByPath(routePath.ToLower());
+            var serviceRoute = await _serviceRouteProvider.GetRouteByPathRegex(routePath.ToLower());
             T result = default(T);
             if (!string.IsNullOrEmpty(serviceKey))
             {
