@@ -9,5 +9,7 @@
         public const string Password = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$";
 
         public const string WordbookCode = "^[a-zA-Z0-9_-]{4,50}$";
+
+        public const string CorporatioCode = "^[a-zA-Z0-9_-]{4,50}$";
     }
 }
