@@ -67,6 +67,9 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                 var deptId = await _departmentRepository.InsertAndGetIdAsync(department, conn, trans);
                 if (input.Postions != null && input.Postions.Any())
                 {
+                    if (input.Postions.Count(p => p.IsLeadingOfficial) > 1) {
+                        throw new BusinessException($"部门只允许设置一个负责人岗位");
+                    }
                     foreach (var position in input.Postions)
                     {
                         position.DeptId = deptId;
