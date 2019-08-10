@@ -20,5 +20,12 @@ namespace Surging.Hero.Organization.Application.Corporation
             await _corporationDomainService.CreateCorporation(input);
             return "新增公司信息成功";
         }
+
+        public async Task<string> Update(UpdateCorporationInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _corporationDomainService.UpdateCorporation(input);
+            return "更新公司信息成功";
+        }
     }
 }

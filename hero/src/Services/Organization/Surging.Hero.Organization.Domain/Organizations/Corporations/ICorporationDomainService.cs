@@ -7,5 +7,6 @@ namespace Surging.Hero.Organization.Domain.Organizations
     public interface ICorporationDomainService : ITransientDependency
     {
         Task CreateCorporation(CreateCorporationInput input);
+        Task UpdateCorporation(UpdateCorporationInput input);
     }
 }

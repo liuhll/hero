@@ -7,6 +7,7 @@ namespace Surging.Hero.Organization.Application.Corporation
     {
         public CorporationProfile() {
             CreateMap<CreateCorporationInput, Domain.Corporation>();
+            CreateMap<UpdateCorporationInput, Domain.Corporation>();
         }
     }
 }

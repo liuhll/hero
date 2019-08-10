@@ -10,5 +10,7 @@ namespace Surging.Hero.Organization.IApplication.Corporation
     public interface ICorporationAppService : IServiceKey
     {
         Task<string> Create(CreateCorporationInput input);
+
+        Task<string> Update(UpdateCorporationInput input);
     }
 }

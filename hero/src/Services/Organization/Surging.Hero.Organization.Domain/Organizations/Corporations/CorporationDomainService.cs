@@ -33,6 +33,17 @@ namespace Surging.Hero.Organization.Domain.Organizations
             }
         }
 
+        public async Task UpdateCorporation(UpdateCorporationInput input)
+        {
+            var corporation = await _corporationRepository.SingleAsync(p=>p.Id == input.Id);
+            if (corporation == null) {
+                throw new BusinessException($"系统中不存在Id为{input.Id}的企业信息");
+            }
+            corporation = input.MapTo(corporation);
+            await _corporationRepository.UpdateAsync(corporation);
+
+        }
+
         private async Task CreateSubCorporation(CreateCorporationInput input)
         {
             
