@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Hero.Common.Dtos;
 using Surging.Hero.Organization.Domain.Organizations;
 using Surging.Hero.Organization.IApplication.Corporation;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;
@@ -19,6 +20,12 @@ namespace Surging.Hero.Organization.Application.Corporation
             input.CheckDataAnnotations().CheckValidResult();
             await _corporationDomainService.CreateCorporation(input);
             return "新增公司信息成功";
+        }
+
+        public async Task<string> Delete(DeleteByIdInput input)
+        {
+            await _corporationDomainService.DeleteCorporation(input.Id);
+            return "删除公司信息成功";
         }
 
         public async Task<string> Update(UpdateCorporationInput input)

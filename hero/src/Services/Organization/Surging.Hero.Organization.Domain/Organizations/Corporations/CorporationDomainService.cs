@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
@@ -10,10 +11,12 @@ namespace Surging.Hero.Organization.Domain.Organizations
     public class CorporationDomainService : ICorporationDomainService
     {
         private readonly IDapperRepository<Corporation, long> _corporationRepository;
-
-        public CorporationDomainService(IDapperRepository<Corporation, long> corporationRepository)
+        private readonly IDapperRepository<Department, long> _departmentRepository;
+        public CorporationDomainService(IDapperRepository<Corporation, long> corporationRepository,
+            IDapperRepository<Department, long> departmentRepository)
         {
             _corporationRepository = corporationRepository;
+            _departmentRepository = departmentRepository;
         }
 
 
@@ -31,6 +34,26 @@ namespace Surging.Hero.Organization.Domain.Organizations
             else {
                 await CreateSubCorporation(input);
             }
+        }
+
+        public async Task DeleteCorporation(long id)
+        {
+            var corporation = await _corporationRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (corporation == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{id}的企业信息");
+            }
+            var children = await _corporationRepository.GetAllAsync(p => p.ParentId == id);
+            if (children.Any())
+            {
+                throw new BusinessException($"请先删除子公司信息");
+            }
+            var departments = await _departmentRepository.GetAllAsync(p => p.CorporationId == id);
+            if (departments.Any())
+            {
+                throw new BusinessException($"请先删除该公司的部门信息");
+            }
+            await _corporationRepository.DeleteAsync(corporation);
         }
 
         public async Task UpdateCorporation(UpdateCorporationInput input)
