@@ -87,6 +87,7 @@ create table Position
    BriefIntro           varchar(100) comment '岗位说明',
    Memo                 varchar(500) comment '备注',
    PostResponsibility   varchar(200) not null comment '岗位职责',
+   IsLeadingOfficial    bit not null comment '是否部门负责人岗位',
    IsLeadershipPost     bit not null comment '是否领导岗位',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
@@ -98,6 +99,8 @@ create table Position
    primary key (Id),
    key AK_Key_1 (Id)
 );
+
+alter table Position comment '职位表';
 
 alter table Position comment '职位表';
 
