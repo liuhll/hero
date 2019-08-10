@@ -11,5 +11,9 @@
         public const string WordbookCode = "^[a-zA-Z0-9_-]{4,50}$";
 
         public const string CorporatioCode = "^[a-zA-Z0-9_-]{4,50}$";
+
+        public const string DepartmentCode = "^[a-zA-Z0-9_-]{4,50}$";
+
+        public const string PositionCode = "^[a-zA-Z0-9_-]{4,50}$";
     }
 }

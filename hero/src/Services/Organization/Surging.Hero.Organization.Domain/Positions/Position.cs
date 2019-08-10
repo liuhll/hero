@@ -4,18 +4,22 @@ namespace Surging.Hero.Organization.Domain.Positions
 {
     public class Position : AuditedEntity<long>
     {
+        public long DeptId { get; set; }
+
         public string Code { get; set; }
 
         public string Name { get; set; }
 
-        public string ParentId { get; set; }
-
         public long FunctionId { get; set; }
 
-        public long PositionTypeId { get; set; }
+        public long PositionLevelId { get; set; }
 
         public string BriefIntro { get; set; }
 
         public string Memo { get; set; }
+
+        public string PostResponsibility { get; set; }
+
+        public bool IsLeadershipPost { get; set; }
     }
 }

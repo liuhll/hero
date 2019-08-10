@@ -1,0 +1,14 @@
+﻿using Surging.Core.CPlatform.Ioc;
+using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Hero.Common;
+using Surging.Hero.Organization.IApplication.Department.Dtos;
+using System.Threading.Tasks;
+
+namespace Surging.Hero.Organization.IApplication.Department
+{
+    [ServiceBundle(HeroConstants.RouteTemplet)]
+    public interface IDepartmentAppService : IServiceKey
+    {
+        Task<string> Create(CreateDepartmentInput input);
+    }
+}

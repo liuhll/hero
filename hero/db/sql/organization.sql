@@ -12,8 +12,6 @@ drop table if exists Corporation;
 
 drop table if exists Department;
 
-drop table if exists DeptPosition;
-
 drop table if exists Position;
 
 /*==============================================================*/
@@ -76,36 +74,20 @@ create table Department
 alter table Department comment '部门表';
 
 /*==============================================================*/
-/* Table: DeptPosition                                          */
-/*==============================================================*/
-create table DeptPosition
-(
-   Id                   bigint not null auto_increment comment '主键',
-   DeptId               bigint not null comment '部门Id',
-   PositionId           bigint not null comment '职位Id',
-   CreateBy             bigint comment '创建人',
-   CreateTime           datetime comment '创建日期',
-   UpdateBy             bigint comment '修改人',
-   UpdateTime           datetime comment '修改日期',
-   primary key (Id),
-   key AK_Key_1 (Id)
-);
-
-alter table DeptPosition comment '部门岗位关系表';
-
-/*==============================================================*/
 /* Table: Position                                              */
 /*==============================================================*/
 create table Position
 (
    Id                   bigint not null auto_increment comment '主键',
+   DeptId               bigint not null comment '所属部门',
    Code                 varchar(50) not null comment '唯一编码',
-   ParentId             bigint comment '上级职位Id',
    Name                 varchar(50) not null comment '职位名称',
    FunctionId           bigint not null comment '职能Id,取自字典表',
-   PositionTypeId       bigint not null comment '岗位类型Id,取自字典表',
+   PositionLevelId      bigint not null comment '岗位级别Id,取自字典表',
    BriefIntro           varchar(100) comment '岗位说明',
    Memo                 varchar(500) comment '备注',
+   PostResponsibility   varchar(200) not null comment '岗位职责',
+   IsLeadershipPost     bit not null comment '是否领导岗位',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
@@ -118,4 +100,6 @@ create table Position
 );
 
 alter table Position comment '职位表';
+
+
 

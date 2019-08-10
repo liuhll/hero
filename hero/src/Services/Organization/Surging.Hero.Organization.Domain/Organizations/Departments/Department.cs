@@ -14,7 +14,7 @@ namespace Surging.Hero.Organization.Domain
 
         public string Location { get; set; }
 
-        public string DeptTypeId { get; set; }
+        public long DeptTypeId { get; set; }
 
         public string BriefIntro { get; set; }
 
