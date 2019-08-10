@@ -20,6 +20,19 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             _wordbookItemRepository = wordbookItemRepository;
         }
 
+        public async Task<bool> CheckWordbookItem(CheckWordbookInput input)
+        {
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Code == input.WordbookCode);
+            if (wordbook == null) {
+                throw new BusinessException($"系统中不存在Code为{input.WordbookCode}的字典项");
+            }
+            var wordbookItems = await _wordbookItemRepository.GetAllAsync(p => p.WordbookId == wordbook.Id);
+            if (wordbookItems.Any(p => p.Id == input.WordbookItemId)) {
+                return true;
+            }
+            return false;
+        }
+
         public async Task CreateWordbook(CreateWordbookInput input)
         {
             var wordbook = await _wordbookRepository.FirstOrDefaultAsync(p => p.Code == input.Code);

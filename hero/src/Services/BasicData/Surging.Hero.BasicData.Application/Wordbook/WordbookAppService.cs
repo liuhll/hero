@@ -21,6 +21,11 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             _wordbookDomainService = wordbookDomainService;
         }
 
+        public async Task<bool> Check(CheckWordbookInput input)
+        {
+            return await _wordbookDomainService.CheckWordbookItem(input);
+        }
+
         public async Task<string> Create(CreateWordbookInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();

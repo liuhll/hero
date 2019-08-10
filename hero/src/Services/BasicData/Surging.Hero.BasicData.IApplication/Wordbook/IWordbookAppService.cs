@@ -34,5 +34,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
 
         [ServiceRoute("{id}")]
         Task<GetWordbookItemOutput> GetWordbookItem(long id);
+
+        Task<bool> Check(CheckWordbookInput input);
     }
 }
