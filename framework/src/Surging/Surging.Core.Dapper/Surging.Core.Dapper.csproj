@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Surging.Core.CPlatform\Surging.Core.CPlatform.csproj" />
     <ProjectReference Include="..\Surging.Core.Domain\Surging.Core.Domain.csproj" />
+    <ProjectReference Include="..\Surging.Core.ProxyGenerator\Surging.Core.ProxyGenerator.csproj" />
   </ItemGroup>
 
 </Project>
