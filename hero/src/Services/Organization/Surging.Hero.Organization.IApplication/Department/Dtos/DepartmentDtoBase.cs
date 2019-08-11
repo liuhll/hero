@@ -13,10 +13,6 @@ namespace Surging.Hero.Organization.IApplication.Department.Dtos
         [MaxLength(50,ErrorMessage = "部门名称长度不允许超过50")]
         public string Name { get; set; }
 
-        public long ParentId { get; set; }
-
-        public long CorporationId { get; set; }
-
         public string Location { get; set; }
 
         public long DeptTypeId { get; set; }

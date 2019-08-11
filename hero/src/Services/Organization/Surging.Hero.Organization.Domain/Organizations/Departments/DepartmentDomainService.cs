@@ -79,5 +79,32 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                 }
             }, Connection);
         }
+
+        public async Task UpdateDepartment(UpdateDepartmentInput input)
+        {
+            var department = await _departmentRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (department == null) {
+                throw new BusinessException($"系统中不存在Id为{input.Id}的部门信息");
+            }
+            if (input.DeptTypeId == 0)
+            {
+                throw new BusinessException($"请选择部门类型");
+            }
+            var workbookAppServiceProxy = GetService<IWordbookAppService>();
+            var checkDeptTypeResult = await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.DeptType, WordbookItemId = input.DeptTypeId });
+            if (!checkDeptTypeResult)
+            {
+                throw new BusinessException($"部门类型Id不正确,请选择正确的部门类型");
+            }
+            if (input.Code != department.Code) {
+                var exsitDepartment = await _departmentRepository.SingleOrDefaultAsync(p => p.Code == input.Code);
+                if (exsitDepartment != null)
+                {
+                    throw new BusinessException($"系统中已经存在Code为{input.Code}的部门信息");
+                }
+            }
+            department = input.MapTo(department);
+            await _departmentRepository.UpdateAsync(department);
+        }
     }
 }

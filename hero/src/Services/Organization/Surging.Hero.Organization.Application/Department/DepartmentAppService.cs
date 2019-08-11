@@ -21,5 +21,12 @@ namespace Surging.Hero.Organization.Application.Department
             await _departmentDomainService.CreateDepartment(input);
             return "新增部门信息成功";
         }
+
+        public async Task<string> Update(UpdateDepartmentInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _departmentDomainService.UpdateDepartment(input);
+            return "更新部门信息成功";
+        }
     }
 }

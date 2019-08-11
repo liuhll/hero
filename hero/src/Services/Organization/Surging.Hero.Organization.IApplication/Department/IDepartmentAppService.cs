@@ -10,5 +10,7 @@ namespace Surging.Hero.Organization.IApplication.Department
     public interface IDepartmentAppService : IServiceKey
     {
         Task<string> Create(CreateDepartmentInput input);
+
+        Task<string> Update(UpdateDepartmentInput input);
     }
 }
