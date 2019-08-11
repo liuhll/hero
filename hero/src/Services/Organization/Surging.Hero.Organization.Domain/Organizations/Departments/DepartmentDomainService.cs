@@ -6,6 +6,7 @@ using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Hero.Auth.IApplication.User;
 using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
@@ -78,6 +79,24 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                     }
                 }
             }, Connection);
+        }
+
+        public async Task DeleteDepartment(long id)
+        {
+            var department = await _departmentRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (department == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{id}的部门信息");
+            }
+            var children = await _departmentRepository.GetAllAsync(p => p.ParentId == id);
+            if (children.Any()) {
+                throw new BusinessException($"请先删除子部门信息");
+            }
+            var departmentUsers = await GetService<IUserAppService>().GetDepartmentUser(department.Id);
+            if (departmentUsers.Any()) {
+                throw new BusinessException($"该部门存在用户,请先删除该部门下的用户");
+            }
+            await _departmentRepository.DeleteAsync(department);
         }
 
         public async Task UpdateDepartment(UpdateDepartmentInput input)

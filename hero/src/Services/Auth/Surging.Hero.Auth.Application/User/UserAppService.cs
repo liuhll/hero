@@ -130,5 +130,17 @@ namespace Surging.Hero.Auth.Application.User
             await _userDomainService.ResetPassword(userInfo, input.NewPassword);
             return "重置该员工密码成功";
         }
+
+        public async Task<IEnumerable<GetUserOutput>> GetDepartmentUser(long deptId)
+        {
+            var departUsers = await _userRepository.GetAllAsync(p => p.DeptId == deptId);
+            return departUsers.MapTo<IEnumerable<GetUserOutput>>();
+        }
+
+        public async Task<IEnumerable<GetUserOutput>> GetCorporationUser(long corporationId)
+        {
+            var corporationUsers = await _userRepository.GetAllAsync(p => p.DeptId == corporationId);
+            return corporationUsers.MapTo<IEnumerable<GetUserOutput>>();
+        }
     }
 }

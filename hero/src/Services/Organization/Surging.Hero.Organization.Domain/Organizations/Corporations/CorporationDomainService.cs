@@ -12,6 +12,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
     {
         private readonly IDapperRepository<Corporation, long> _corporationRepository;
         private readonly IDapperRepository<Department, long> _departmentRepository;
+        
         public CorporationDomainService(IDapperRepository<Corporation, long> corporationRepository,
             IDapperRepository<Department, long> departmentRepository)
         {

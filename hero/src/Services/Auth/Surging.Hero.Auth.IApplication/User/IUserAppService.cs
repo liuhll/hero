@@ -4,6 +4,7 @@ using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Common.Dtos;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.User
@@ -23,5 +24,11 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<string> UpdateStatus(UpdateUserStatusInput input);
 
         Task<string> ResetPassword(ResetPasswordInput input);
+
+        [ServiceRoute("{deptId}")]
+        Task<IEnumerable<GetUserOutput>> GetDepartmentUser(long deptId);
+
+        [ServiceRoute("{corporationId}")]
+        Task<IEnumerable<GetUserOutput>> GetCorporationUser(long corporationId);
     }
 }
