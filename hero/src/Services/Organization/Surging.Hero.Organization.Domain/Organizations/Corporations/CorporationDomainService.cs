@@ -3,12 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Auth.IApplication.User;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;
 
 namespace Surging.Hero.Organization.Domain.Organizations
 {
-    public class CorporationDomainService : ICorporationDomainService
+    public class CorporationDomainService : ManagerBase, ICorporationDomainService
     {
         private readonly IDapperRepository<Corporation, long> _corporationRepository;
         private readonly IDapperRepository<Department, long> _departmentRepository;
@@ -53,6 +55,11 @@ namespace Surging.Hero.Organization.Domain.Organizations
             if (departments.Any())
             {
                 throw new BusinessException($"请先删除该公司的部门信息");
+            }
+            var corporationUsers = await GetService<IUserAppService>().GetCorporationUser(corporation.Id);
+            if (corporationUsers.Any())
+            {
+                throw new BusinessException($"请先删除该公司下的用户");
             }
             await _corporationRepository.DeleteAsync(corporation);
         }
