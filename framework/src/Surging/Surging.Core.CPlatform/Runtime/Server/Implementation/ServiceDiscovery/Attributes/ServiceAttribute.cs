@@ -14,6 +14,8 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.
         public ServiceAttribute()
         {
             IsWaitExecution = true;
+            AllowPermission = false;
+            EnableAuthorization = true;
         }
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.
         /// </summary>
         public string Date { get; set; }
 
-        public bool AllowPermission { get; set; } = false;
+        public bool AllowPermission { get; set; }
 
         #region Overrides of DescriptorAttribute
 
