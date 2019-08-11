@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: surging-hero-middle
+    component: rabbitmq
+  name: rabbitmq  
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+  selector:
+    app: surging-hero-middle
+    component: rabbitmq
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  template:
+    metadata:
+      labels:
+        app: surging-hero-middle
+        component: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:management
+        env: 
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            configMapKeyRef:
+              name: ifcocfg
+              key: all__EventBusUserName
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            configMapKeyRef:
+              name: ifcocfg
+              key: all__EventBusPassword
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: SWQOKODSQALRPCLNMEQG
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: "/"
+        ports:
+        - containerPort: 5672

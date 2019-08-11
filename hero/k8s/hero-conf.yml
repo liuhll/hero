@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: herocfg
+  labels:
+    app: hero
+data:
+  all__mysql_rootpwd: qwe!P4ss
+  all__mysql_pwd: qwe!P4ss      

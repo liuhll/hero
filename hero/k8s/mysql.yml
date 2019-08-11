@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: surging-hero-middle
+    component: mysql
+  name: mysql
+spec:
+  ports:
+  - name: "3306"
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: surging-hero-middle
+    component: mysql
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  template:
+    metadata:
+      labels:
+        app: surging-hero-middle
+        component: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: "mysql:8.0.15"
+          args:
+            - "--default-authentication-plugin=mysql_native_password"
+          ports:
+          - containerPort: 3306
+            name: "port-3306"
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mysql-data
+          - mountPath: /docker-entrypoint-initdb.d
+            name: mysql-entrypoint
+          env: 
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: herocfg
+                key: all__mysql_rootpwd
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: herocfg
+                key: all__mysql_pwd              
+      volumes:
+        - name: mysql-data
+          hostPath:
+            path: "/d/workspaces/Surging.Hero/hero/k8s/.mysql"
+        - name: mysql-entrypoint
+          hostPath: 
+            path: "/d/workspaces/Surging.Hero/hero/db/sql"
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: mysql
+    component: frontend
+  name: mysql-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: mysql.surginghero.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mysql
+          servicePort: 3306
