@@ -31,7 +31,7 @@
     <None Include="..\..\..\Shared\Configs\surgingSettings.json" Link="configs\surgingSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\Shared\Configs\log4net.config" Link="configs\log4net.config">
+    <None Include="..\..\..\Shared\Configs\log4net.config" Link="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -9,8 +9,9 @@ EXPOSE ${rpc_port} ${http_port} ${ws_port}
 
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
-COPY . .
 ARG sln_name
+COPY ./hero .
+COPY ./framework/nupkg /framework/nupkg
 RUN dotnet restore ${sln_name} && \
     dotnet build --no-restore -c Release ${sln_name}
 

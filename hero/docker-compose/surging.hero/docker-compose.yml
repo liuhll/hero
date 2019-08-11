@@ -4,8 +4,8 @@ services:
   surging.hero.auth:
     image: surgingcloud/surging.hero.auth:${TAG:-latest}
     build:
-      context: ../..
-      dockerfile: src/Services/Auth/Surging.Hero.AuthHost/Dockerfile
+      context: ../../..
+      dockerfile: hero/src/Services/Auth/Surging.Hero.AuthHost/Dockerfile
       args:
         host_workdir: src/Services/Auth/Surging.Hero.AuthHost
         host_name: Surging.Hero.AuthHost.dll
@@ -18,8 +18,8 @@ services:
   surging.hero.basicdata:
     image: surgingcloud/surging.hero.basicdata:${TAG:-latest}
     build:
-      context: ../..
-      dockerfile: src/Services/BasicData/Surging.Hero.BasicDataHost/Dockerfile
+      context: ../../..
+      dockerfile: hero/src/Services/BasicData/Surging.Hero.BasicDataHost/Dockerfile
       args:
         host_workdir: src/Services/BasicData/Surging.Hero.BasicDataHost
         host_name: Surging.Hero.BasicDataHost.dll
@@ -32,8 +32,8 @@ services:
   surging.hero.organization:
     image: surgingcloud/surging.hero.organization:${TAG:-latest}
     build:
-      context: ../..
-      dockerfile: src/Services/Organization/Surging.Hero.OrganizationHost/Dockerfile
+      context: ../../..
+      dockerfile: hero/src/Services/Organization/Surging.Hero.OrganizationHost/Dockerfile
       args:
         host_workdir: src/Services/Organization/Surging.Hero.OrganizationHost
         host_name: Surging.Hero.OrganizationHost.dll
@@ -47,8 +47,8 @@ services:
   surging.hero.gateway:
     image: surgingcloud/surging.hero.gateway:${TAG:-latest}
     build:
-      context: ../..
-      dockerfile: src/Gateway/Surging.Hero.WebApi/Dockerfile
+      context: ../../..
+      dockerfile: hero/src/Gateway/Surging.Hero.WebApi/Dockerfile
       args:
         sln_name: sln/Surging.Hero.sln
         host_workdir: src/Gateway/Surging.Hero.WebApi
