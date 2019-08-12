@@ -1,0 +1,83 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: auth
+spec:
+  paused: true
+  template:
+    metadata:
+      labels:
+        app: surging-hero
+        component: auth
+    spec:
+      imagePullSecrets:
+      - name: registry-key
+      containers:
+      - name: auth
+        image: surgingcloud/surging.hero.auth
+        imagePullPolicy: Always
+        env:
+        - name: Register_Conn
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__Consul_Register_Conn
+        - name: Register_SessionTimeout
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__Register_SessionTimeout
+        - name: UseEngineParts
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__Normal_Service_Engine
+        - name: EventBusConnection
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__EventBusConnection
+        - name: EventBusUserName
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__EventBusUserName
+        - name: EventBusPassword
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__EventBusPassword
+        - name: EventBusPort
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__EventBusPort
+        - name: Environment
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__Environment
+        - name: ForceDisplayStackTrace
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__ForceDisplayStackTrace
+        - name: DbType
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__DbType   
+        - name: ConnectionString
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: auth__DbConnection           
+        - name: SwaggerTitle
+          value: "surging-hero-auth"
+        - name: SwaggerDes
+          value: "身份认证与授权服务组件"
+        ports:
+        - containerPort: 8080
+          name: http-port
+        - containerPort: 100
+          name: rpc-port

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: surging-hero
+    component: basicdata
+  name: basicdata
+spec:
+  ports:
+  - name: "http-port"
+    port: 8080
+    targetPort: 8080
+    protocol: TCP  
+  - name: "rpc-port"
+    port: 100
+    targetPort: 100
+    protocol: TCP  
+  selector:
+    app: surging-hero
+    component: basicdata

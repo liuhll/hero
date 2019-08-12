@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: surging-hero
+    component: gateway
+  name: gateway
+spec:
+  ports:
+  - name: "http-port"
+    port: 80
+    targetPort: 80
+    protocol: TCP  
+  selector:
+    app: surging-hero
+    component: gateway

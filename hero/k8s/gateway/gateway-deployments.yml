@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  paused: true
+  template:
+    metadata:
+      labels:
+        app: surging-hero
+        component: gateway
+    spec:
+      imagePullSecrets:
+      - name: registry-key
+      containers:
+      - name: gateway
+        image: surgingcloud/surging.hero.gateway
+        imagePullPolicy: Always
+        env:
+        - name: Register_Conn
+          valueFrom:
+            configMapKeyRef:
+              name: herocfg
+              key: all__Consul_Register_Conn
+        ports:
+        - containerPort: 80
+          name: http-port
