@@ -15,11 +15,11 @@ data:
   all__EventBusUserName: "rabbitmq"
   all__EventBusPassword: "rabbitmq"
   all__EventBusPort: "5672"
-  all__Environment: "Production"
+  all__Environment: "Test"
   all__ForceDisplayStackTrace: "True"
 
   all__DbType: "Mysql"
-  auth__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
-  basicdata__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
-  organization__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
+  auth__DbConnection: "Server=mysql.test;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
+  basicdata__DbConnection: "Server=mysql.test;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
+  organization__DbConnection: "Server=mysql.test;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
     
