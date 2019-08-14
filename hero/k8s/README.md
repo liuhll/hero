@@ -1,4 +1,4 @@
-# 部署到k8s集群
+# 将服务部署到k8s集群
 
 ## Windows环境
 1. 修改`.setting`文件的配置属性为当前主机的ip地址
@@ -12,5 +12,9 @@
 ```powershell
 .\deploy.ps1 -imageTag v0.0.1  -deployEnv dev -replicasNum 2
 ```
+4. 将`C:\Windows\System32\drivers\etc\hosts`替换为`./hosts`
+
+> notes
+> :todo 待完善
 
 ## Linux环境
