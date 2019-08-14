@@ -19,7 +19,7 @@ data:
   all__ForceDisplayStackTrace: "True"
 
   all__DbType: "Mysql"
-  auth__DbConnection: "Server=mysql.dev;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
-  basicdata__DbConnection: "Server=mysql.dev;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
-  organization__DbConnection: "Server=mysql.dev;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
+  auth__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
+  basicdata__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
+  organization__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
     

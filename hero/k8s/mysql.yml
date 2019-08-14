@@ -62,7 +62,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   labels:
-    app: mysql
+    app: surging-hero-middle
     component: frontend
   name: mysql-ingress
   annotations:

@@ -31,12 +31,12 @@ spec:
         - name: RABBITMQ_DEFAULT_USER
           valueFrom:
             configMapKeyRef:
-              name: ifcocfg
+              name: herocfg
               key: all__EventBusUserName
         - name: RABBITMQ_DEFAULT_PASS
           valueFrom:
             configMapKeyRef:
-              name: ifcocfg
+              name: herocfg
               key: all__EventBusPassword
         - name: RABBITMQ_ERLANG_COOKIE
           value: SWQOKODSQALRPCLNMEQG

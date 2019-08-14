@@ -57,7 +57,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   labels:
-    app: ifoc
+    app: surging-hero-middle
     component: frontend
   name: consul-ingress
   annotations:
