@@ -15,7 +15,7 @@ data:
   all__EventBusUserName: "rabbitmq"
   all__EventBusPassword: "rabbitmq"
   all__EventBusPort: "5672"
-  all__Environment: "Dev"
+  all__Environment: "Development"
   all__ForceDisplayStackTrace: "True"
 
   all__DbType: "Mysql"

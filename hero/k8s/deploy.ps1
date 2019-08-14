@@ -47,7 +47,7 @@ $useDockerHub = [string]::IsNullOrEmpty($registry)
 
 # if we have login/pwd add the secret to k8s
 if (-not [string]::IsNullOrEmpty($dockerUser)) {
-    $registryFDQN =  if (-not $useDockerHub) {$registry} else {"index.docker.io/v1/"}
+    $registryFDQN =  if (-not $useDockerHub) {$registry} else {""}
 
     Write-Host "using account $dockerUser login $registryFDQN" -ForegroundColor Yellow
     if ($useDockerHub) {
