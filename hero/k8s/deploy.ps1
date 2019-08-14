@@ -12,10 +12,7 @@ Param(
     [parameter(Mandatory=$false)][string]$dockerOrg="surgingcloud"
 )
 
-function ExecKube($cmd) {    
-    $exp = $execPath + 'kubectl ' + $cmd
-    Invoke-Expression $exp
-}
+. "./utilities.ps1"
 
 $externalDns = & ExecKube -cmd 'get svc ingress-nginx -n ingress-nginx -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"'
 Write-Host "Ingress ip is: $externalDns" -ForegroundColor Yellow 
@@ -118,4 +115,7 @@ for($i=1;$i -lt $deploys.Length; $i++) {
         ExecKube -cmd "scale deploy ${deploy} --replicas=${replicasNum}"
     }
 }
+Write-Host "update hosts" -ForegroundColor Yellow
+(Get-Content ./hosts) -replace "{ingress.ip}",$externalDns |
+Set-Content ./hosts
 

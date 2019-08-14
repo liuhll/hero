@@ -9,4 +9,4 @@ data:
     - name: my-ip-space
       protocol: layer2
       addresses:
-      - 192.168.31.115-192.168.31.115
+      - {node1}-{node2}

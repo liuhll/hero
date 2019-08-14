@@ -23,9 +23,8 @@
 127.0.0.1 kubernetes.docker.internal
 # End of section
 
-#127.0.0.1 mysql.surginghero.com
-192.168.31.115 mysql.surginghero.com
-192.168.31.115 auth.surginghero.com
-192.168.31.115 basicdata.surginghero.com
-192.168.31.115 organization.surginghero.com
-192.168.31.115 consul.surginghero.com
+{ingress.ip} mysql.surginghero.com
+{ingress.ip} auth.surginghero.com
+{ingress.ip} basicdata.surginghero.com
+{ingress.ip} organization.surginghero.com
+{ingress.ip} consul.surginghero.com
