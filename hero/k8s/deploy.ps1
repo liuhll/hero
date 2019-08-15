@@ -28,6 +28,8 @@ if ([string]::IsNullOrEmpty($imageTag)) {
     exit
 }
 
+ExecKube -cmd 'delete configmap -l=app=surging-hero'
+
 $configFilePrefix = 'hero-conf' 
 if (-not [string]::IsNullOrEmpty($deployEnv)){
   $configFilePrefix = $configFilePrefix + '-' + $deployEnv

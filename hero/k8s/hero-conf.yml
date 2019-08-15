@@ -3,14 +3,14 @@ kind: ConfigMap
 metadata:
   name: herocfg
   labels:
-    app: hero
+    app: surging-hero
 data:
   all__mysql_rootpwd: qwe!P4ss
   all__mysql_pwd: qwe!P4ss  
   all__Consul_Register_Conn: "consul:8500"
   all__Register_SessionTimeout: "50"
-  all__Normal_Service_Engine: "DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;ServiceProxyModule;AutoMapperModule;KestrelHttpModule;"
-  all__Ws_Service_Engine: "DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;ServiceProxyModule;AutoMapperModule;WSProtocolModule;" 
+  all__Normal_Service_Engine: "DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;SwaggerModule;DapperModule;AutoMapperModule;ServiceProxyModule;"
+  all__Ws_Service_Engine: "DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;SwaggerModule;DapperModule;AutoMapperModule;ServiceProxyModule;WSProtocolModule;" 
   all__EventBusConnection: "rabbitmq"
   all__EventBusUserName: "rabbitmq"
   all__EventBusPassword: "rabbitmq"
@@ -18,7 +18,7 @@ data:
   all__Environment: "Production"
   all__ForceDisplayStackTrace: "True"
 
-  all__DbType: "Mysql"
+  all__DbType: "MySql"
   auth__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
   basicdata__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
   organization__DbConnection: "Server=mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss"
