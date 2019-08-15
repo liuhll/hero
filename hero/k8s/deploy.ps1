@@ -87,12 +87,22 @@ if ($deployInfrastructure) {
 }
 
 $services = (Get-Content "./ServiceComponents")
+$getwayDomain = "gateway.surginghero.com"
 foreach($service in $services) {
     Write-Host "Deploying code deployment and service for $service" -ForegroundColor Yellow
     ExecKube -cmd "apply -f $service/$service-deployments.yml -f $service/$service-services.yml"
-    if (-not [string]::IsNullOrEmpty($deployEnv)) {
-        Write-Host "Deploying code ingress for $service" -ForegroundColor Yellow
-        ExecKube -cmd "apply -f $service/$service-ingress.yml"
+    Write-Host "Deploying code ingress for $service" -ForegroundColor Yellow
+    if ($service -eq 'gateway'){
+        if (-not [string]::IsNullOrEmpty($deployEnv)){
+            ExecKube -cmd "apply -f $service/$service-ingress-$deployEnv.yml"
+            $getwayDomain = "gateway.${deployEnv}.surginghero.com"
+        }else{
+            ExecKube -cmd "apply -f $service/$service-ingress.yml"
+        }
+    }else{
+        if (-not [string]::IsNullOrEmpty($deployEnv)){
+            ExecKube -cmd "apply -f $service/$service-ingress.yml"
+        }
     }
 }
 
@@ -117,5 +127,9 @@ for($i=1;$i -lt $deploys.Length; $i++) {
 }
 Write-Host "update hosts" -ForegroundColor Yellow
 (Get-Content ./hosts) -replace "{ingress.ip}",$externalDns |
-Set-Content ./hosts
+Set-Content ./hosts 
+if (-not (Get-Content ./hosts).Contains("$externalDns $getwayDomain")){
+    Add-Content -Path ./hosts -Value "$externalDns $getwayDomain"
+}
+
 

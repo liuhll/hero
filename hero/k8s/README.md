@@ -10,8 +10,9 @@
 
 3. 通过`deploy.ps1`脚本部署surging.hero相关服务组件
 ```powershell
-.\deploy.ps1 -imageTag v0.0.1  -deployEnv dev -replicasNum 2
+./deploy.ps1 -imageTag v0.0.1  -deployEnv dev -replicasNum 2
 ```
+
 4. 将`C:\Windows\System32\drivers\etc\hosts`替换为`./hosts`
 
 > notes
