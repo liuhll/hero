@@ -25,8 +25,10 @@ namespace Surging.Core.Swagger.Filters
             var attribute =
                  context.ServiceEntry.Attributes.Where(p => p is AuthorizationAttribute)
                  .Select(p => p as AuthorizationAttribute).FirstOrDefault();
-            if ((attribute != null && attribute.AuthType == AuthorizationType.JWT) ||
-                (context.ServiceEntry.Descriptor.GetMetadata<bool>("EnableAuthorization") && context.ServiceEntry.Descriptor.GetMetadata<AuthorizationType>("AuthType") == AuthorizationType.JWT))
+            if (((attribute != null && attribute.AuthType == AuthorizationType.JWT) ||
+                (context.ServiceEntry.Descriptor.GetMetadata<bool>("EnableAuthorization") 
+                && context.ServiceEntry.Descriptor.GetMetadata<AuthorizationType>("AuthType") == AuthorizationType.JWT)) 
+                && AppConfig.SwaggerOptions.Authorization.EnableAuthorization)
             {
                 operation.Parameters.Add(new BodyParameter
                 {
