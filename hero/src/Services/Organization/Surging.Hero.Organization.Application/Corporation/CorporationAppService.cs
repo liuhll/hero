@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Surging.Core.AutoMapper;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Common.Dtos;
@@ -26,6 +27,12 @@ namespace Surging.Hero.Organization.Application.Corporation
         {
             await _corporationDomainService.DeleteCorporation(input.Id);
             return "删除公司信息成功";
+        }
+
+        public async Task<GetCorporationOutput> Get(long id)
+        {
+            var corporation = await _corporationDomainService.GetCorporation(id);
+            return corporation.MapTo<GetCorporationOutput>();
         }
 
         public async Task<string> Update(UpdateCorporationInput input)

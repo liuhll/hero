@@ -64,6 +64,11 @@ namespace Surging.Hero.Organization.Domain.Organizations
             await _corporationRepository.DeleteAsync(corporation);
         }
 
+        public async Task<Corporation> GetCorporation(long id)
+        {
+            return await _corporationRepository.GetAsync(id);
+        }
+
         public async Task UpdateCorporation(UpdateCorporationInput input)
         {
             var corporation = await _corporationRepository.SingleAsync(p=>p.Id == input.Id);
