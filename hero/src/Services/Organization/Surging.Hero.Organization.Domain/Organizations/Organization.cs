@@ -16,6 +16,10 @@ namespace Surging.Hero.Organization.Domain
 
         public OrganizationType OrganizationType { get; set; }
 
+        private bool _isTopOrg;
+
+        public bool IsTopOrg { get { return ParentId == 0 || _isTopOrg; } internal set { _isTopOrg = value; } }
+
 
     }
 }

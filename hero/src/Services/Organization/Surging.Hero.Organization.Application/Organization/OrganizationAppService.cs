@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
+using Surging.Core.CPlatform.Utilities;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.ProxyGenerator;
 using Surging.Hero.Organization.Domain;
 using Surging.Hero.Organization.Domain.Shared.Organizations;
@@ -26,9 +29,17 @@ namespace Surging.Hero.Organization.Application.Organization
             return organizationTree;
         }
 
+        public async Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query)
+        {
+            var organizations = await _organizationDomainService.GetOrganizations(query.Id, query.OrganizationType);
+            organizations = organizations.WhereIf(!query.SearchKey.IsNullOrEmpty(), p => p.Code.Contains(query.SearchKey) || p.Name.Contains(query.SearchKey));
+            return organizations.MapTo<IEnumerable<QueryOrganizationOutput>>().PageBy(query);
+        }
+
+
         private IEnumerable<GetOrganizationTreeOutput> BuildOrganizationTree(IEnumerable<Domain.Organization> organizations)
         {
-            var topOrgs = organizations.Where(p => p.ParentId == 0 && p.OrganizationType == OrganizationType.Corporation);
+            var topOrgs = organizations.Where(p => p.ParentId == 0 && p.OrganizationType != OrganizationType.Department);
             var topOrgoutputs = topOrgs.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
             foreach (var topOrgoutput in topOrgoutputs) {
                 topOrgoutput.Children = BuildOrganizationChildren(topOrgoutput, organizations);
@@ -40,33 +51,48 @@ namespace Surging.Hero.Organization.Application.Organization
         private IEnumerable<GetOrganizationTreeOutput> BuildOrganizationChildren(GetOrganizationTreeOutput topOrgoutput, IEnumerable<Domain.Organization> organizations)
         {
             var children = new List<GetOrganizationTreeOutput>();
-            if (topOrgoutput.OrganizationType == OrganizationType.Corporation)
+            if (topOrgoutput.OrganizationType != OrganizationType.Department)
             {
-                var corporationChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType == OrganizationType.Corporation);
-                var corporationChildrenOutputs = corporationChildren.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
-                children.AddRange(corporationChildrenOutputs);
-                foreach (var item in corporationChildrenOutputs) {
-                    item.Children = BuildOrganizationChildren(item, organizations);
+                var corporationChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType != OrganizationType.Department);
+                if (corporationChildren.Any())
+                {
+                    var corporationChildrenOutputs = corporationChildren.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
+                    children.AddRange(corporationChildrenOutputs);
+                    foreach (var item in corporationChildrenOutputs)
+                    {
+                        item.Children = BuildOrganizationChildren(item, organizations);
+                    }
                 }
-                var departmentChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType == OrganizationType.Department);
-                var departmentChildrenOutputs = departmentChildren.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
-                children.AddRange(departmentChildrenOutputs);
-                foreach (var item in departmentChildrenOutputs) {
-                    item.Children = BuildOrganizationChildren(item, organizations);
+
+                var departmentChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType == OrganizationType.Department && p.IsTopOrg);
+                if (departmentChildren.Any())
+                {
+                    var departmentChildrenOutputs = departmentChildren.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
+                    children.AddRange(departmentChildrenOutputs);
+                    foreach (var item in departmentChildrenOutputs)
+                    {
+                        item.Children = BuildOrganizationChildren(item, organizations);
+                    }
                 }
 
             }
             else
             {
-                var departmentChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType == OrganizationType.Department);
-                var departmentChildrenOutputs = departmentChildren.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
-                children.AddRange(departmentChildrenOutputs);
-                foreach (var item in departmentChildrenOutputs)
+                
+                var departmentChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType == OrganizationType.Department && !p.IsTopOrg);
+
+                if (departmentChildren.Any())
                 {
-                    item.Children = BuildOrganizationChildren(item, organizations);
+                    var departmentChildrenOutputs = departmentChildren.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
+                    children.AddRange(departmentChildrenOutputs);
+                    foreach (var item in departmentChildrenOutputs)
+                    {
+                        item.Children = BuildOrganizationChildren(item, organizations);
+                    }
                 }
             }
             return children;
         }
+
     }
 }

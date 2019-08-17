@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.Organization.Domain.Positions
 {
-    public class Position : AuditedEntity<long>
+    public class Position : FullAuditedEntity<long>
     {
         public long DeptId { get; set; }
 

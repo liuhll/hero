@@ -1,6 +1,9 @@
 ﻿using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Organization.Domain.Shared.Organizations;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Organization.Domain
@@ -28,12 +31,69 @@ namespace Surging.Hero.Organization.Domain
                 var departOrgs = departments.MapTo<IEnumerable<Organization>>();
                 foreach (var deptOrg in departOrgs)
                 {
-                    deptOrg.ParentId = corporation.Id;
+                    if (deptOrg.ParentId == 0) {
+                        deptOrg.IsTopOrg = true;
+                        deptOrg.ParentId = corporation.Id;
+                    }
                 }
                 organizations.AddRange(departOrgs);
             }
             return organizations;
 
+        }
+
+        public async Task<IEnumerable<Organization>> GetOrganizations(long? id, OrganizationType organizationType)
+        {
+            var organizations = new List<Organization>();
+            if (!id.HasValue)
+            {
+                return await GetOrganizations();
+            }
+            else
+            {
+                switch (organizationType) {
+                    case OrganizationType.Subsidiary:
+                    case OrganizationType.HoldingCompany:
+                    case OrganizationType.ParentFirm:
+                        var corporation = await _corporationRepository.GetAsync(id.Value);
+                        organizations.Add(corporation.MapTo<Organization>());
+                        var departments = await _departmentRepository.GetAllAsync(p => p.CorporationId == corporation.Id);
+                        var departOrgs = departments.MapTo<IEnumerable<Organization>>();
+                        foreach (var deptOrg in departOrgs)
+                        {
+                            if (deptOrg.ParentId == 0)
+                            {
+                                deptOrg.IsTopOrg = true;
+                                deptOrg.ParentId = corporation.Id;
+                            }
+                        }
+                        organizations.AddRange(departOrgs);
+                        break;
+                    case OrganizationType.Department:
+                        var department = await _departmentRepository.GetAsync(id.Value);
+                        var departOrg = department.MapTo<Organization>();
+                        organizations.Add(departOrg);
+                        var departChildren = await GetDepartChildren(departOrg.Id);
+                        organizations.AddRange(departChildren.MapTo<IEnumerable<Organization>>());
+                        break;
+                }
+            }
+
+            return organizations;
+        }
+
+        private async Task<IEnumerable<Department>> GetDepartChildren(long departId)
+        {
+            var children = new List<Department>();
+            var departs = await _departmentRepository.GetAllAsync(p => p.ParentId == departId);
+            if (departs.Any()) {
+                foreach (var depart in departs) {
+                    var thisDepartChildren = await GetDepartChildren(depart.Id);
+                    children.AddRange(thisDepartChildren);
+                }
+                children.AddRange(departs);
+            }
+            return children;
         }
     }
 }

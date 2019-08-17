@@ -1,5 +1,6 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Organization.Dtos;
 using System.Collections.Generic;
@@ -11,5 +12,7 @@ namespace Surging.Hero.Organization.IApplication.Organization
     public interface IOrganizationAppService : IServiceKey
     {
         Task<IEnumerable<GetOrganizationTreeOutput>> GetTree();
+
+        Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query);
     }
 }
