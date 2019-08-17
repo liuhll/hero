@@ -9,5 +9,6 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
         Task CreateDepartment(CreateDepartmentInput input);
         Task UpdateDepartment(UpdateDepartmentInput input);
         Task DeleteDepartment(long id);
+        Task<GetDepartmentOutput> GetDepartment(long id);
     }
 }

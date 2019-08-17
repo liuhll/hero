@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
@@ -32,6 +33,11 @@ namespace Surging.Hero.Organization.Domain.Positions
             await CheckPosition(input);
             var position = input.MapTo<Position>();
             await _positionRepository.InsertAsync(position);
+        }
+
+        public async Task<IEnumerable<Position>> GetPositionsByDeptId(long deptId)
+        {
+            return await _positionRepository.GetAllAsync(p => p.DeptId == deptId);
         }
 
         private async Task CheckPosition(CreatePositionInput input)

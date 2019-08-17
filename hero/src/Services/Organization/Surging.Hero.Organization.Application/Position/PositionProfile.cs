@@ -7,6 +7,7 @@ namespace Surging.Hero.Organization.Application.Position
     {
         public PositionProfile() {
             CreateMap<CreatePositionInput, Domain.Positions.Position>();
+            CreateMap<Domain.Positions.Position, GetPositionOutput>();
         }
     }
 }

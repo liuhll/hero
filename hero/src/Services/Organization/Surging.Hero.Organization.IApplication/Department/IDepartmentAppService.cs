@@ -15,5 +15,8 @@ namespace Surging.Hero.Organization.IApplication.Department
         Task<string> Update(UpdateDepartmentInput input);
 
         Task<string> Delete(DeleteByIdInput input);
+
+        [ServiceRoute("{id}")]
+        Task<GetDepartmentOutput> Get(long id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
@@ -10,5 +11,6 @@ namespace Surging.Hero.Organization.Domain.Positions
         Task CreatePosition(CreatePositionInput input, DbConnection conn, DbTransaction trans);
 
         Task CreatePosition(CreatePositionInput input);
+        Task<IEnumerable<Position>> GetPositionsByDeptId(long deptId);
     }
 }

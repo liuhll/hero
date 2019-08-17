@@ -29,6 +29,11 @@ namespace Surging.Hero.Organization.Application.Department
             return "删除部门信息成功";
         }
 
+        public async Task<GetDepartmentOutput> Get(long id)
+        {
+            return await _departmentDomainService.GetDepartment(id);
+        }
+
         public async Task<string> Update(UpdateDepartmentInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
