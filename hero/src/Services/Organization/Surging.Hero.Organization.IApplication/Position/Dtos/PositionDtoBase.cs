@@ -5,7 +5,7 @@ namespace Surging.Hero.Organization.IApplication.Position.Dtos
 {
     public abstract class PositionDtoBase
     {
-        public long DeptId { get; set; }
+        
 
         [Required(ErrorMessage = "职位编码不允许为空")]
         [RegularExpression(RegExpConstants.PositionCode, ErrorMessage = "职位编码格式不正确")]

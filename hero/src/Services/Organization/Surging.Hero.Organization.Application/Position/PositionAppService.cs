@@ -32,5 +32,12 @@ namespace Surging.Hero.Organization.Application.Position
             var position = await _positionRepository.GetAsync(id);
             return position.MapTo<GetPositionOutput>();
         }
+
+        public async Task<string> Update(UpdatePositionInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _positionDomainService.UpdatePosition(input);
+            return "更新职位信息成功";
+        }
     }
 }

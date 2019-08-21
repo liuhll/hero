@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
@@ -38,6 +39,39 @@ namespace Surging.Hero.Organization.Domain.Positions
         public async Task<IEnumerable<Position>> GetPositionsByDeptId(long deptId)
         {
             return await _positionRepository.GetAllAsync(p => p.DeptId == deptId);
+        }
+
+        public async Task UpdatePosition(UpdatePositionInput input)
+        {
+            var position = await _positionRepository.GetAsync(input.Id);
+            if (input.Code != position.Code) {
+                var checkPosition = await _positionRepository.SingleOrDefaultAsync(p => p.Code == input.Code);
+                if (checkPosition != null)
+                {
+                    throw new BusinessException($"系统中已经存在Code为{input.Code}的职位信息");
+                }
+               
+            }
+            var workbookAppServiceProxy = GetService<IWordbookAppService>();
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemId = input.FunctionId }))
+            {
+                throw new BusinessException($"系统中不存在指定的岗位职能类型");
+            }
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionLevel, WordbookItemId = input.PositionLevelId }))
+            {
+                throw new BusinessException($"系统中不存在指定的岗位级别");
+            }
+            if (input.IsLeadingOfficial && !position.IsLeadingOfficial)
+            {
+                var positions = await _positionRepository.GetAllAsync(p => p.DeptId == position.DeptId);
+                if (positions.Any(p => p.IsLeadingOfficial))
+                {
+                    throw new BusinessException($"该部门已经设置负责人岗位,一个部门只允许设置一个负责人岗位");
+                }
+            }
+
+            position = input.MapTo(position);
+            await _positionRepository.UpdateAsync(position);
         }
 
         private async Task CheckPosition(CreatePositionInput input)

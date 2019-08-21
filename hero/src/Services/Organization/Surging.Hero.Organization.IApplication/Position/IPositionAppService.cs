@@ -13,5 +13,7 @@ namespace Surging.Hero.Organization.IApplication.Position
         Task<GetPositionOutput> Get(long id);
 
         Task<string> Create(CreatePositionInput input);
+
+        Task<string> Update(UpdatePositionInput input);
     }
 }
