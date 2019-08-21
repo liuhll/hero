@@ -2,6 +2,7 @@
 using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
+using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Organization.Domain.Positions;
 using Surging.Hero.Organization.IApplication.Position;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
@@ -17,6 +18,13 @@ namespace Surging.Hero.Organization.Application.Position
             IDapperRepository<Domain.Positions.Position, long> positionRepository) {
             _positionDomainService = positionDomainService;
             _positionRepository = positionRepository;
+        }
+
+        public async Task<string> Create(CreatePositionInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _positionDomainService.CreatePosition(input);
+            return "新增职位信息成功";
         }
 
         public async Task<GetPositionOutput> Get(long id)

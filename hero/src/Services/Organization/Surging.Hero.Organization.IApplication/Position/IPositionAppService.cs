@@ -11,5 +11,7 @@ namespace Surging.Hero.Organization.IApplication.Position
     {
         [ServiceRoute("{id}")]
         Task<GetPositionOutput> Get(long id);
+
+        Task<string> Create(CreatePositionInput input);
     }
 }
