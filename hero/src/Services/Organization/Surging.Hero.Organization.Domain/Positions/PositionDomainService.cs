@@ -36,6 +36,15 @@ namespace Surging.Hero.Organization.Domain.Positions
             await _positionRepository.InsertAsync(position);
         }
 
+        public async Task DeletePosition(long id)
+        {
+            var position = await _positionRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (position == null) {
+                throw new BusinessException($"不存在Id为{id}的职位信息");
+            }
+            await _positionRepository.DeleteAsync(position);
+        }
+
         public async Task<IEnumerable<Position>> GetPositionsByDeptId(long deptId)
         {
             return await _positionRepository.GetAllAsync(p => p.DeptId == deptId);

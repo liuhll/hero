@@ -12,5 +12,7 @@ namespace Surging.Hero.Organization.Domain.Positions
 
         Task CreatePosition(CreatePositionInput input);
         Task<IEnumerable<Position>> GetPositionsByDeptId(long deptId);
+        Task UpdatePosition(UpdatePositionInput input);
+        Task DeletePosition(long id);
     }
 }
