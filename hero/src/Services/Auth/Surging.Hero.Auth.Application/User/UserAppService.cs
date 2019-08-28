@@ -113,8 +113,14 @@ namespace Surging.Hero.Auth.Application.User
             var queryResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
                || p.ChineseName.Contains(query.SearchKey)
                || p.Email.Contains(query.SearchKey)
-               || p.Phone.Contains(query.SearchKey),query.PageIndex,query.PageCount);         
-            return queryResult.Item1.MapTo<IEnumerable<GetUserOutput>>().GetPagedResult(queryResult.Item2);
+               || p.Phone.Contains(query.SearchKey),query.PageIndex,query.PageCount); 
+            
+            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserOutput>>();
+            foreach (var userOutput in queryResultOutput) {
+                userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
+                userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
+            }
+            return queryResultOutput.GetPagedResult(queryResult.Item2);
         }
 
         public async Task<string> UpdateStatus(UpdateUserStatusInput input)
