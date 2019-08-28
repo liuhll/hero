@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Common;
+using Surging.Hero.Organization.IApplication.Department;
+using Surging.Hero.Organization.IApplication.Position;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -76,6 +78,18 @@ namespace Surging.Hero.Auth.Application.User
                 {
                     throw new UserFriendlyException($"已经存在Email为{input.Email}的用户");
                 }
+            }
+
+            var departAppServiceProxy = GetService<IDepartmentAppService>();
+            if (!await departAppServiceProxy.Check(input.DeptId))
+            {
+                throw new BusinessException($"不存在Id为{input.DeptId}的部门信息");
+            }
+
+            var positionAppServiceProxy = GetService<IPositionAppService>();
+            if (!await positionAppServiceProxy.Check(input.PositionId))
+            {
+                throw new BusinessException($"不存在Id为{input.PositionId}的职位信息");
             }
             updateUser = input.MapTo(updateUser);
             await _userRepository.UpdateAsync(updateUser);
