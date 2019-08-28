@@ -154,13 +154,26 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<IEnumerable<GetUserOutput>> GetDepartmentUser(long deptId)
         {
             var departUsers = await _userRepository.GetAllAsync(p => p.DeptId == deptId);
-            return departUsers.MapTo<IEnumerable<GetUserOutput>>();
+            var departUserOutputs = departUsers.MapTo<IEnumerable<GetUserOutput>>();
+            foreach (var userOutput in departUserOutputs)
+            {
+                userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
+                userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
+            }
+            return departUserOutputs;
         }
 
         public async Task<IEnumerable<GetUserOutput>> GetCorporationUser(long corporationId)
         {
-            var corporationUsers = await _userRepository.GetAllAsync(p => p.DeptId == corporationId);
-            return corporationUsers.MapTo<IEnumerable<GetUserOutput>>();
+            var corporationUsers = await _userRepository.GetAllAsync(p => p.DeptId == corporationId);           
+            var corporationUserOutputs = corporationUsers.MapTo<IEnumerable<GetUserOutput>>();
+
+            foreach (var userOutput in corporationUserOutputs)
+            {
+                userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
+                userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
+            }
+            return corporationUserOutputs;
         }
     }
 }
