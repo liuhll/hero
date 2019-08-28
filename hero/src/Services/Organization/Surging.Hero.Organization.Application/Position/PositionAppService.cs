@@ -21,6 +21,15 @@ namespace Surging.Hero.Organization.Application.Position
             _positionRepository = positionRepository;
         }
 
+        public async Task<bool> Check(long positionId)
+        {
+            var position = await _positionRepository.SingleOrDefaultAsync(p => p.Id == positionId);
+            if (position == null) {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<string> Create(CreatePositionInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();

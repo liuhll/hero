@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Common.Dtos;
@@ -11,9 +12,21 @@ namespace Surging.Hero.Organization.Application.Department
     public class DepartmentAppService : ProxyServiceBase, IDepartmentAppService
     {
         private readonly IDepartmentDomainService _departmentDomainService;
+        private readonly IDapperRepository<Domain.Department, long> _departmentRepository;
 
-        public DepartmentAppService(IDepartmentDomainService departmentDomainService) {
+        public DepartmentAppService(IDepartmentDomainService departmentDomainService,
+            IDapperRepository<Domain.Department, long> departmentRepository) {
             _departmentDomainService = departmentDomainService;
+            _departmentRepository = departmentRepository;
+        }
+
+        public async Task<bool> Check(long deptId)
+        {
+            var department = await _departmentRepository.SingleOrDefaultAsync(p => p.Id == deptId);
+            if (department == null) {
+                return false;
+            }
+            return true;
         }
 
         public async Task<string> Create(CreateDepartmentInput input)

@@ -18,5 +18,8 @@ namespace Surging.Hero.Organization.IApplication.Department
 
         [ServiceRoute("{id}")]
         Task<GetDepartmentOutput> Get(long id);
+
+        [Service(DisableNetwork = true)]
+        Task<bool> Check(long deptId);
     }
 }

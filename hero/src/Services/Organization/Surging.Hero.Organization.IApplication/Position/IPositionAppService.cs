@@ -18,5 +18,8 @@ namespace Surging.Hero.Organization.IApplication.Position
         Task<string> Update(UpdatePositionInput input);
 
         Task<string> Delete(DeleteByIdInput input);
+
+        [Service(DisableNetwork = true)]
+        Task<bool> Check(long positionId);
     }
 }

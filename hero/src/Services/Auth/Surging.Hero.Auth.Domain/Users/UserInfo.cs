@@ -14,6 +14,10 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public string UserName { get; set; }
 
+        public long DeptId { get; set; }
+
+        public long PositionId { get; set; }
+
         public string Password { get; set; }
 
         public string ChineseName { get; set; }
@@ -50,7 +54,6 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public Status Status { get; set; }
 
-        public long DeptId { get; set; }
 
     }
 }

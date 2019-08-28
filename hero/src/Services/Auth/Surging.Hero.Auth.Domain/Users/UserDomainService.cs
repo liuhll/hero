@@ -1,6 +1,8 @@
 ﻿using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Organization.IApplication.Department;
+using Surging.Hero.Organization.IApplication.Position;
 using System;
 using System.Threading.Tasks;
 
@@ -21,8 +23,18 @@ namespace Surging.Hero.Auth.Domain.Users
 
 
         public async Task CreateUser(UserInfo userInfo)
-        {      
-            userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);
+        {
+            var departAppServiceProxy = GetService<IDepartmentAppService>();
+            if (!await departAppServiceProxy.Check(userInfo.DeptId)) {
+                throw new BusinessException($"不存在Id为{userInfo.DeptId}的部门信息");
+            }
+
+            var positionAppServiceProxy = GetService<IPositionAppService>();
+            if (!await positionAppServiceProxy.Check(userInfo.PositionId)) {
+                throw new BusinessException($"不存在Id为{userInfo.PositionId}的职位信息");
+            }
+        
+            userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);          
             await _userRepository.InsertAsync(userInfo);
         }
 

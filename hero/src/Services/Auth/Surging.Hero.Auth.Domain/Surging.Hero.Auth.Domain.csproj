@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\CommonComponents\Surging.Hero.Common\Surging.Hero.Common.csproj" />
     <ProjectReference Include="..\..\BasicData\Surging.Hero.BasicData.IApplication\Surging.Hero.BasicData.IApplication.csproj" />
+    <ProjectReference Include="..\..\Organization\Surging.Hero.Organization.IApplication\Surging.Hero.Organization.IApplication.csproj" />
     <ProjectReference Include="..\Surging.Hero.Auth.Domain.Shared\Surging.Hero.Auth.Domain.Shared.csproj" />
     <ProjectReference Include="..\Surging.Hero.Auth.IApplication\Surging.Hero.Auth.IApplication.csproj" />
   </ItemGroup>
