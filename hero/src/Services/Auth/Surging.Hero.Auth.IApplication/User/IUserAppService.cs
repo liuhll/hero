@@ -30,5 +30,8 @@ namespace Surging.Hero.Auth.IApplication.User
 
         [ServiceRoute("{corporationId}")]
         Task<IEnumerable<GetUserOutput>> GetCorporationUser(long corporationId);
+
+        [ServiceRoute("{id}")]
+        Task<GetUserOutput> Get(long id);
     }
 }

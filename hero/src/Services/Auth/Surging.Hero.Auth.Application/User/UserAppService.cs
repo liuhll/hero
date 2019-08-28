@@ -175,5 +175,14 @@ namespace Surging.Hero.Auth.Application.User
             }
             return corporationUserOutputs;
         }
+
+        public async Task<GetUserOutput> Get(long id)
+        {
+            var userInfo = await _userRepository.GetAsync(id);
+            var userInfoOutput = userInfo.MapTo<GetUserOutput>();
+            userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userInfoOutput.DeptId)).Name;
+            userInfoOutput.PositionName = (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId)).Name;
+            return userInfoOutput;
+        }
     }
 }
