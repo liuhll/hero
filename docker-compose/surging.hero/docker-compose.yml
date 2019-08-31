@@ -1,0 +1,65 @@
+version: '3.7'
+
+services:
+  surging.hero.auth:
+    image: surgingcloud/surging.hero.auth:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: hero/src/Services/Auth/Surging.Hero.AuthHost/Dockerfile
+      args:
+        host_workdir: src/Services/Auth/Surging.Hero.AuthHost
+        host_name: Surging.Hero.AuthHost.dll
+        sln_name: sln/Surging.Hero.sln
+    volumes:
+      - ${LOG_DIR:-/var/logs}/auth:/app/logs
+    networks:
+      - surging_hero_service_net
+
+  surging.hero.basicdata:
+    image: surgingcloud/surging.hero.basicdata:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: hero/src/Services/BasicData/Surging.Hero.BasicDataHost/Dockerfile
+      args:
+        host_workdir: src/Services/BasicData/Surging.Hero.BasicDataHost
+        host_name: Surging.Hero.BasicDataHost.dll
+        sln_name: sln/Surging.Hero.sln
+    volumes:
+      - ${LOG_DIR:-/var/logs}/basicdata:/app/logs
+    networks:
+      - surging_hero_service_net
+
+  surging.hero.organization:
+    image: surgingcloud/surging.hero.organization:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: hero/src/Services/Organization/Surging.Hero.OrganizationHost/Dockerfile
+      args:
+        host_workdir: src/Services/Organization/Surging.Hero.OrganizationHost
+        host_name: Surging.Hero.OrganizationHost.dll
+        sln_name: sln/Surging.Hero.sln
+    depends_on:
+      - surging.hero.auth
+    volumes:
+      - ${LOG_DIR:-/var/logs}/organization:/app/logs
+    networks:
+      - surging_hero_service_net      
+  surging.hero.gateway:
+    image: surgingcloud/surging.hero.gateway:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: hero/src/Gateway/Surging.Hero.WebApi/Dockerfile
+      args:
+        sln_name: sln/Surging.Hero.sln
+        host_workdir: src/Gateway/Surging.Hero.WebApi
+        host_name: Surging.Hero.WebApi.dll
+    depends_on:
+      - surging.hero.auth
+    volumes:
+      - ${LOG_DIR:-/var/logs}/gateway:/app/logs
+    networks:
+      - surging_hero_service_net
+networks:
+  surging_hero_service_net: 
+    external:
+      name: surging_hero_service_net
