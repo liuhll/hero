@@ -35,61 +35,61 @@ namespace Surging.Hero.ServiceHost
         {
         }
 
-        internal static void InitActions()
-        {
-            var serviceProxyProvider = ServiceLocator.GetService<IServiceProxyProvider>();
-            var serviceEntryProvider = ServiceLocator.GetService<IServiceEntryProvider>();
-            var entries = serviceEntryProvider.GetEntries();
-            var logger = ServiceLocator.GetService<ILogger<Startup>>();
-            var actions = entries.Select(p => new {
-                ServiceId = p.Descriptor.Id,
-                ServiceHost = GetServiceHost(p.Type.FullName),
-                Application = GetApplication(p.Type.FullName),
-                WebApi = p.RoutePath,
-                Name = p.Descriptor.GetMetadata<string>("GroupName"),
-                DisableNetwork = p.Descriptor.GetMetadata<bool>("DisableNetwork"),
-                EnableAuthorization = p.Descriptor.GetMetadata<bool>("EnableAuthorization"),
-                AllowPermission = p.Descriptor.GetMetadata<bool>("AllowPermission"),
-                Developer = p.Descriptor.GetMetadata<string>("Director"), 
-                Date = GetDevDate(p.Descriptor.GetMetadata<string>("Date"))
+        //internal static void InitActions()
+        //{
+        //    var serviceProxyProvider = ServiceLocator.GetService<IServiceProxyProvider>();
+        //    var serviceEntryProvider = ServiceLocator.GetService<IServiceEntryProvider>();
+        //    var entries = serviceEntryProvider.GetEntries();
+        //    var logger = ServiceLocator.GetService<ILogger<Startup>>();
+        //    var actions = entries.Select(p => new {
+        //        ServiceId = p.Descriptor.Id,
+        //        ServiceHost = GetServiceHost(p.Type.FullName),
+        //        Application = GetApplication(p.Type.FullName),
+        //        WebApi = p.RoutePath,
+        //        Name = p.Descriptor.GetMetadata<string>("GroupName"),
+        //        DisableNetwork = p.Descriptor.GetMetadata<bool>("DisableNetwork"),
+        //        EnableAuthorization = p.Descriptor.GetMetadata<bool>("EnableAuthorization"),
+        //        AllowPermission = p.Descriptor.GetMetadata<bool>("AllowPermission"),
+        //        Developer = p.Descriptor.GetMetadata<string>("Director"), 
+        //        Date = GetDevDate(p.Descriptor.GetMetadata<string>("Date"))
 
-            }).ToList();
-            var rpcParams = new Dictionary<string, object>() { { "actions", actions } };
-            try
-            {
-                var result = serviceProxyProvider.Invoke<string>(rpcParams, updateHostActionRoute).Result;
-                if (result.IsNullOrEmpty())
-                {
-                    logger.LogInformation("初始化Action失败");
-                }
-                else
-                {
-                    logger.LogInformation(result);
-                }
-            }
-            catch (Exception ex) {
-                logger.LogError(ex.Message,ex);
-            }
+        //    }).ToList();
+        //    var rpcParams = new Dictionary<string, object>() { { "actions", actions } };
+        //    try
+        //    {
+        //        var result = serviceProxyProvider.Invoke<string>(rpcParams, updateHostActionRoute).Result;
+        //        if (result.IsNullOrEmpty())
+        //        {
+        //            logger.LogInformation("初始化Action失败");
+        //        }
+        //        else
+        //        {
+        //            logger.LogInformation(result);
+        //        }
+        //    }
+        //    catch (Exception ex) {
+        //        logger.LogError(ex.Message,ex);
+        //    }
           
-        }
+        //}
 
-        private static DateTime? GetDevDate(string dateStr)
-        {
-            if (dateStr.IsNullOrEmpty())
-            {
-                return null;
-            }
-            return Convert.ToDateTime(dateStr);
-        }
+        //private static DateTime? GetDevDate(string dateStr)
+        //{
+        //    if (dateStr.IsNullOrEmpty())
+        //    {
+        //        return null;
+        //    }
+        //    return Convert.ToDateTime(dateStr);
+        //}
 
-        private static string GetApplication(string serviceFullName)
-        {
-            return serviceFullName.Split(".").Last();
-        }
+        //private static string GetApplication(string serviceFullName)
+        //{
+        //    return serviceFullName.Split(".").Last();
+        //}
 
-        private static string GetServiceHost(string serviceFullName)
-        {
-            return string.Join('.', serviceFullName.Split(".").Take(hostNameSegmentLength));
-        }
+        //private static string GetServiceHost(string serviceFullName)
+        //{
+        //    return string.Join('.', serviceFullName.Split(".").Take(hostNameSegmentLength));
+        //}
     }
 }

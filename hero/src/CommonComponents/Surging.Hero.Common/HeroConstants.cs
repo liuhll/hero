@@ -2,6 +2,6 @@
 {
     public static class HeroConstants
     {
-        public const string RouteTemplet = "v1/api/{appservice}/{method}";
+        public const string RouteTemplet = "v1/api/{AppService}/{Method}";
     }
 }

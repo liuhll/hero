@@ -18,7 +18,7 @@ using Surging.Core.CPlatform.Transport.Implementation;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.ProxyGenerator;
 using GateWayAppConfig = Surging.Core.ApiGateWay.AppConfig;
-using MessageStatusCode = Surging.Core.CPlatform.Messages.StatusCode;
+using MessageStatusCode = Surging.Core.CPlatform.Exceptions.StatusCode;
 
 namespace Hl.Gateway.WebApi.Controllers
 {
@@ -85,7 +85,7 @@ namespace Hl.Gateway.WebApi.Controllers
             }
             else
             {
-                if (path == GateWayAppConfig.AuthenticationRoutePath)
+                if (path == GateWayAppConfig.AuthorizationRoutePath)
                 {
                     try
                     {
@@ -93,7 +93,7 @@ namespace Hl.Gateway.WebApi.Controllers
                         if (token != null)
                         {
                             result = ServiceResult<object>.Create(true, token);
-                            result.StatusCode = MessageStatusCode.OK;
+                            result.StatusCode = MessageStatusCode.Success;
                         }
                         else
                         {
@@ -246,7 +246,7 @@ namespace Hl.Gateway.WebApi.Controllers
                     var keyValue = model.FirstOrDefault();
                     if (!(keyValue.Value is IConvertible) || !typeof(IConvertible).GetTypeInfo().IsAssignableFrom(keyValue.Value.GetType()))
                     {
-                        var payload = _authorizationServerProvider.GetPayLoad(author);
+                        var payload = _authorizationServerProvider.GetPayloadString(author);
                         RpcContext.GetContext().SetAttachment("payload", payload);
                     }
                 }
@@ -319,26 +319,31 @@ namespace Hl.Gateway.WebApi.Controllers
             if (data.GetType() == typeof(string))
             {
                 var dataStr = (string)data;
-                if (dataStr.IsValidJson())
-                {
-                    var serializer = ServiceLocator.GetService<ISerializer<string>>();
-                    var dataObj = serializer.Deserialize(dataStr, typeof(object), true);
-                    var serviceResult = ServiceResult<object>.Create(true, dataObj);
-                    serviceResult.StatusCode = MessageStatusCode.OK;
-                    return serviceResult;
-                }
-                else
-                {
-                    var serviceResult = ServiceResult<object>.Create(true, data);
-                    serviceResult.StatusCode = MessageStatusCode.OK;
-                    return serviceResult;
+                //if (dataStr.IsValidJson())
+                //{
+                //    var serializer = ServiceLocator.GetService<ISerializer<string>>();
+                //    var dataObj = serializer.Deserialize(dataStr, typeof(object));
+                //    var serviceResult = ServiceResult<object>.Create(true, dataObj);
+                //    serviceResult.StatusCode = MessageStatusCode.OK;
+                //    return serviceResult;
+                //}
+                //else
+                //{
+                //    var serviceResult = ServiceResult<object>.Create(true, data);
+                //    serviceResult.StatusCode = MessageStatusCode.Success;
+                //    return serviceResult;
 
-                }
+                //}
+                var serializer = ServiceLocator.GetService<ISerializer<string>>();
+                var dataObj = serializer.Deserialize(dataStr, typeof(object));
+                var serviceResult = ServiceResult<object>.Create(true, dataObj);
+                serviceResult.StatusCode = MessageStatusCode.Success;
+                return serviceResult;
             }
             else
             {
                 var serviceResult = ServiceResult<object>.Create(true, data);
-                serviceResult.StatusCode = MessageStatusCode.OK;
+                serviceResult.StatusCode = MessageStatusCode.Success;
                 return serviceResult;
             }
         }
