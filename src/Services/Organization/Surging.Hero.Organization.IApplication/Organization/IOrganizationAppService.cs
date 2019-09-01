@@ -11,8 +11,10 @@ namespace Surging.Hero.Organization.IApplication.Organization
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IOrganizationAppService : IServiceKey
     {
+        [HttpGet(true)]
         Task<IEnumerable<GetOrganizationTreeOutput>> GetTree();
 
+        [HttpPost(true)]
         Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query);
     }
 }

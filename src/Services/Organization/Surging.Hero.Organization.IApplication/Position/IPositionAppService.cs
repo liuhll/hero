@@ -11,15 +11,20 @@ namespace Surging.Hero.Organization.IApplication.Position
     public interface IPositionAppService : IServiceKey
     {
         [ServiceRoute("{id}")]
+        [HttpGet(true)]
         Task<GetPositionOutput> Get(long id);
 
+        [HttpPost(true)]
         Task<string> Create(CreatePositionInput input);
 
+        [HttpPut(true)]
         Task<string> Update(UpdatePositionInput input);
 
+        [HttpDelete(true)]
         Task<string> Delete(DeleteByIdInput input);
 
         [Service(DisableNetwork = true)]
+        [HttpPost(true)]
         Task<bool> Check(long positionId);
     }
 }

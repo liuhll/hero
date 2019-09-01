@@ -10,6 +10,7 @@ namespace Surging.Hero.Auth.IApplication.Authorization
     public interface IAccountAppService : IServiceKey
     {
         [Service(Director = Developers.Liuhll, Date = "2019-07-14", Name = "用户登录接口")]
+        [HttpPost(true)]
         Task<LoginResult> Login(LoginInput input);
     }
 }

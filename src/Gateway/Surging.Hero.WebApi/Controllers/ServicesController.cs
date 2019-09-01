@@ -78,7 +78,7 @@ namespace Hl.Gateway.WebApi.Controllers
             }
             var appConfig = GateWayAppConfig.ServicePart;
 
-            if (servicePartProvider.IsPart(path))
+            if (false/*servicePartProvider.IsPart(path)*/)
             {
                 var data = (string)await servicePartProvider.Merge(path, rpcParams);
                 return CreateServiceResult(data);
@@ -155,13 +155,13 @@ namespace Hl.Gateway.WebApi.Controllers
         }
         private bool OnAuthorization(string path, Dictionary<string, object> model, ref ServiceResult<object> result)
         {
-            bool isSuccess = false;
-            var route = _serviceRouteProvider.GetRouteByPathRegex(path).Result;
-            if (route.ServiceDescriptor.EnableAuthorization())
-            {
-                isSuccess = route.ServiceDescriptor.AuthType() == AuthorizationType.JWT.ToString()
-                    ? ValidateJwtAuthentication(route, model, ref result) : ValidateAppSecretAuthentication(route, path, model, ref result);
-            }
+            bool isSuccess = true;
+            //var route = _serviceRouteProvider.GetRouteByPathRegex(path).Result;
+            //if (route.ServiceDescriptor.EnableAuthorization())
+            //{
+            //    isSuccess = route.ServiceDescriptor.AuthType() == AuthorizationType.JWT.ToString()
+            //        ? ValidateJwtAuthentication(route, model, ref result) : ValidateAppSecretAuthentication(route, path, model, ref result);
+            //}
 
             //if (isSuccess)
             //{
