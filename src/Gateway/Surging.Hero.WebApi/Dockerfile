@@ -6,7 +6,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
 ARG sln_name
-COPY ./hero .
+COPY . .
 COPY ../surging/nupkg /framework/nupkg
 RUN dotnet restore ${sln_name} && \
     dotnet build --no-restore -c Release ${sln_name}
