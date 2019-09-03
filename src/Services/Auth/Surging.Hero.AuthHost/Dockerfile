@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2.0-runtime AS base
+FROM mcr.microsoft.com/dotnet/core/runtime:3.0.0-preview8-disco AS base
 WORKDIR /app
 ARG rpc_port=100
 ARG http_port=8080
@@ -7,7 +7,7 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
 EXPOSE ${rpc_port} ${http_port} ${ws_port}
 
-FROM microsoft/dotnet:2.2-sdk AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-disco AS build
 WORKDIR /src
 ARG sln_name
 COPY . .

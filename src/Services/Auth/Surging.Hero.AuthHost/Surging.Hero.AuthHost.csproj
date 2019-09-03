@@ -2,7 +2,7 @@
   <Import Project="..\..\..\Shared\Props\hostpackage.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surging.Hero.Auth.Application\Surging.Hero.Auth.Application.csproj" />

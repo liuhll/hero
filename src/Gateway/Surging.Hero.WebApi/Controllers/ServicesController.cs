@@ -282,7 +282,7 @@ namespace Hl.Gateway.WebApi.Controllers
 
         private async Task<Dictionary<string, object>> ParserRpcParamsFromPath(string path, Dictionary<string, object> rpcParams)
         {
-            var route = _serviceRouteProvider.GetRouteByPathRegex(path).Result;
+            var route = await _serviceRouteProvider.GetRouteByPathRegex(path);
             var routeTemplet = route.ServiceDescriptor.RoutePath;
             var parameters = routeTemplet.Split(@"/");
             var pathSegments = path.Split(@"/");

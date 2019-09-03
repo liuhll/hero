@@ -1,17 +1,17 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Surging.Core.Caching" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.Consul" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.CPlatform" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.DotNetty" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.KestrelHttpServer" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.Log4net" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.Swagger" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="2.0.0-bate.18" />
-    <PackageReference Include="Surging.Core.Codec.ProtoBuffer" Version="2.0.0-bate.18" />
+    <PackageReference Include="Surging.Core.Caching" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.Consul" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.CPlatform" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.DotNetty" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.KestrelHttpServer" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.Log4net" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.Swagger" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.Codec.ProtoBuffer" Version="2.0.1-bate.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />
@@ -36,7 +36,7 @@
     </None>
   </ItemGroup>
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 </Project>
