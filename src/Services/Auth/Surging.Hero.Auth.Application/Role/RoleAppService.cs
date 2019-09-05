@@ -22,6 +22,15 @@ namespace Surging.Hero.Auth.Application.Role
             return "新增角色信息成功";
         }
 
+        public async Task<string> Status(UpdateRoleStatusInput input)
+        {
+            await _roleDomainService.UpdateStatus(input);
+            if (input.Status == Common.Status.Valid) {
+                return "启用角色成功";
+            }
+            return "禁用角色成功";
+        }
+
         public async Task<string> Update(UpdateRoleInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();

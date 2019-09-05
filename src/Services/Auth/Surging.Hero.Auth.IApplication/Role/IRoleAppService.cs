@@ -14,5 +14,8 @@ namespace Surging.Hero.Auth.IApplication.Role
 
         [HttpPut(true)]
         Task<string> Update(UpdateRoleInput input);
+
+        [HttpPut(true)]
+        Task<string> Status(UpdateRoleStatusInput input);
     }
 }

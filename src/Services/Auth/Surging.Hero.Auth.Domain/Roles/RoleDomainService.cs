@@ -49,5 +49,12 @@ namespace Surging.Hero.Auth.Domain.Roles
             await _roleRepository.UpdateAsync(role);
         
         }
+
+        public async Task UpdateStatus(UpdateRoleStatusInput input)
+        {
+            var role = await _roleRepository.GetAsync(input.Id);
+            role.Status = input.Status;
+            await _roleRepository.UpdateAsync(role);
+        }
     }
 }

@@ -8,5 +8,6 @@ namespace Surging.Hero.Auth.Domain.Roles
     {
         Task Create(CreateRoleInput input);
         Task Update(UpdateRoleInput input);
+        Task UpdateStatus(UpdateRoleStatusInput input);
     }
 }
