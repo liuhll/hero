@@ -9,6 +9,10 @@ namespace Surging.Hero.Auth.IApplication.Role
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IRoleAppService : IServiceKey
     {
+        [HttpPost(true)]
         Task<string> Create(CreateRoleInput input);
+
+        [HttpPut(true)]
+        Task<string> Update(UpdateRoleInput input);
     }
 }
