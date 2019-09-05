@@ -10,6 +10,7 @@ namespace Surging.Hero.Auth.Application.Role
                 dest.Status = Common.Status.Valid;
             });
             CreateMap<UpdateRoleInput, Domain.Roles.Role>();
+            CreateMap<Domain.Roles.Role, GetRoleOutput>();
         }
     }
 }

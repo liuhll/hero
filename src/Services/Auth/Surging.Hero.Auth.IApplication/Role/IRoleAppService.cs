@@ -17,5 +17,9 @@ namespace Surging.Hero.Auth.IApplication.Role
 
         [HttpPut(true)]
         Task<string> Status(UpdateRoleStatusInput input);
+
+        [HttpGet(true)]
+        [ServiceRoute("{id}")]
+        Task<GetRoleOutput> Get(long id);
     }
 }
