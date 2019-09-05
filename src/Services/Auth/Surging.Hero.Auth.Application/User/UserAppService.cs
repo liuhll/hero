@@ -115,12 +115,12 @@ namespace Surging.Hero.Auth.Application.User
                || p.Email.Contains(query.SearchKey)
                || p.Phone.Contains(query.SearchKey),query.PageIndex,query.PageCount); 
             
-            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserOutput>>();
-            foreach (var userOutput in queryResultOutput) {
+            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserOutput>>().GetPagedResult(queryResult.Item2);
+            foreach (var userOutput in queryResultOutput.Items) {
                 userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
                 userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
             }
-            return queryResultOutput.GetPagedResult(queryResult.Item2);
+            return queryResultOutput;
         }
 
         public async Task<string> UpdateStatus(UpdateUserStatusInput input)
