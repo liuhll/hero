@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Surging.Hero.Common;
+using Surging.Hero.Common.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,5 +11,9 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         public long Id { get; set; }
 
         public string DeptName { get; set; }
+
+        public Status Status { get; set; }
+
+        public string StatusDesc { get { return Status.GetDescription(); } }
     }
 }

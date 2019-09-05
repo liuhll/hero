@@ -1,7 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.Roles;
@@ -41,6 +45,27 @@ namespace Surging.Hero.Auth.Application.Role
             }
             return roleOutput;
      
+        }
+
+        public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
+        {
+            Tuple<IEnumerable<Domain.Roles.Role>, int> queryResult;
+            if (query.DeptId.HasValue && query.DeptId != 0)
+            {
+                queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) && p.Memo.Contains(query.SearchKey) && p.DeptId == query.DeptId.Value, query.PageIndex, query.PageCount);
+            }
+            else {
+                queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) && p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);
+            }
+
+            var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
+            foreach (var output in outputs.Items) {
+                if (output.DeptId.HasValue && output.DeptId != 0) {
+                    output.DeptName = (await GetService<IDepartmentAppService>().Get(output.DeptId.Value)).Name;
+                }
+                
+            }
+            return outputs;
         }
 
         public async Task<string> Status(UpdateRoleStatusInput input)
