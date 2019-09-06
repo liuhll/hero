@@ -24,15 +24,15 @@ drop table if exists Role;
 
 drop table if exists RolePermission;
 
+drop table if exists UserGroup;
+
+drop table if exists UserGroupRole;
+
 drop table if exists UserInfo;
 
 drop table if exists UserRole;
 
 drop table if exists UserUsergroupRelation;
-
-drop table if exists Usergroup;
-
-drop table if exists UsergroupRole;
 
 /*==============================================================*/
 /* Table: Action                                                */
@@ -93,9 +93,10 @@ create table Menu
    Id                   bigint not null auto_increment comment '主键',
    PermissionId         bigint not null comment 'PermissionId',
    ParentId             bigint comment '父级菜单Id',
+   Code                 varchar(200),
+   Level                int not null comment '层级',
    Name                 varchar(50) not null comment '菜单名称',
    Anchor               varchar(50) not null comment '前端菜单页面锚点',
-   Level                int not null comment '层级',
    Mold                 int not null comment '菜单类型',
    Icon                 varchar(100) comment 'icon图标',
    FrontEndComponent    varchar(100) comment '前端组件',
@@ -220,6 +221,46 @@ create table RolePermission
 alter table RolePermission comment '角色权限表';
 
 /*==============================================================*/
+/* Table: UserGroup                                             */
+/*==============================================================*/
+create table UserGroup
+(
+   Id                   bigint not null auto_increment comment '主键',
+   ParentId             bigint not null comment '父用户组Id',
+   Code                 varchar(200),
+   Name                 varchar(50) not null comment '用户组名称',
+   Level                int not null,
+   Status               int not null comment '状态',
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
+   IsDeleted            int comment '软删除标识',
+   DeleteBy             bigint comment '删除用户',
+   DeleteTime           datetime comment '删除时间',
+   primary key (Id)
+);
+
+alter table UserGroup comment '用户组表';
+
+/*==============================================================*/
+/* Table: UserGroupRole                                         */
+/*==============================================================*/
+create table UserGroupRole
+(
+   Id                   bigint not null auto_increment comment '主键',
+   UserGroupId          bigint not null,
+   RoleId               bigint not null,
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
+   primary key (Id)
+);
+
+alter table UserGroupRole comment '用户组角色关系表';
+
+/*==============================================================*/
 /* Table: UserInfo                                              */
 /*==============================================================*/
 create table UserInfo
@@ -291,43 +332,4 @@ create table UserUsergroupRelation
 );
 
 alter table UserUsergroupRelation comment '用户与用户关系表';
-
-/*==============================================================*/
-/* Table: Usergroup                                             */
-/*==============================================================*/
-create table Usergroup
-(
-   Id                   bigint not null auto_increment comment '主键',
-   ParentId             bigint not null comment '父用户组Id',
-   GroupCode            varchar(50),
-   GroupName            varchar(50) not null comment '用户组名称',
-   Status               int not null comment '状态',
-   CreateBy             bigint comment '创建人',
-   CreateTime           datetime comment '创建日期',
-   UpdateBy             bigint comment '修改人',
-   UpdateTime           datetime comment '修改日期',
-   IsDeleted            int comment '软删除标识',
-   DeleteBy             bigint comment '删除用户',
-   DeleteTime           datetime comment '删除时间',
-   primary key (Id)
-);
-
-alter table Usergroup comment '用户组表';
-
-/*==============================================================*/
-/* Table: UsergroupRole                                         */
-/*==============================================================*/
-create table UsergroupRole
-(
-   Id                   bigint not null auto_increment comment '主键',
-   UserGroupId          bigint not null,
-   RoleId               bigint not null,
-   CreateBy             bigint comment '创建人',
-   CreateTime           datetime comment '创建日期',
-   UpdateBy             bigint comment '修改人',
-   UpdateTime           datetime comment '修改日期',
-   primary key (Id)
-);
-
-alter table UsergroupRole comment '用户组角色关系表';
 

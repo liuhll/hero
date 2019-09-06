@@ -6,7 +6,7 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 drop database if exists hero_organization;
 create database hero_organization;
-use hero_organization;
+
 
 drop table if exists Corporation;
 
@@ -20,7 +20,8 @@ drop table if exists Position;
 create table Corporation
 (
    Id                   bigint not null auto_increment comment '主键',
-   Code                 varchar(50) not null comment '唯一编码',
+   Code                 varchar(200) not null comment '唯一编码',
+   Level                int,
    Name                 varchar(50) not null comment '公司名称',
    ParentId             bigint comment '母公司Id',
    Type                 int comment '0.集团公司;1.单体公司',
@@ -52,8 +53,9 @@ alter table Corporation comment '公司信息表';
 create table Department
 (
    Id                   bigint not null auto_increment comment '主键',
-   Code                 varchar(50) not null comment '唯一编码',
+   Code                 varchar(200) not null comment '唯一编码',
    Name                 varchar(50) not null comment '部门名称',
+   Level                int not null,
    ParentId             bigint not null comment '上级部门Id',
    CorporationId        bigint comment '所属公司',
    Location             varchar(100) comment '部门位置',
@@ -82,12 +84,12 @@ create table Position
    DeptId               bigint not null comment '所属部门',
    Code                 varchar(50) not null comment '唯一编码',
    Name                 varchar(50) not null comment '职位名称',
+   Level                int not null,
    FunctionId           bigint not null comment '职能Id,取自字典表',
    PositionLevelId      bigint not null comment '岗位级别Id,取自字典表',
    BriefIntro           varchar(100) comment '岗位说明',
    Memo                 varchar(500) comment '备注',
    PostResponsibility   varchar(200) not null comment '岗位职责',
-   IsLeadingOfficial    bit not null comment '是否部门负责人岗位',
    IsLeadershipPost     bit not null comment '是否领导岗位',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
@@ -101,8 +103,4 @@ create table Position
 );
 
 alter table Position comment '职位表';
-
-alter table Position comment '职位表';
-
-
 
