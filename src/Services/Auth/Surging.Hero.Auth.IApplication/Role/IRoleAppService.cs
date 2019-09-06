@@ -23,6 +23,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         [ServiceRoute("{id}")]
         Task<GetRoleOutput> Get(long id);
 
+        [HttpPost(true)]
         Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query);
     }
 }
