@@ -85,13 +85,13 @@ create table Position
    DeptId               bigint not null comment '所属部门',
    Code                 varchar(50) not null comment '唯一编码',
    Name                 varchar(50) not null comment '职位名称',
-   Level                int not null,
    FunctionId           bigint not null comment '职能Id,取自字典表',
    PositionLevelId      bigint not null comment '岗位级别Id,取自字典表',
    BriefIntro           varchar(100) comment '岗位说明',
    Memo                 varchar(500) comment '备注',
    PostResponsibility   varchar(200) not null comment '岗位职责',
    IsLeadershipPost     bit not null comment '是否领导岗位',
+   IsLeadingOfficial    bit not null comment '是否负责人岗位',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
@@ -104,4 +104,5 @@ create table Position
 );
 
 alter table Position comment '职位表';
+
 
