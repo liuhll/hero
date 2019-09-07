@@ -40,15 +40,15 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             return "新增字典项成功";
         }
 
-        public async Task<string> Delete(DeleteByIdInput input)
+        public async Task<string> Delete(long id)
         {
-            await _wordbookDomainService.DeleteWordbook(input.Id);
+            await _wordbookDomainService.DeleteWordbook(id);
             return "删除字典类型成功";
         }
 
-        public async Task<string> DeleteWordbookItem(DeleteByIdInput input)
+        public async Task<string> DeleteWordbookItem(long id)
         {
-            await _wordbookDomainService.DeleteWordbookItem(input.Id);
+            await _wordbookDomainService.DeleteWordbookItem(id);
             return "删除字典项目成功";
         }
 

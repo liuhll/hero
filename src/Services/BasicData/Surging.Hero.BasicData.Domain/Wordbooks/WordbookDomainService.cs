@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
-using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
 
 namespace Surging.Hero.BasicData.Domain.Wordbooks
 {
-    public class WordbookDomainService : IWordbookDomainService
+    public class WordbookDomainService : ManagerBase, IWordbookDomainService
     {
         private readonly IDapperRepository<Wordbook, long> _wordbookRepository;
         private readonly IDapperRepository<WordbookItem, long> _wordbookItemRepository;
@@ -71,7 +71,11 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             {
                 throw new BusinessException($"不允许删除系统预设的字典类型");
             }
-            await _wordbookRepository.DeleteAsync(wordbook);
+            await UnitOfWorkAsync(async (conn,trans) => {
+                await _wordbookRepository.DeleteAsync(wordbook, conn, trans);
+                await _wordbookItemRepository.DeleteAsync(p => p.WordbookId == id, conn, trans);
+            },Connection);
+           
         }
 
         public async Task DeleteWordbookItem(long id)

@@ -18,8 +18,9 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         [HttpPut(true)]
         Task<string> Update(UpdateWordbookInput input);
 
+        [ServiceRoute("{id}")]
         [HttpDelete(true)]
-        Task<string> Delete(DeleteByIdInput input);
+        Task<string> Delete(long id);
 
         Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query);
 
@@ -37,8 +38,9 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         [HttpPut(true)]
         Task<string> UpdateWordbookItem(UpdateWordbookItemInput input);
 
+        [ServiceRoute("{id}")]
         [HttpDelete(true)]
-        Task<string> DeleteWordbookItem(DeleteByIdInput input);
+        Task<string> DeleteWordbookItem(long id);
 
         [ServiceRoute("{id}")]
         [HttpGet(true)]
