@@ -6,6 +6,7 @@ using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Hero.Auth.IApplication.User;
+using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;
 
 namespace Surging.Hero.Organization.Domain.Organizations
@@ -25,17 +26,13 @@ namespace Surging.Hero.Organization.Domain.Organizations
 
         public async Task CreateCorporation(CreateCorporationInput input)
         {
-            var existCodeCorporation = await _corporationRepository.FirstOrDefaultAsync(p => p.Code == input.Code);
-            if (existCodeCorporation != null)
-            {
-                throw new BusinessException($"系统中已经存在code为{input.Code}的企业信息");
-            }
+            var thisLevelCorporationCount = await _corporationRepository.GetCountAsync(p => p.ParentId == input.ParentId);
             if (input.ParentId == 0)
             {
-                await CreateTopCorporation(input);
+                await CreateTopCorporation(input, thisLevelCorporationCount);
             }
             else {
-                await CreateSubCorporation(input);
+                await CreateSubCorporation(input, thisLevelCorporationCount);
             }
         }
 
@@ -80,38 +77,37 @@ namespace Surging.Hero.Organization.Domain.Organizations
 
         }
 
-        private async Task CreateSubCorporation(CreateCorporationInput input)
+        private async Task CreateSubCorporation(CreateCorporationInput input, int thisLevelCorporationCount)
         {
-            
-            var topCorporation = await _corporationRepository.SingleOrDefaultAsync(p => p.ParentId == 0);
-            if (topCorporation == null)
-            {
-                throw new BusinessException("系统中不存在母公司,请先增加母公司");
-            }
-            //if (topCorporation.Type == Shared.CorporationType.Monomer)
-            //{
-            //    throw new BusinessException("单体公司不允许增加子公司");
-            //}
-            
             var parentCorporation = await _corporationRepository.GetAsync(input.ParentId);
-            if (parentCorporation.Type == Shared.CorporationType.Monomer)
+            if (parentCorporation.Mold == Shared.CorporationMold.Monomer)
             {
                 throw new BusinessException("单体公司不允许增加子公司");
             }
             var corporation = input.MapTo<Corporation>();
+            corporation.Code = parentCorporation.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (thisLevelCorporationCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            corporation.Level = parentCorporation.Level + 1;
             await _corporationRepository.InsertAsync(corporation);
         }
 
-        private async Task CreateTopCorporation(CreateCorporationInput input)
+        private async Task CreateTopCorporation(CreateCorporationInput input, int thisLevelCorporationCount)
         {
-            var topCorporation = await _corporationRepository.SingleOrDefaultAsync(p => p.ParentId == 0);
+            Corporation topCorporation = await _corporationRepository.SingleOrDefaultAsync(p => p.ParentId == 0);
             if (topCorporation != null)
             {
                 throw new BusinessException("系统中已经存在母公司,请不要重复添加");
             }
+            if (input.Mold != Shared.CorporationMold.Group && input.Mold != Shared.CorporationMold.Monomer) {
+                throw new BusinessException("公司类型不正确,顶层公司只能指定为:集团公司或单体公司");
+            }
             topCorporation = input.MapTo<Corporation>();
+            topCorporation.Code = (thisLevelCorporationCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            topCorporation.Level = 1;
             await _corporationRepository.InsertAsync(topCorporation);
-                
+
+
+
+
         }
     }
 }

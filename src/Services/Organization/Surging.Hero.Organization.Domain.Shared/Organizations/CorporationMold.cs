@@ -2,7 +2,9 @@
 {
     public enum CorporationMold
     {
-        ParentFirm = 0,
+        Group = 0,
+
+        Monomer,
 
         Subsidiary,
 

@@ -10,9 +10,9 @@ namespace Surging.Hero.Organization.Domain
 
         public string Name { get; set; }
 
-        public long ParentId { get; set; }
+        public int Level { get; set; }
 
-        public CorporationType Type { get; set; }
+        public long ParentId { get; set; }
 
         public CorporationMold Mold { get; set; }
 

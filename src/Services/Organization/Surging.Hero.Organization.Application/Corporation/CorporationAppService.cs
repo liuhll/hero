@@ -23,9 +23,9 @@ namespace Surging.Hero.Organization.Application.Corporation
             return "新增公司信息成功";
         }
 
-        public async Task<string> Delete(DeleteByIdInput input)
+        public async Task<string> Delete(long id)
         {
-            await _corporationDomainService.DeleteCorporation(input.Id);
+            await _corporationDomainService.DeleteCorporation(id);
             return "删除公司信息成功";
         }
 

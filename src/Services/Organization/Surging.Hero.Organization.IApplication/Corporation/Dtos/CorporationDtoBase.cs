@@ -12,9 +12,6 @@ namespace Surging.Hero.Organization.IApplication.Corporation.Dtos
         [MaxLength(50,ErrorMessage = "公司名称不允许超过50个字符")]
         public string Name { get; set; }
 
-       
-        public CorporationType Type { get; set; }
-
         public CorporationMold Mold { get; set; }
 
         [Required(ErrorMessage = "公司地址不允许为空")]
@@ -25,7 +22,10 @@ namespace Surging.Hero.Organization.IApplication.Corporation.Dtos
 
         public string LogoPosition { get; set; }
 
+        public string CorporateRepresentative { get; set; }
+
         public DateTime RegisterDate { get; set; }
+
 
         public DateTime OpenDate { get; set; }
 
