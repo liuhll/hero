@@ -32,7 +32,7 @@ drop table if exists UserInfo;
 
 drop table if exists UserRole;
 
-drop table if exists UserUsergroupRelation;
+drop table if exists UserUserGroupRelation;
 
 /*==============================================================*/
 /* Table: Action                                                */
@@ -317,9 +317,9 @@ create table UserRole
 alter table UserRole comment '用户角色关系表';
 
 /*==============================================================*/
-/* Table: UserUsergroupRelation                                 */
+/* Table: UserUserGroupRelation                                 */
 /*==============================================================*/
-create table UserUsergroupRelation
+create table UserUserGroupRelation
 (
    Id                   bigint not null auto_increment comment '主键',
    UserId               bigint not null,
@@ -331,5 +331,5 @@ create table UserUsergroupRelation
    primary key (Id)
 );
 
-alter table UserUsergroupRelation comment '用户与用户关系表';
+alter table UserUserGroupRelation comment '用户与用户关系表';
 
