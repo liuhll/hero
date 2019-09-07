@@ -45,16 +45,14 @@ namespace Surging.Hero.Organization.Domain
         public async Task<IEnumerable<Organization>> GetOrganizations(long? id, OrganizationType organizationType)
         {
             var organizations = new List<Organization>();
-            if (!id.HasValue)
+            if (!id.HasValue  || id == 0)
             {
                 return await GetOrganizations();
             }
             else
             {
                 switch (organizationType) {
-                    case OrganizationType.Subsidiary:
-                    case OrganizationType.HoldingCompany:
-                    case OrganizationType.ParentFirm:
+                    case OrganizationType.Corporation:
                         var corporation = await _corporationRepository.GetAsync(id.Value);
                         organizations.Add(corporation.MapTo<Organization>());
                         var departments = await _departmentRepository.GetAllAsync(p => p.CorporationId == corporation.Id);

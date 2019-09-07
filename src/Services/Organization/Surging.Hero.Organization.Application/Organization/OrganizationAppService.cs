@@ -39,7 +39,7 @@ namespace Surging.Hero.Organization.Application.Organization
 
         private IEnumerable<GetOrganizationTreeOutput> BuildOrganizationTree(IEnumerable<Domain.Organization> organizations)
         {
-            var topOrgs = organizations.Where(p => p.ParentId == 0 && p.OrganizationType != OrganizationType.Department);
+            var topOrgs = organizations.Where(p => p.ParentId == 0 && p.OrganizationType == OrganizationType.Corporation);
             var topOrgoutputs = topOrgs.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
             foreach (var topOrgoutput in topOrgoutputs) {
                 topOrgoutput.Children = BuildOrganizationChildren(topOrgoutput, organizations);
@@ -51,9 +51,9 @@ namespace Surging.Hero.Organization.Application.Organization
         private IEnumerable<GetOrganizationTreeOutput> BuildOrganizationChildren(GetOrganizationTreeOutput topOrgoutput, IEnumerable<Domain.Organization> organizations)
         {
             var children = new List<GetOrganizationTreeOutput>();
-            if (topOrgoutput.OrganizationType != OrganizationType.Department)
+            if (topOrgoutput.OrganizationType == OrganizationType.Corporation)
             {
-                var corporationChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType != OrganizationType.Department);
+                var corporationChildren = organizations.Where(p => p.ParentId == topOrgoutput.Id && p.OrganizationType == OrganizationType.Corporation);
                 if (corporationChildren.Any())
                 {
                     var corporationChildrenOutputs = corporationChildren.MapTo<IEnumerable<GetOrganizationTreeOutput>>();
