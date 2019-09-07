@@ -37,9 +37,9 @@ namespace Surging.Hero.Organization.Application.Position
             return "新增职位信息成功";
         }
 
-        public async Task<string> Delete(DeleteByIdInput input)
+        public async Task<string> Delete(long id)
         {
-            await _positionDomainService.DeletePosition(input.Id);
+            await _positionDomainService.DeletePosition(id);
             return "删除职位信息成功";
         }
 

@@ -8,6 +8,8 @@ namespace Surging.Hero.Organization.Domain
 
         public string Name { get; set; }
 
+        public int Level { get; set; }
+
         public long ParentId { get; set; }
 
         public long CorporationId { get; set; }

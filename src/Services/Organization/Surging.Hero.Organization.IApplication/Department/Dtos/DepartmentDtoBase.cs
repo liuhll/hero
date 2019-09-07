@@ -5,9 +5,6 @@ namespace Surging.Hero.Organization.IApplication.Department.Dtos
 {
     public abstract class DepartmentDtoBase
     {
-        [Required(ErrorMessage = "部门编码不允许为空")]
-        [RegularExpression(RegExpConstants.DepartmentCode, ErrorMessage = "部门编码格式不正确")]
-        public string Code { get; set; }
 
         [Required(ErrorMessage = "部门名称不允许为空")]
         [MaxLength(50,ErrorMessage = "部门名称长度不允许超过50")]

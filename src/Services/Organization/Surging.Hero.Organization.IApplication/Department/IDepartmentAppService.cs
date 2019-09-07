@@ -16,8 +16,9 @@ namespace Surging.Hero.Organization.IApplication.Department
         [HttpPost(true)]
         Task<string> Update(UpdateDepartmentInput input);
 
+        [ServiceRoute("{id}")]
         [HttpDelete(true)]
-        Task<string> Delete(DeleteByIdInput input);
+        Task<string> Delete(long id);
 
         [ServiceRoute("{id}")]
         [HttpGet(true)]

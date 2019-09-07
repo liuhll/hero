@@ -20,8 +20,9 @@ namespace Surging.Hero.Organization.IApplication.Position
         [HttpPut(true)]
         Task<string> Update(UpdatePositionInput input);
 
+        [ServiceRoute("{id}")]
         [HttpDelete(true)]
-        Task<string> Delete(DeleteByIdInput input);
+        Task<string> Delete(long id);
 
         [Service(DisableNetwork = true)]
         [HttpPost(true)]

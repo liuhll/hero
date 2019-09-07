@@ -10,6 +10,7 @@ using Surging.Core.Dapper.Repositories;
 using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
+using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
 
 namespace Surging.Hero.Organization.Domain.Positions
@@ -17,22 +18,29 @@ namespace Surging.Hero.Organization.Domain.Positions
     public class PositionDomainService : ManagerBase, IPositionDomainService
     {
         private readonly IDapperRepository<Position, long> _positionRepository;
+        private readonly IDapperRepository<Department, long> _departmentRepository;
 
-        public PositionDomainService(IDapperRepository<Position, long> positionRepository) {
+        public PositionDomainService(IDapperRepository<Position, long> positionRepository,
+            IDapperRepository<Department, long> departmentRepository) {
             _positionRepository = positionRepository;
+            _departmentRepository = departmentRepository;
         }
 
-        public async Task CreatePosition(CreatePositionInput input, DbConnection conn, DbTransaction trans)
+        public async Task CreatePosition(CreatePositionInput input,string positionCode, DbConnection conn, DbTransaction trans)
         {
             await CheckPosition(input);
             var position = input.MapTo<Position>();
+            position.Code = positionCode;
             await _positionRepository.InsertAsync(position, conn, trans);
         }
 
         public async Task CreatePosition(CreatePositionInput input)
         {
-            await CheckPosition(input);
+            await CheckPosition(input);            
             var position = input.MapTo<Position>();
+            var departPositionCount = await _positionRepository.GetCountAsync(p => p.DeptId == input.DeptId);
+            var department = await _departmentRepository.GetAsync(input.DeptId);
+            position.Code = department.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (departPositionCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             await _positionRepository.InsertAsync(position);
         }
 
@@ -52,15 +60,7 @@ namespace Surging.Hero.Organization.Domain.Positions
 
         public async Task UpdatePosition(UpdatePositionInput input)
         {
-            var position = await _positionRepository.GetAsync(input.Id);
-            if (input.Code != position.Code) {
-                var checkPosition = await _positionRepository.SingleOrDefaultAsync(p => p.Code == input.Code);
-                if (checkPosition != null)
-                {
-                    throw new BusinessException($"系统中已经存在Code为{input.Code}的职位信息");
-                }
-               
-            }
+            var position = await _positionRepository.GetAsync(input.Id);          
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
             if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemId = input.FunctionId }))
             {
@@ -84,11 +84,7 @@ namespace Surging.Hero.Organization.Domain.Positions
         }
 
         private async Task CheckPosition(CreatePositionInput input)
-        {
-            var position = await _positionRepository.SingleOrDefaultAsync(p => p.Code == input.Code);
-            if (position != null) {
-                throw new BusinessException($"系统中已经存在Code为{input.Code}的职位信息");
-            }
+        {         
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
             if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemId = input.FunctionId }))
             {

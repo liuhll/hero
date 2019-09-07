@@ -36,9 +36,9 @@ namespace Surging.Hero.Organization.Application.Department
             return "新增部门信息成功";
         }
 
-        public async Task<string> Delete(DeleteByIdInput input)
+        public async Task<string> Delete(long id)
         {
-            await _departmentDomainService.DeleteDepartment(input.Id);
+            await _departmentDomainService.DeleteDepartment(id);
             return "删除部门信息成功";
         }
 
