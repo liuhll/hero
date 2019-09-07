@@ -6,13 +6,14 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 drop database if exists hero_organization;
 create database hero_organization;
-
+use hero_organization;
 
 drop table if exists Corporation;
 
 drop table if exists Department;
 
 drop table if exists Position;
+
 
 /*==============================================================*/
 /* Table: Corporation                                           */
@@ -24,8 +25,7 @@ create table Corporation
    Level                int,
    Name                 varchar(50) not null comment '公司名称',
    ParentId             bigint comment '母公司Id',
-   Type                 int comment '0.集团公司;1.单体公司',
-   Mold                 int not null comment '0.母公司;2.子公司3.控股公司',
+   Mold                 int not null comment '0.集团公司;1.单体公司;2.子公司3.控股公司',
    Address              varchar(200) not null comment '公司地址',
    Logo                 varchar(50) comment 'logo名称',
    LogoPosition         varchar(50) comment 'logo存放位置',
@@ -46,6 +46,7 @@ create table Corporation
 );
 
 alter table Corporation comment '公司信息表';
+
 
 /*==============================================================*/
 /* Table: Department                                            */
