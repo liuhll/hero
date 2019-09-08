@@ -2,7 +2,6 @@
 using Surging.Core.AutoMapper;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
-using Surging.Hero.Common.Dtos;
 using Surging.Hero.Organization.Domain.Organizations;
 using Surging.Hero.Organization.IApplication.Corporation;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;

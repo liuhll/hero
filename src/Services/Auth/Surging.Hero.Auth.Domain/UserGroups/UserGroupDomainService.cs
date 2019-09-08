@@ -22,7 +22,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             if (input.ParentId == 0)
             {
                 userGroup.Level = 1;
-                userGroup.Code = (thisLevelUserGroupCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit);
+                userGroup.Code = (thisLevelUserGroupCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
             else {
                 var parentUserGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == input.ParentId);
@@ -30,7 +30,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     throw new BusinessException($"不存在Id为{input.ParentId}的用户组信息");
                 }
                 userGroup.Level = parentUserGroup.Level + 1;
-                userGroup.Code = parentUserGroup.Code + HeroConstants.CodeRuleRestrain.CodeCoverSymbol + (thisLevelUserGroupCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit);
+                userGroup.Code = parentUserGroup.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (thisLevelUserGroupCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
             await _userGroupRepository.InsertAsync(userGroup);
         }

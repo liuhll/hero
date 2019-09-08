@@ -1,13 +1,13 @@
 <Project> 
   <ItemGroup>
-    <PackageReference Include="Surging.Core.System" Version="2.0.1-bate.1" />
-	  <PackageReference Include="Surging.Core.ApiGateWay" Version="2.0.1-bate.1" />
-	  <PackageReference Include="Surging.Core.Consul" Version="2.0.1-bate.1" />
-    <PackageReference Include="Surging.Core.Zookeeper" Version="2.0.1-bate.1" />
-	  <PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.1-bate.1" />
-    <PackageReference Include="Surging.Core.DotNetty" Version="2.0.1-bate.1" />
-    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="2.0.1-bate.1" />
-    <PackageReference Include="Surging.Core.Caching" Version="2.0.1-bate.1" />
+    <PackageReference Include="Surging.Core.System" Version="2.0.1-bate.2" />
+	  <PackageReference Include="Surging.Core.ApiGateWay" Version="2.0.1-bate.2" />
+	  <PackageReference Include="Surging.Core.Consul" Version="2.0.1-bate.2" />
+    <PackageReference Include="Surging.Core.Zookeeper" Version="2.0.1-bate.2" />
+	  <PackageReference Include="Surging.Core.ProxyGenerator" Version="2.0.1-bate.2" />
+    <PackageReference Include="Surging.Core.DotNetty" Version="2.0.1-bate.2" />
+    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="2.0.1-bate.2" />
+    <PackageReference Include="Surging.Core.Caching" Version="2.0.1-bate.2" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Shared\Configs\cacheSettings.json" Link="configs\cacheSettings.json" >

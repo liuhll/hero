@@ -2,7 +2,6 @@
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
-using Surging.Hero.Common.Dtos;
 using Surging.Hero.Organization.Domain.Organizations.Departments;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Department.Dtos;

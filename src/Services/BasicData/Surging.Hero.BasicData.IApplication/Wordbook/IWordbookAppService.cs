@@ -3,7 +3,6 @@ using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attr
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
 using Surging.Hero.Common;
-using Surging.Hero.Common.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

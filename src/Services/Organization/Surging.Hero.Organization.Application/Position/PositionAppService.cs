@@ -3,7 +3,6 @@ using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
-using Surging.Hero.Common.Dtos;
 using Surging.Hero.Organization.Domain.Positions;
 using Surging.Hero.Organization.IApplication.Position;
 using Surging.Hero.Organization.IApplication.Position.Dtos;

@@ -8,7 +8,6 @@ using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.BasicData.Domain.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
-using Surging.Hero.Common.Dtos;
 
 namespace Surging.Hero.BasicData.Application.Wordbook
 {

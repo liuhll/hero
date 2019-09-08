@@ -8,7 +8,6 @@ using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.CPlatform.Exceptions;
-using Surging.Hero.Common.Dtos;
 using Surging.Core.Domain.PagedAndSorted;
 using System.Collections.Generic;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
@@ -97,14 +96,14 @@ namespace Surging.Hero.Auth.Application.User
         }
 
 
-        public async Task<string> Delete(DeleteByIdInput input)
+        public async Task<string> Delete(long id)
         {
-            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == id);
             if (userInfo == null)
             {
-                throw new BusinessException($"不存在Id为{input.Id}的账号信息");
+                throw new BusinessException($"不存在Id为{id}的账号信息");
             }
-            await _userRepository.DeleteAsync(p => p.Id == input.Id);
+            await _userRepository.DeleteAsync(p => p.Id == id);
             return "删除员工成功";
         }
 

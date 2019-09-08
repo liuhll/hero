@@ -1,64 +1,65 @@
 {
-    "CachingSettings": [
+  "CachingSettings": [
+    {
+      "Id": "ddlCache",
+      "Class": "Surging.Core.Caching.RedisCache.RedisContext,Surging.Core.Caching",
+      "InitMethod": "",
+      "Maps": null,
+      "Properties": [
         {
-            "Id": "ddlCache",
-            "Class": "Surging.Core.Caching.RedisCache.RedisContext,Surging.Core.Caching",
-            "InitMethod": "",
-            "Maps": null,
-            "Properties": [
+          "Name": "appRuleFile",
+          "Ref": "rule",
+          "Value": "",
+          "Maps": null
+        },
+        {
+          "Name": "dataContextPool",
+          "Ref": "ddls_cache",
+          "Value": "",
+          "Maps": [
+            {
+              "Name": "Redis",
+              "Properties": [
+               
                 {
-                    "Name": "appRuleFile",
-                    "Ref": "rule",
-                    "Value": "",
-                    "Maps": null
-                },
-                {
-                    "Name": "dataContextPool",
-                    "Ref": "ddls_sample",
-                    "Value": "",
-                    "Maps": [
-                        {
-                            "Name": "Redis",
-                            "Properties": [
-                                {
-                                    "Name": null,
-                                    "Ref": null,
-                                    "Value": "hero.redis:6379::1",
-                                    "Maps": null
-                                }
-                            ]
-                        },
-                        {
-                            "Name": "MemoryCache",
-                            "Properties": null
-                        }
-                    ]
-                },
-                {
-                    "Name": "defaultExpireTime",
-                    "Ref": "",
-                    "Value": "120",
-                    "Maps": null
-                },
-                {
-                    "Name": "connectTimeout",
-                    "Ref": "",
-                    "Value": "120",
-                    "Maps": null
-                },
-                {
-                    "Name": "minSize",
-                    "Ref": "",
-                    "Value": "1",
-                    "Maps": null
-                },
-                {
-                    "Name": "maxSize",
-                    "Ref": "",
-                    "Value": "10",
-                    "Maps": null
+                  "Name": null,
+                  "Ref": null,
+                  "Value": "hero.consul:6379::1",
+                  "Maps": null
                 }
-            ]
+              ]
+            },
+            {
+              "Name": "MemoryCache",
+              "Properties": null
+            }
+          ]
+        },
+        {
+          "Name": "defaultExpireTime",
+          "Ref": "",
+          "Value": "120",
+          "Maps": null
+        },
+        {
+          "Name": "connectTimeout",
+          "Ref": "",
+          "Value": "120",
+          "Maps": null
+        },
+        {
+          "Name": "minSize",
+          "Ref": "",
+          "Value": "1",
+          "Maps": null
+        },
+        {
+          "Name": "maxSize",
+          "Ref": "",
+          "Value": "10",
+          "Maps": null
         }
-    ]
+      ]
+    }
+  ]
 }
