@@ -34,5 +34,15 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             }
             await _userGroupRepository.InsertAsync(userGroup);
         }
+
+        public async Task Update(UpdateUserGroupInput input)
+        {
+            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (userGroup == null) {
+                throw new BusinessException($"不存在Id为{input.Id}的用户组");
+            }
+            userGroup = input.MapTo(userGroup);
+            await _userGroupRepository.UpdateAsync(userGroup);
+        }
     }
 }

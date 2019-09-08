@@ -11,5 +11,8 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
     {
         [HttpPost(true)]
         Task<string> Create(CreateUserGroupInput input);
+
+        [HttpPut(true)]
+        Task<string> Update(UpdateUserGroupInput input);
     }
 }

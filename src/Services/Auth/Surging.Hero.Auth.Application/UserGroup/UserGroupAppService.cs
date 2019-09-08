@@ -21,5 +21,12 @@ namespace Surging.Hero.Auth.Application.UserGroup
             await _userGroupDomainService.Create(input);
             return "新增用户组成功";
         }
+
+        public async Task<string> Update(UpdateUserGroupInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _userGroupDomainService.Update(input);
+            return "更新用户组成功"; ;
+        }
     }
 }
