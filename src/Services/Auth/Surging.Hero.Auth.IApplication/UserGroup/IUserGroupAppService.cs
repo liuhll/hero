@@ -14,5 +14,10 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
 
         [HttpPut(true)]
         Task<string> Update(UpdateUserGroupInput input);
+
+        [ServiceRoute("{id}")]
+        [HttpGet(true)]
+        Task<GetUserGroupOutput> Get(long id);
+        
     }
 }

@@ -8,6 +8,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
         public UserGroupProfile() {
             CreateMap<CreateUserGroupInput, Domain.UserGroups.UserGroup>();
             CreateMap<UpdateUserGroupInput, Domain.UserGroups.UserGroup>();
+            CreateMap<Domain.UserGroups.UserGroup, GetUserGroupOutput>();
         }
     }
 }
