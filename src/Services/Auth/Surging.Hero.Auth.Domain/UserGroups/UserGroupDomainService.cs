@@ -16,15 +16,18 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
         private readonly IDapperRepository<UserUserGroupRelation, long> _userUserGroupRelationRepository;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
+        private readonly IDapperRepository<Roles.Role, long> _roleRepository;
 
         public UserGroupDomainService(IDapperRepository<UserGroup, long> userGroupRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
             IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRepository,
-            IDapperRepository<UserInfo, long> userRepository) {
+            IDapperRepository<UserInfo, long> userRepository,
+            IDapperRepository<Roles.Role, long> roleRepository) {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
             _userUserGroupRelationRepository = userUserGroupRelationRepository;
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
         public async Task Create(CreateUserGroupInput input)
@@ -53,6 +56,14 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     }
                     await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserGroupId = userGroupId, UserId = userId }, conn, trans);
                 }
+                foreach (var roleId in input.RoleIds) {
+                    var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
+                    if (roleInfo == null)
+                    {
+                        throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
+                    }
+                    await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroupId, RoleId = roleId }, conn, trans);
+                }
             }, Connection);
            
         }
@@ -71,6 +82,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 await _userGroupRepository.DeleteAsync(p => p.Id == id,conn,trans);
                 await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
                 await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
+                
             }, Connection);
         }
 
@@ -81,7 +93,30 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 throw new BusinessException($"不存在Id为{input.Id}的用户组");
             }
             userGroup = input.MapTo(userGroup);
-            await _userGroupRepository.UpdateAsync(userGroup);
+            await UnitOfWorkAsync(async (conn, trans) => {
+                await _userGroupRepository.UpdateAsync(userGroup,conn,trans);
+                await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
+                await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
+                foreach (var userId in input.UserIds)
+                {
+                    var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == userId);
+                    if (userInfo == null)
+                    {
+                        throw new BusinessException($"不存在用户Id为{userId}的用户信息");
+                    }
+                    await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserGroupId = userGroup.Id, UserId = userId }, conn, trans);
+                }
+                foreach (var roleId in input.RoleIds)
+                {
+                    var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
+                    if (roleInfo == null)
+                    {
+                        throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
+                    }
+                    await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroup.Id, RoleId = roleId }, conn, trans);
+                }
+            }, Connection);
+            
         }
     }
 }

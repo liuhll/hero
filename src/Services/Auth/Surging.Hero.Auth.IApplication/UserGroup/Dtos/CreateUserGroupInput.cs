@@ -5,5 +5,7 @@
         public long ParentId { get; set; }
         
         public long[] UserIds { get; set; }
+
+        public long[] RoleIds { get; set; }
     }
 }
