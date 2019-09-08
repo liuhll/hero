@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
-using Surging.Core.Domain.PagedAndSorted;
-using Surging.Core.Domain.PagedAndSorted.Extensions;
+using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.BasicData.Domain.Wordbooks;

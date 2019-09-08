@@ -1,4 +1,4 @@
-﻿using Surging.Core.Domain.PagedAndSorted;
+﻿using Surging.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Text;

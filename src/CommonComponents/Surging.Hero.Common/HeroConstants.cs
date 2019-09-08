@@ -12,6 +12,8 @@
 
             public const int CodeCoverBit = 4;
 
+            public const string FullNameSeparator = "-";
+
         }
     }
 }

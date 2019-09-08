@@ -1,6 +1,6 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
-using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common;
 using System.Collections.Generic;

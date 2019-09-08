@@ -1,4 +1,4 @@
-﻿using Surging.Core.Domain.PagedAndSorted;
+﻿using Surging.Core.Domain;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 {

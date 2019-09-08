@@ -4,6 +4,7 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
 
@@ -14,13 +15,16 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<UserGroup, long> _userGroupRepository;
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
         private readonly IDapperRepository<UserUserGroupRelation, long> _userUserGroupRelationRepository;
+        private readonly IDapperRepository<UserInfo, long> _userRepository;
 
         public UserGroupDomainService(IDapperRepository<UserGroup, long> userGroupRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
-            IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRepository) {
+            IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRepository,
+            IDapperRepository<UserInfo, long> userRepository) {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
             _userUserGroupRelationRepository = userUserGroupRelationRepository;
+            _userRepository = userRepository;
         }
 
         public async Task Create(CreateUserGroupInput input)
@@ -40,7 +44,17 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 userGroup.Level = parentUserGroup.Level + 1;
                 userGroup.Code = parentUserGroup.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (thisLevelUserGroupCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
-            await _userGroupRepository.InsertAsync(userGroup);
+            await UnitOfWorkAsync(async(conn, trans) => {
+                var userGroupId =  await _userGroupRepository.InsertAndGetIdAsync(userGroup,conn,trans);
+                foreach (var userId in input.UserIds) {
+                    var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == userId);
+                    if (userInfo == null) {
+                        throw new BusinessException($"不存在用户Id为{userId}的用户信息");
+                    }
+                    await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserGroupId = userGroupId, UserId = userId }, conn, trans);
+                }
+            }, Connection);
+           
         }
 
         public async Task Delete(long id)

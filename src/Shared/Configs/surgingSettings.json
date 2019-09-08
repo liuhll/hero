@@ -6,7 +6,7 @@
     "MappingIp": "${Mapping_ip}",
     "MappingPort": "${Mapping_Port}",
     "Token": "true",
-    "WanIp": "${WanIp}|192.168.31.1",
+    "WanIp": "${WanIp}",
     "Libuv": true,
     "SoBacklog": 100,
     "MaxConcurrentRequests": 20,

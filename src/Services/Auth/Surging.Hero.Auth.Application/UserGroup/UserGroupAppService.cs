@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.UserGroups;
@@ -43,11 +45,19 @@ namespace Surging.Hero.Auth.Application.UserGroup
             return userGroup.MapTo<GetUserGroupOutput>();
         }
 
+        public async Task<IEnumerable<ITree<GetUserGroupTreeOutput>>> GetTree()
+        {
+            var userGroups = await _userGroupRepository.GetAllAsync();
+            var userGroupTreeOutputs = userGroups.MapTo<IEnumerable<GetUserGroupTreeOutput>>();
+            return userGroupTreeOutputs.BuildTree();
+        }
+
         public async Task<string> Update(UpdateUserGroupInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
             await _userGroupDomainService.Update(input);
             return "更新用户组成功"; ;
         }
+
     }
 }
