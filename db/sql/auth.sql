@@ -230,6 +230,7 @@ create table UserGroup
    Code                 varchar(200),
    Name                 varchar(50) not null comment '用户组名称',
    Level                int not null,
+   Memo                 varchar(200),
    Status               int not null comment '状态',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
