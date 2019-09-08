@@ -8,5 +8,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
     {
         Task Create(CreateUserGroupInput input);
         Task Update(UpdateUserGroupInput input);
+        Task Delete(long id);
     }
 }

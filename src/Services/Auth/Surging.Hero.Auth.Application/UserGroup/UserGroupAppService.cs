@@ -28,6 +28,12 @@ namespace Surging.Hero.Auth.Application.UserGroup
             return "新增用户组成功";
         }
 
+        public async Task<string> Delete(long id)
+        {
+            await _userGroupDomainService.Delete(id);
+            return "删除用户组信息成功";
+        }
+
         public async Task<GetUserGroupOutput> Get(long id)
         {
             var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == id);

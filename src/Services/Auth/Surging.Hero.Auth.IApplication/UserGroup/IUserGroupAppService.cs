@@ -18,6 +18,9 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         [ServiceRoute("{id}")]
         [HttpGet(true)]
         Task<GetUserGroupOutput> Get(long id);
-        
+
+        [ServiceRoute("{id}")]
+        [HttpDelete(true)]
+        Task<string> Delete(long id);
     }
 }
