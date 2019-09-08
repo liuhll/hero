@@ -24,7 +24,7 @@
                 {
                   "Name": null,
                   "Ref": null,
-                  "Value": "hero.consul:6379::1",
+                  "Value": "hero.redis:6379::1",
                   "Maps": null
                 }
               ]
