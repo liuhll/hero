@@ -9,6 +9,7 @@ using Surging.Core.Dapper.Repositories;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
@@ -146,14 +147,14 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             }
         }
 
-        public async Task<IEnumerable<GetGroupUserOutput>> GetUserGroupUsers(long userGroupId)
+        public async Task<IEnumerable<GetUserOutput>> GetUserGroupUsers(long userGroupId)
         {
             var sql = @"SELECT uugr.*,u.* FROM UserUserGroupRelation as uugr 
                         LEFT JOIN UserInfo as u on uugr.UserId = u.Id WHERE uugr.UserGroupId=@UserGroupId";
             using (Connection)
             {
-                return await Connection.QueryAsync<UserUserGroupRelation,UserInfo,GetGroupUserOutput>(sql,(uugr,u) => {
-                    var output = u.MapTo<GetGroupUserOutput>();
+                return await Connection.QueryAsync<UserUserGroupRelation,UserInfo, GetUserOutput>(sql,(uugr,u) => {
+                    var output = u.MapTo<GetUserOutput>();
                     var positionAppServiceProxy = GetService<IPositionAppService>();
                     output.PositionName = positionAppServiceProxy.Get(u.Id).Result.Name;
                     var departmentAppServiceProxy = GetService<IDepartmentAppService>();

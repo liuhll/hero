@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 
 namespace Surging.Hero.Auth.Domain.UserGroups
@@ -12,6 +13,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         Task Update(UpdateUserGroupInput input);
         Task Delete(long id);
         Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId);
-        Task<IEnumerable<GetGroupUserOutput>> GetUserGroupUsers(long userGroupId);
+        Task<IEnumerable<GetUserOutput>> GetUserGroupUsers(long userGroupId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Hero.Auth.IApplication.User.Dtos;
 using System.Collections.Generic;
 
 namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
@@ -11,6 +12,6 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
 
-        public IEnumerable<GetGroupUserOutput> Users { get; set; }
+        public IEnumerable<GetUserOutput> Users { get; set; }
     }
 }
