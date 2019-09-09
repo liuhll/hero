@@ -22,6 +22,7 @@ namespace Surging.Hero.Auth.Application.User
     {
         private readonly IUserDomainService _userDomainService;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
+
         public UserAppService(IUserDomainService userDomainService,
             IDapperRepository<UserInfo, long> userRepository)
         {
@@ -48,49 +49,15 @@ namespace Surging.Hero.Auth.Application.User
             {
                 throw new UserFriendlyException($"已经存在Email为{input.Email}的用户");
             }
-            var userInfo = input.MapTo<UserInfo>();            
-            await _userDomainService.CreateUser(userInfo);
+                      
+            await _userDomainService.Create(input);
             return "新增员工成功";
         }
 
         public async Task<string> Update(UpdateUserInput input)
         {
-            input.CheckDataAnnotations().CheckValidResult();
-            var updateUser = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
-            if (updateUser == null)
-            {
-                throw new BusinessException($"不存在Id为{input.Id}的账号信息");
-            }
-            if (input.Phone != updateUser.Phone)
-            {
-                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Phone == input.Phone);
-                if (existUser != null)
-                {
-                    throw new UserFriendlyException($"已经存在手机号码为{input.Phone}的用户");
-                }
-            }
-            if (input.Email != updateUser.Email)
-            {
-                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Email == input.Email);
-                if (existUser != null)
-                {
-                    throw new UserFriendlyException($"已经存在Email为{input.Email}的用户");
-                }
-            }
-
-            var departAppServiceProxy = GetService<IDepartmentAppService>();
-            if (!await departAppServiceProxy.Check(input.DeptId))
-            {
-                throw new BusinessException($"不存在Id为{input.DeptId}的部门信息");
-            }
-
-            var positionAppServiceProxy = GetService<IPositionAppService>();
-            if (!await positionAppServiceProxy.Check(input.PositionId))
-            {
-                throw new BusinessException($"不存在Id为{input.PositionId}的职位信息");
-            }
-            updateUser = input.MapTo(updateUser);
-            await _userRepository.UpdateAsync(updateUser);
+            input.CheckDataAnnotations().CheckValidResult();        
+            await _userDomainService.Update(input);
             return "更新员工信息成功";
         }
 
@@ -102,7 +69,7 @@ namespace Surging.Hero.Auth.Application.User
             {
                 throw new BusinessException($"不存在Id为{id}的账号信息");
             }
-            await _userRepository.DeleteAsync(p => p.Id == id);
+            await _userDomainService.Delete(id);
             return "删除员工成功";
         }
 

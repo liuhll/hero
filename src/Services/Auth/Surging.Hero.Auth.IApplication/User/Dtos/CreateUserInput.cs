@@ -15,5 +15,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 
         [RegularExpression(RegExpConstants.Password, ErrorMessage = "密码格式不正确")]
         public string Password { get; set; }
+
+        public long[] RoleIds { get; set; }
     }
 }

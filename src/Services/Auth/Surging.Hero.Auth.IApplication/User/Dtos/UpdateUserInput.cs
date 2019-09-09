@@ -7,5 +7,7 @@
         public long DeptId { get; set; }
 
         public long PositionId { get; set; }
+
+        public long[] RoleIds { get; set; }
     }
 }
