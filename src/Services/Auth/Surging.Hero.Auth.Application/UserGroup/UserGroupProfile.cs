@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 
 namespace Surging.Hero.Auth.Application.UserGroup
@@ -10,6 +11,8 @@ namespace Surging.Hero.Auth.Application.UserGroup
             CreateMap<UpdateUserGroupInput, Domain.UserGroups.UserGroup>();
             CreateMap<Domain.UserGroups.UserGroup, GetUserGroupOutput>();
             CreateMap<Domain.UserGroups.UserGroup,GetUserGroupTreeOutput>();
+            CreateMap<Domain.Roles.Role, GetDisplayRoleOutput>();
+            CreateMap<Domain.Users.UserInfo, GetGroupUserOutput>();
         }
     }
 }

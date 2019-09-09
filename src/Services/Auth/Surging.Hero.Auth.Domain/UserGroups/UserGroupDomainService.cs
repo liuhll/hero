@@ -1,12 +1,18 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Users;
+using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Organization.IApplication.Department;
+using Surging.Hero.Organization.IApplication.Position;
 
 namespace Surging.Hero.Auth.Domain.UserGroups
 {
@@ -22,7 +28,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
             IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRepository,
             IDapperRepository<UserInfo, long> userRepository,
-            IDapperRepository<Roles.Role, long> roleRepository) {
+            IDapperRepository<Roles.Role, long> roleRepository)
+        {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
             _userUserGroupRelationRepository = userUserGroupRelationRepository;
@@ -39,24 +46,30 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 userGroup.Level = 1;
                 userGroup.Code = (thisLevelUserGroupCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
-            else {
+            else
+            {
                 var parentUserGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == input.ParentId);
-                if (parentUserGroup == null) {
+                if (parentUserGroup == null)
+                {
                     throw new BusinessException($"不存在Id为{input.ParentId}的用户组信息");
                 }
                 userGroup.Level = parentUserGroup.Level + 1;
                 userGroup.Code = parentUserGroup.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (thisLevelUserGroupCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
-            await UnitOfWorkAsync(async(conn, trans) => {
-                var userGroupId =  await _userGroupRepository.InsertAndGetIdAsync(userGroup,conn,trans);
-                foreach (var userId in input.UserIds) {
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                var userGroupId = await _userGroupRepository.InsertAndGetIdAsync(userGroup, conn, trans);
+                foreach (var userId in input.UserIds)
+                {
                     var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == userId);
-                    if (userInfo == null) {
+                    if (userInfo == null)
+                    {
                         throw new BusinessException($"不存在用户Id为{userId}的用户信息");
                     }
                     await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserGroupId = userGroupId, UserId = userId }, conn, trans);
                 }
-                foreach (var roleId in input.RoleIds) {
+                foreach (var roleId in input.RoleIds)
+                {
                     var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
                     if (roleInfo == null)
                     {
@@ -65,36 +78,41 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroupId, RoleId = roleId }, conn, trans);
                 }
             }, Connection);
-           
+
         }
 
         public async Task Delete(long id)
         {
             var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == id);
-            if (userGroup == null) {
+            if (userGroup == null)
+            {
                 throw new BusinessException($"不存在Id为{id}的用户组信息");
             }
             var children = await _userGroupRepository.GetAllAsync(p => p.ParentId == id);
-            if (children.Any()) {
+            if (children.Any())
+            {
                 throw new BusinessException("请先删除子用户组");
             }
-            await UnitOfWorkAsync(async(conn,trans) => {
-                await _userGroupRepository.DeleteAsync(p => p.Id == id,conn,trans);
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                await _userGroupRepository.DeleteAsync(p => p.Id == id, conn, trans);
                 await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
                 await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
-                
+
             }, Connection);
         }
 
         public async Task Update(UpdateUserGroupInput input)
         {
             var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
-            if (userGroup == null) {
+            if (userGroup == null)
+            {
                 throw new BusinessException($"不存在Id为{input.Id}的用户组");
             }
             userGroup = input.MapTo(userGroup);
-            await UnitOfWorkAsync(async (conn, trans) => {
-                await _userGroupRepository.UpdateAsync(userGroup,conn,trans);
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                await _userGroupRepository.UpdateAsync(userGroup, conn, trans);
                 await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
                 await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
                 foreach (var userId in input.UserIds)
@@ -116,7 +134,33 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroup.Id, RoleId = roleId }, conn, trans);
                 }
             }, Connection);
-            
+        }
+
+        public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId)
+        {
+            var sql = @"SELECT r.* FROM UserGroupRole as ugr 
+                        LEFT JOIN Role as r on ugr.RoleId = r.Id WHERE ugr.UserGroupId=@UserGroupId";
+            using (Connection)
+            {
+                return (await Connection.QueryAsync<Role>(sql, param: new { UserGroupId = userGroupId })).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+            }
+        }
+
+        public async Task<IEnumerable<GetGroupUserOutput>> GetUserGroupUsers(long userGroupId)
+        {
+            var sql = @"SELECT uugr.*,u.* FROM UserUserGroupRelation as uugr 
+                        LEFT JOIN UserInfo as u on uugr.UserId = u.Id WHERE uugr.UserGroupId=@UserGroupId";
+            using (Connection)
+            {
+                return await Connection.QueryAsync<UserUserGroupRelation,UserInfo,GetGroupUserOutput>(sql,(uugr,u) => {
+                    var output = u.MapTo<GetGroupUserOutput>();
+                    var positionAppServiceProxy = GetService<IPositionAppService>();
+                    output.PositionName = positionAppServiceProxy.Get(u.Id).Result.Name;
+                    var departmentAppServiceProxy = GetService<IDepartmentAppService>();
+                    output.DeptName = departmentAppServiceProxy.Get(u.Id).Result.Name;
+                    return output;
+                }, param: new { UserGroupId = userGroupId },splitOn: "Id");
+            }
         }
     }
 }

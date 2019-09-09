@@ -6,6 +6,7 @@ using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.IApplication.UserGroup;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
@@ -16,11 +17,14 @@ namespace Surging.Hero.Auth.Application.UserGroup
     {
         private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IDapperRepository<Domain.UserGroups.UserGroup, long> _userGroupRepository;
+        private readonly IRoleDomainService _roleDomainService;
 
         public UserGroupAppService(IUserGroupDomainService userGroupDomainService,
-            IDapperRepository<Domain.UserGroups.UserGroup, long> userGroupRepository) {
+            IDapperRepository<Domain.UserGroups.UserGroup, long> userGroupRepository,
+            IRoleDomainService roleDomainService) {
             _userGroupDomainService = userGroupDomainService;
             _userGroupRepository = userGroupRepository;
+            _roleDomainService = roleDomainService;
         }
 
         public async Task<string> Create(CreateUserGroupInput input)
@@ -42,7 +46,12 @@ namespace Surging.Hero.Auth.Application.UserGroup
             if (userGroup == null) {
                 throw new UserFriendlyException($"不存在id为{id}的用户组信息");
             }
-            return userGroup.MapTo<GetUserGroupOutput>();
+          
+            var userGroupOutput = userGroup.MapTo<GetUserGroupOutput>();
+            userGroupOutput.Roles = await _userGroupDomainService.GetUserGroupRoles(id);
+            userGroupOutput.Users = await _userGroupDomainService.GetUserGroupUsers(id);
+            return userGroupOutput;
+           
         }
 
         public async Task<IEnumerable<ITree<GetUserGroupTreeOutput>>> GetTree()
