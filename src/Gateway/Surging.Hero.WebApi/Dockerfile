@@ -7,7 +7,6 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-disco AS build
 WORKDIR /src
 ARG sln_name
 COPY . .
-COPY ../surging/nupkg /framework/nupkg
 RUN dotnet restore ${sln_name} && \
     dotnet build --no-restore -c Release ${sln_name}
 
