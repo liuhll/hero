@@ -334,3 +334,14 @@ create table UserUserGroupRelation
 
 alter table UserUserGroupRelation comment '用户与用户关系表';
 
+
+INSERT INTO `hero_auth`.`UserInfo`(`Id`, `UserName`, `DeptId`, `PositionId`, `Password`, `ChineseName`, `Email`, `Phone`, `Gender`, `Birth`, `NativePlace`, `Address`, `Folk`, `PoliticalStatus`, `GraduateInstitutions`, `Education`, `Major`, `Resume`, `Memo`, `LastLoginTime`, `LoginFailedCount`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'liuhl', 1, 1, 'a6dd7c6107a1d4b30c33fa8a12964e7c', '刘洪亮1', '1029765112@qq.com', '13128291911', 0, '1989-09-11', '', '', '', 0, '', '', '', '', '', '0001-01-01 00:00:00', 0, 1, NULL, '2019-09-11 14:16:04', NULL, NULL, 0, NULL, NULL);
+
+
+INSERT INTO `hero_auth`.`Role`(`Id`, `DeptId`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 0, '超级管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:14:18', NULL, NULL, 0, NULL, NULL);
+INSERT INTO `hero_auth`.`Role`(`Id`, `DeptId`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (2, 0, '管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:15:46', NULL, NULL, 0, NULL, NULL);
+
+
+INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (1, 1, 1, NULL, '2019-09-11 14:16:04', NULL, NULL);
+INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (2, 1, 2, NULL, '2019-09-11 14:16:04', NULL, NULL);
+
