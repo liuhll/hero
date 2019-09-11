@@ -147,14 +147,14 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             }
         }
 
-        public async Task<IEnumerable<GetUserOutput>> GetUserGroupUsers(long userGroupId)
+        public async Task<IEnumerable<GetUserBasicOutput>> GetUserGroupUsers(long userGroupId)
         {
             var sql = @"SELECT uugr.*,u.* FROM UserUserGroupRelation as uugr 
                         LEFT JOIN UserInfo as u on uugr.UserId = u.Id WHERE uugr.UserGroupId=@UserGroupId";
             using (Connection)
             {
-                return await Connection.QueryAsync<UserUserGroupRelation,UserInfo, GetUserOutput>(sql,(uugr,u) => {
-                    var output = u.MapTo<GetUserOutput>();
+                return await Connection.QueryAsync<UserUserGroupRelation,UserInfo, GetUserBasicOutput>(sql,(uugr,u) => {
+                    var output = u.MapTo<GetUserBasicOutput>();
                     var positionAppServiceProxy = GetService<IPositionAppService>();
                     output.PositionName = positionAppServiceProxy.Get(u.Id).Result.Name;
                     var departmentAppServiceProxy = GetService<IDepartmentAppService>();

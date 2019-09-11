@@ -23,7 +23,7 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<string> Delete(long id);
 
         [HttpPost(true)]
-        Task<IPagedResult<GetUserOutput>> Query(QueryUserInput query);
+        Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query);
 
         [HttpPut(true)]
         Task<string> UpdateStatus(UpdateUserStatusInput input);
@@ -33,14 +33,14 @@ namespace Surging.Hero.Auth.IApplication.User
 
         [ServiceRoute("{deptId}")]
         [HttpGet(true)]
-        Task<IEnumerable<GetUserOutput>> GetDepartmentUser(long deptId);
+        Task<IEnumerable<GetUserBasicOutput>> GetDepartmentUser(long deptId);
 
         [ServiceRoute("{corporationId}")]
         [HttpGet(true)]
-        Task<IEnumerable<GetUserOutput>> GetCorporationUser(long corporationId);
+        Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId);
 
         [ServiceRoute("{id}")]
         [HttpGet(true)]
-        Task<GetUserOutput> Get(long id);
+        Task<GetUserNormOutput> Get(long id);
     }
 }

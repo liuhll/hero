@@ -14,6 +14,8 @@ using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Position;
+using Surging.Hero.Auth.Domain.Roles;
+using Surging.Hero.Auth.IApplication.Role.Dtos;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -73,17 +75,18 @@ namespace Surging.Hero.Auth.Application.User
             return "删除员工成功";
         }
 
-        public async Task<IPagedResult<GetUserOutput>> Query(QueryUserInput query)
+        public async Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query)
         {
             var queryResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
                || p.ChineseName.Contains(query.SearchKey)
                || p.Email.Contains(query.SearchKey)
                || p.Phone.Contains(query.SearchKey),query.PageIndex,query.PageCount); 
             
-            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserOutput>>().GetPagedResult(queryResult.Item2);
+            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var userOutput in queryResultOutput.Items) {
                 userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
                 userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
+                userOutput.Roles = (await _userDomainService.GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             }
             return queryResultOutput;
         }
@@ -116,10 +119,10 @@ namespace Surging.Hero.Auth.Application.User
             return "重置该员工密码成功";
         }
 
-        public async Task<IEnumerable<GetUserOutput>> GetDepartmentUser(long deptId)
+        public async Task<IEnumerable<GetUserBasicOutput>> GetDepartmentUser(long deptId)
         {
             var departUsers = await _userRepository.GetAllAsync(p => p.DeptId == deptId);
-            var departUserOutputs = departUsers.MapTo<IEnumerable<GetUserOutput>>();
+            var departUserOutputs = departUsers.MapTo<IEnumerable<GetUserBasicOutput>>();
             foreach (var userOutput in departUserOutputs)
             {
                 userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
@@ -128,10 +131,10 @@ namespace Surging.Hero.Auth.Application.User
             return departUserOutputs;
         }
 
-        public async Task<IEnumerable<GetUserOutput>> GetCorporationUser(long corporationId)
+        public async Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId)
         {
             var corporationUsers = await _userRepository.GetAllAsync(p => p.DeptId == corporationId);           
-            var corporationUserOutputs = corporationUsers.MapTo<IEnumerable<GetUserOutput>>();
+            var corporationUserOutputs = corporationUsers.MapTo<IEnumerable<GetUserBasicOutput>>();
 
             foreach (var userOutput in corporationUserOutputs)
             {
@@ -141,12 +144,13 @@ namespace Surging.Hero.Auth.Application.User
             return corporationUserOutputs;
         }
 
-        public async Task<GetUserOutput> Get(long id)
+        public async Task<GetUserNormOutput> Get(long id)
         {
             var userInfo = await _userRepository.GetAsync(id);
-            var userInfoOutput = userInfo.MapTo<GetUserOutput>();
+            var userInfoOutput = userInfo.MapTo<GetUserNormOutput>();
             userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userInfoOutput.DeptId)).Name;
             userInfoOutput.PositionName = (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId)).Name;
+            userInfoOutput.Roles = (await _userDomainService.GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             return userInfoOutput;
         }
     }

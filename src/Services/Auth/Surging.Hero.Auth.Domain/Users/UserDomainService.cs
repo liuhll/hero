@@ -1,12 +1,15 @@
-﻿using Surging.Core.AutoMapper;
+﻿using Dapper;
+using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Position;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.Domain.Users
@@ -72,6 +75,16 @@ namespace Surging.Hero.Auth.Domain.Users
                 // todo: 删除其他关联表
 
             }, Connection);
+        }
+
+        public async Task<IEnumerable<Role>> GetUserRoles(long userId)
+        {
+            var sql = @"SELECT r.* FROM UserRole as ur 
+                        LEFT JOIN Role as r on ur.RoleId = r.Id WHERE ur.UserId=@UserId";
+            using (Connection)
+            {
+                return (await Connection.QueryAsync<Role>(sql, param: new { UserId = userId }));
+            }
         }
 
         public async Task ResetPassword(UserInfo userInfo, string newPassword)

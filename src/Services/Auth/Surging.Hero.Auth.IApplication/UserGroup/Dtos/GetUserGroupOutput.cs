@@ -12,6 +12,6 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
 
-        public IEnumerable<GetUserOutput> Users { get; set; }
+        public IEnumerable<GetUserBasicOutput> Users { get; set; }
     }
 }
