@@ -11,10 +11,10 @@
     "SoBacklog": 100,
     "MaxConcurrentRequests": 20,
     "DisconnTimeInterval": 30,
-    "ExecutionTimeoutInMilliseconds": 100000,
+    "ExecutionTimeoutInMilliseconds": 1000,
     "Protocol": "${Protocol}|None", //Http、Tcp、None
     "RootPath": "${RootPath}|./userapp",
-    "WebRootPath": "${WebRootPath}|./userapp/wwwroot",
+    "WebRootPath": "${WebRootPath}|./wwwroot",
     "IsModulePerLifetimeScope": false,
     "ReloadOnChange": false,
     "Ports": {
@@ -23,14 +23,16 @@
       "MQTTPort": "${MQTTPort}|97"
     },
     "RequestCacheEnabled": false,
-    "Environment": "${Environment}|Development",
     "Packages": [
       {
         "TypeName": "EnginePartModule",
-        "Using": "${UseEngineParts}|DotNettyModule;NLogModule;MessagePackModule;ConsulModule;WSProtocolModule;MqttProtocolModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;DnsProtocolModule;SwaggerModule;"
+        "Using": "${UseEngineParts}|ServiceProxyModule;DotNettyModule;NLogModule;MessagePackModule;ConsulModule;WSProtocolModule;MqttProtocolModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;DnsProtocolModule;SwaggerModule;ApiGeteWayModule;SkywalkingModule;"
+      },
+      {
+        "TypeName": "KestrelHttpModule",
+        "Using": "${UseKestrelHttpParts}|StageModule,SwaggerModule"
       }
-    ],
-    "InitAction": "${InitAction}|false"
+    ]
   }, //如果引用多个同类型的组件，需要配置Packages，如果是自定义按需引用，无需配置Packages
   "DbSetting": {
     "DbType": "${DbType}|MySql", //MySql SqlServer, Oracle, Postgres
@@ -43,50 +45,64 @@
     "EnableHttps": true, // 不设置ports，默认httpsPort:443
     "CertificateFileName": "${CertificateFileName}|",
     "CertificateLocation": "${CertificateLocation}|pfxs",
-    "CertificatePassword": "${CertificatePassword}|"
-    //"HttpsPort": "${StageHttpsPorts}|449,446",
-    //"HttpPorts": "${StageHttpPorts}|281,282,283"
+    "CertificatePassword": "${CertificatePassword}|",
+    "IsCamelCaseResolver": "${IsCamelCaseResolver}|true",
+    "Protocols": "Http1AndHttp2",
+    "ApiGetWay": {
+      "AccessTokenExpireTimeSpan": "30",
+      "AuthorizationRoutePath": "api/user/authentication",
+      "AuthorizationServiceKey": "User",
+      "TokenEndpointPath": "api/oauth2/token",
+      "CacheMode": "MemoryCache" //MemoryCache or  gateway.Redis save token
+    },
+    "AccessPolicy": {
+      "Origins": [ "http://127.0.0.1:1927", "http://localhost:927" ],
+      "AllowAnyHeader": true,
+      "AllowAnyMethod": true
+    },
+    "AccessSetting": [
+      {
+        "BlackList": "${blacklist}|127.0.0.1",
+        "Enable": false
+      },
+      {
+        "WhiteList": "${whitelist}",
+        "BlackList": "${blacklist}",
+        "RoutePath": "api/user/exists",
+        "Enable": true
+      }
+    ],
+    "HttpsPort": "${StageHttpsPorts}|449,446",
+    "HttpPorts": "${StageHttpPorts}|285,282,283"
   },
   "Dns": {
-    "RootDnsAddress": "192.168.31.1",
+    "RootDnsAddress": "192.168.1.1",
     "QueryTimeout": 1000
   },
   "Swagger": {
     "Info": {
       "Version": "${SwaggerVersion}|V1", // "127.0.0.1:8500",
-      "Title": "${SwaggerTitle}|Surging.Hero",
-      "Description": "${SwaggerDes}||Surging.Hero",
+      "Title": "${SwaggerTitle}|jingshonline",
+      "Description": "${SwaggerDes}|jingshonline",
       "Contact": {
         "Name": "API Support",
-        "Url": "https://github.com/surging-cloud/Surging.Hero",
-        "Email": "1029765111@qq.com"
-      },
-      "License": {
-        "Name": "MIT",
-        "Url": "https://raw.githubusercontent.com/surging-cloud/Surging.Hero/develop/LICENSE"
+        "Url": "",
+        "Email": "",
+        "License": {
+          "Name": "",
+          "Url": ""
+        }
       }
     },
     "Options": {
-      "IgnoreFullyQualified": false
+      "IgnoreFullyQualified": false,
+      "MapRoutePaths": [
+        {
+          "SourceRoutePath": "api/user/authentication",
+          "TargetRoutePath": "api/oauth2/token"
+        }
+      ]
       // "IngressName": "Notice"
-    },
-    "Authorization": {
-      "EnableAuthorization": "${EnableAuthorization}|false",
-      "SecretKey": "${SecretKey}",
-      "AuthorizationRoutePath": "${AuthorizationRoutePath}",
-      "AuthorizationServiceKey": "${AuthorizationServiceKey}"
-    },
-    "AnnotationXmlDir": "/app/annotationxmldir",
-    "DtoXmls": [
-      "Surging.Hero.Common.xml"
-    ]
-  },
-  "WebSocket": {
-    "WaitTime": 2,
-    "KeepClean": false,
-    "Behavior": {
-      "IgnoreExtensions": true,
-      "EmitOnPing": false
     }
   },
   "Logging": {
