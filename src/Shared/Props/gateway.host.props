@@ -1,13 +1,13 @@
 <Project> 
   <ItemGroup>
-    <PackageReference Include="Surging.Cloud.System" Version="2.0.1-bate.3" />
-	  <PackageReference Include="Surging.Cloud.ApiGateWay" Version="2.0.1-bate.3" />
-	  <PackageReference Include="Surging.Cloud.Consul" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Zookeeper" Version="2.0.1-bate.3" />
-	  <PackageReference Include="Surging.Cloud.ProxyGenerator" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.DotNetty" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.EventBusRabbitMQ" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Caching" Version="2.0.1-bate.3" />
+    <PackageReference Include="Surging.Cloud.System" Version="2.0.1-bate.4" />
+	  <PackageReference Include="Surging.Cloud.ApiGateWay" Version="2.0.1-bate.4" />
+	  <PackageReference Include="Surging.Cloud.Consul" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Zookeeper" Version="2.0.1-bate.4" />
+	  <PackageReference Include="Surging.Cloud.ProxyGenerator" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.DotNetty" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.EventBusRabbitMQ" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Caching" Version="2.0.1-bate.4" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Shared\Configs\cacheSettings.json" Link="configs\cacheSettings.json" >

@@ -1,17 +1,17 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Surging.Cloud.Caching" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Consul" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.CPlatform" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.DotNetty" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.EventBusRabbitMQ" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.KestrelHttpServer" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Log4net" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.ProxyGenerator" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Swagger" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="2.0.1-bate.3" />
-    <PackageReference Include="Surging.Cloud.Codec.ProtoBuffer" Version="2.0.1-bate.3" />
+    <PackageReference Include="Surging.Cloud.Caching" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Consul" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.CPlatform" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.DotNetty" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.EventBusRabbitMQ" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.KestrelHttpServer" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Log4net" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.ProxyGenerator" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Swagger" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Codec.ProtoBuffer" Version="2.0.1-bate.4" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />
