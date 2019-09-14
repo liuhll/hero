@@ -3,6 +3,7 @@ version: '3.7'
 services:
   hero.consul:
     image: consul:latest
+    restart: always
     ports:
       - "8400:8400"
       - "8500:8500"
@@ -13,12 +14,14 @@ services:
       - surging_hero_service_net
   hero.redis:
     image: redis:latest
+    restart: always
     ports:
       - "6379:6379"
     networks:
       - surging_hero_service_net
   hero.rabbitmq:
     image: rabbitmq:management
+    restart: always
     environment:
       RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
       RABBITMQ_DEFAULT_USER: "rabbitmq"
