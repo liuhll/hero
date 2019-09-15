@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.Permissions.Actions;
@@ -12,6 +15,7 @@ using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.IApplication.Action.Dtos;
 using Surging.Hero.Auth.IApplication.Permission;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Application.Permission
 {
@@ -69,6 +73,50 @@ namespace Surging.Hero.Auth.Application.Permission
             var operationOutput = operation.MapTo<GetOperationOutput>();
             operationOutput.Actions = (await _actionDomainService.GetOperationOutputActions(operation.Id)).MapTo<IEnumerable<GetActionOutput>>();
             return operationOutput;
+        }
+
+        public async Task<IEnumerable<GetPermissionTreeOutput>> GetTree()
+        {
+            var menus = await _menuRepository.GetAllAsync();
+            var permissionTree = await BuildPermissionTree(menus);
+            return permissionTree;
+        }
+
+        private async Task<IEnumerable<GetPermissionTreeOutput>> BuildPermissionTree(IEnumerable<Menu> menus)
+        {
+            var topMenus = menus.Where(p => p.Mold == Domain.Shared.Menus.MenuMold.Top);
+            var topPermissionOutputs = topMenus.MapTo<IEnumerable<GetPermissionTreeOutput>>();
+            foreach (var topPermission in topPermissionOutputs) {
+                topPermission.FullName = topPermission.Name;
+                topPermission.Children = await BuildPermissionChildren(topPermission, menus);
+            }
+            return topPermissionOutputs;
+        }
+
+        private async Task<IEnumerable<GetPermissionTreeOutput>> BuildPermissionChildren(GetPermissionTreeOutput permissionTreeOutput, IEnumerable<Menu> menus)
+        {
+            var permissionChildren = new List<GetPermissionTreeOutput>();
+            var menuChildren = menus.Where(p => p.ParentId == permissionTreeOutput.Id);
+            
+            var menuPermissionChildrenOutput = menuChildren.MapTo<IEnumerable<GetPermissionTreeOutput>>();
+            permissionChildren.AddRange(menuPermissionChildrenOutput);
+
+            if (menuPermissionChildrenOutput.Any()) {
+                foreach (var menuChildOutput in menuPermissionChildrenOutput) {
+                    menuChildOutput.FullName = permissionTreeOutput.FullName + HeroConstants.CodeRuleRestrain.CodeSeparator + menuChildOutput.Name;
+                    menuChildOutput.Children = await BuildPermissionChildren(menuChildOutput, menus);
+                }
+            }
+           
+
+            var operationChildren = await _operationRepository.GetAllAsync(p => p.MenuId == permissionTreeOutput.Id);
+            var operationChildrenOutput = operationChildren.MapTo<IEnumerable<GetPermissionTreeOutput>>();
+            foreach (var operationChildOutput in operationChildrenOutput) {
+                operationChildOutput.FullName = permissionTreeOutput.FullName + HeroConstants.CodeRuleRestrain.CodeSeparator + operationChildOutput.Name;
+            } 
+            permissionChildren.AddRange(operationChildrenOutput);
+            return permissionChildren;
+
         }
 
         public async Task<string> UpdateMenu(UpdateMenuInput input)

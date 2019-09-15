@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Surging.Core.Domain;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
@@ -34,6 +35,15 @@ namespace Surging.Hero.Auth.Application.Permission
             CreateMap<UpdateOperationInput, Domain.Permissions.Permission>();
 
             CreateMap<Operation, GetOperationOutput>().ForMember(d => d.Actions, opt => opt.Ignore());
+
+            CreateMap<Menu, GetPermissionTreeOutput>().ForMember(d=>d.Children,opt=>opt.Ignore()).ForMember(d=>d.Mold,opt=>opt.Ignore()).AfterMap((src,dest)=> {
+                dest.Mold = PermissionMold.Menu;
+            });
+            CreateMap<Operation, GetPermissionTreeOutput>().ForMember(d => d.Children, opt => opt.Ignore()).ForMember(d => d.Mold, opt => opt.Ignore()).AfterMap((src, dest) => {
+                dest.Mold = PermissionMold.Operation;
+            });
+            //CreateMap<Menu, GetPermissionTreeOutput>();
+            //CreateMap<Operation, GetPermissionTreeOutput>();
         }
     }
 }
