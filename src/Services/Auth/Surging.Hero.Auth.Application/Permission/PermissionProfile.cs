@@ -32,6 +32,8 @@ namespace Surging.Hero.Auth.Application.Permission
 
             CreateMap<UpdateOperationInput, Operation>();
             CreateMap<UpdateOperationInput, Domain.Permissions.Permission>();
+
+            CreateMap<Operation, GetOperationOutput>().ForMember(d => d.Actions, opt => opt.Ignore());
         }
     }
 }

@@ -12,6 +12,8 @@ namespace Surging.Hero.Auth.Application.Action
                 .AfterMap((src,dest)=> {
                     dest.Status = Status.Valid;
                 });
+
+            CreateMap<Domain.Permissions.Actions.Action, GetActionOutput>();
         }
     }
 }

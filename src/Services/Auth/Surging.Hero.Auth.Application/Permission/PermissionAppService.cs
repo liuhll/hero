@@ -1,12 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Hero.Auth.Domain.Permissions.Actions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
+using Surging.Hero.Auth.IApplication.Action.Dtos;
 using Surging.Hero.Auth.IApplication.Permission;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 
@@ -18,14 +21,20 @@ namespace Surging.Hero.Auth.Application.Permission
         private readonly IMenuDomainService _menuDomainService;
         private readonly IOperationDomainService _operationDomainService;
         private readonly IDapperRepository<Menu, long> _menuRepository;
+        private readonly IDapperRepository<Operation, long> _operationRepository;
+        private readonly IActionDomainService _actionDomainService;
 
         public PermissionAppService(IMenuDomainService menuDomainService,
             IOperationDomainService operationDomainService,
-            IDapperRepository<Menu, long> menuRepository)
+            IDapperRepository<Menu, long> menuRepository,
+            IDapperRepository<Operation, long> operationRepository,
+            IActionDomainService actionDomainService)
         {
             _menuDomainService = menuDomainService;
             _operationDomainService = operationDomainService;
             _menuRepository = menuRepository;
+            _operationRepository = operationRepository;
+            _actionDomainService = actionDomainService;
         }
 
         public async Task<string> CreateMenu(CreateMenuInput input)
@@ -49,6 +58,17 @@ namespace Surging.Hero.Auth.Application.Permission
                 throw new BusinessException($"不存在Id为{id}的菜单信息");
             }
             return menu.MapTo<GetMenuOutput>();
+        }
+
+        public async Task<GetOperationOutput> GetOperation(long id)
+        {
+            var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (operation == null) {
+                throw new BusinessException($"不存在Id为{id}的操作信息");
+            }
+            var operationOutput = operation.MapTo<GetOperationOutput>();
+            operationOutput.Actions = (await _actionDomainService.GetOperationOutputActions(operation.Id)).MapTo<IEnumerable<GetActionOutput>>();
+            return operationOutput;
         }
 
         public async Task<string> UpdateMenu(UpdateMenuInput input)

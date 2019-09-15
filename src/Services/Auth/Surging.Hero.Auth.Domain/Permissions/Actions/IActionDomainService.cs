@@ -10,5 +10,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
     public interface IActionDomainService : ITransientDependency
     {
         Task InitActions(ICollection<InitActionActionInput> actions);
+        Task<IEnumerable<Action>> GetOperationOutputActions(long id);
     }
 }

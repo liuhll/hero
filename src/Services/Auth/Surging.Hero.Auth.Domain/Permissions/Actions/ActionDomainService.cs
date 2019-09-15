@@ -1,4 +1,5 @@
-﻿using Surging.Core.AutoMapper;
+﻿using Dapper;
+using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
@@ -23,6 +24,14 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         {
             _actionRepository = actionRepository;
             _operationActionRelationRepository = operationActionRelationRepository;
+        }
+
+        public async Task<IEnumerable<Action>> GetOperationOutputActions(long id)
+        {
+            var sql = "SELECT a.* FROM OperationActionRelation as oar LEFT JOIN Action as a on oar.ActionId = a.Id  WHERE oar.OperationId = @OperationId";
+            using (Connection) {
+                return await Connection.QueryAsync<Action>(sql, new { OperationId = id });
+            }
         }
 
         public async Task InitActions(ICollection<InitActionActionInput> actions)
