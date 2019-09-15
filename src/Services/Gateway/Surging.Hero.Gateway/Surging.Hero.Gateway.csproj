@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\Shared\Props\hostpackage.props" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Auth\Surging.Hero.Auth.IApplication\Surging.Hero.Auth.IApplication.csproj" />
+    <ProjectReference Include="..\..\BasicData\Surging.Hero.BasicData.IApplication\Surging.Hero.BasicData.IApplication.csproj" />
+    <ProjectReference Include="..\..\Organization\Surging.Hero.Organization.IApplication\Surging.Hero.Organization.IApplication.csproj" />
+  </ItemGroup>
+
+</Project>

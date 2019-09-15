@@ -38,23 +38,24 @@ services:
         host_workdir: src/Services/Organization/Surging.Hero.OrganizationHost
         host_name: Surging.Hero.OrganizationHost.dll
         sln_name: sln/Surging.Hero.sln
-    depends_on:
-      - surging.hero.auth
     volumes:
       - ${LOG_DIR:-/var/logs}/organization:/app/logs
     networks:
       - surging_hero_service_net      
+
   surging.hero.gateway:
     image: surgingcloud/surging.hero.gateway:${TAG:-latest}
     build:
       context: ../..
-      dockerfile: src/Gateway/Surging.Hero.WebApi/Dockerfile
+      dockerfile: src/Services/Gateway/Surging.Hero.Gateway/Dockerfile
       args:
         sln_name: sln/Surging.Hero.sln
-        host_workdir: src/Gateway/Surging.Hero.WebApi
-        host_name: Surging.Hero.WebApi.dll
+        host_workdir: src/Gateway/Surging.Hero.Gateway
+        host_name: Surging.Hero.Gateway.dll
     depends_on:
       - surging.hero.auth
+      - surging.hero.basicdata
+      - surging.hero.organization
     volumes:
       - ${LOG_DIR:-/var/logs}/gateway:/app/logs
     networks:

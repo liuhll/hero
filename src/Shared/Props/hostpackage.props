@@ -12,6 +12,7 @@
     <PackageReference Include="Surging.Cloud.Swagger" Version="2.0.1-bate.5" />
     <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="2.0.1-bate.5" />
     <PackageReference Include="Surging.Cloud.Codec.ProtoBuffer" Version="2.0.1-bate.5" />
+	<PackageReference Include="Surging.Cloud.Stage" Version="2.0.1-bate.5" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />
