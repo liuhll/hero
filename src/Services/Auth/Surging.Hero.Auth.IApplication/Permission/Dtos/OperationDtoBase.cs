@@ -6,8 +6,7 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 {
     public abstract class OperationDtoBase
     {
-        public long MenuId { get; set; }
-
+     
         public string Icon { get; set; }
 
         [Required(ErrorMessage = "操作名称不允许为空")]

@@ -19,6 +19,10 @@ namespace Surging.Hero.Auth.IApplication.Permission
         [ServiceRoute("{id}")]
         Task<GetMenuOutput> GetMenu(long id);
 
+        [HttpPost(true)]
         Task<string> CreateOperation(CreateOperationInput input);
+
+        [HttpPut(true)]
+        Task<string> UpdateOperation(UpdateOperationInput input);
     }
 }

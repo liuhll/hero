@@ -64,5 +64,47 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                 }
             }, Connection);
         }
+
+        public async Task Update(UpdateOperationInput input)
+        {
+            var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (operation == null)
+            {
+                throw new BusinessException($"不存在Id为{input.Id}的操作信息");
+            }
+            var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == operation.PermissionId);
+            if (permission == null)
+            {
+                throw new BusinessException($"不存在Id为{operation.PermissionId}的权限信息");
+            }
+            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == operation.MenuId);
+            if (menu == null)
+            {
+                throw new BusinessException($"不存在Id为{operation.MenuId}的菜单信息");
+            }
+            operation = input.MapTo(operation);
+            permission = input.MapTo(permission);
+
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                await _permissionRepository.UpdateAsync(permission, conn, trans);
+                await _operationRepository.UpdateAsync(operation, conn, trans);
+                await _operationActionRepository.DeleteAsync(p => p.OperationId == permission.Id, conn, trans);
+                if (input.ActionIds != null && input.ActionIds.Any())
+                {
+                    foreach (var actionId in input.ActionIds)
+                    {
+                        var action = await _actionRepository.SingleOrDefaultAsync(p => p.Id == actionId);
+                        if (action == null)
+                        {
+                            throw new BusinessException($"系统中不存在Id为{actionId}的方法");
+                        }
+                        var operationAction = new OperationActionRelation() { ActionId = actionId, OperationId = operation.Id, ServiceId = action.ServiceId };
+                        await _operationActionRepository.InsertAsync(operationAction, conn, trans);
+                    }
+                }
+            }, Connection);
+
+        }
     }
 }

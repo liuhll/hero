@@ -29,6 +29,9 @@ namespace Surging.Hero.Auth.Application.Permission
             CreateMap<CreateOperationInput, Domain.Permissions.Permission>().AfterMap((src, dest) => {
                 dest.Mold = PermissionMold.Operation;
             });
+
+            CreateMap<UpdateOperationInput, Operation>();
+            CreateMap<UpdateOperationInput, Domain.Permissions.Permission>();
         }
     }
 }

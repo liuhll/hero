@@ -1,8 +1,8 @@
 ﻿namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 {
-    public class CreateOperationInput : OperationDtoBase
+    public class UpdateOperationInput : OperationDtoBase
     {
-        public long MenuId { get; set; }
+        public long Id { get; set; }
         public long[] ActionIds { get; set; }
     }
 }

@@ -57,5 +57,12 @@ namespace Surging.Hero.Auth.Application.Permission
             await _menuDomainService.Update(input);
             return "更新菜单信息成功";
         }
+
+        public async Task<string> UpdateOperation(UpdateOperationInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            await _operationDomainService.Update(input);
+            return "更新操作成功";
+        }
     }
 }
