@@ -1,9 +1,9 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Surging.Cloud.Caching" Version="2.0.1-bate.4" />
-    <PackageReference Include="Surging.Cloud.CPlatform" Version="2.0.1-bate.4" />
-    <PackageReference Include="Surging.Cloud.Domain" Version="2.0.1-bate.4" />
-    <PackageReference Include="Surging.Cloud.Dapper" Version="2.0.1-bate.4" />
+    <PackageReference Include="Surging.Cloud.Caching" Version="2.0.1-bate.5" />
+    <PackageReference Include="Surging.Cloud.CPlatform" Version="2.0.1-bate.5" />
+    <PackageReference Include="Surging.Cloud.Domain" Version="2.0.1-bate.5" />
+    <PackageReference Include="Surging.Cloud.Dapper" Version="2.0.1-bate.5" />
     <PackageReference Include="FluentValidation" Version="8.1.3" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
