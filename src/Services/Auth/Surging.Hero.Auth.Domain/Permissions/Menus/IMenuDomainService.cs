@@ -8,5 +8,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
     {
         Task Create(CreateMenuInput input);
         Task Update(UpdateMenuInput input);
+        Task Delete(long id);
     }
 }

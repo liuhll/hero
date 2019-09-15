@@ -33,5 +33,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
 
         [HttpGet(true)]
         Task<IEnumerable<GetPermissionTreeOutput>> GetTree();
+
+        [HttpDelete(true)]
+        Task<string> Delete(DeletePermissionInput input);
     }
 }

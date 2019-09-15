@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Shared.Menus;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 using Surging.Hero.Common;
@@ -14,11 +16,17 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
     {
         private readonly IDapperRepository<Menu, long> _menuRepository;
         private readonly IDapperRepository<Permission, long> _permissionRepository;
+        private readonly IDapperRepository<Operation, long> _operationRepository;
+        private readonly IDapperRepository<OperationActionRelation, long> _operationActionRepository;
 
         public MenuDomainService(IDapperRepository<Menu, long> menuRepository,
-            IDapperRepository<Permission, long> permissionRepository) {
+            IDapperRepository<Permission, long> permissionRepository,
+            IDapperRepository<Operation, long> operationRepository,
+            IDapperRepository<OperationActionRelation, long> operationActionRepository) {
             _menuRepository = menuRepository;
             _permissionRepository = permissionRepository;
+            _operationRepository = operationRepository;
+            _operationActionRepository = operationActionRepository;
 
         }
 
@@ -47,6 +55,34 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
                 await _menuRepository.InsertAsync(menu, conn, trans);
 
             },Connection);
+        }
+
+        public async Task Delete(long id)
+        {
+            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (menu == null) {
+                throw new BusinessException($"不存在Id为{id}的菜单信息");
+            }
+            var allNeedDeleteMenus = await _menuRepository.GetAllAsync(p => p.Code.Contains(menu.Code));
+           
+            await UnitOfWorkAsync(async (conn, trans) => {
+                await _menuRepository.DeleteAsync(p => p.Code.Contains(menu.Code), conn, trans);
+                foreach (var needDeleteMenu in allNeedDeleteMenus) {
+                    await _permissionRepository.DeleteAsync(p => p.Id == needDeleteMenu.PermissionId, conn, trans);
+                    var operations = await _operationRepository.GetAllAsync(p => p.MenuId == needDeleteMenu.Id);
+                    await _operationRepository.DeleteAsync(p => p.MenuId == needDeleteMenu.Id, conn, trans);
+                    if (operations.Any())
+                    {
+                        foreach (var operation in operations)
+                        {
+                          
+                            await _operationActionRepository.DeleteAsync(p => p.OperationId == operation.Id, conn, trans);
+                            await _permissionRepository.DeleteAsync(p=> p.Id == operation.PermissionId, conn, trans);
+                        }
+                    }
+                }
+                
+            }, Connection);
         }
 
         public async Task Update(UpdateMenuInput input)

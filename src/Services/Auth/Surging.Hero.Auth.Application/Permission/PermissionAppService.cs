@@ -16,6 +16,7 @@ using Surging.Hero.Auth.IApplication.Action.Dtos;
 using Surging.Hero.Auth.IApplication.Permission;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Common.Extensions;
 
 namespace Surging.Hero.Auth.Application.Permission
 {
@@ -131,6 +132,21 @@ namespace Surging.Hero.Auth.Application.Permission
             input.CheckDataAnnotations().CheckValidResult();
             await _operationDomainService.Update(input);
             return "更新操作成功";
+        }
+
+        public async Task<string> Delete(DeletePermissionInput input)
+        {            
+            switch (input.Mold) {
+                case Domain.Shared.Permissions.PermissionMold.Menu:
+                    await _menuDomainService.Delete(input.Id);
+                    break;
+                case Domain.Shared.Permissions.PermissionMold.Operation:
+                    await _operationDomainService.Delete(input.Id);
+                    break;
+                default:
+                    throw new BusinessException("PermissionType不正确");
+            }
+            return $"删除{input.Mold.GetDescription()}成功";
         }
     }
 }
