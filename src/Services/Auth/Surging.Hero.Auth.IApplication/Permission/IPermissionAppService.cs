@@ -9,8 +9,14 @@ namespace Surging.Hero.Auth.IApplication.Permission
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IPermissionAppService : IServiceKey
     {
+        [HttpPost(true)]
         Task<string> CreateMenu(CreateMenuInput input);
 
+        [HttpPut(true)]
         Task<string> Update(UpdateMenuInput input);
+
+        [HttpGet(true)]
+        [ServiceRoute("{id}")]
+        Task<GetMenuOutput> GetMenu(long id);
     }
 }

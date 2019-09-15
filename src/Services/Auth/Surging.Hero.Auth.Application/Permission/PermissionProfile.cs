@@ -22,6 +22,7 @@ namespace Surging.Hero.Auth.Application.Permission
             });
             CreateMap<UpdateMenuInput, Menu>();
             CreateMap<UpdateMenuInput, Domain.Permissions.Permission>();
+            CreateMap<Menu, GetMenuOutput>();
         }
     }
 }
