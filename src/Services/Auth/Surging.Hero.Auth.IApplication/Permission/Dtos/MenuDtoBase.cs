@@ -5,7 +5,6 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 {
     public abstract class MenuDtoBase
     {
-        public long ParentId { get; set; }
 
         [Required(ErrorMessage = "菜单名称不允许为空")]
         [MaxLength(50,ErrorMessage = "菜单名称长度不允许超过50")]

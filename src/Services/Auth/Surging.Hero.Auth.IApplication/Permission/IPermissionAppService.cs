@@ -10,5 +10,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
     public interface IPermissionAppService : IServiceKey
     {
         Task<string> CreateMenu(CreateMenuInput input);
+
+        Task<string> Update(UpdateMenuInput input);
     }
 }

@@ -20,6 +20,8 @@ namespace Surging.Hero.Auth.Application.Permission
             CreateMap<CreateMenuInput, Domain.Permissions.Permission>().AfterMap((src,dest)=> {
                 dest.Mold = PermissionMold.Menu;
             });
+            CreateMap<UpdateMenuInput, Menu>();
+            CreateMap<UpdateMenuInput, Domain.Permissions.Permission>();
         }
     }
 }

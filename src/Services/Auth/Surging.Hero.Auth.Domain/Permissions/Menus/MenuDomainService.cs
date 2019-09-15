@@ -49,5 +49,20 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             },Connection);
         }
 
+        public async Task Update(UpdateMenuInput input)
+        {
+            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (menu == null) {
+                throw new BusinessException($"不存在Id为{input.Id}的菜单信息");
+            }
+            var permission = await _permissionRepository.GetAsync(menu.PermissionId);
+            menu = input.MapTo(menu);
+            permission = input.MapTo(permission);
+            await UnitOfWorkAsync(async (conn, trans) => {
+                await _permissionRepository.UpdateAsync(permission, conn, trans);               
+                await _menuRepository.UpdateAsync(menu, conn, trans);
+
+            }, Connection);
+        }
     }
 }
