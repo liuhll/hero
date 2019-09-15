@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
+using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 
@@ -23,6 +24,11 @@ namespace Surging.Hero.Auth.Application.Permission
             CreateMap<UpdateMenuInput, Menu>();
             CreateMap<UpdateMenuInput, Domain.Permissions.Permission>();
             CreateMap<Menu, GetMenuOutput>();
+
+            CreateMap<CreateOperationInput, Operation>();
+            CreateMap<CreateOperationInput, Domain.Permissions.Permission>().AfterMap((src, dest) => {
+                dest.Mold = PermissionMold.Operation;
+            });
         }
     }
 }

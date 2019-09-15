@@ -12,8 +12,7 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 
         public string Anchor { get; set; }
 
-        [Required(ErrorMessage = "Icon图标不允许为空")]
-        [MaxLength(50, ErrorMessage = "Icon图标不允许超过50")]
+       
         public string Icon { get; set; }
 
         [Required(ErrorMessage = "菜单组件名称不允许空")]
