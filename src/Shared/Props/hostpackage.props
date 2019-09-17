@@ -1,18 +1,19 @@
 <Project>
+  <Import Project=".\surgingversion.props" />
   <ItemGroup>
-    <PackageReference Include="Surging.Cloud.Caching" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.Consul" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.CPlatform" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.DotNetty" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.EventBusRabbitMQ" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.KestrelHttpServer" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.Log4net" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.ProxyGenerator" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.Swagger" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="2.0.1-bate.5" />
-    <PackageReference Include="Surging.Cloud.Codec.ProtoBuffer" Version="2.0.1-bate.5" />
-	<PackageReference Include="Surging.Cloud.Stage" Version="2.0.1-bate.5" />
+    <PackageReference Include="Surging.Cloud.Caching" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.Consul" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.CPlatform" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.DotNetty" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.EventBusRabbitMQ" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.KestrelHttpServer" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.Log4net" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.ProxyGenerator" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.Swagger" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="$(SurgingVersion)" />
+    <PackageReference Include="Surging.Cloud.Codec.ProtoBuffer" Version="$(SurgingVersion)" />
+	<PackageReference Include="Surging.Cloud.Stage" Version="$(SurgingVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />
