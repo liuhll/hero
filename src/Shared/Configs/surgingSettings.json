@@ -50,10 +50,10 @@
     "Protocols": "Http1AndHttp2",
     "ApiGetWay": {
       "AccessTokenExpireTimeSpan": "30",
-      "AuthorizationRoutePath": "api/user/authentication",
-      "AuthorizationServiceKey": "User",
+      "AuthorizationRoutePath": "v1/api/account/login",
+      "AuthorizationServiceKey": "",
       "TokenEndpointPath": "api/oauth2/token",
-      "CacheMode": "MemoryCache" //MemoryCache or  gateway.Redis save token
+      "CacheMode": "ddlCache.Redis" //MemoryCache or  gateway.Redis save token
     },
     "AccessPolicy": {
       "Origins": [ "http://127.0.0.1:1927", "http://localhost:927" ],
@@ -107,10 +107,10 @@
       }
     },
     "Options": {
-      "IgnoreFullyQualified": false,
+      "IgnoreFullyQualified": true,
       "MapRoutePaths": [
         {
-          "SourceRoutePath": "api/user/authentication",
+          "SourceRoutePath": "v1/api/account/login",
           "TargetRoutePath": "api/oauth2/token"
         }
       ]

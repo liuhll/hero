@@ -19,31 +19,11 @@ namespace Surging.Hero.Auth.Application.Authorization
         public async Task<LoginResult> Login(LoginInput input)
         {
             LoginResult loginResult = null;
-            try
+            loginResult = new LoginResult()
             {
-                loginResult = new LoginResult()
-                {
-                    ResultType = LoginResultType.Success,
-                    PayLoad = await _loginManager.Login(input.UserName, input.Password)
-                };
-
-            }
-            catch (AuthException ex)
-            {
-                loginResult = new LoginResult()
-                {
-                    ResultType = LoginResultType.Fail,
-                    ErrorMessage = ex.GetExceptionMessage()
-                };
-            }
-            catch (Exception ex)
-            {
-                loginResult = new LoginResult()
-                {
-                    ResultType = LoginResultType.Error,
-                    ErrorMessage = ex.GetExceptionMessage()
-                };
-            }
+                ResultType = LoginResultType.Success,
+                PayLoad = await _loginManager.Login(input.UserName, input.Password)
+            };
 
             return loginResult;
         }
