@@ -45,14 +45,14 @@ namespace Surging.Hero.ServiceHost
 #if DEBUG
                      build.AddCacheFile("${cachePath}|/app/configs/cacheSettings.json", optional: false, reloadOnChange: true);
                      build.AddCPlatformFile("${surgingPath}|/app/configs/surgingSettings.json", optional: false, reloadOnChange: true);
-                     build.AddEventBusFile("${eventBusPath}|/app/configs/eventBusSettings.json", optional: false);
+                  //   build.AddEventBusFile("${eventBusPath}|/app/configs/eventBusSettings.json", optional: false);
                      build.AddConsulFile("${consulPath}|/app/configs/consul.json", optional: false, reloadOnChange: true);
 
 
 #else
                     build.AddCacheFile("${cachePath}|configs/cacheSettings.json", optional: false, reloadOnChange: true);                      
                     build.AddCPlatformFile("${surgingPath}|configs/surgingSettings.json", optional: false,reloadOnChange: true);                    
-                    build.AddEventBusFile("configs/eventBusSettings.json", optional: false);
+                 //   build.AddEventBusFile("configs/eventBusSettings.json", optional: false);
                     build.AddConsulFile("configs/consul.json", optional: false, reloadOnChange: true);
 #endif
                  })
