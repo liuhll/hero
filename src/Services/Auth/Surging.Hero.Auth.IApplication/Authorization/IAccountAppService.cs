@@ -2,6 +2,7 @@
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Hero.Auth.IApplication.Authorization.Dtos;
 using Surging.Hero.Common;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.Authorization
@@ -11,6 +12,6 @@ namespace Surging.Hero.Auth.IApplication.Authorization
     {
         [Service(Director = Developers.Liuhll, Date = "2019-07-14", Name = "用户登录接口")]
         [HttpPost(true)]
-        Task<LoginResult> Login(LoginInput input);
+        Task<IDictionary<string, object>> Login(LoginInput input);
     }
 }

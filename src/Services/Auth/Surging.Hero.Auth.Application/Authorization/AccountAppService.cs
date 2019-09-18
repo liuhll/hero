@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.ProxyGenerator;
@@ -16,16 +17,9 @@ namespace Surging.Hero.Auth.Application.Authorization
         {
             _loginManager = loginManager;
         }
-        public async Task<LoginResult> Login(LoginInput input)
+        public async Task<IDictionary<string, object>> Login(LoginInput input)
         {
-            LoginResult loginResult = null;
-            loginResult = new LoginResult()
-            {
-                ResultType = LoginResultType.Success,
-                PayLoad = await _loginManager.Login(input.UserName, input.Password)
-            };
-
-            return loginResult;
+            return await _loginManager.Login(input.UserName, input.Password);
         }
     }
 }

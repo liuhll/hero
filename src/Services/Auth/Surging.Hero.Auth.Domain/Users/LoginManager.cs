@@ -33,8 +33,8 @@ namespace Surging.Hero.Auth.Domain.Users
                 throw new AuthException($"密码不正确");
             }
             var payload = new Dictionary<string, object>() {
-                { "userId",userInfo.Id },
-                { "userName",userInfo.UserName},
+                { "UserId",userInfo.Id },
+                { "UserName",userInfo.UserName},
             };
             return payload;
         }
