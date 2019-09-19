@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
@@ -77,6 +78,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                 await _operationActionRepository.DeleteAsync(p => p.OperationId == id, conn, trans);
                 await _permissionRepository.DeleteAsync(p => p.Id == operation.Id, conn, trans);
             }, Connection);
+        }
+
+        public async Task<IEnumerable<Operation>> GetAll()
+        {
+            return await _operationRepository.GetAllAsync();
         }
 
         public async Task Update(UpdateOperationInput input)

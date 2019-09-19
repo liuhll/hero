@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
@@ -83,6 +84,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
                 }
                 
             }, Connection);
+        }
+
+        public async Task<IEnumerable<Menu>> GetAll()
+        {
+            return await _menuRepository.GetAllAsync();
         }
 
         public async Task Update(UpdateMenuInput input)

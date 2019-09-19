@@ -1,5 +1,6 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Menus
@@ -9,5 +10,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         Task Create(CreateMenuInput input);
         Task Update(UpdateMenuInput input);
         Task Delete(long id);
+
+        Task<IEnumerable<Menu>> GetAll();
     }
 }

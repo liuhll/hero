@@ -3,6 +3,7 @@ using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attr
 using Surging.Core.Domain;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Common;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.Role
@@ -25,5 +26,9 @@ namespace Surging.Hero.Auth.IApplication.Role
 
         [HttpPost(true)]
         Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query);
+
+        [HttpGet(true)]
+        [ServiceRoute("{roleid}")]
+        Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long roleid);
     }
 }

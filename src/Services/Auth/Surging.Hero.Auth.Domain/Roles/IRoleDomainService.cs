@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 
@@ -9,5 +10,6 @@ namespace Surging.Hero.Auth.Domain.Roles
         Task Create(CreateRoleInput input);
         Task Update(UpdateRoleInput input);
         Task UpdateStatus(UpdateRoleStatusInput input);
+        Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId);
     }
 }

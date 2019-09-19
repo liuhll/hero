@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 
@@ -9,5 +10,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
         Task Create(CreateOperationInput input);
         Task Update(UpdateOperationInput input);
         Task Delete(long id);
+        Task<IEnumerable<Operation>> GetAll();
     }
 }

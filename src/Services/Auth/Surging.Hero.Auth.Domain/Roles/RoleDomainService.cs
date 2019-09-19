@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
@@ -11,9 +12,12 @@ namespace Surging.Hero.Auth.Domain.Roles
     public class RoleDomainService : ManagerBase, IRoleDomainService
     {
         private readonly IDapperRepository<Role, long> _roleRepository;
+        private readonly IDapperRepository<RolePermission, long> _rolePermissionRepository;
 
-        public RoleDomainService(IDapperRepository<Role, long> roleRepository) {
+        public RoleDomainService(IDapperRepository<Role, long> roleRepository,
+            IDapperRepository<RolePermission, long> rolePermissionRepository) {
             _roleRepository = roleRepository;
+            _rolePermissionRepository = rolePermissionRepository;
         }
 
         public async Task Create(CreateRoleInput input)
@@ -28,6 +32,11 @@ namespace Surging.Hero.Auth.Domain.Roles
             }
             var role = input.MapTo<Role>();
             await _roleRepository.InsertAsync(role);
+        }
+
+        public async Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId)
+        {
+            return await _rolePermissionRepository.GetAllAsync(p => p.RoleId == roleId);
         }
 
         public async Task Update(UpdateRoleInput input)

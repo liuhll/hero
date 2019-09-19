@@ -7,6 +7,8 @@ using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Hero.Auth.Domain.Permissions;
+using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.IApplication.Role;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
@@ -18,11 +20,14 @@ namespace Surging.Hero.Auth.Application.Role
     {
         private readonly IRoleDomainService _roleDomainService;
         private readonly IDapperRepository<Domain.Roles.Role, long> _roleRepository;
+        private readonly IPermissionDomainService _permissionDomainService;
 
         public RoleAppService(IRoleDomainService roleDomainService,
-            IDapperRepository<Domain.Roles.Role, long> roleRepository) {
+            IDapperRepository<Domain.Roles.Role, long> roleRepository,
+            IPermissionDomainService permissionDomainService) {
             _roleDomainService = roleDomainService;
             _roleRepository = roleRepository;
+            _permissionDomainService = permissionDomainService;
         }
 
         public async Task<string> Create(CreateRoleInput input)
@@ -44,6 +49,11 @@ namespace Surging.Hero.Auth.Application.Role
             }
             return roleOutput;
      
+        }
+
+        public async Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long roleid)
+        {
+            return await _permissionDomainService.GetRolePermissions(roleid);
         }
 
         public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
