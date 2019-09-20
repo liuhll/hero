@@ -1,5 +1,6 @@
 ﻿using Surging.Core.CPlatform.Exceptions;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
+using Surging.Hero.Common;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,20 +21,28 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
 
         public string Name { get; set; }
 
-        private bool isChecked;
-        public bool IsChecked
+        private CheckStatus _checkStatus;
+        public CheckStatus CheckStatus
         {
             get
             {
                 if (Children.Any())
                 {
-                    return Children.All(p => p.IsChecked);
+                    if (Children.All(p => p.CheckStatus == CheckStatus.Checked))
+                    {
+                        return CheckStatus.Checked;
+                    }
+                    else if (Children.All(p => p.CheckStatus == CheckStatus.UnChecked)) {
+                        return CheckStatus.UnChecked;
+                    }
+                    return CheckStatus.Indeterminate;
                 }
-                return isChecked;
+                return _checkStatus;
+                
             }
             set
             {
-                isChecked = value;
+                _checkStatus = value;
             }
             
         }

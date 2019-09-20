@@ -9,6 +9,7 @@ using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Shared.Menus;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Permissions
 {
@@ -38,7 +39,7 @@ namespace Surging.Hero.Auth.Domain.Permissions
             var topMenus = menus.Where(p => p.Mold == MenuMold.Top);
             var topMenuOutputs = topMenus.MapTo<IEnumerable<GetRolePermissionTreeOutput>>();
             foreach (var topMenuOutput in topMenuOutputs) {
-                topMenuOutput.IsChecked = rolePermissions.Any(p => p.PermissionId == topMenuOutput.PermissionId);
+                topMenuOutput.CheckStatus = rolePermissions.Any(p => p.PermissionId == topMenuOutput.PermissionId) ? CheckStatus.Checked : CheckStatus.UnChecked;
                 //topMenuOutput.PermissionMold = PermissionMold.Menu;
                 topMenuOutput.Children = BuildRolePermissionChildren(topMenuOutput, menus, operations, rolePermissions);
             }
@@ -56,8 +57,8 @@ namespace Surging.Hero.Auth.Domain.Permissions
             var operationChildrenOutputs = operationChildren.MapTo<IEnumerable<GetRolePermissionTreeOutput>>();
             foreach (var operationOutput in operationChildrenOutputs)
             {
-                operationOutput.IsChecked = rolePermissions.Any(p => p.PermissionId == menuOutput.PermissionId);
-               // operationOutput.PermissionMold = PermissionMold.Operation;
+                operationOutput.CheckStatus = rolePermissions.Any(p => p.PermissionId == menuOutput.PermissionId) ? CheckStatus.Checked : CheckStatus.UnChecked;
+                // operationOutput.PermissionMold = PermissionMold.Operation;
             }
             children.AddRange(operationChildrenOutputs);
             if (menuChildrenOutputs.Any())
