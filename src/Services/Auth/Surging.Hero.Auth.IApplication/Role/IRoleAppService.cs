@@ -30,5 +30,8 @@ namespace Surging.Hero.Auth.IApplication.Role
         [HttpGet(true)]
         [ServiceRoute("{roleid}")]
         Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long roleid);
+
+        [HttpPut(true)]
+        Task<string> SetPermissions(SetRolePermissionInput input);
     }
 }

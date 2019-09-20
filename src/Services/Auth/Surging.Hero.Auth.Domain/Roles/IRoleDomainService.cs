@@ -11,5 +11,6 @@ namespace Surging.Hero.Auth.Domain.Roles
         Task Update(UpdateRoleInput input);
         Task UpdateStatus(UpdateRoleStatusInput input);
         Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId);
+        Task SetPermissions(SetRolePermissionInput input);
     }
 }
