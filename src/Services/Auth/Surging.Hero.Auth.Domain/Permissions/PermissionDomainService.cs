@@ -53,7 +53,7 @@ namespace Surging.Hero.Auth.Domain.Permissions
             var menuChildren = menus.Where(p => p.ParentId == menuOutput.Id);
             var menuChildrenOutputs = menuChildren.MapTo<IEnumerable<GetRolePermissionTreeOutput>>();
             children.AddRange(menuChildrenOutputs);
-            var operationChildren = operations.Where(p => p.PermissionId == menuOutput.PermissionId);
+            var operationChildren = operations.Where(p => p.MenuId == menuOutput.Id);
             var operationChildrenOutputs = operationChildren.MapTo<IEnumerable<GetRolePermissionTreeOutput>>();
             foreach (var operationOutput in operationChildrenOutputs)
             {
