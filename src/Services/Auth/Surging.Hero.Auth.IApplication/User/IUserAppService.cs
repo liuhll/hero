@@ -11,7 +11,7 @@ namespace Surging.Hero.Auth.IApplication.User
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IUserAppService : IServiceKey
     {
-        [Service(Director = Developers.Liuhll)]
+        [Service(Director = Developers.Liuhll,EnableAuthorization = true)]
         [HttpPost(true)]
         Task<string> Create(CreateUserInput input);
 

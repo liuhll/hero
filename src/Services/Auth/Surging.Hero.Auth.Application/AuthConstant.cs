@@ -8,6 +8,8 @@
             public const string Version = "v1";
 
             public const string PermissionMoudleName = "permission.v1";
+
+            public const string AccountMoudleName = "account.v1";
         }
         
     }

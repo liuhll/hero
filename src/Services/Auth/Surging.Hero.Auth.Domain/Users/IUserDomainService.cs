@@ -14,5 +14,6 @@ namespace Surging.Hero.Auth.Domain.Users
         Task Delete(long id);
 
         Task<IEnumerable<Role>> GetUserRoles(long userId);
+        Task<GetUserNormOutput> GetUserNormInfoById(long id);
     }
 }

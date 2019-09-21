@@ -16,6 +16,8 @@ using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Position;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Core.CPlatform.Runtime.Session;
+using Surging.Hero.Common.Runtime.Session;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -146,12 +148,7 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<GetUserNormOutput> Get(long id)
         {
-            var userInfo = await _userRepository.GetAsync(id);
-            var userInfoOutput = userInfo.MapTo<GetUserNormOutput>();
-            userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userInfoOutput.DeptId)).Name;
-            userInfoOutput.PositionName = (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId)).Name;
-            userInfoOutput.Roles = (await _userDomainService.GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
-            return userInfoOutput;
+            return await _userDomainService.GetUserNormInfoById(id);
         }
     }
 }

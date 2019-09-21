@@ -5,6 +5,7 @@ using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.UserGroups;
+using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Position;
@@ -75,6 +76,16 @@ namespace Surging.Hero.Auth.Domain.Users
                 // todo: 删除其他关联表
 
             }, Connection);
+        }
+
+        public async Task<GetUserNormOutput> GetUserNormInfoById(long id)
+        {
+            var userInfo = await _userRepository.GetAsync(id);
+            var userInfoOutput = userInfo.MapTo<GetUserNormOutput>();
+            userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userInfoOutput.DeptId)).Name;
+            userInfoOutput.PositionName = (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId)).Name;
+            userInfoOutput.Roles = (await GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+            return userInfoOutput;
         }
 
         public async Task<IEnumerable<Role>> GetUserRoles(long userId)
