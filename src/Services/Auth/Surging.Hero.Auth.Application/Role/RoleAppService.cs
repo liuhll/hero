@@ -37,6 +37,12 @@ namespace Surging.Hero.Auth.Application.Role
             return "新增角色信息成功";
         }
 
+        public async Task<string> Delete(long id)
+        {
+            await _roleDomainService.Delete(id);
+            return "删除角色信息成功";
+        }
+
         public async Task<GetRoleOutput> Get(long id)
         {
             var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == id);
@@ -51,9 +57,9 @@ namespace Surging.Hero.Auth.Application.Role
      
         }
 
-        public async Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long roleid)
+        public async Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long id)
         {
-            return await _permissionDomainService.GetRolePermissions(roleid);
+            return await _permissionDomainService.GetRolePermissions(id);
         }
 
         public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)

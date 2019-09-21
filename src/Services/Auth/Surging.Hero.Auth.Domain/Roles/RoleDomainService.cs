@@ -5,6 +5,8 @@ using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Hero.Auth.Domain.Permissions;
+using Surging.Hero.Auth.Domain.UserGroups;
+using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Organization.IApplication.Department;
 
@@ -15,13 +17,19 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<Role, long> _roleRepository;
         private readonly IDapperRepository<RolePermission, long> _rolePermissionRepository;
         private readonly IDapperRepository<Permission,long> _permissionRepository;
+        private readonly IDapperRepository<UserRole, long> _userRoleRepository;
+        private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
 
         public RoleDomainService(IDapperRepository<Role, long> roleRepository,
             IDapperRepository<RolePermission, long> rolePermissionRepository,
-            IDapperRepository<Permission, long> permissionRepository) {
+            IDapperRepository<Permission, long> permissionRepository,
+            IDapperRepository<UserRole, long> userRoleRepository,
+            IDapperRepository<UserGroupRole, long> userGroupRoleRepository) {
             _roleRepository = roleRepository;
             _rolePermissionRepository = rolePermissionRepository;
             _permissionRepository = permissionRepository;
+            _userRoleRepository = userRoleRepository;
+            _userGroupRoleRepository = userGroupRoleRepository;
         }
 
         public async Task Create(CreateRoleInput input)
@@ -36,6 +44,29 @@ namespace Surging.Hero.Auth.Domain.Roles
             }
             var role = input.MapTo<Role>();
             await _roleRepository.InsertAsync(role);
+        }
+
+        public async Task Delete(long roleid)
+        {
+            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleid);
+            if (role == null)
+            {
+                throw new BusinessException($"不存在Id为{roleid}的角色信息");
+            }
+            var userRoleCount = await _userRoleRepository.GetCountAsync(p => p.RoleId == roleid);
+            if (userRoleCount > 0) {
+                throw new BusinessException($"{role.Name}被分配用户,请先删除相关授权的用户信息");
+            }
+            var userGroupRoleCount = await _userGroupRoleRepository.GetCountAsync(p => p.RoleId == roleid);
+            if (userRoleCount > 0)
+            {
+                throw new BusinessException($"{role.Name}被分配用户组,请先删除相关授权的用户组信息");
+            }
+            await UnitOfWorkAsync(async(conn,trans)=> {
+                await _roleRepository.DeleteAsync(p => p.Id == roleid,conn,trans);
+                await _rolePermissionRepository.DeleteAsync(p => p.RoleId == roleid, conn, trans);
+            },Connection);
+
         }
 
         public async Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId)
