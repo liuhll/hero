@@ -59,7 +59,10 @@ namespace Surging.Hero.Auth.Domain.Users
                     if (role == null) {
                         throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
                     }
-                    await _userRoleRepository.InsertAsync(new UserRole() { UserId = userId,RoleId = roleId });
+                    if (role.DeptId.HasValue && role.DeptId != 0 && role.DeptId.Value != userInfo.DeptId) {
+                        throw new BusinessException($"角色{role.Name}与用户{userInfo.UserName}不属于同一个部门");
+                    }
+                    await _userRoleRepository.InsertAsync(new UserRole() { UserId = userId,RoleId = roleId }, conn, trans);
                 }
                
             }, Connection);
@@ -151,7 +154,11 @@ namespace Surging.Hero.Auth.Domain.Users
                     {
                         throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
                     }
-                    await _userRoleRepository.InsertAsync(new UserRole() { UserId = updateUser.Id, RoleId = roleId });
+                    if (role.DeptId.HasValue && role.DeptId != 0 && role.DeptId.Value != updateUser.DeptId)
+                    {
+                        throw new BusinessException($"角色{role.Name}与用户{updateUser.UserName}不属于同一个部门");
+                    }
+                    await _userRoleRepository.InsertAsync(new UserRole() { UserId = updateUser.Id, RoleId = roleId },conn,trans);
                 }
 
             }, Connection);
