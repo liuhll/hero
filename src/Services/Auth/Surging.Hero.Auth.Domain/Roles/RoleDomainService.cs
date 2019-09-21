@@ -55,6 +55,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 throw new BusinessException($"不存在Id为{input.RoleId}的角色信息");
             }
             await UnitOfWorkAsync(async (conn, trans) => {
+                await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.RoleId, conn, trans);
                 foreach (var permissionId in input.PermissionIds) {
                     var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
                     if (permission == null) {
