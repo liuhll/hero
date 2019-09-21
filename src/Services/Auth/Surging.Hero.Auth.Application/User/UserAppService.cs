@@ -18,6 +18,7 @@ using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Hero.Common.Runtime.Session;
+using System.Linq;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -26,12 +27,15 @@ namespace Surging.Hero.Auth.Application.User
     {
         private readonly IUserDomainService _userDomainService;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
+        private readonly IDapperRepository<Domain.Roles.Role, long> _roleRepository;
 
         public UserAppService(IUserDomainService userDomainService,
-            IDapperRepository<UserInfo, long> userRepository)
+            IDapperRepository<UserInfo, long> userRepository,
+            IDapperRepository<Domain.Roles.Role, long> roleRepository)
         {
             _userDomainService = userDomainService;
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
 
@@ -149,6 +153,43 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<GetUserNormOutput> Get(long id)
         {
             return await _userDomainService.GetUserNormInfoById(id);
+        }
+
+        public async Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query)
+        {
+            var userRoleOutputs = new List<GetUserRoleOutput>();
+            if (!query.UserId.HasValue && !query.DeptId.HasValue) {
+                throw new BusinessException("必须指定用户Id或是部门Id");
+            }
+            if (query.UserId.HasValue && query.UserId.Value != 0)
+            {
+                var userInfo = await _userDomainService.GetUserNormInfoById(query.UserId.Value);
+                var userCanAllocationRoles = await _roleRepository.GetAllAsync(p => p.DeptId == 0 || p.DeptId == null || p.DeptId == userInfo.DeptId);
+                foreach (var role in userCanAllocationRoles)
+                {
+                    userRoleOutputs.Add(new GetUserRoleOutput()
+                    {
+                        RoleId = role.Id,
+                        DeptId = role.DeptId,
+                        DeptName = role.DeptId.HasValue && role.DeptId != 0 ? (await GetService<IDepartmentAppService>().Get(role.DeptId.Value)).Name : null,
+                        Name = role.Name,
+                        CheckStatus = userInfo.Roles.Any(p => p.Id == role.Id) ? CheckStatus.Checked : CheckStatus.UnChecked
+                    });
+                }
+            }
+            var deptCanAllocationRoles = await _roleRepository.GetAllAsync(p => p.DeptId == 0 || p.DeptId == null || p.DeptId == query.DeptId.Value);
+            foreach (var role in deptCanAllocationRoles)
+            {
+                userRoleOutputs.Add(new GetUserRoleOutput()
+                {
+                    RoleId = role.Id,
+                    DeptId = role.DeptId,
+                    DeptName = role.DeptId.HasValue && role.DeptId != 0 ? (await GetService<IDepartmentAppService>().Get(role.DeptId.Value)).Name : null,
+                    Name = role.Name,
+                    CheckStatus = CheckStatus.UnChecked
+                });
+            }
+            return userRoleOutputs;
         }
     }
 }

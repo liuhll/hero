@@ -42,5 +42,8 @@ namespace Surging.Hero.Auth.IApplication.User
         [ServiceRoute("{id}")]
         [HttpGet(true)]
         Task<GetUserNormOutput> Get(long id);
+
+        [HttpPost(true)]
+        Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query);
     }
 }
