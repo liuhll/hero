@@ -1,4 +1,5 @@
 ﻿using Surging.Core.CPlatform.Ioc;
+using Surging.Core.CPlatform.Routing;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using System.Collections.Generic;
@@ -15,5 +16,6 @@ namespace Surging.Hero.Auth.Domain.Users
 
         Task<IEnumerable<Role>> GetUserRoles(long userId);
         Task<GetUserNormOutput> GetUserNormInfoById(long id);
+        Task<bool> CheckPermission(long userId, string serviceId);
     }
 }

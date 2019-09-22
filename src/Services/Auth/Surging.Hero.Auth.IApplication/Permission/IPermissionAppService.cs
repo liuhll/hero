@@ -36,5 +36,9 @@ namespace Surging.Hero.Auth.IApplication.Permission
 
         [HttpDelete(true)]
         Task<string> Delete(DeletePermissionInput input);
+
+        [HttpPost(true)]
+        [Service(DisableNetwork = true, Name = "接口鉴权",Director = Developers.Liuhll)]
+        Task<bool> Check(string serviceId);
     }
 }

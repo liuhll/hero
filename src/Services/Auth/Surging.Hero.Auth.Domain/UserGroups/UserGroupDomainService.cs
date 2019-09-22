@@ -24,18 +24,21 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<UserUserGroupRelation, long> _userUserGroupRelationRepository;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
         private readonly IDapperRepository<Roles.Role, long> _roleRepository;
+        private readonly IRoleDomainService _roleDomainService;
 
         public UserGroupDomainService(IDapperRepository<UserGroup, long> userGroupRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
             IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRepository,
             IDapperRepository<UserInfo, long> userRepository,
-            IDapperRepository<Roles.Role, long> roleRepository)
+            IDapperRepository<Roles.Role, long> roleRepository,
+            IRoleDomainService roleDomainService)
         {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
             _userUserGroupRelationRepository = userUserGroupRelationRepository;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _roleDomainService = roleDomainService;
         }
 
         public async Task Create(CreateUserGroupInput input)
@@ -162,6 +165,23 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     return output;
                 }, param: new { UserGroupId = userGroupId },splitOn: "Id");
             }
+        }
+
+        public async Task<bool> CheckPermission(long userId, string serviceId)
+        {
+            var userGroups = await _userUserGroupRelationRepository.GetAllAsync(p => p.UserId == userId);
+            foreach (var userGroup in userGroups)
+            {
+                var userGroupRoles = await GetUserGroupRoles(userGroup.UserGroupId);
+                foreach (var userGroupRole in userGroupRoles)
+                {
+                    if (await _roleDomainService.CheckPermission(userGroupRole.Id,serviceId))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

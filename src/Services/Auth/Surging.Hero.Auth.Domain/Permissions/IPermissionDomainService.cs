@@ -8,5 +8,7 @@ namespace Surging.Hero.Auth.Domain.Permissions
     public interface IPermissionDomainService : ITransientDependency
     {
         Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long roleId);
+
+        Task<bool> Check(long userId, string serviceId);
     }
 }

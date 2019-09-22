@@ -11,7 +11,7 @@ namespace Surging.Hero.Auth.IApplication.Authorization
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IAccountAppService : IServiceKey
     {
-        [Service(Director = Developers.Liuhll, Date = "2019-07-14", Name = "用户登录接口")]
+        [Service(Director = Developers.Liuhll, Date = "2019-07-14", Name = "用户登录接口", EnableAuthorization = false)]
         [HttpPost(true)]
         Task<IDictionary<string, object>> Login(LoginInput input);
 

@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
+using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Actions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
@@ -28,18 +30,22 @@ namespace Surging.Hero.Auth.Application.Permission
         private readonly IDapperRepository<Menu, long> _menuRepository;
         private readonly IDapperRepository<Operation, long> _operationRepository;
         private readonly IActionDomainService _actionDomainService;
-
+        private readonly IPermissionDomainService _permissionDomainService;
+        private readonly ISurgingSession _session;
         public PermissionAppService(IMenuDomainService menuDomainService,
             IOperationDomainService operationDomainService,
             IDapperRepository<Menu, long> menuRepository,
             IDapperRepository<Operation, long> operationRepository,
-            IActionDomainService actionDomainService)
+            IActionDomainService actionDomainService,
+            IPermissionDomainService permissionDomainService)
         {
             _menuDomainService = menuDomainService;
             _operationDomainService = operationDomainService;
             _menuRepository = menuRepository;
             _operationRepository = operationRepository;
             _actionDomainService = actionDomainService;
+            _permissionDomainService = permissionDomainService;
+            _session = NullSurgingSession.Instance;
         }
 
         public async Task<string> CreateMenu(CreateMenuInput input)
@@ -147,6 +153,16 @@ namespace Surging.Hero.Auth.Application.Permission
                     throw new BusinessException("PermissionType不正确");
             }
             return $"删除{input.Mold.GetDescription()}成功";
+        }
+
+        public async Task<bool> Check(string serviceId)
+        {
+            if (_session == null || !_session.UserId.HasValue) {
+                throw new AuthException("您还没有登录系统");
+            }
+
+            return await _permissionDomainService.Check(_session.UserId.Value,serviceId);
+           
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
@@ -30,6 +33,25 @@ namespace Surging.Hero.Auth.Domain.Roles
             _permissionRepository = permissionRepository;
             _userRoleRepository = userRoleRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
+        }
+
+        public async Task<bool> CheckPermission(long roleId,string serviceId)
+        {
+            var rolePermissions = await GetRolePermissions(roleId);
+            var servicePemission = await GetservicePemission(serviceId);
+            if (servicePemission == null) {
+                throw new AuthException($"通过{serviceId}未查询到相关权限信息,请于管理员联系");
+            }
+            if (servicePemission.Status == Common.Status.Invalid)
+            {
+                throw new AuthException($"{servicePemission.Name}--{servicePemission.Memo}权限状态无效");
+            }
+            if (rolePermissions.Any(p => p.PermissionId == servicePemission.Id))
+            {
+                return true;
+            }
+            return false;
+
         }
 
         public async Task Create(CreateRoleInput input)
@@ -122,6 +144,19 @@ namespace Surging.Hero.Auth.Domain.Roles
             var role = await _roleRepository.GetAsync(input.Id);
             role.Status = input.Status;
             await _roleRepository.UpdateAsync(role);
+        }
+
+        private async Task<Permission> GetservicePemission(string serviceId)
+        {
+            var sql = @"SELECT p.* FROM OperationActionRelation as oar LEFT JOIN Operation as o on oar.OperationId = o.Id AND o.IsDeleted = 0
+LEFT JOIN Permission as p on p.Id = o.PermissionId AND p.Mold=1 AND  p.IsDeleted = 0
+WHERE oar.ServiceId=@ServiceId";
+
+            using (Connection) {
+                var permission = await Connection.QueryAsync<Permission>(sql, new { ServiceId = serviceId });
+                return permission.FirstOrDefault();
+            }
+
         }
     }
 }

@@ -21,22 +21,37 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IDapperRepository<Roles.Role, long> _roleRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<UserUserGroupRelation,long> _userUserGroupRelationRoleRepository;
+        private readonly IRoleDomainService _roleDomainService;
         private readonly IPasswordHelper _passwordHelper;
 
         public UserDomainService(IDapperRepository<UserInfo, long> userRepository,
             IDapperRepository<Roles.Role, long> roleRepository,
             IDapperRepository<UserRole, long> userRoleRepository,
             IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRoleRepository,
-        IPasswordHelper passwordHelper)
+            IRoleDomainService roleDomainService,
+            IPasswordHelper passwordHelper)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
             _userUserGroupRelationRoleRepository = userUserGroupRelationRoleRepository;
+            _roleDomainService = roleDomainService;
             _passwordHelper = passwordHelper;
 
         }
 
+        public async Task<bool> CheckPermission(long userId, string serviceId)
+        {
+            var userRoles = await GetUserRoles(userId);
+            foreach (var userRole in userRoles)
+            {
+                if (await _roleDomainService.CheckPermission(userRole.Id, serviceId))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public async Task Create(CreateUserInput input)
         {

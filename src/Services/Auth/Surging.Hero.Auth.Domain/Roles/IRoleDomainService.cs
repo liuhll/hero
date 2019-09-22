@@ -13,5 +13,6 @@ namespace Surging.Hero.Auth.Domain.Roles
         Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId);
         Task SetPermissions(SetRolePermissionInput input);
         Task Delete(long roleid);
+        Task<bool> CheckPermission(long roleId,string serviceId);
     }
 }

@@ -49,9 +49,11 @@
     "IsCamelCaseResolver": "${IsCamelCaseResolver}|true",
     "Protocols": "Http1AndHttp2",
     "ApiGetWay": {
-      "AccessTokenExpireTimeSpan": "30",
-      "AuthorizationRoutePath": "v1/api/account/login",
+      "AccessTokenExpireTimeSpan": "60",
+      "AuthorizationRoutePath": "v1/api/permission/check",
       "AuthorizationServiceKey": "",
+      "AuthenticationRoutePath": "v1/api/account/login",
+      "AuthenticationServiceKey": "",
       "TokenEndpointPath": "api/oauth2/token",
       "CacheMode": "ddlCache.Redis" //MemoryCache or  gateway.Redis save token
     },
