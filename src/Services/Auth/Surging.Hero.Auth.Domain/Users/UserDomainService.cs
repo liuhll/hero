@@ -4,6 +4,7 @@ using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
+using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
@@ -24,6 +25,7 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IDapperRepository<Roles.Role, long> _roleRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<UserUserGroupRelation,long> _userUserGroupRelationRoleRepository;
+        private readonly IDapperRepository<Menu, long> _menuRepository;
         private readonly IRoleDomainService _roleDomainService;
         private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IPasswordHelper _passwordHelper;
@@ -32,6 +34,7 @@ namespace Surging.Hero.Auth.Domain.Users
             IDapperRepository<Roles.Role, long> roleRepository,
             IDapperRepository<UserRole, long> userRoleRepository,
             IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRoleRepository,
+            IDapperRepository<Menu, long> menuRepository,
             IRoleDomainService roleDomainService,
             IUserGroupDomainService userGroupDomainService,
             IPasswordHelper passwordHelper)
@@ -40,6 +43,7 @@ namespace Surging.Hero.Auth.Domain.Users
             _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
             _userUserGroupRelationRoleRepository = userUserGroupRelationRoleRepository;
+            _menuRepository = menuRepository;
             _roleDomainService = roleDomainService;
             _userGroupDomainService = userGroupDomainService;
             _passwordHelper = passwordHelper;
@@ -104,20 +108,41 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public async Task<IEnumerable<Menu>> GetUserMenu(long userId)
         {
-            var userRoles = await _userRoleRepository.GetAllAsync(p => p.Id == userId);
-            var userRoleIds = userRoles.Select(p => p.RoleId).ToList();
-            var userGroups = await _userUserGroupRelationRoleRepository.GetAllAsync(p => p.UserId == userId);
-            foreach (var userGroup in userGroups) {
-                var userGroupRoles = await _userGroupDomainService.GetUserGroupRoles(userGroup.UserGroupId);
-                userRoleIds.AddRange(userGroupRoles.Select(p => p.Id));
-            }
+            var userRoleIds = await GetAllUserRoleIds(userId);
             var sql = @"SELECT DISTINCT m.* FROM RolePermission as rp
 LEFT JOIN Menu as m ON m.PermissionId = rp.PermissionId AND m.IsDeleted=0
 WHERE rp.RoleId in @RoleId AND m.Status=@Status";
             using (Connection) {
-                return await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds.ToArray(), Status = Status.Valid });
+                return await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds, Status = Status.Valid });
             }
 
+        }
+
+        public async Task<IEnumerable<Operation>> GetUserOperation(long userId, long menuId)
+        {
+            var userRoleIds = await GetAllUserRoleIds(userId);
+
+            var sql = @"SELECT DISTINCT o.* FROM RolePermission as rp
+LEFT JOIN Operation as o ON o.PermissionId = rp.PermissionId AND o.IsDeleted=0
+WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
+            using (Connection)
+            {
+                return await Connection.QueryAsync<Operation>(sql, new { RoleId = userRoleIds, Status = Status.Valid, MenuId = menuId });
+            }
+        }
+
+        private async Task<long[]> GetAllUserRoleIds(long userId)
+        {
+            var userRoles = await _userRoleRepository.GetAllAsync(p => p.UserId == userId);
+            var userRoleIds = userRoles.Select(p => p.RoleId).ToList();
+            var userGroups = await _userUserGroupRelationRoleRepository.GetAllAsync(p => p.UserId == userId);
+            foreach (var userGroup in userGroups)
+            {
+                var userGroupRoles = await _userGroupDomainService.GetUserGroupRoles(userGroup.UserGroupId);
+                userRoleIds.AddRange(userGroupRoles.Select(p => p.Id));
+            }
+
+            return userRoleIds.ToArray();
         }
 
         public async Task<GetUserNormOutput> GetUserNormInfoById(long id)
@@ -129,6 +154,8 @@ WHERE rp.RoleId in @RoleId AND m.Status=@Status";
             userInfoOutput.Roles = (await GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             return userInfoOutput;
         }
+
+     
 
         public async Task<IEnumerable<Role>> GetUserRoles(long userId)
         {

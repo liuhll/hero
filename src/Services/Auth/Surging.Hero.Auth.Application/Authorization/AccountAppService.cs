@@ -49,6 +49,16 @@ namespace Surging.Hero.Auth.Application.Authorization
             return treeOutputs.BuildTree();
         }
 
+        public async Task<IEnumerable<GetUserOperationOutput>> GetUserOperation(long menuId)
+        {
+            if (_surgingSession == null || !_surgingSession.UserId.HasValue)
+            {
+                throw new BusinessException("您当前没有登录系统");
+            }
+            var userOperations = await _userDomainService.GetUserOperation(_surgingSession.UserId.Value,menuId);
+            return userOperations.MapTo<IEnumerable<GetUserOperationOutput>>();
+        }
+
         public async Task<IDictionary<string, object>> Login(LoginInput input)
         {
             return await _loginManager.Login(input.UserName, input.Password);
