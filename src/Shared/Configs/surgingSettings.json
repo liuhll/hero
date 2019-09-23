@@ -2,7 +2,7 @@
   "Surging": {
     "Ip": "${Surging_Server_IP}|0.0.0.0",
     "WatchInterval": 30,
-    "Port": "${Surging_Server_Port}|98",
+    "Port": "${Surging_Server_Port}|100",
     "MappingIp": "${Mapping_ip}",
     "MappingPort": "${Mapping_Port}",
     "Token": "true",

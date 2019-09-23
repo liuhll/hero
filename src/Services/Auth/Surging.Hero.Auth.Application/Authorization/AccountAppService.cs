@@ -5,6 +5,7 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Session;
+using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Authorization;
@@ -35,6 +36,17 @@ namespace Surging.Hero.Auth.Application.Authorization
             var userInfo = await _userDomainService.GetUserNormInfoById(_surgingSession.UserId.Value);
             return userInfo.MapTo<LoginUserInfo>();
 
+        }
+
+        public async Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserMenu()
+        {
+            if (_surgingSession == null || !_surgingSession.UserId.HasValue)
+            {
+                throw new BusinessException("您当前没有登录系统");
+            }
+            var userMenus = await _userDomainService.GetUserMenu(_surgingSession.UserId.Value);
+            var treeOutputs = userMenus.MapTo<IEnumerable<GetUserMenuTreeOutput>>();
+            return treeOutputs.BuildTree();
         }
 
         public async Task<IDictionary<string, object>> Login(LoginInput input)

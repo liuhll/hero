@@ -3,14 +3,17 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
+using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Position;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.Domain.Users
@@ -22,6 +25,7 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<UserUserGroupRelation,long> _userUserGroupRelationRoleRepository;
         private readonly IRoleDomainService _roleDomainService;
+        private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IPasswordHelper _passwordHelper;
 
         public UserDomainService(IDapperRepository<UserInfo, long> userRepository,
@@ -29,6 +33,7 @@ namespace Surging.Hero.Auth.Domain.Users
             IDapperRepository<UserRole, long> userRoleRepository,
             IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRoleRepository,
             IRoleDomainService roleDomainService,
+            IUserGroupDomainService userGroupDomainService,
             IPasswordHelper passwordHelper)
         {
             _userRepository = userRepository;
@@ -36,6 +41,7 @@ namespace Surging.Hero.Auth.Domain.Users
             _userRoleRepository = userRoleRepository;
             _userUserGroupRelationRoleRepository = userUserGroupRelationRoleRepository;
             _roleDomainService = roleDomainService;
+            _userGroupDomainService = userGroupDomainService;
             _passwordHelper = passwordHelper;
 
         }
@@ -94,6 +100,24 @@ namespace Surging.Hero.Auth.Domain.Users
                 // todo: 删除其他关联表
 
             }, Connection);
+        }
+
+        public async Task<IEnumerable<Menu>> GetUserMenu(long userId)
+        {
+            var userRoles = await _userRoleRepository.GetAllAsync(p => p.Id == userId);
+            var userRoleIds = userRoles.Select(p => p.RoleId).ToList();
+            var userGroups = await _userUserGroupRelationRoleRepository.GetAllAsync(p => p.UserId == userId);
+            foreach (var userGroup in userGroups) {
+                var userGroupRoles = await _userGroupDomainService.GetUserGroupRoles(userGroup.UserGroupId);
+                userRoleIds.AddRange(userGroupRoles.Select(p => p.Id));
+            }
+            var sql = @"SELECT DISTINCT m.* FROM RolePermission as rp
+LEFT JOIN Menu as m ON m.PermissionId = rp.PermissionId AND m.IsDeleted=0
+WHERE rp.RoleId in @RoleId AND m.Status=@Status";
+            using (Connection) {
+                return await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds.ToArray(), Status = Status.Valid });
+            }
+
         }
 
         public async Task<GetUserNormOutput> GetUserNormInfoById(long id)

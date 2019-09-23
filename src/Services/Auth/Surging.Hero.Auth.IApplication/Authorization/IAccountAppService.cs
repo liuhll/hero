@@ -1,5 +1,6 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Core.Domain;
 using Surging.Hero.Auth.IApplication.Authorization.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Common.Runtime.Session;
@@ -18,5 +19,9 @@ namespace Surging.Hero.Auth.IApplication.Authorization
         [Service(Director = Developers.Liuhll, Date = "2019-09-21", Name = "获取登录用户信息",EnableAuthorization = true,AllowPermission =true)]
         [HttpGet(true)]
         Task<LoginUserInfo> GetLoginUser();
+
+        [HttpGet(true)]
+        [Service(Director = Developers.Liuhll, Date = "2019-09-23", Name = "获取用户菜单列表", EnableAuthorization = true, AllowPermission = true)]
+        Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserMenu();
     }
 }
