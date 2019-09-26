@@ -50,7 +50,7 @@
     "Protocols": "Http1AndHttp2",
     "ApiGetWay": {
       "AccessTokenExpireTimeSpan": "60",
-      "AuthorizationRoutePath": "v1/api/permission/check",
+      "AuthorizationRoutePath": "", //"v1/api/permission/check",
       "AuthorizationServiceKey": "",
       "AuthenticationRoutePath": "v1/api/account/login",
       "AuthenticationServiceKey": "",
@@ -58,7 +58,7 @@
       "CacheMode": "ddlCache.Redis" //MemoryCache or  gateway.Redis save token
     },
     "AccessPolicy": {
-      "Origins": [ "http://127.0.0.1:1927", "http://localhost:927" ],
+      "Origins": [ "*"],
       "AllowAnyHeader": true,
       "AllowAnyMethod": true
     },

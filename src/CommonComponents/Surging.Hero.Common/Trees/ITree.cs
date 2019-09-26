@@ -9,6 +9,14 @@ namespace Surging.Core.Domain
 
         string Name { get; set; }
 
+        string Title 
+        { 
+            get 
+            {
+                return Name;
+            } 
+        }
+
         long ParentId { get; set; }
 
         string FullName { get; set; }

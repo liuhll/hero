@@ -19,6 +19,9 @@ using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Hero.Common.Runtime.Session;
 using System.Linq;
+using System;
+using Surging.Hero.Organization.Domain.Shared.Organizations;
+using Surging.Hero.Organization.IApplication.Organization;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -57,14 +60,14 @@ namespace Surging.Hero.Auth.Application.User
             {
                 throw new UserFriendlyException($"已经存在Email为{input.Email}的用户");
             }
-                      
+
             await _userDomainService.Create(input);
             return "新增员工成功";
         }
 
         public async Task<string> Update(UpdateUserInput input)
         {
-            input.CheckDataAnnotations().CheckValidResult();        
+            input.CheckDataAnnotations().CheckValidResult();
             await _userDomainService.Update(input);
             return "更新员工信息成功";
         }
@@ -83,17 +86,34 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query)
         {
-            var queryResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
-               || p.ChineseName.Contains(query.SearchKey)
-               || p.Email.Contains(query.SearchKey)
-               || p.Phone.Contains(query.SearchKey),query.PageIndex,query.PageCount); 
-            
-            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryResult.Item2);
-            foreach (var userOutput in queryResultOutput.Items) {
+            IPagedResult<GetUserNormOutput> queryResultOutput = null; 
+            if (query.OrgId == 0)
+            {
+               var queryPageResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
+                || p.ChineseName.Contains(query.SearchKey)
+                || p.Email.Contains(query.SearchKey)
+                || p.Phone.Contains(query.SearchKey), query.PageIndex, query.PageCount);
+                queryResultOutput = queryPageResult.Item1.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryPageResult.Item2);
+             
+            }
+            else
+            { 
+                var orgDeptIds = await GetService<IOrganizationAppService>().GetSubDeptIds(query.OrgId, query.OrganizationType);    
+                // :todo 优化
+                var queryResult = await _userRepository.GetAllAsync(p => p.UserName.Contains(query.SearchKey)
+                   || p.ChineseName.Contains(query.SearchKey)
+                   || p.Email.Contains(query.SearchKey)
+                   || p.Phone.Contains(query.SearchKey));
+                queryResult = queryResult.Where(p=> orgDeptIds.Any(q=> q == p.DeptId));
+                queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().PageBy(query);
+            }
+            foreach (var userOutput in queryResultOutput.Items)
+            {
                 userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
                 userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
                 userOutput.Roles = (await _userDomainService.GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             }
+
             return queryResultOutput;
         }
 
@@ -139,7 +159,7 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId)
         {
-            var corporationUsers = await _userRepository.GetAllAsync(p => p.DeptId == corporationId);           
+            var corporationUsers = await _userRepository.GetAllAsync(p => p.DeptId == corporationId);
             var corporationUserOutputs = corporationUsers.MapTo<IEnumerable<GetUserBasicOutput>>();
 
             foreach (var userOutput in corporationUserOutputs)
@@ -158,7 +178,8 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query)
         {
             var userRoleOutputs = new List<GetUserRoleOutput>();
-            if (!query.UserId.HasValue && !query.DeptId.HasValue) {
+            if (!query.UserId.HasValue && !query.DeptId.HasValue)
+            {
                 throw new BusinessException("必须指定用户Id或是部门Id");
             }
             if (query.UserId.HasValue && query.UserId.Value != 0)

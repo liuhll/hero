@@ -17,6 +17,10 @@ namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 
         public string Code { get; set; }
 
+        public string Title { get { return Name; } }
+
+        public bool Expand { get { return true; } }
+
         public IEnumerable<GetOrganizationTreeOutput> Children { get; set; }
     }
 }

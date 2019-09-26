@@ -93,5 +93,10 @@ namespace Surging.Hero.Organization.Application.Organization
             return children;
         }
 
+        public async Task<IEnumerable<long>> GetSubDeptIds(long orgId, OrganizationType organizationType)
+        {
+            var subOrgs = await _organizationDomainService.GetOrganizations(orgId, organizationType);
+            return subOrgs.Where(p=>p.OrganizationType == OrganizationType.Department).Select(p => p.Id).ToList();
+        }
     }
 }
