@@ -18,9 +18,9 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         public string Phone { get; set; }
 
         [Required(ErrorMessage = "性别不允许为空")]
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
-        public DateTime Birth { get; set; }
+        public DateTime? Birth { get; set; }
 
         public string NativePlace { get; set; }
 
@@ -28,7 +28,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 
         public string Folk { get; set; }
 
-        public PoliticalStatus PoliticalStatus { get; set; }
+        public PoliticalStatus? PoliticalStatus { get; set; }
 
         public string GraduateInstitutions { get; set; }
 

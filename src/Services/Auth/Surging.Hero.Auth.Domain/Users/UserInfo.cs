@@ -26,9 +26,9 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public string Phone { get; set; }
 
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
-        public DateTime Birth { get; set; }
+        public DateTime? Birth { get; set; }
 
         public string NativePlace { get; set; }
 
@@ -36,7 +36,7 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public string Folk { get; set; }
 
-        public PoliticalStatus PoliticalStatus { get; set; }
+        public PoliticalStatus? PoliticalStatus { get; set; }
 
         public string GraduateInstitutions { get; set; }
 
@@ -48,7 +48,7 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public string Memo { get; set; }
 
-        public DateTime LastLoginTime { get; set; } 
+        public DateTime? LastLoginTime { get; set; } 
 
         public int LoginFailedCount { get; set; }
 
