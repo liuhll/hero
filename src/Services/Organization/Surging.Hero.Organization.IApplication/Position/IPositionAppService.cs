@@ -2,6 +2,7 @@
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Surging.Hero.Organization.IApplication.Position
@@ -12,6 +13,10 @@ namespace Surging.Hero.Organization.IApplication.Position
         [ServiceRoute("{id}")]
         [HttpGet(true)]
         Task<GetPositionOutput> Get(long id);
+
+        [ServiceRoute("{deptId}")]
+        [HttpGet(true)]
+        Task<IEnumerable<GetPositionOutput>> GetDeptPosition(long deptId);
 
         [HttpPost(true)]
         Task<string> Create(CreatePositionInput input);

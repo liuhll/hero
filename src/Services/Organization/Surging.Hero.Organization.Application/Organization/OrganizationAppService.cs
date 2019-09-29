@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
+using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Domain;
 using Surging.Core.ProxyGenerator;
@@ -97,6 +98,16 @@ namespace Surging.Hero.Organization.Application.Organization
         {
             var subOrgs = await _organizationDomainService.GetOrganizations(orgId, organizationType);
             return subOrgs.Where(p=>p.OrganizationType == OrganizationType.Department).Select(p => p.Id).ToList();
+        }
+
+        public async Task<QueryOrganizationOutput> GetOrgByCode(string code)
+        {
+            var orgInfo = (await _organizationDomainService.GetOrganizations()).SingleOrDefault(p => p.Code == code);
+            if (orgInfo == null) 
+            {
+                throw new BusinessException($"不存在Code为{code}的组织信息");
+            }
+            return orgInfo.MapTo<QueryOrganizationOutput>();
         }
     }
 }

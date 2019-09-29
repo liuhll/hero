@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
@@ -46,6 +47,12 @@ namespace Surging.Hero.Organization.Application.Position
         {
             var position = await _positionRepository.GetAsync(id);
             return position.MapTo<GetPositionOutput>();
+        }
+
+        public async Task<IEnumerable<GetPositionOutput>> GetDeptPosition(long deptId)
+        {
+            var positions = await _positionRepository.GetAllAsync(p=>p.DeptId == deptId);
+            return positions.MapTo<IEnumerable<GetPositionOutput>>();
         }
 
         public async Task<string> Update(UpdatePositionInput input)
