@@ -5,9 +5,9 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
     public class CreateUserInput : UserDtoBase
     {
-        public long DeptId { get; set; }
+        public long? DeptId { get; set; }
 
-        public long PositionId { get; set; }
+        public long? PositionId { get; set; }
 
         [Required(ErrorMessage = "用户名不允许为空")]
         [RegularExpression(RegExpConstants.UserName, ErrorMessage = "用户名不允许为空")]

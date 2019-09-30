@@ -7,8 +7,13 @@ namespace Surging.Hero.Organization.Application.Department
     {
         public DepartmentProfile() {
             CreateMap<CreateDepartmentInput, Domain.Department>();
+
+            CreateMap<CreateDepartmentInput, Domain.Organization>();
             CreateMap<UpdateDepartmentInput, Domain.Department>();
+            CreateMap<UpdateDepartmentInput, Domain.Organization>();
+
             CreateMap<Domain.Department, GetDepartmentOutput>();
+            CreateMap<Domain.Organization, GetDepartmentOutput>();
         }
     }
 }

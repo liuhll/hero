@@ -15,13 +15,17 @@ namespace Surging.Hero.Organization.IApplication.Department
         [HttpPost(true)]
         Task<string> Update(UpdateDepartmentInput input);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("{orgId}")]
         [HttpDelete(true)]
-        Task<string> Delete(long id);
+        Task<string> DeleteByOrgId(long orgId);
 
         [ServiceRoute("{id}")]
         [HttpGet(true)]
         Task<GetDepartmentOutput> Get(long id);
+
+        [ServiceRoute("{orgId}")]
+        [HttpGet(true)]
+        Task<GetDepartmentOutput> GetByOrgId(long orgId);
 
         [Service(DisableNetwork = true)]
         [HttpPost(true)]

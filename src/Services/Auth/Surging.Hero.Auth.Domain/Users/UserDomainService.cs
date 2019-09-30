@@ -67,13 +67,19 @@ namespace Surging.Hero.Auth.Domain.Users
         {
             var userInfo = input.MapTo<UserInfo>();
             var departAppServiceProxy = GetService<IDepartmentAppService>();
-            if (!await departAppServiceProxy.Check(userInfo.DeptId)) {
-                throw new BusinessException($"不存在Id为{userInfo.DeptId}的部门信息");
+            if (userInfo.DeptId.HasValue) 
+            {
+                if (!await departAppServiceProxy.Check(userInfo.DeptId.Value))
+                {
+                    throw new BusinessException($"不存在Id为{userInfo.DeptId}的部门信息");
+                }
             }
-
             var positionAppServiceProxy = GetService<IPositionAppService>();
-            if (!await positionAppServiceProxy.Check(userInfo.PositionId)) {
-                throw new BusinessException($"不存在Id为{userInfo.PositionId}的职位信息");
+            if (userInfo.DeptId.HasValue) {
+                if (!await positionAppServiceProxy.Check(userInfo.PositionId.Value))
+                {
+                    throw new BusinessException($"不存在Id为{userInfo.PositionId}的职位信息");
+                }
             }
         
             userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);

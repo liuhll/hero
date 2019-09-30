@@ -15,12 +15,12 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         [HttpPut(true)]
         Task<string> Update(UpdateCorporationInput input);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("{orgId}")]
         [HttpDelete(true)]
-        Task<string> Delete(long id);
+        Task<string> DeleteByOrgId(long orgId);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("{orgId}")]
         [HttpGet(true)]
-        Task<GetCorporationOutput> Get(long id);
+        Task<GetCorporationOutput> GetByOrgId(long orgId);
     }
 }

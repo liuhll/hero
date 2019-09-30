@@ -14,13 +14,9 @@ using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Position;
-using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
-using Surging.Core.CPlatform.Runtime.Session;
-using Surging.Hero.Common.Runtime.Session;
 using System.Linq;
 using System;
-using Surging.Hero.Organization.Domain.Shared.Organizations;
 using Surging.Hero.Organization.IApplication.Organization;
 
 namespace Surging.Hero.Auth.Application.User
@@ -211,6 +207,15 @@ namespace Surging.Hero.Auth.Application.User
                 });
             }
             return userRoleOutputs;
+        }
+
+        public async Task<bool> ResetUserOrgInfo(long id)
+        {
+            var userInfo = await _userRepository.GetAsync(id);
+            userInfo.DeptId = null;
+            userInfo.PositionId = null;
+            await _userRepository.UpdateAsync(userInfo);
+            return true;
         }
     }
 }

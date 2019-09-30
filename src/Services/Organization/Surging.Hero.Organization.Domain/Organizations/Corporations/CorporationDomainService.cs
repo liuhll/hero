@@ -13,12 +13,15 @@ namespace Surging.Hero.Organization.Domain.Organizations
 {
     public class CorporationDomainService : ManagerBase, ICorporationDomainService
     {
+        private readonly IDapperRepository<Organization, long> _organizationRepository;
         private readonly IDapperRepository<Corporation, long> _corporationRepository;
         private readonly IDapperRepository<Department, long> _departmentRepository;
-        
-        public CorporationDomainService(IDapperRepository<Corporation, long> corporationRepository,
+
+        public CorporationDomainService(IDapperRepository<Organization, long> organizationRepository,
+            IDapperRepository<Corporation, long> corporationRepository,
             IDapperRepository<Department, long> departmentRepository)
         {
+            _organizationRepository = organizationRepository;
             _corporationRepository = corporationRepository;
             _departmentRepository = departmentRepository;
         }
@@ -26,87 +29,140 @@ namespace Surging.Hero.Organization.Domain.Organizations
 
         public async Task CreateCorporation(CreateCorporationInput input)
         {
-            var thisLevelCorporationCount = await _corporationRepository.GetCountAsync(p => p.ParentId == input.ParentId);
-            if (input.ParentId == 0)
+            if (!input.ParentId.HasValue || input.ParentId == 0)
             {
-                await CreateTopCorporation(input, thisLevelCorporationCount);
+                await CreateTopCorporation(input);
             }
-            else {
-                await CreateSubCorporation(input, thisLevelCorporationCount);
+            else
+            {
+                await CreateSubCorporation(input);
             }
         }
 
-        public async Task DeleteCorporation(long id)
+        public async Task DeleteCorporation(long orgId)
         {
-            var corporation = await _corporationRepository.SingleOrDefaultAsync(p => p.Id == id);
-            if (corporation == null)
+            var corporation = await _corporationRepository.SingleOrDefaultAsync(p => p.OrgId == orgId);
+            var orgInfo = await _organizationRepository.SingleOrDefaultAsync(p => p.Id == orgId);
+            if (corporation == null || orgInfo == null)
             {
-                throw new BusinessException($"系统中不存在Id为{id}的企业信息");
+                throw new BusinessException($"系统中不存在OrgId为{orgId}的企业信息");
             }
-            var children = await _corporationRepository.GetAllAsync(p => p.ParentId == id);
+         
+            var children = await _organizationRepository.GetAllAsync(p => p.ParentId == orgInfo.Id);
             if (children.Any())
             {
                 throw new BusinessException($"请先删除子公司信息");
             }
-            var departments = await _departmentRepository.GetAllAsync(p => p.CorporationId == id);
+            var departments = await _departmentRepository.GetAllAsync(p => p.CorporationId == orgInfo.Id);
             if (departments.Any())
             {
                 throw new BusinessException($"请先删除该公司的部门信息");
             }
             var corporationUsers = await GetService<IUserAppService>().GetCorporationUser(corporation.Id);
-            if (corporationUsers.Any())
-            {
-                throw new BusinessException($"请先删除该公司下的用户");
-            }
-            await _corporationRepository.DeleteAsync(corporation);
+            await UnitOfWorkAsync(async (conn, trans) => {
+                await _organizationRepository.DeleteAsync(p => p.Id == orgInfo.Id,conn,trans);
+                await _corporationRepository.DeleteAsync(p => p.OrgId == orgInfo.Id, conn, trans);
+                foreach (var corporationUser in corporationUsers) 
+                {
+                    if (!await GetService<IUserAppService>().ResetUserOrgInfo(corporationUser.Id)) 
+                    {
+                        throw new BusinessException("重置该公司部门员工部门信息失败,请稍后重试");
+                    }
+                }
+            }, Connection);
         }
 
-        public async Task<Corporation> GetCorporation(long id)
+        public async Task<GetCorporationOutput> GetCorporation(long id)
         {
-            return await _corporationRepository.GetAsync(id);
+            var corporation = await _corporationRepository.GetAsync(id);
+            var orgInfo = await _organizationRepository.GetAsync(corporation.OrgId);
+            var output = corporation.MapTo<GetCorporationOutput>();
+            output = orgInfo.MapTo(output);
+            return output;
         }
 
         public async Task UpdateCorporation(UpdateCorporationInput input)
         {
-            var corporation = await _corporationRepository.SingleAsync(p=>p.Id == input.Id);
-            if (corporation == null) {
+            var corporation = await _corporationRepository.SingleAsync(p => p.Id == input.Id);
+           
+            if (corporation == null)
+            {
                 throw new BusinessException($"系统中不存在Id为{input.Id}的企业信息");
             }
+
+            var orgInfo = await _organizationRepository.SingleOrDefaultAsync(p => p.Id == corporation.OrgId);
+            if (orgInfo == null)
+            {
+                throw new BusinessException($"系统中不存在Id为{input.Id}的企业信息");
+            }
+
             corporation = input.MapTo(corporation);
-            await _corporationRepository.UpdateAsync(corporation);
+            orgInfo = input.MapTo(orgInfo);
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                await _organizationRepository.UpdateAsync(orgInfo, conn, trans);
+                await _corporationRepository.UpdateAsync(corporation, conn, trans);
+            }, Connection);
 
         }
 
-        private async Task CreateSubCorporation(CreateCorporationInput input, int thisLevelCorporationCount)
+        private async Task CreateSubCorporation(CreateCorporationInput input)
         {
-            var parentCorporation = await _corporationRepository.GetAsync(input.ParentId);
+            var parentCorporation = await _corporationRepository.SingleAsync(p => p.OrgId == input.ParentId.Value);
             if (parentCorporation.Mold == Shared.CorporationMold.Monomer)
             {
                 throw new BusinessException("单体公司不允许增加子公司");
             }
+            var parentOrg = await _organizationRepository.GetAsync(input.ParentId.Value);
             var corporation = input.MapTo<Corporation>();
-            corporation.Code = parentCorporation.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (thisLevelCorporationCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-            corporation.Level = parentCorporation.Level + 1;
-            await _corporationRepository.InsertAsync(corporation);
+            var orgInfo = input.MapTo<Organization>();
+            var orgCode = string.Empty;
+            var maxLevelOrg = (await _organizationRepository.GetAllAsync(p => p.ParentId == parentOrg.Id && p.OrgType == Shared.Organizations.OrganizationType.Corporation)).OrderByDescending(p => p.Id).FirstOrDefault();
+            if (maxLevelOrg == null)
+            {
+                orgCode = "1".PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            }
+            else
+            {
+                orgCode = (Convert.ToInt32(maxLevelOrg.Code.TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            }
+            orgInfo.Code = parentOrg.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + orgCode;
+            orgInfo.Level = parentOrg.Level + 1;
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                var orgId = await _organizationRepository.InsertAndGetIdAsync(orgInfo, conn, trans);
+                corporation.Id = orgId;
+                await _corporationRepository.InsertAsync(corporation, conn, trans);
+            }, Connection);
         }
 
-        private async Task CreateTopCorporation(CreateCorporationInput input, int thisLevelCorporationCount)
+        private async Task CreateTopCorporation(CreateCorporationInput input)
         {
-            Corporation topCorporation = await _corporationRepository.SingleOrDefaultAsync(p => p.ParentId == 0);
-            if (topCorporation != null)
+
+            if (input.Mold != Shared.CorporationMold.Group && input.Mold != Shared.CorporationMold.Monomer)
             {
-                throw new BusinessException("系统中已经存在母公司,请不要重复添加");
-            }
-            if (input.Mold != Shared.CorporationMold.Group && input.Mold != Shared.CorporationMold.Monomer) {
                 throw new BusinessException("公司类型不正确,顶层公司只能指定为:集团公司或单体公司");
             }
-            topCorporation = input.MapTo<Corporation>();
-            topCorporation.Code = (thisLevelCorporationCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-            topCorporation.Level = 1;
-            await _corporationRepository.InsertAsync(topCorporation);
-
-
-
+            var orgCode = string.Empty;
+            var maxTopOrg = (await _organizationRepository.GetAllAsync(p => p.Level == 1 && p.OrgType == Shared.Organizations.OrganizationType.Corporation)).OrderByDescending(p => p.Id).FirstOrDefault();
+            if (maxTopOrg == null)
+            {
+                orgCode = "1".PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            }
+            else
+            {
+                orgCode = (Convert.ToInt32(maxTopOrg.Code.TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            }
+            var topCorporation = input.MapTo<Corporation>();
+            var topOrgInfo = input.MapTo<Organization>();
+            topOrgInfo.Code = orgCode;
+            topOrgInfo.Level = 1;
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                var orgId = await _organizationRepository.InsertAndGetIdAsync(topOrgInfo, conn, trans);
+                topCorporation.Id = orgId;
+                await _corporationRepository.InsertAsync(topCorporation, conn, trans);
+            }, Connection);
 
         }
     }

@@ -8,7 +8,8 @@ namespace Surging.Hero.Organization.Domain.Organizations
     {
         Task CreateCorporation(CreateCorporationInput input);
         Task UpdateCorporation(UpdateCorporationInput input);
-        Task DeleteCorporation(long id);
-        Task<Corporation> GetCorporation(long id);
+        Task DeleteCorporation(long orgId);
+
+        Task<GetCorporationOutput> GetCorporation(long orgId);
     }
 }

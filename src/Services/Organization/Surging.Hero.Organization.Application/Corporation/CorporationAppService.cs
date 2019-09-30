@@ -22,16 +22,15 @@ namespace Surging.Hero.Organization.Application.Corporation
             return "新增公司信息成功";
         }
 
-        public async Task<string> Delete(long id)
+        public async Task<string> DeleteByOrgId(long orgId)
         {
-            await _corporationDomainService.DeleteCorporation(id);
+            await _corporationDomainService.DeleteCorporation(orgId);
             return "删除公司信息成功";
         }
 
-        public async Task<GetCorporationOutput> Get(long id)
+        public async Task<GetCorporationOutput> GetByOrgId(long orgId)
         {
-            var corporation = await _corporationDomainService.GetCorporation(id);
-            return corporation.MapTo<GetCorporationOutput>();
+            return await _corporationDomainService.GetCorporation(orgId);
         }
 
         public async Task<string> Update(UpdateCorporationInput input)

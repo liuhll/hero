@@ -19,11 +19,14 @@ namespace Surging.Hero.Organization.Domain.Positions
     {
         private readonly IDapperRepository<Position, long> _positionRepository;
         private readonly IDapperRepository<Department, long> _departmentRepository;
+        private readonly IDapperRepository<Organization,long> _organizationRepository;
 
         public PositionDomainService(IDapperRepository<Position, long> positionRepository,
-            IDapperRepository<Department, long> departmentRepository) {
+            IDapperRepository<Department, long> departmentRepository,
+             IDapperRepository<Organization, long> organizationRepository) {
             _positionRepository = positionRepository;
             _departmentRepository = departmentRepository;
+            _organizationRepository = organizationRepository;
         }
 
         public async Task CreatePosition(CreatePositionInput input,string positionCode, DbConnection conn, DbTransaction trans)
@@ -38,9 +41,20 @@ namespace Surging.Hero.Organization.Domain.Positions
         {
             await CheckPosition(input);            
             var position = input.MapTo<Position>();
-            var departPositionCount = await _positionRepository.GetCountAsync(p => p.DeptId == input.DeptId);
+            var departPositionMax = (await _positionRepository.GetAllAsync(p => p.DeptId == input.DeptId)).FirstOrDefault();
             var department = await _departmentRepository.GetAsync(input.DeptId);
-            position.Code = department.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (departPositionCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            var orgInfo = await _organizationRepository.GetAsync(department.OrgId);
+            var positionCode = string.Empty;
+            if (departPositionMax == null)
+            {
+                positionCode = "1".PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            }
+            else
+            {
+                positionCode = (Convert.ToInt32(departPositionMax.Code.TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+            }
+
+            position.Code = orgInfo.Code + positionCode;
             await _positionRepository.InsertAsync(position);
         }
 

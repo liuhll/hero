@@ -35,15 +35,20 @@ namespace Surging.Hero.Organization.Application.Department
             return "新增部门信息成功";
         }
 
-        public async Task<string> Delete(long id)
+        public async Task<string> DeleteByOrgId(long orgId)
         {
-            await _departmentDomainService.DeleteDepartment(id);
+            await _departmentDomainService.DeleteDepartmentByOrgId(orgId);
             return "删除部门信息成功";
         }
 
         public async Task<GetDepartmentOutput> Get(long id)
         {
             return await _departmentDomainService.GetDepartment(id);
+        }
+
+        public async Task<GetDepartmentOutput> GetByOrgId(long orgId)
+        {
+            return await _departmentDomainService.GetDepartmentByOrgId(orgId);
         }
 
         public async Task<string> Update(UpdateDepartmentInput input)

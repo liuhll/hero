@@ -5,9 +5,9 @@ namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 {
     public class QueryOrganizationInput :  PagedResultRequestDto
     {
-        public long? Id { get; set; }
+        public string Code { get; set; }
 
-        public OrganizationType OrganizationType { get; set; }
+        public OrganizationType? OrganizationType { get; set; }
 
         public string SearchKey { get; set; }
     }

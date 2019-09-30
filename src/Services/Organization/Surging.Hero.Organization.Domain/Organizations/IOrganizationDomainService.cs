@@ -8,6 +8,6 @@ namespace Surging.Hero.Organization.Domain
     public interface IOrganizationDomainService : ITransientDependency
     {
         Task<IEnumerable<Organization>> GetOrganizations();
-        Task<IEnumerable<Organization>> GetOrganizations(long? id, OrganizationType organizationType);
+
     }
 }

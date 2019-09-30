@@ -1,13 +1,11 @@
-﻿using Surging.Hero.Organization.Domain.Shared.Organizations;
+﻿using Surging.Core.Domain;
+using Surging.Hero.Organization.Domain.Shared.Organizations;
 using System.Collections.Generic;
 
 namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 {
-    public class GetOrganizationTreeOutput
+    public class GetOrganizationTreeOutput : ITree<GetOrganizationTreeOutput>
     {
-        public GetOrganizationTreeOutput() {
-            Children = new List<GetOrganizationTreeOutput>();
-        }
 
         public long Id { get; set; }
 
@@ -21,6 +19,8 @@ namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 
         public bool Expand { get { return true; } }
 
-        public IEnumerable<GetOrganizationTreeOutput> Children { get; set; }
+        public long ParentId { get; set; }
+        public string FullName { get; set; }
+        public IEnumerable<ITree<GetOrganizationTreeOutput>> Children { get; set; }
     }
 }

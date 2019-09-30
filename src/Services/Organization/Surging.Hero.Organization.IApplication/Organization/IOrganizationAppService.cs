@@ -13,16 +13,13 @@ namespace Surging.Hero.Organization.IApplication.Organization
     public interface IOrganizationAppService : IServiceKey
     {
         [HttpGet(true)]
-        Task<IEnumerable<GetOrganizationTreeOutput>> GetTree();
+        Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree();
 
         [HttpPost(true)]
         Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query);
 
         [HttpGet(true)]
-        [ServiceRoute("{code}")]
-        Task<QueryOrganizationOutput> GetOrgByCode(string code);
-
-        [HttpGet(true)]
         Task<IEnumerable<long>> GetSubDeptIds(long orgId, OrganizationType organizationType);
+
     }
 }
