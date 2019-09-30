@@ -22,6 +22,7 @@ drop table if exists Position;
 DROP TABLE IF EXISTS `Corporation`;
 CREATE TABLE `Corporation`  (
   `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `OrgId` bigint(20) NOT NULL COMMENT '组织机构Id',
   `Mold` int(11) NOT NULL COMMENT '0.集团公司;1.单体公司;2.子公司3.控股公司',
   `Address` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公司地址',
   `Logo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'logo名称',
@@ -48,6 +49,7 @@ CREATE TABLE `Corporation`  (
 DROP TABLE IF EXISTS `Department`;
 CREATE TABLE `Department`  (
   `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `OrgId` bigint(20) NOT NULL COMMENT '组织机构Id',
   `Location` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '部门位置',
   `DeptTypeId` bigint(20) NULL DEFAULT NULL COMMENT '部门类型,取自字典表',
   `BriefIntro` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '部门简介',
