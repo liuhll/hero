@@ -70,7 +70,7 @@ CREATE TABLE `Department`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `Organization`;
 CREATE TABLE `Organization`  (
-  `Id` bigint(20) NOT NULL,
+  `Id` bigint(20) NOT NULL AUTO_INCREMENT,
   `ParentId` bigint(20) NULL DEFAULT NULL,
   `Code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `Name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `Organization`  (
   `DeleteBy` bigint(20) NULL DEFAULT NULL COMMENT '删除用户',
   `DeleteTime` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`Id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织机构信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for Position
