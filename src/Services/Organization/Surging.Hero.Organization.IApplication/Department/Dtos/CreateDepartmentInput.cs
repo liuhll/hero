@@ -7,7 +7,7 @@ namespace Surging.Hero.Organization.IApplication.Department.Dtos
     {
         public long ParentId { get; set; }
 
-        public long CorporationId { get; set; }
+        //public long OrgId { get; set; }
 
         public IEnumerable<CreatePositionInput> Postions { get; set; }
     }

@@ -5,7 +5,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
     public class CreateUserInput : UserDtoBase
     {
-        public long? DeptId { get; set; }
+        public long? OrgId { get; set; }
 
         public long? PositionId { get; set; }
 

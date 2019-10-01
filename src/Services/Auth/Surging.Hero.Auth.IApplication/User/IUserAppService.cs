@@ -31,13 +31,12 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpPut(true)]
         Task<string> ResetPassword(ResetPasswordInput input);
 
-        [ServiceRoute("{deptId}")]
         [HttpGet(true)]
-        Task<IEnumerable<GetUserBasicOutput>> GetDepartmentUser(long deptId);
+        Task<IEnumerable<GetUserBasicOutput>> GetOrgUser(long orgId,bool includeSubOrg);
 
-        [ServiceRoute("{corporationId}")]
-        [HttpGet(true)]
-        Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId);
+        //[ServiceRoute("{corporationId}")]
+        //[HttpGet(true)]
+        //Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId);
 
         [ServiceRoute("{id}")]
         [HttpGet(true)]

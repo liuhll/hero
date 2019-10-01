@@ -19,7 +19,7 @@ namespace Surging.Hero.Organization.IApplication.Organization
         Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query);
 
         [HttpGet(true)]
-        Task<IEnumerable<long>> GetSubDeptIds(long orgId, OrganizationType organizationType);
+        Task<IEnumerable<long>> GetSubOrgIds(long orgId);
 
     }
 }

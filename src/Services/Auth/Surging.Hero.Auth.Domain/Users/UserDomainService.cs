@@ -67,15 +67,15 @@ namespace Surging.Hero.Auth.Domain.Users
         {
             var userInfo = input.MapTo<UserInfo>();
             var departAppServiceProxy = GetService<IDepartmentAppService>();
-            if (userInfo.DeptId.HasValue) 
+            if (userInfo.OrgId.HasValue) 
             {
-                if (!await departAppServiceProxy.Check(userInfo.DeptId.Value))
+                if (!await departAppServiceProxy.Check(userInfo.OrgId.Value))
                 {
-                    throw new BusinessException($"不存在Id为{userInfo.DeptId}的部门信息");
+                    throw new BusinessException($"不存在Id为{userInfo.OrgId}的部门信息");
                 }
             }
             var positionAppServiceProxy = GetService<IPositionAppService>();
-            if (userInfo.DeptId.HasValue) {
+            if (userInfo.PositionId.HasValue) {
                 if (!await positionAppServiceProxy.Check(userInfo.PositionId.Value))
                 {
                     throw new BusinessException($"不存在Id为{userInfo.PositionId}的职位信息");
@@ -90,9 +90,7 @@ namespace Surging.Hero.Auth.Domain.Users
                     if (role == null) {
                         throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
                     }
-                    if (role.DeptId.HasValue && role.DeptId != 0 && role.DeptId.Value != userInfo.DeptId) {
-                        throw new BusinessException($"角色{role.Name}与用户{userInfo.UserName}不属于同一个部门");
-                    }
+                    
                     await _userRoleRepository.InsertAsync(new UserRole() { UserId = userId,RoleId = roleId }, conn, trans);
                 }
                
@@ -155,8 +153,14 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
         {
             var userInfo = await _userRepository.GetAsync(id);
             var userInfoOutput = userInfo.MapTo<GetUserNormOutput>();
-            userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userInfoOutput.DeptId)).Name;
-            userInfoOutput.PositionName = (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId)).Name;
+            if (userInfoOutput.OrgId.HasValue) 
+            {
+                userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userInfoOutput.OrgId.Value)).Name;
+            }
+            if (userInfoOutput.PositionId.HasValue) 
+            {
+                userInfoOutput.PositionName = (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId.Value)).Name;
+            }            
             userInfoOutput.Roles = (await GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             return userInfoOutput;
         }
@@ -204,17 +208,22 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
             }
 
             var departAppServiceProxy = GetService<IDepartmentAppService>();
-            if (!await departAppServiceProxy.Check(input.DeptId))
-            {
-                throw new BusinessException($"不存在Id为{input.DeptId}的部门信息");
+            if (input.OrgId.HasValue) {
+                if (!await departAppServiceProxy.Check(input.OrgId.Value))
+                {
+                    throw new BusinessException($"不存在Id为{input.OrgId}的部门信息");
+                }
             }
 
             var positionAppServiceProxy = GetService<IPositionAppService>();
-            if (!await positionAppServiceProxy.Check(input.PositionId))
+            if (input.PositionId.HasValue) 
             {
-                throw new BusinessException($"不存在Id为{input.PositionId}的职位信息");
+                if (!await positionAppServiceProxy.Check(input.PositionId.Value))
+                {
+                    throw new BusinessException($"不存在Id为{input.PositionId}的职位信息");
+                }
             }
-
+             
             updateUser = input.MapTo(updateUser);
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _userRepository.UpdateAsync(updateUser, conn, trans);
@@ -226,10 +235,7 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                     {
                         throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
                     }
-                    if (role.DeptId.HasValue && role.DeptId != 0 && role.DeptId.Value != updateUser.DeptId)
-                    {
-                        throw new BusinessException($"角色{role.Name}与用户{updateUser.UserName}不属于同一个部门");
-                    }
+                    
                     await _userRoleRepository.InsertAsync(new UserRole() { UserId = updateUser.Id, RoleId = roleId },conn,trans);
                 }
 

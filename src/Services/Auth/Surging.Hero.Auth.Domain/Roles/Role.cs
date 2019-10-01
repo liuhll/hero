@@ -5,7 +5,6 @@ namespace Surging.Hero.Auth.Domain.Roles
 {
     public class Role : FullAuditedEntity<long>
     {
-        public long? DeptId { get; set; }
 
         public string Name { get; set; }
 

@@ -83,7 +83,7 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query)
         {
             IPagedResult<GetUserNormOutput> queryResultOutput = null; 
-            if (query.OrgId == 0)
+            if (!query.OrgId.HasValue || query.OrgId == 0)
             {
                var queryPageResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
                 || p.ChineseName.Contains(query.SearchKey)
@@ -94,19 +94,25 @@ namespace Surging.Hero.Auth.Application.User
             }
             else
             { 
-                var orgDeptIds = await GetService<IOrganizationAppService>().GetSubDeptIds(query.OrgId, query.OrganizationType);    
+                var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);    
                 // :todo 优化
                 var queryResult = await _userRepository.GetAllAsync(p => p.UserName.Contains(query.SearchKey)
                    || p.ChineseName.Contains(query.SearchKey)
                    || p.Email.Contains(query.SearchKey)
                    || p.Phone.Contains(query.SearchKey));
-                queryResult = queryResult.Where(p=> orgDeptIds.Any(q=> q == p.DeptId));
+                queryResult = queryResult.Where(p=> subOrgIds.Any(q=> q == p.OrgId));
                 queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().PageBy(query);
             }
             foreach (var userOutput in queryResultOutput.Items)
             {
-                userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
-                userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
+                if (userOutput.OrgId.HasValue)
+                {
+                    userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.OrgId.Value)).Name;
+                }
+                if (userOutput.PositionId.HasValue)
+                {
+                    userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
+                }
                 userOutput.Roles = (await _userDomainService.GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             }
 
@@ -141,31 +147,33 @@ namespace Surging.Hero.Auth.Application.User
             return "重置该员工密码成功";
         }
 
-        public async Task<IEnumerable<GetUserBasicOutput>> GetDepartmentUser(long deptId)
+        public async Task<IEnumerable<GetUserBasicOutput>> GetOrgUser(long orgId, bool includeSubOrg)
         {
-            var departUsers = await _userRepository.GetAllAsync(p => p.DeptId == deptId);
-            var departUserOutputs = departUsers.MapTo<IEnumerable<GetUserBasicOutput>>();
-            foreach (var userOutput in departUserOutputs)
+            IEnumerable<UserInfo> orgUsers = new List<UserInfo>();
+            if (includeSubOrg)
             {
-                userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
-                userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
+                var subOrdIds = await GetService<IOrganizationAppService>().GetSubOrgIds(orgId);
+                orgUsers = (await _userRepository.GetAllAsync()).Where(p => subOrdIds.Any(q => q == p.OrgId));
             }
-            return departUserOutputs;
-        }
-
-        public async Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId)
-        {
-            var corporationUsers = await _userRepository.GetAllAsync(p => p.DeptId == corporationId);
-            var corporationUserOutputs = corporationUsers.MapTo<IEnumerable<GetUserBasicOutput>>();
-
-            foreach (var userOutput in corporationUserOutputs)
+            else {
+                orgUsers = await _userRepository.GetAllAsync(p => p.OrgId == orgId);
+            }
+           
+            var orgUserOutputs = orgUsers.MapTo<IEnumerable<GetUserBasicOutput>>();
+            foreach (var userOutput in orgUserOutputs)
             {
-                userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.DeptId)).Name;
-                userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId)).Name;
+                if (userOutput.OrgId.HasValue)
+                {
+                    userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.OrgId.Value)).Name;
+                }
+                if (userOutput.PositionId.HasValue)
+                {
+                    userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
+                }
             }
-            return corporationUserOutputs;
+            return orgUserOutputs;
         }
-
+      
         public async Task<GetUserNormOutput> Get(long id)
         {
             return await _userDomainService.GetUserNormInfoById(id);
@@ -174,36 +182,30 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query)
         {
             var userRoleOutputs = new List<GetUserRoleOutput>();
-            if (!query.UserId.HasValue && !query.DeptId.HasValue)
-            {
-                throw new BusinessException("必须指定用户Id或是部门Id");
-            }
+
+            var roles = await _roleRepository.GetAllAsync();
             if (query.UserId.HasValue && query.UserId.Value != 0)
             {
                 var userInfo = await _userDomainService.GetUserNormInfoById(query.UserId.Value);
-                var userCanAllocationRoles = await _roleRepository.GetAllAsync(p => p.DeptId == 0 || p.DeptId == null || p.DeptId == userInfo.DeptId);
-                foreach (var role in userCanAllocationRoles)
+               
+                foreach (var role in roles)
                 {
                     userRoleOutputs.Add(new GetUserRoleOutput()
                     {
                         RoleId = role.Id,
-                        DeptId = role.DeptId,
-                        DeptName = role.DeptId.HasValue && role.DeptId != 0 ? (await GetService<IDepartmentAppService>().Get(role.DeptId.Value)).Name : null,
                         Name = role.Name,
-                        CheckStatus = userInfo.Roles.Any(p => p.Id == role.Id) ? CheckStatus.Checked : CheckStatus.UnChecked
+                        Checked = userInfo.Roles.Any(p => p.Id == role.Id) ? CheckStatus.Checked : CheckStatus.UnChecked
                     });
                 }
             }
-            var deptCanAllocationRoles = await _roleRepository.GetAllAsync(p => p.DeptId == 0 || p.DeptId == null || p.DeptId == query.DeptId.Value);
-            foreach (var role in deptCanAllocationRoles)
+           
+            foreach (var role in roles)
             {
                 userRoleOutputs.Add(new GetUserRoleOutput()
                 {
-                    RoleId = role.Id,
-                    DeptId = role.DeptId,
-                    DeptName = role.DeptId.HasValue && role.DeptId != 0 ? (await GetService<IDepartmentAppService>().Get(role.DeptId.Value)).Name : null,
+                    RoleId = role.Id,                  
                     Name = role.Name,
-                    CheckStatus = CheckStatus.UnChecked
+                    Checked = CheckStatus.UnChecked
                 });
             }
             return userRoleOutputs;
@@ -212,7 +214,7 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<bool> ResetUserOrgInfo(long id)
         {
             var userInfo = await _userRepository.GetAsync(id);
-            userInfo.DeptId = null;
+            userInfo.OrgId = null;
             userInfo.PositionId = null;
             await _userRepository.UpdateAsync(userInfo);
             return true;

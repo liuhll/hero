@@ -43,12 +43,12 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
 
         public async Task CreateDepartment(CreateDepartmentInput input)
         {
-            var corporation = await _corporationRepository.SingleOrDefaultAsync(p => p.Id == input.CorporationId);
-            if (corporation == null)
+            var parentOrg = await _organizationRepository.SingleOrDefaultAsync(p => p.Id == input.ParentId);
+            if (parentOrg == null)
             {
-                throw new BusinessException($"系统中不存在Id为{input.CorporationId}的企业信息");
-            }       
-   
+                throw new BusinessException($"不存在Id为{input.ParentId}的上级信息");
+            }
+
             if (input.DeptTypeId == 0)
             {
                 throw new BusinessException($"请选择部门类型");
@@ -61,29 +61,20 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             }
             var department = input.MapTo<Department>();
             var orgInfo = input.MapTo<Organization>();
-            var thisDepartmentCount = await _departmentRepository.GetCountAsync(p => p.CorporationId == input.CorporationId);
-            var parentOrg = await _organizationRepository.SingleOrDefaultAsync(p => p.Id == input.ParentId);
-            if (parentOrg == null)
+            
+            var orgCode = string.Empty;
+            var maxLevelOrg = (await _organizationRepository.GetAllAsync(p => p.ParentId == parentOrg.Id && p.OrgType == Shared.Organizations.OrganizationType.Corporation)).OrderByDescending(p => p.Id).FirstOrDefault();
+            if (maxLevelOrg == null)
             {
-                throw new BusinessException($"不存在Id为{input.ParentId}的上级信息");
+                orgCode = "1".PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
             else
             {
-                var orgCode = string.Empty;
-                var maxLevelOrg = (await _organizationRepository.GetAllAsync(p => p.ParentId == parentOrg.Id && p.OrgType == Shared.Organizations.OrganizationType.Corporation)).OrderByDescending(p => p.Id).FirstOrDefault();
-                if (maxLevelOrg == null)
-                {
-                    orgCode = "1".PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-                }
-                else
-                {
-                    orgCode = (Convert.ToInt32(maxLevelOrg.Code.TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-                }
-
-                orgInfo.Level = parentOrg.Level + 1;
-                orgInfo.Code = parentOrg.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (thisDepartmentCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-
+                orgCode = (Convert.ToInt32(maxLevelOrg.Code.Split(HeroConstants.CodeRuleRestrain.CodeCoverSymbol).Last().TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
+
+            orgInfo.Level = parentOrg.Level + 1;
+            orgInfo.Code = parentOrg.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + orgCode;
 
             await UnitOfWorkAsync(async (conn, trans) =>
             {
@@ -120,7 +111,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             if (children.Any()) {
                 throw new BusinessException($"请先删除子部门信息");
             }
-            var departmentUsers = await GetService<IUserAppService>().GetDepartmentUser(department.Id);
+            var departmentUsers = await GetService<IUserAppService>().GetOrgUser(orgInfo.Id,true);
             //if (departmentUsers.Any()) {
             //    throw new BusinessException($"该部门存在用户,请先删除该部门下的用户");
             //}

@@ -53,12 +53,12 @@ namespace Surging.Hero.Organization.Domain.Organizations
             {
                 throw new BusinessException($"请先删除子公司信息");
             }
-            var departments = await _departmentRepository.GetAllAsync(p => p.CorporationId == orgInfo.Id);
+            var departments = await _departmentRepository.GetAllAsync(p => p.OrgId == orgInfo.Id);
             if (departments.Any())
             {
                 throw new BusinessException($"请先删除该公司的部门信息");
             }
-            var corporationUsers = await GetService<IUserAppService>().GetCorporationUser(corporation.Id);
+            var corporationUsers = await GetService<IUserAppService>().GetOrgUser(orgInfo.Id,true);
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _organizationRepository.DeleteAsync(p => p.Id == orgInfo.Id,conn,trans);
                 await _corporationRepository.DeleteAsync(p => p.OrgId == orgInfo.Id, conn, trans);
@@ -124,7 +124,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
             }
             else
             {
-                orgCode = (Convert.ToInt32(maxLevelOrg.Code.TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+                orgCode = (Convert.ToInt32(maxLevelOrg.Code.Split(HeroConstants.CodeRuleRestrain.CodeCoverSymbol).Last().TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
             orgInfo.Code = parentOrg.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + orgCode;
             orgInfo.Level = parentOrg.Level + 1;
@@ -160,7 +160,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
             await UnitOfWorkAsync(async (conn, trans) =>
             {
                 var orgId = await _organizationRepository.InsertAndGetIdAsync(topOrgInfo, conn, trans);
-                topCorporation.Id = orgId;
+                topCorporation.OrgId = orgId;
                 await _corporationRepository.InsertAsync(topCorporation, conn, trans);
             }, Connection);
 

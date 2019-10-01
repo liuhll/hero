@@ -8,7 +8,9 @@ namespace Surging.Hero.Organization.Application.Department
         public DepartmentProfile() {
             CreateMap<CreateDepartmentInput, Domain.Department>();
 
-            CreateMap<CreateDepartmentInput, Domain.Organization>();
+            CreateMap<CreateDepartmentInput, Domain.Organization>().AfterMap((src, dest) => {
+                dest.OrgType = Domain.Shared.Organizations.OrganizationType.Department;
+            });
             CreateMap<UpdateDepartmentInput, Domain.Department>();
             CreateMap<UpdateDepartmentInput, Domain.Organization>();
 

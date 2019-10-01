@@ -1,6 +1,6 @@
-﻿using Surging.Core.AutoMapper;
+﻿using Dapper;
+using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
-using Surging.Hero.Organization.Domain.Shared.Organizations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Surging.Hero.Organization.Domain
 {
-    public class OrganizationDomainService : IOrganizationDomainService
+    public class OrganizationDomainService : ManagerBase, IOrganizationDomainService
     {
         private readonly IDapperRepository<Corporation, long> _corporationRepository;
         private readonly IDapperRepository<Department, long> _departmentRepository;
@@ -28,6 +28,14 @@ namespace Surging.Hero.Organization.Domain
             var organizations = await _organizationRepository.GetAllAsync();
             return organizations;
 
+        }
+
+        public async Task<IEnumerable<Organization>> GetSubOrgs(long orgId)
+        {
+            var orgInfo = await _organizationRepository.GetAsync(orgId);
+            var organizations = await _organizationRepository.GetAllAsync(p => p.Code.Contains(orgInfo.Code));
+
+            return organizations;
         }
     }
 }

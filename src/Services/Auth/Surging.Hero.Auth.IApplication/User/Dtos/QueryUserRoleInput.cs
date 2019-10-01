@@ -4,6 +4,5 @@
     {
         public long? UserId { get; set; }
 
-        public long? DeptId { get; set; }
     }
 }

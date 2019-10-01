@@ -11,22 +11,6 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
     {
         public long Id { get; set; }
 
-        public string DeptName { get; set; }
-
-        public RoleType RoleType {
-            get
-            {
-                if (!DeptId.HasValue || DeptId == 0) {
-                    return RoleType.Universal;
-                }
-                return RoleType.Department;
-            }
-        }
-
-        public string RoleTypeDesc {
-            get { return RoleType.GetDescription(); }
-        }
-
         public Status Status { get; set; }
 
         public string StatusDesc { get { return Status.GetDescription(); } }

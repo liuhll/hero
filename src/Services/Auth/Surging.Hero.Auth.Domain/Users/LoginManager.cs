@@ -35,7 +35,7 @@ namespace Surging.Hero.Auth.Domain.Users
             var payload = new Dictionary<string, object>() {
                 { "UserId",userInfo.Id },
                 { "UserName",userInfo.UserName},
-                { "DeptId",userInfo.DeptId}
+                { "OrgId",userInfo.OrgId}
             };
             return payload;
         }

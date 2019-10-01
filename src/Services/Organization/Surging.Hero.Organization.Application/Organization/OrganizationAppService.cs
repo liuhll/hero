@@ -23,11 +23,10 @@ namespace Surging.Hero.Organization.Application.Organization
             _organizationRepository = organizationRepository;
         }
 
-        public async Task<IEnumerable<long>> GetSubDeptIds(long orgId, OrganizationType organizationType)
+        public async Task<IEnumerable<long>> GetSubOrgIds(long orgId)
         {
-            var orgInfo = await _organizationRepository.GetAsync(orgId);
-            var organizations = await _organizationRepository.GetAllAsync(p => p.Code.Contains(orgInfo.Code));
-            return organizations.Select(p=>p.Id);
+            return (await _organizationDomainService.GetSubOrgs(orgId)).Select(p=>p.Id);
+            
         }
 
         public async Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree()

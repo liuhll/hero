@@ -5,9 +5,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
     public class QueryUserInput : PagedResultRequestDto
     {
-        public long OrgId { get; set; }
-
-        public OrganizationType OrganizationType { get; set; }
+        public long? OrgId { get; set; }
 
         public string SearchKey { get; set; }
 

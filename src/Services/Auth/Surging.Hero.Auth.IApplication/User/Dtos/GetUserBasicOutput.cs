@@ -4,11 +4,11 @@
     {
         public long Id { get; set; }
 
-        public long DeptId { get; set; }
+        public long? OrgId { get; set; }
 
         public string DeptName { get; set; }
 
-        public long PositionId { get; set; }
+        public long? PositionId { get; set; }
 
         public string PositionName { get; set; }
 
