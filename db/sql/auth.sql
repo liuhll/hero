@@ -189,7 +189,6 @@ alter table Permission comment '权限表';
 create table Role
 (
    Id                   bigint not null auto_increment comment '主键',
-   DeptId               bigint comment '组织机构Id',
    Name                 varchar(50) not null comment '角色名称',
    Memo                 varchar(100) comment '备注',
    Status               int not null comment '状态',
@@ -269,8 +268,8 @@ alter table UserGroupRole comment '用户组角色关系表';
 create table UserInfo
 (
    Id                   bigint not null auto_increment comment '主键',
-   UserName             varchar(50) not null comment '用户名',
-   DeptId               bigint not null comment '所属部门Id',
+   UserName             varchar(50) comment '用户名',
+   OrgId                bigint not null comment '所属部门Id',
    PositionId           bigint comment '职位Id',
    Password             varchar(100) not null comment '密码',
    ChineseName          varchar(50) not null comment '中文名',
@@ -337,11 +336,11 @@ create table UserUserGroupRelation
 alter table UserUserGroupRelation comment '用户与用户关系表';
 
 
-INSERT INTO `hero_auth`.`UserInfo`(`Id`, `UserName`, `DeptId`, `PositionId`, `Password`, `ChineseName`, `Email`, `Phone`, `Gender`, `Birth`, `NativePlace`, `Address`, `Folk`, `PoliticalStatus`, `GraduateInstitutions`, `Education`, `Major`, `Resume`, `Memo`, `LastLoginTime`, `LoginFailedCount`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'liuhl', 1, 1, 'a6dd7c6107a1d4b30c33fa8a12964e7c', '刘洪亮1', '1029765112@qq.com', '13128291911', 0, '1989-09-11', '', '', '', 0, '', '', '', '', '', '0001-01-01 00:00:00', 0, 1, NULL, '2019-09-11 14:16:04', NULL, NULL, 0, NULL, NULL);
+INSERT INTO `hero_auth`.`UserInfo`(`Id`, `UserName`, `OrgId`, `PositionId`, `Password`, `ChineseName`, `Email`, `Phone`, `Gender`, `Birth`, `NativePlace`, `Address`, `Folk`, `PoliticalStatus`, `GraduateInstitutions`, `Education`, `Major`, `Resume`, `Memo`, `LastLoginTime`, `LoginFailedCount`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'liuhl', 1, 1, 'a6dd7c6107a1d4b30c33fa8a12964e7c', '刘洪亮1', '1029765112@qq.com', '13128291911', 0, '1989-09-11', '', '', '', 0, '', '', '', '', '', '0001-01-01 00:00:00', 0, 1, NULL, '2019-09-11 14:16:04', NULL, NULL, 0, NULL, NULL);
 
 
-INSERT INTO `hero_auth`.`Role`(`Id`, `DeptId`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 0, '超级管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:14:18', NULL, NULL, 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Role`(`Id`, `DeptId`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (2, 0, '管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:15:46', NULL, NULL, 0, NULL, NULL);
+INSERT INTO `hero_auth`.`Role`(`Id`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, '超级管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:14:18', NULL, NULL, 0, NULL, NULL);
+INSERT INTO `hero_auth`.`Role`(`Id`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (2, '管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:15:46', NULL, NULL, 0, NULL, NULL);
 
 
 INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (1, 1, 1, NULL, '2019-09-11 14:16:04', NULL, NULL);
