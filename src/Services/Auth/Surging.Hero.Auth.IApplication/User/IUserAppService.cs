@@ -42,8 +42,6 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpGet(true)]
         Task<GetUserNormOutput> Get(long id);
 
-        [HttpPost(true)]
-        Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query);
 
         [HttpPost(true)]
         Task<bool> ResetUserOrgInfo(long id);

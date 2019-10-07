@@ -72,10 +72,10 @@ namespace Surging.Hero.Organization.Domain.Organizations
             }, Connection);
         }
 
-        public async Task<GetCorporationOutput> GetCorporation(long id)
+        public async Task<GetCorporationOutput> GetCorporation(long orgId)
         {
-            var corporation = await _corporationRepository.GetAsync(id);
-            var orgInfo = await _organizationRepository.GetAsync(corporation.OrgId);
+            var orgInfo = await _organizationRepository.GetAsync(orgId);
+            var corporation = await _corporationRepository.SingleAsync(p => p.OrgId == orgId);
             var output = corporation.MapTo<GetCorporationOutput>();
             output = orgInfo.MapTo(output);
             return output;

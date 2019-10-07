@@ -11,6 +11,7 @@ using Surging.Core.ServiceHosting;
 using Surging.Core.ServiceHosting.Internal.Implementation;
 using SurgingConfig = Surging.Core.CPlatform.AppConfig;
 using System;
+using Surging.Core.System.Intercept;
 
 namespace Surging.Hero.ServiceHost
 {
@@ -28,6 +29,7 @@ namespace Surging.Hero.ServiceHost
                            .AddRelateServiceRuntime()
                            .AddConfigurationWatch()
                            .AddServiceEngine(typeof(SurgingServiceEngine))
+                           .AddClientIntercepted(typeof(CacheProviderInterceptor))
                            ;
 
                           builder.Register(p => new CPlatformContainer(ServiceLocator.Current));
@@ -56,7 +58,7 @@ namespace Surging.Hero.ServiceHost
                     build.AddConsulFile("configs/consul.json", optional: false, reloadOnChange: true);
 #endif
                  })
-                 .UseProxy()
+                 .UseProxy()                
                  .UseStartup<Startup>()
                  .Build();
 

@@ -1,5 +1,7 @@
 ﻿using Surging.Hero.Auth.Domain.Shared.Users;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Surging.Hero.Common.Runtime.Session
 {
@@ -20,7 +22,7 @@ namespace Surging.Hero.Common.Runtime.Session
         public string ChineseName { get; set; }
 
         public string Email { get; set; }
-    
+
         public string Phone { get; set; }
 
         public Gender Gender { get; set; }
@@ -47,5 +49,15 @@ namespace Surging.Hero.Common.Runtime.Session
 
         public Status Status { get; set; }
 
+        public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
+
+
+    }
+
+    public class GetDisplayRoleOutput
+    {
+        public long Id { get; set; }
+
+        public string Name { get; set; }
     }
 }

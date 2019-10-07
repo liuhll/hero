@@ -155,7 +155,7 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
             var userInfoOutput = userInfo.MapTo<GetUserNormOutput>();
             if (userInfoOutput.OrgId.HasValue) 
             {
-                userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userInfoOutput.OrgId.Value)).Name;
+                userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userInfoOutput.OrgId.Value)).Name;
             }
             if (userInfoOutput.PositionId.HasValue) 
             {

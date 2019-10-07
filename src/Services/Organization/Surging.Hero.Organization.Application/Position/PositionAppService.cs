@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
+using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
@@ -14,11 +15,14 @@ namespace Surging.Hero.Organization.Application.Position
     {
         private readonly IPositionDomainService _positionDomainService;
         private readonly IDapperRepository<Domain.Positions.Position, long> _positionRepository;
+        private readonly IDapperRepository<Domain.Department,long> _departmentRepository;
 
         public PositionAppService(IPositionDomainService positionDomainService,
-            IDapperRepository<Domain.Positions.Position, long> positionRepository) {
+            IDapperRepository<Domain.Positions.Position, long> positionRepository,
+            IDapperRepository<Domain.Department, long> departmentRepository) {
             _positionDomainService = positionDomainService;
             _positionRepository = positionRepository;
+            _departmentRepository = departmentRepository;
         }
 
         public async Task<bool> Check(long positionId)
@@ -49,9 +53,20 @@ namespace Surging.Hero.Organization.Application.Position
             return position.MapTo<GetPositionOutput>();
         }
 
+
         public async Task<IEnumerable<GetPositionOutput>> GetDeptPosition(long deptId)
         {
             var positions = await _positionRepository.GetAllAsync(p=>p.DeptId == deptId);
+            return positions.MapTo<IEnumerable<GetPositionOutput>>();
+        }
+
+        public async Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId(long orgId)
+        {
+            var dept = await _departmentRepository.SingleOrDefaultAsync(p => p.OrgId == orgId);
+            if (dept == null) {
+                throw new BusinessException($"不存在OrgId为{orgId}的部门信息");
+            }
+            var positions = await _positionRepository.GetAllAsync(p => p.DeptId == dept.Id);
             return positions.MapTo<IEnumerable<GetPositionOutput>>();
         }
 

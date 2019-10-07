@@ -10,7 +10,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         public long? PositionId { get; set; }
 
         [Required(ErrorMessage = "用户名不允许为空")]
-        [RegularExpression(RegExpConstants.UserName, ErrorMessage = "用户名不允许为空")]
+        [RegularExpression(RegExpConstants.UserName, ErrorMessage = "用户名格式不正确")]
         public string UserName { get; set; }
 
         [RegularExpression(RegExpConstants.Password, ErrorMessage = "密码格式不正确")]

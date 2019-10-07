@@ -60,6 +60,12 @@ namespace Surging.Hero.Auth.Application.Role
             return await _permissionDomainService.GetRolePermissions(id);
         }
 
+        public async Task<IEnumerable<GetRoleOutput>> List(string searchKey)
+        {
+            var queryRoles = await _roleRepository.GetAllAsync(p => p.Name.Contains(searchKey));
+            return queryRoles.MapTo<IEnumerable<GetRoleOutput>>();
+        }
+
         public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
         {
             Tuple<IEnumerable<Domain.Roles.Role>, int> queryResult = queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) && p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);

@@ -19,9 +19,9 @@ namespace Surging.Hero.Organization.Application.Department
             _departmentRepository = departmentRepository;
         }
 
-        public async Task<bool> Check(long deptId)
+        public async Task<bool> Check(long orgId)
         {
-            var department = await _departmentRepository.SingleOrDefaultAsync(p => p.Id == deptId);
+            var department = await _departmentRepository.SingleOrDefaultAsync(p => p.OrgId == orgId);
             if (department == null) {
                 return false;
             }

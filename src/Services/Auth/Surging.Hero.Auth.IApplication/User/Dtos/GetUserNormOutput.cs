@@ -10,6 +10,11 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
     {
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
 
+        public IEnumerable<long> RoleIds { get {
+                return Roles.Select(p => p.Id);    
+            }
+        }
+
         public string DisplayRoles { get { return string.Join(",", Roles.Select(p => p.Name)); } }
 
     }

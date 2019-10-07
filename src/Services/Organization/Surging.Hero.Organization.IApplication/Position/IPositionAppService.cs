@@ -1,5 +1,6 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Core.System.Intercept;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
 using System.Collections.Generic;
@@ -12,21 +13,32 @@ namespace Surging.Hero.Organization.IApplication.Position
     {
         [ServiceRoute("{id}")]
         [HttpGet(true)]
-        Task<GetPositionOutput> Get(long id);
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetPositionById, Mode = Core.Caching.CacheTargetType.Redis)]
+        Task<GetPositionOutput> Get([CacheKey(1)]long id);
 
         [ServiceRoute("{deptId}")]
         [HttpGet(true)]
-        Task<IEnumerable<GetPositionOutput>> GetDeptPosition(long deptId);
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionById, Mode = Core.Caching.CacheTargetType.Redis)]
+        Task<IEnumerable<GetPositionOutput>> GetDeptPosition([CacheKey(1)]long deptId);
+
+
+        [ServiceRoute("{orgId}")]
+        [HttpGet(true)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = Core.Caching.CacheTargetType.Redis)]
+        Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
 
         [HttpPost(true)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { "GetDeptPositionById_*", "GetPositionById_*" }, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<string> Create(CreatePositionInput input);
 
         [HttpPut(true)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetDeptPositionByOrgId, CacheKeyConstant.GetDeptPositionByOrgId, CacheKeyConstant.GetPositionById }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
         Task<string> Update(UpdatePositionInput input);
 
         [ServiceRoute("{id}")]
         [HttpDelete(true)]
-        Task<string> Delete(long id);
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { "GetDeptPositionById_*", "GetPositionById_*" }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
+        Task<string> Delete([CacheKey(1)]long id);
 
         [Service(DisableNetwork = true)]
         [HttpPost(true)]

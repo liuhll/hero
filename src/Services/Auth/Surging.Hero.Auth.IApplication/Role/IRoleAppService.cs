@@ -28,6 +28,9 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query);
 
         [HttpGet(true)]
+        Task<IEnumerable<GetRoleOutput>> List(string searchKey);
+
+        [HttpGet(true)]
         [ServiceRoute("{id}")]
         Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long id);
 

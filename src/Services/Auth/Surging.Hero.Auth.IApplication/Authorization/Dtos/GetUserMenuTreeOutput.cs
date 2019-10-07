@@ -9,6 +9,12 @@ namespace Surging.Hero.Auth.IApplication.Authorization.Dtos
 
         public string Name { get; set; }
 
+        public string Path { get; set; }
+
+        public bool AlwaysShow { get; set; }
+
+        public string Title { get; set; }
+
         public string Code { get; set; }
 
         public string Icon { get; set; }

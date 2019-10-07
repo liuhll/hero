@@ -18,6 +18,7 @@ using Surging.Hero.Auth.IApplication.Role.Dtos;
 using System.Linq;
 using System;
 using Surging.Hero.Organization.IApplication.Organization;
+using Surging.Core.CPlatform.Utilities;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -82,32 +83,33 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query)
         {
-            IPagedResult<GetUserNormOutput> queryResultOutput = null; 
+            IPagedResult<GetUserNormOutput> queryResultOutput = null;
             if (!query.OrgId.HasValue || query.OrgId == 0)
             {
-               var queryPageResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
-                || p.ChineseName.Contains(query.SearchKey)
-                || p.Email.Contains(query.SearchKey)
-                || p.Phone.Contains(query.SearchKey), query.PageIndex, query.PageCount);
-                queryResultOutput = queryPageResult.Item1.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryPageResult.Item2);
-             
+                var queryPageResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
+                 || p.ChineseName.Contains(query.SearchKey)
+                 || p.Email.Contains(query.SearchKey)
+                 || p.Phone.Contains(query.SearchKey), query.PageIndex, query.PageCount);
+
+                queryResultOutput = queryPageResult.Item1.WhereIf(query.Status.HasValue, p => p.Status == query.Status.Value).MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryPageResult.Item2);
+
             }
             else
-            { 
-                var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);    
+            {
+                var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
                 // :todo 优化
                 var queryResult = await _userRepository.GetAllAsync(p => p.UserName.Contains(query.SearchKey)
                    || p.ChineseName.Contains(query.SearchKey)
                    || p.Email.Contains(query.SearchKey)
                    || p.Phone.Contains(query.SearchKey));
-                queryResult = queryResult.Where(p=> subOrgIds.Any(q=> q == p.OrgId));
+                queryResult = queryResult.Where(p => subOrgIds.Any(q => q == p.OrgId)).WhereIf(query.Status.HasValue, p => p.Status == query.Status.Value);
                 queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().PageBy(query);
             }
             foreach (var userOutput in queryResultOutput.Items)
             {
                 if (userOutput.OrgId.HasValue)
                 {
-                    userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.OrgId.Value)).Name;
+                    userOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
                 }
                 if (userOutput.PositionId.HasValue)
                 {
@@ -155,16 +157,17 @@ namespace Surging.Hero.Auth.Application.User
                 var subOrdIds = await GetService<IOrganizationAppService>().GetSubOrgIds(orgId);
                 orgUsers = (await _userRepository.GetAllAsync()).Where(p => subOrdIds.Any(q => q == p.OrgId));
             }
-            else {
+            else
+            {
                 orgUsers = await _userRepository.GetAllAsync(p => p.OrgId == orgId);
             }
-           
+
             var orgUserOutputs = orgUsers.MapTo<IEnumerable<GetUserBasicOutput>>();
             foreach (var userOutput in orgUserOutputs)
             {
                 if (userOutput.OrgId.HasValue)
                 {
-                    userOutput.DeptName = (await GetService<IDepartmentAppService>().Get(userOutput.OrgId.Value)).Name;
+                    userOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
                 }
                 if (userOutput.PositionId.HasValue)
                 {
@@ -173,43 +176,43 @@ namespace Surging.Hero.Auth.Application.User
             }
             return orgUserOutputs;
         }
-      
+
         public async Task<GetUserNormOutput> Get(long id)
         {
             return await _userDomainService.GetUserNormInfoById(id);
         }
 
-        public async Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query)
-        {
-            var userRoleOutputs = new List<GetUserRoleOutput>();
+        //public async Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query)
+        //{
+        //    var userRoleOutputs = new List<GetUserRoleOutput>();
 
-            var roles = await _roleRepository.GetAllAsync();
-            if (query.UserId.HasValue && query.UserId.Value != 0)
-            {
-                var userInfo = await _userDomainService.GetUserNormInfoById(query.UserId.Value);
-               
-                foreach (var role in roles)
-                {
-                    userRoleOutputs.Add(new GetUserRoleOutput()
-                    {
-                        RoleId = role.Id,
-                        Name = role.Name,
-                        Checked = userInfo.Roles.Any(p => p.Id == role.Id) ? CheckStatus.Checked : CheckStatus.UnChecked
-                    });
-                }
-            }
-           
-            foreach (var role in roles)
-            {
-                userRoleOutputs.Add(new GetUserRoleOutput()
-                {
-                    RoleId = role.Id,                  
-                    Name = role.Name,
-                    Checked = CheckStatus.UnChecked
-                });
-            }
-            return userRoleOutputs;
-        }
+        //    var roles = await _roleRepository.GetAllAsync();
+        //    if (query.UserId.HasValue && query.UserId.Value != 0)
+        //    {
+        //        var userInfo = await _userDomainService.GetUserNormInfoById(query.UserId.Value);
+
+        //        foreach (var role in roles)
+        //        {
+        //            userRoleOutputs.Add(new GetUserRoleOutput()
+        //            {
+        //                RoleId = role.Id,
+        //                Name = role.Name,
+        //                Checked = userInfo.Roles.Any(p => p.Id == role.Id) ? CheckStatus.Checked : CheckStatus.UnChecked
+        //            });
+        //        }
+        //    }
+
+        //    foreach (var role in roles)
+        //    {
+        //        userRoleOutputs.Add(new GetUserRoleOutput()
+        //        {
+        //            RoleId = role.Id,                  
+        //            Name = role.Name,
+        //            Checked = CheckStatus.UnChecked
+        //        });
+        //    }
+        //    return userRoleOutputs;
+        //}
 
         public async Task<bool> ResetUserOrgInfo(long id)
         {

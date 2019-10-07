@@ -22,15 +22,15 @@ namespace Surging.Hero.Auth.Domain.Users
             var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.UserName == userName || p.Phone == userName || p.Email == userName);
             if (userInfo == null)
             {
-                throw new AuthException($"不存在账号为{userName}的用户");
+                throw new BusinessException($"不存在账号为{userName}的用户");
             }
             if (userInfo.Status == Status.Invalid)
             {
-                throw new AuthException($"账号为被激活,请先激活该账号");
+                throw new BusinessException($"账号为被激活,请先激活该账号");
             }
             if (!_passwordHelper.EncryptPassword(userInfo.UserName, password).Equals(userInfo.Password))
             {
-                throw new AuthException($"密码不正确");
+                throw new BusinessException($"密码不正确");
             }
             var payload = new Dictionary<string, object>() {
                 { "UserId",userInfo.Id },

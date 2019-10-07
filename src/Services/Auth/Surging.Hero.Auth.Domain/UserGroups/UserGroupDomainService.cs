@@ -159,9 +159,16 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 return await Connection.QueryAsync<UserUserGroupRelation,UserInfo, GetUserBasicOutput>(sql,(uugr,u) => {
                     var output = u.MapTo<GetUserBasicOutput>();
                     var positionAppServiceProxy = GetService<IPositionAppService>();
-                    output.PositionName = positionAppServiceProxy.Get(u.Id).Result.Name;
+                    
                     var departmentAppServiceProxy = GetService<IDepartmentAppService>();
-                    output.DeptName = departmentAppServiceProxy.Get(u.Id).Result.Name;
+                    if (u.OrgId.HasValue) {
+                        output.DeptName = departmentAppServiceProxy.GetByOrgId(u.OrgId.Value).Result.Name;
+                       
+                    }
+                    if (u.PositionId.HasValue) {
+                        output.DeptName = positionAppServiceProxy.Get(u.PositionId.Value).Result.Name;
+                    }
+                   
                     return output;
                 }, param: new { UserGroupId = userGroupId },splitOn: "Id");
             }

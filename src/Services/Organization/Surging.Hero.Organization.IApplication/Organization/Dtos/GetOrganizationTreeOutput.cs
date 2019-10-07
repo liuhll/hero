@@ -9,7 +9,7 @@ namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 
         public long Id { get; set; }
 
-        public OrganizationType OrganizationType { get; set; }
+        public OrganizationType OrgType { get; set; }
 
         public string Name { get; set; }
 
