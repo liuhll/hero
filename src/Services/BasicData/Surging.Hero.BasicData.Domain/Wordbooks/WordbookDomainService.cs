@@ -112,6 +112,16 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             return wordbookItemOutput;
         }
 
+        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemByCode(string code)
+        {
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Code == code);
+            if (wordbook == null)
+            {
+                throw new BusinessException($"系统中不存在code为{code}的字典类型");
+            }
+            return await GetWordbookItems(wordbook.Id);
+        }
+
         public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
         {
             var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == wordbookId);

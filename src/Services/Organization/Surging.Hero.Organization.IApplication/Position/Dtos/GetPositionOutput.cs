@@ -4,5 +4,9 @@
     {
         public long DeptId { get; set; }
         public long Id { get; set; }
+
+        public string FunctionName { get; set; }
+
+        public string PositionLevelName { get; set; }
     }
 }

@@ -19,5 +19,6 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
         Task DeleteWordbookItem(long id);
         Task<GetWordbookItemOutput> GetWordbookItem(long id);
         Task<bool> CheckWordbookItem(CheckWordbookInput input);
+        Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemByCode(string code);
     }
 }

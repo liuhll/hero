@@ -60,6 +60,11 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             return (await _wordbookDomainService.GetWordbookItem(id)).MapTo<GetWordbookItemOutput>();
         }
 
+        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemByCode(string code)
+        {
+            return await _wordbookDomainService.GetWordbookItemByCode(code);
+        }
+
         public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
         {
             return await _wordbookDomainService.GetWordbookItems(wordbookId);
