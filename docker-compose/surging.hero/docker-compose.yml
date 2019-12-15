@@ -49,9 +49,9 @@ services:
       context: ../..
       dockerfile: src/Services/Gateway/Surging.Hero.Gateway/Dockerfile
       args:
-        sln_name: sln/Surging.Hero.sln
-        host_workdir: src/Gateway/Surging.Hero.Gateway
+        host_workdir: src/Services/Gateway/Surging.Hero.Gateway
         host_name: Surging.Hero.Gateway.dll
+        sln_name: sln/Surging.Hero.sln
     depends_on:
       - surging.hero.auth
       - surging.hero.basicdata
