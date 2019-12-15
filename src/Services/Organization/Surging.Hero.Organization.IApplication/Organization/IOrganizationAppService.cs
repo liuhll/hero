@@ -16,6 +16,7 @@ namespace Surging.Hero.Organization.IApplication.Organization
     public interface IOrganizationAppService : IServiceKey
     {
         [HttpGet(true)]
+        [ServiceRoute("get/tree")]
         Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree();
 
         [HttpPost(true)]
@@ -23,6 +24,7 @@ namespace Surging.Hero.Organization.IApplication.Organization
 
         [HttpGet(true)]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetSubOrgIds, Mode = Core.Caching.CacheTargetType.Redis)]
+        [ServiceRoute("get/suborgs/{orgId}")]
         Task<IEnumerable<long>> GetSubOrgIds([CacheKey(1)]long orgId);
 
     }

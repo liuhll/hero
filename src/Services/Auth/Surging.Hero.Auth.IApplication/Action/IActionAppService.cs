@@ -13,6 +13,7 @@ namespace Surging.Hero.Auth.IApplication.Action
     {
         [Service(DisableNetwork = true)]
         [HttpPost(true)]
+        [ServiceRoute("init")]
         Task<string> InitActions(ICollection<InitActionActionInput> actions);
     }
 }

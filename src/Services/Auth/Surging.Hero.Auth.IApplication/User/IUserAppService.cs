@@ -19,31 +19,35 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<string> Update(UpdateUserInput input);
         
         [HttpDelete(true)]
-        [ServiceRoute("{id}")]
+        [ServiceRoute("delete/{id}")]
         Task<string> Delete(long id);
 
         [HttpPost(true)]
         Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query);
 
         [HttpPut(true)]
+        [ServiceRoute("update/status")]
         Task<string> UpdateStatus(UpdateUserStatusInput input);
 
         [HttpPut(true)]
+        [ServiceRoute("reset/password")]
         Task<string> ResetPassword(ResetPasswordInput input);
 
         [HttpGet(true)]
+        [ServiceRoute("get/org/users")]
         Task<IEnumerable<GetUserBasicOutput>> GetOrgUser(long orgId,bool includeSubOrg);
 
         //[ServiceRoute("{corporationId}")]
         //[HttpGet(true)]
         //Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("get/{id}")]
         [HttpGet(true)]
         Task<GetUserNormOutput> Get(long id);
 
 
         [HttpPost(true)]
+        [ServiceRoute("reset/user/org/{id}")]
         Task<bool> ResetUserOrgInfo(long id);
     }
 }

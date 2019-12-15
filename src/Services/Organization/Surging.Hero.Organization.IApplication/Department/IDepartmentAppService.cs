@@ -29,7 +29,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptById, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<GetDepartmentOutput> Get([CacheKey(1)]long id);
 
-        [ServiceRoute("get/byorg/{orgId}")]
+        [ServiceRoute("get/orgid/{orgId}")]
         [HttpGet(true)]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptByOrgId, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<GetDepartmentOutput> GetByOrgId([CacheKey(1)]long orgId);

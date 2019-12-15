@@ -21,7 +21,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<string> Status(UpdateRoleStatusInput input);
 
         [HttpGet(true)]
-        [ServiceRoute("{id}")]
+        [ServiceRoute("get/{id}")]
         Task<GetRoleOutput> Get(long id);
 
         [HttpPost(true)]
@@ -31,14 +31,15 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<IEnumerable<GetRoleOutput>> List(string searchKey);
 
         [HttpGet(true)]
-        [ServiceRoute("{id}")]
+        [ServiceRoute("get/permissions/{id}")]
         Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long id);
 
         [HttpPut(true)]
+        [ServiceRoute("set/permissions")]
         Task<string> SetPermissions(SetRolePermissionInput input);
 
         [HttpDelete(true)]
-        [ServiceRoute("{id}")]
+        [ServiceRoute("delete/{id}")]
         Task<string> Delete(long id);
     }
 }

@@ -12,43 +12,50 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
     public interface IWordbookAppService : IServiceKey
     {
         [HttpPost(true)]
+        [ServiceRoute("create")]
         Task<string> Create(CreateWordbookInput input);
 
         [HttpPut(true)]
+        [ServiceRoute("update")]
         Task<string> Update(UpdateWordbookInput input);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("delete/{id}")]
         [HttpDelete(true)]
         Task<string> Delete(long id);
 
+
+        [ServiceRoute("query")]
         Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("get/{id}")]
         [HttpGet(true)]
         Task<GetWordbookOutput> Get(long id);
 
-        [ServiceRoute("{wordbookId}")]
+        [ServiceRoute("items/{wordbookId}")]
         [HttpGet(true)]
         Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId);
 
         [HttpPost(true)]
+        [ServiceRoute("items/create")]
         Task<string> CreateWordbookItem(CreateWordbookItemInput input);
 
         [HttpPut(true)]
+        [ServiceRoute("items/update")]
         Task<string> UpdateWordbookItem(UpdateWordbookItemInput input);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("items/delete/{id}")]
         [HttpDelete(true)]
         Task<string> DeleteWordbookItem(long id);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("items/get/{id}")]
         [HttpGet(true)]
         Task<GetWordbookItemOutput> GetWordbookItem(long id);
 
         [HttpPost(true)]
+        [ServiceRoute("check")]
         Task<bool> Check(CheckWordbookInput input);
 
-        [ServiceRoute("{code}")]
+        [ServiceRoute("items/{code}")]
         [HttpGet(true)]
         Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemByCode(string code);
     }

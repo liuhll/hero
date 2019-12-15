@@ -15,7 +15,7 @@ namespace Surging.Hero.ServiceHost
     public class Startup
     {
         private readonly IConfigurationBuilder _configurationBuilder;
-        private const string updateHostActionRoute = "v1/api/action/initactions";
+        private const string updateHostActionRoute = "v1/api/action/init";
         private const int hostNameSegmentLength = 3;
 
         public Startup(IConfigurationBuilder config)
