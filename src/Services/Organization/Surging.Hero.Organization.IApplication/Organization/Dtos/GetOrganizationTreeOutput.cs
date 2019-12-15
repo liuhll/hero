@@ -1,4 +1,5 @@
 ﻿using Surging.Core.Domain;
+using Surging.Core.Domain.Trees;
 using Surging.Hero.Organization.Domain.Shared.Organizations;
 using System.Collections.Generic;
 

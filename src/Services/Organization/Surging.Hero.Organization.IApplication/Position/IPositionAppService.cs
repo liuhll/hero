@@ -28,16 +28,16 @@ namespace Surging.Hero.Organization.IApplication.Position
         Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
 
         [HttpPost(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { "GetDeptPositionById_*", "GetPositionById_*" }, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.RemoveGetDeptPositionKey, CacheKeyConstant.RemoveGetPositionByIdKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<string> Create(CreatePositionInput input);
 
         [HttpPut(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetDeptPositionByOrgId, CacheKeyConstant.GetDeptPositionByOrgId, CacheKeyConstant.GetPositionById }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.RemoveGetDeptPositionKey, CacheKeyConstant.RemoveGetPositionByIdKey,CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
         Task<string> Update(UpdatePositionInput input);
 
         [ServiceRoute("{id}")]
         [HttpDelete(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { "GetDeptPositionById_*", "GetPositionById_*" }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.RemoveGetDeptPositionKey, CacheKeyConstant.RemoveGetPositionByIdKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
         Task<string> Delete([CacheKey(1)]long id);
 
         [Service(DisableNetwork = true)]

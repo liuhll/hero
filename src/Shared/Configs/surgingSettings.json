@@ -6,23 +6,24 @@
     "MappingIp": "${Mapping_ip}",
     "MappingPort": "${Mapping_Port}",
     "Token": "true",
-    "WanIp": "${WanIp}",
+    "WanIp": "${WanIp}|0.0.0.0",
     "Libuv": true,
     "SoBacklog": 100,
     "MaxConcurrentRequests": 20,
     "DisconnTimeInterval": 30,
-    "ExecutionTimeoutInMilliseconds": 100000,
+    "ExecutionTimeoutInMilliseconds": 10000,
     "Protocol": "${Protocol}|None", //Http、Tcp、None
     "RootPath": "${RootPath}|./userapp",
-    "WebRootPath": "${WebRootPath}|./wwwroot",
+    "WebRootPath": "${WebRootPath}|./userapp/wwwroot",
     "IsModulePerLifetimeScope": false,
     "ReloadOnChange": false,
+    "RequestCacheEnabled": true,
     "Ports": {
       "HttpPort": "${HttpPort}|8080",
       "WSPort": "${WSPort}|96",
       "MQTTPort": "${MQTTPort}|97"
     },
-    "RequestCacheEnabled": true,
+    "Environment": "${Environment}|Development",
     "Packages": [
       {
         "TypeName": "EnginePartModule",
@@ -49,16 +50,18 @@
     "IsCamelCaseResolver": "${IsCamelCaseResolver}|true",
     "Protocols": "Http1AndHttp2",
     "ApiGetWay": {
-      "AccessTokenExpireTimeSpan": "60",
-      "AuthorizationRoutePath": "", //"v1/api/permission/check",
-      "AuthorizationServiceKey": "",
+      "AccessTokenExpireTimeSpan": "10080",
       "AuthenticationRoutePath": "v1/api/account/login",
       "AuthenticationServiceKey": "",
+      "AuthorizationRoutePath": "",
+      "AuthorizationServiceKey": "",
       "TokenEndpointPath": "api/oauth2/token",
-      "CacheMode": "ddlCache.Redis" //MemoryCache or  gateway.Redis save token
+      "CacheMode": "ddlCache.Redis", //MemoryCache or  gateway.Redis save token
+      "IsUsingTerminal": true,
+      "Terminals": "dashboard,web,iosapp,androidapp"
     },
     "AccessPolicy": {
-      "Origins": [ "*"],
+      "Origins": [ "*" ],
       "AllowAnyHeader": true,
       "AllowAnyMethod": true
     },
@@ -68,14 +71,14 @@
         "Enable": false
       },
       {
-        "WhiteList": "${whitelist}",
-        "BlackList": "${blacklist}",
+        "WhiteList": "${whitelist}|192.168.10.50,192.168.43.0/24",
+        "BlackList": "${blacklist}|192.168.2.50,192.168.1.0/16",
         "RoutePath": "api/user/exists",
         "Enable": true
       }
     ],
     "HttpsPort": "${StageHttpsPorts}|449,446",
-    "HttpPorts": "${StageHttpPorts}|285,282,283"
+    "HttpPorts": "${StageHttpPorts}"
   },
   "EventBus": {
     "EventBusConnection": "${EventBusConnection}|127.0.0.1",

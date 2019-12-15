@@ -10,16 +10,18 @@ namespace Surging.Hero.Organization.IApplication.Corporation
     public interface ICorporationAppService : IServiceKey
     {
         [HttpPost(true)]
+        [ServiceRoute("create")]
         Task<string> Create(CreateCorporationInput input);
 
         [HttpPut(true)]
+        [ServiceRoute("update")]
         Task<string> Update(UpdateCorporationInput input);
 
-        [ServiceRoute("{orgId}")]
+        [ServiceRoute("delete/{orgId}")]
         [HttpDelete(true)]
         Task<string> DeleteByOrgId(long orgId);
 
-        [ServiceRoute("{orgId}")]
+        [ServiceRoute("get/org/{orgId}")]
         [HttpGet(true)]
         Task<GetCorporationOutput> GetByOrgId(long orgId);
     }

@@ -1,6 +1,7 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Core.Domain;
+using Surging.Core.Domain.Trees;
 using Surging.Hero.Auth.IApplication.Authorization.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Common.Runtime.Session;

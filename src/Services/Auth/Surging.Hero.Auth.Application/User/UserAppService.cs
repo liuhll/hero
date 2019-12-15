@@ -8,7 +8,7 @@ using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.Domain;
+using Surging.Core.Domain.PagedAndSorted;
 using System.Collections.Generic;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Common;
@@ -19,6 +19,7 @@ using System.Linq;
 using System;
 using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Core.CPlatform.Utilities;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 
 namespace Surging.Hero.Auth.Application.User
 {

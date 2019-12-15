@@ -4,6 +4,7 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain;
+using Surging.Core.Domain.Trees;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.Roles;

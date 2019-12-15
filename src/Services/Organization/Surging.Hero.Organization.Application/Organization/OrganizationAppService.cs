@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
+using Surging.Core.Domain.Trees;
 using Surging.Core.ProxyGenerator;
 using Surging.Hero.Organization.Domain;
-using Surging.Hero.Organization.Domain.Shared.Organizations;
 using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Hero.Organization.IApplication.Organization.Dtos;
 

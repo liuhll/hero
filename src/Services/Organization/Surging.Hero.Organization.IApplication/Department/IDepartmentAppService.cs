@@ -11,24 +11,28 @@ namespace Surging.Hero.Organization.IApplication.Department
     public interface IDepartmentAppService : IServiceKey
     {
         [HttpPost(true)]
+        [ServiceRoute("create")]
         Task<string> Create(CreateDepartmentInput input);
 
+        [ServiceRoute("update")]
         [HttpPost(true)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<string> Update(UpdateDepartmentInput input);
 
-        [ServiceRoute("{orgId}")]
+        [ServiceRoute("delete/{orgId}")]
         [HttpDelete(true)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<string> DeleteByOrgId(long orgId);
 
-        [ServiceRoute("{id}")]
+        [ServiceRoute("get/{id}")]
         [HttpGet(true)]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptById, Mode = Core.Caching.CacheTargetType.Redis)]
-        Task<GetDepartmentOutput> Get(long id);
+        Task<GetDepartmentOutput> Get([CacheKey(1)]long id);
 
-        [ServiceRoute("{orgId}")]
+        [ServiceRoute("get/byorg/{orgId}")]
         [HttpGet(true)]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptByOrgId, Mode = Core.Caching.CacheTargetType.Redis)]
-        Task<GetDepartmentOutput> GetByOrgId(long orgId);
+        Task<GetDepartmentOutput> GetByOrgId([CacheKey(1)]long orgId);
 
         [Service(DisableNetwork = true)]
         [HttpPost(true)]

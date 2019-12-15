@@ -1,6 +1,5 @@
-﻿using Surging.Core.Domain;
+﻿using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.Common;
-using Surging.Hero.Organization.Domain.Shared.Organizations;
 
 namespace Surging.Hero.Auth.IApplication.User.Dtos
 {

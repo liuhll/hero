@@ -6,6 +6,7 @@ using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.Domain;
+using Surging.Core.Domain.Trees;
 using Surging.Core.ProxyGenerator;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Authorization;
