@@ -31,7 +31,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         [HttpGet(true)]
         Task<GetWordbookOutput> Get(long id);
 
-        [ServiceRoute("items/{wordbookId}")]
+        [ServiceRoute("items/id/{wordbookId}")]
         [HttpGet(true)]
         Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId);
 
@@ -55,7 +55,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         [ServiceRoute("check")]
         Task<bool> Check(CheckWordbookInput input);
 
-        [ServiceRoute("items/{code}")]
+        [ServiceRoute("items/code/{code}")]
         [HttpGet(true)]
         Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemByCode(string code);
     }
