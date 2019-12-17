@@ -145,8 +145,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             }
             var departmentOutput = department.MapTo<GetDepartmentOutput>();
             departmentOutput = orgInfo.MapTo(departmentOutput);
-            var positions = await _positionDomainService.GetPositionsByDeptId(department.Id);
-            departmentOutput.Positions = positions.MapTo<IEnumerable<GetPositionOutput>>();
+            departmentOutput.Positions = await _positionDomainService.GetPositionsByDeptId(department.Id);
             return departmentOutput;
         }
 

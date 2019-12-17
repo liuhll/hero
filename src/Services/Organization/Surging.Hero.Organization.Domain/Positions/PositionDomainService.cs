@@ -11,6 +11,7 @@ using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Organization.IApplication.Position;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
 
 namespace Surging.Hero.Organization.Domain.Positions
@@ -67,9 +68,16 @@ namespace Surging.Hero.Organization.Domain.Positions
             await _positionRepository.DeleteAsync(position);
         }
 
-        public async Task<IEnumerable<Position>> GetPositionsByDeptId(long deptId)
+        public async Task<IEnumerable<GetPositionOutput>> GetPositionsByDeptId(long deptId)
         {
-            return await _positionRepository.GetAllAsync(p => p.DeptId == deptId);
+            var positions = await _positionRepository.GetAllAsync(p => p.DeptId == deptId);
+            var positionOutputs = positions.MapTo<IEnumerable<GetPositionOutput>>();
+            foreach (var positionOutput in positionOutputs) 
+            {
+                positionOutput.PositionLevelName = (await GetService<IWordbookAppService>().GetWordbookItem(positionOutput.PositionLevelId)).Value;
+                positionOutput.FunctionName = (await GetService<IWordbookAppService>().GetWordbookItem(positionOutput.FunctionId)).Value;
+            }
+            return positionOutputs;
         }
 
         public async Task UpdatePosition(UpdatePositionInput input)

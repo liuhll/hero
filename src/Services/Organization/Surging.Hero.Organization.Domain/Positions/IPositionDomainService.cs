@@ -11,7 +11,7 @@ namespace Surging.Hero.Organization.Domain.Positions
         Task CreatePosition(CreatePositionInput input,string positionCode, DbConnection conn, DbTransaction trans);
 
         Task CreatePosition(CreatePositionInput input);
-        Task<IEnumerable<Position>> GetPositionsByDeptId(long deptId);
+        Task<IEnumerable<GetPositionOutput>> GetPositionsByDeptId(long deptId);
         Task UpdatePosition(UpdatePositionInput input);
         Task DeletePosition(long id);
     }
