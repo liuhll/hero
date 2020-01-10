@@ -63,7 +63,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             var orgInfo = input.MapTo<Organization>();
             
             var orgCode = string.Empty;
-            var maxLevelOrg = (await _organizationRepository.GetAllAsync(p => p.ParentId == parentOrg.Id && p.OrgType == Shared.Organizations.OrganizationType.Corporation)).OrderByDescending(p => p.Id).FirstOrDefault();
+            var maxLevelOrg = (await _organizationRepository.GetAllAsync(p => p.ParentId == parentOrg.Id)).OrderByDescending(p => p.Id).FirstOrDefault();
             if (maxLevelOrg == null)
             {
                 orgCode = "1".PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
