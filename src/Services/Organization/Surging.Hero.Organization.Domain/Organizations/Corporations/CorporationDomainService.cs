@@ -124,15 +124,16 @@ namespace Surging.Hero.Organization.Domain.Organizations
             }
             else
             {
-                orgCode = (Convert.ToInt32(maxLevelOrg.Code.Split(HeroConstants.CodeRuleRestrain.CodeCoverSymbol).Last().TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+                orgCode = (Convert.ToInt32(maxLevelOrg.Code.Split(HeroConstants.CodeRuleRestrain.CodeSeparator).Last().TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             }
             orgInfo.Code = parentOrg.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + orgCode;
             orgInfo.Level = parentOrg.Level + 1;
             await UnitOfWorkAsync(async (conn, trans) =>
             {
                 var orgId = await _organizationRepository.InsertAndGetIdAsync(orgInfo, conn, trans);
-                corporation.Id = orgId;
+                corporation.OrgId = orgId;
                 await _corporationRepository.InsertAsync(corporation, conn, trans);
+                
             }, Connection);
         }
 
