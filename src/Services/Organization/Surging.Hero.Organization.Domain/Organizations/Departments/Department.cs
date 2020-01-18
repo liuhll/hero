@@ -13,6 +13,5 @@ namespace Surging.Hero.Organization.Domain
 
         public string BriefIntro { get; set; }
 
-        public string Memo { get; set; }
     }
 }

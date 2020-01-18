@@ -30,34 +30,12 @@ namespace Surging.Hero.Organization.Domain.Positions
             _organizationRepository = organizationRepository;
         }
 
-        public async Task CreatePosition(CreatePositionInput input,string positionCode, DbConnection conn, DbTransaction trans)
+        public async Task CreatePosition(Position position, string positionCode, DbConnection conn, DbTransaction trans)
         {
-            await CheckPosition(input);
-            var position = input.MapTo<Position>();
             position.Code = positionCode;
             await _positionRepository.InsertAsync(position, conn, trans);
         }
 
-        public async Task CreatePosition(CreatePositionInput input)
-        {
-            await CheckPosition(input);            
-            var position = input.MapTo<Position>();
-            var departPositionMax = (await _positionRepository.GetAllAsync(p => p.DeptId == input.DeptId)).FirstOrDefault();
-            var department = await _departmentRepository.GetAsync(input.DeptId);
-            var orgInfo = await _organizationRepository.GetAsync(department.OrgId);
-            var positionCode = string.Empty;
-            if (departPositionMax == null)
-            {
-                positionCode = "1".PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-            }
-            else
-            {
-                positionCode = (Convert.ToInt32(departPositionMax.Code.TrimStart('0')) + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-            }
-
-            position.Code = orgInfo.Code + positionCode;
-            await _positionRepository.InsertAsync(position);
-        }
 
         public async Task DeletePosition(long id)
         {
@@ -105,14 +83,14 @@ namespace Surging.Hero.Organization.Domain.Positions
             await _positionRepository.UpdateAsync(position);
         }
 
-        private async Task CheckPosition(CreatePositionInput input)
+        private async Task CheckPosition(Position position)
         {         
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
-            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemId = input.FunctionId }))
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemId = position.FunctionId }))
             {
                 throw new BusinessException($"系统中不存在指定的岗位职能类型");
             }
-            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionLevel, WordbookItemId = input.PositionLevelId }))
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionLevel, WordbookItemId = position.PositionLevelId }))
             {
                 throw new BusinessException($"系统中不存在指定的岗位级别");
             }

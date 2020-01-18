@@ -34,18 +34,6 @@ namespace Surging.Hero.Organization.Application.Position
             return true;
         }
 
-        public async Task<string> Create(CreatePositionInput input)
-        {
-            input.CheckDataAnnotations().CheckValidResult();
-            await _positionDomainService.CreatePosition(input);
-            return "新增职位信息成功";
-        }
-
-        public async Task<string> Delete(long id)
-        {
-            await _positionDomainService.DeletePosition(id);
-            return "删除职位信息成功";
-        }
 
         public async Task<GetPositionOutput> Get(long id)
         {

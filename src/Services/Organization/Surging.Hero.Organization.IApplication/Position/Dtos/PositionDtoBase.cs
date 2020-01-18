@@ -14,12 +14,6 @@ namespace Surging.Hero.Organization.IApplication.Position.Dtos
 
         public long PositionLevelId { get; set; }
 
-        [MaxLength(100, ErrorMessage = "职位简介长度不允许超过100")]
-        public string BriefIntro { get; set; }
-
-        [MaxLength(500, ErrorMessage = "职位备注长度不允许超过500")]
-        public string Memo { get; set; }
-
         [Required(ErrorMessage = "岗位职责不允许为空")]
         [MaxLength(200, ErrorMessage = "岗位职责长度不允许超过200")]
         public string PostResponsibility { get; set; }

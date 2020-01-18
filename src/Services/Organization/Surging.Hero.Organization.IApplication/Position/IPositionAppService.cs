@@ -27,19 +27,6 @@ namespace Surging.Hero.Organization.IApplication.Position
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
 
-        [HttpPost(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.RemoveGetDeptPositionKey, CacheKeyConstant.RemoveGetPositionByIdKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
-        Task<string> Create(CreatePositionInput input);
-
-        [HttpPut(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.RemoveGetDeptPositionKey, CacheKeyConstant.RemoveGetPositionByIdKey,CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
-        Task<string> Update(UpdatePositionInput input);
-
-        [ServiceRoute("delete/{id}")]
-        [HttpDelete(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.RemoveGetDeptPositionKey, CacheKeyConstant.RemoveGetPositionByIdKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis, CacheSectionType = SectionType.ddlCache)]
-        Task<string> Delete([CacheKey(1)]long id);
-
         [Service(DisableNetwork = true)]
         [HttpPost(true)]
         Task<bool> Check(long positionId);

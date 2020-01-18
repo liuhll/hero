@@ -8,9 +8,8 @@ namespace Surging.Hero.Organization.Domain.Positions
 {
     public interface IPositionDomainService : ITransientDependency
     {
-        Task CreatePosition(CreatePositionInput input,string positionCode, DbConnection conn, DbTransaction trans);
+        Task CreatePosition(Position input,string positionCode, DbConnection conn, DbTransaction trans);
 
-        Task CreatePosition(CreatePositionInput input);
         Task<IEnumerable<GetPositionOutput>> GetPositionsByDeptId(long deptId);
         Task UpdatePosition(UpdatePositionInput input);
         Task DeletePosition(long id);

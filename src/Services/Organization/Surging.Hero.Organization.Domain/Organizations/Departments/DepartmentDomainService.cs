@@ -87,8 +87,9 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                         throw new BusinessException($"部门只允许设置一个负责人岗位");
                     }
                     var sort = 1;
-                    foreach (var position in input.Postions)
+                    foreach (var positionInput in input.Postions)
                     {
+                        var position = positionInput.MapTo<Position>();
                         position.DeptId = deptId;
                         position.CheckDataAnnotations().CheckValidResult();
                         var positionCode = orgInfo.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + sort.ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
@@ -118,7 +119,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _organizationRepository.DeleteAsync(orgInfo, conn, trans);
                 await _departmentRepository.DeleteAsync(department,conn,trans);
-                await _positionRepository.DeleteAsync(p => p.Code.Contains(orgInfo.Code), conn, trans);
+                await _positionRepository.DeleteAsync(p => p.DeptId == department.Id, conn, trans);
                 foreach (var departmentUser in departmentUsers)
                 {
                     if (!await GetService<IUserAppService>().ResetUserOrgInfo(departmentUser.Id))
@@ -198,6 +199,23 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _organizationRepository.UpdateAsync(orgInfo, conn, trans);
                 await _departmentRepository.UpdateAsync(department, conn, trans);
+                if (input.Postions != null && input.Postions.Any())
+                {
+                    if (input.Postions.Count(p => p.IsLeadingOfficial) > 1)
+                    {
+                        throw new BusinessException($"部门只允许设置一个负责人岗位");
+                    }
+                    var sort = 1;
+                    foreach (var positionInput in input.Postions)
+                    {
+                        var position = positionInput.MapTo<Position>();
+                        position.DeptId = department.Id;
+                        position.CheckDataAnnotations().CheckValidResult();
+                        var positionCode = orgInfo.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + sort.ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
+                        await _positionDomainService.CreatePosition(position, positionCode, conn, trans);
+                        sort++;
+                    }
+                }
             }, Connection);
         }
     }

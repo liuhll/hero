@@ -14,10 +14,6 @@ namespace Surging.Hero.Organization.Domain.Positions
 
         public long PositionLevelId { get; set; }
 
-        public string BriefIntro { get; set; }
-
-        public string Memo { get; set; }
-
         public string PostResponsibility { get; set; }
 
         public bool IsLeadingOfficial { get; set; }

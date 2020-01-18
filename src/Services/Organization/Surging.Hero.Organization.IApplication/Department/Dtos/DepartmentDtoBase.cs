@@ -17,7 +17,5 @@ namespace Surging.Hero.Organization.IApplication.Department.Dtos
         [MaxLength(100, ErrorMessage = "部门简介长度不允许超过100")]
         public string BriefIntro { get; set; }
 
-        [MaxLength(500, ErrorMessage = "部门备注不允许超过500")]
-        public string Memo { get; set; }
     }
 }

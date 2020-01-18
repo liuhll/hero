@@ -2,6 +2,6 @@
 {
     public class CreatePositionInput : PositionDtoBase
     {
-        public long DeptId { get; set; }
+        //public long DeptId { get; set; }
     }
 }
