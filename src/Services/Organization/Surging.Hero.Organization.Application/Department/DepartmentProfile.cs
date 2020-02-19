@@ -5,14 +5,16 @@ namespace Surging.Hero.Organization.Application.Department
 {
     public class DepartmentProfile : Profile
     {
-        public DepartmentProfile() {
+        public DepartmentProfile()
+        {
             CreateMap<CreateDepartmentInput, Domain.Department>();
 
-            CreateMap<CreateDepartmentInput, Domain.Organization>().AfterMap((src, dest) => {
+            CreateMap<CreateDepartmentInput, Domain.Organization>().AfterMap((src, dest) =>
+            {
                 dest.OrgType = Domain.Shared.Organizations.OrganizationType.Department;
             });
             CreateMap<UpdateDepartmentInput, Domain.Department>();
-            CreateMap<UpdateDepartmentInput, Domain.Organization>();
+            CreateMap<UpdateDepartmentInput, Domain.Organization>().ForMember(p => p.Id, opt => opt.Ignore());
 
             CreateMap<Domain.Department, GetDepartmentOutput>();
             CreateMap<Domain.Organization, GetDepartmentOutput>();

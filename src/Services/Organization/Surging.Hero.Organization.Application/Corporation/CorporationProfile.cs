@@ -11,7 +11,7 @@ namespace Surging.Hero.Organization.Application.Corporation
                 dest.OrgType = Domain.Shared.Organizations.OrganizationType.Corporation;
             });
             CreateMap<UpdateCorporationInput, Domain.Corporation>();
-            CreateMap<UpdateCorporationInput, Domain.Organization>();
+            CreateMap<UpdateCorporationInput, Domain.Organization>().ForMember(p => p.Id, opt => opt.Ignore());
 
             // Todo
             CreateMap<Domain.Corporation, GetCorporationOutput>();
