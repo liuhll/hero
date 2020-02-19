@@ -17,7 +17,7 @@ namespace Surging.Hero.Organization.Application.Department
             CreateMap<UpdateDepartmentInput, Domain.Organization>().ForMember(p => p.Id, opt => opt.Ignore());
 
             CreateMap<Domain.Department, GetDepartmentOutput>();
-            CreateMap<Domain.Organization, GetDepartmentOutput>();
+            CreateMap<Domain.Organization, GetDepartmentOutput>().ForMember(p => p.Id, opt => opt.Ignore());
         }
     }
 }
