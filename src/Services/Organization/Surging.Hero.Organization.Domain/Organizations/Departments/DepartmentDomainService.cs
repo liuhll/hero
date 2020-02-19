@@ -206,6 +206,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _organizationRepository.UpdateAsync(orgInfo, conn, trans);
                 await _departmentRepository.UpdateAsync(department, conn, trans);
+                await _positionRepository.DeleteAsync(p => p.DeptId == department.Id, conn, trans);
                 if (input.Positions != null && input.Positions.Any())
                 {
                     if (input.Positions.Count(p => p.IsLeadingOfficial) > 1)
