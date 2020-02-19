@@ -12,7 +12,8 @@ namespace Surging.Hero.Organization.Application.Department
             CreateMap<CreateDepartmentInput, Domain.Organization>().AfterMap((src, dest) =>
             {
                 dest.OrgType = Domain.Shared.Organizations.OrganizationType.Department;
-            });
+            }).ForMember(p => p.Id, opt => opt.Ignore());
+
             CreateMap<UpdateDepartmentInput, Domain.Department>();
             CreateMap<UpdateDepartmentInput, Domain.Organization>().ForMember(p => p.Id, opt => opt.Ignore());
 
