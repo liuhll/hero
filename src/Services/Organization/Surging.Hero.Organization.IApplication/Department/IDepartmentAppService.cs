@@ -15,7 +15,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         Task<CreateDepartmentOutput> Create(CreateDepartmentInput input);
 
         [ServiceRoute("update")]
-        [HttpPost(true)]
+        [HttpPut(true)]
         [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<UpdateDepartmentOutput> Update(UpdateDepartmentInput input);
 
