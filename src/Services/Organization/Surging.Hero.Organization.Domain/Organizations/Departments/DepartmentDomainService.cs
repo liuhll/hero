@@ -41,7 +41,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
            
         }
 
-        public async Task CreateDepartment(CreateDepartmentInput input)
+        public async Task<CreateDepartmentOutput> CreateDepartment(CreateDepartmentInput input)
         {
             var parentOrg = await _organizationRepository.SingleOrDefaultAsync(p => p.Id == input.ParentId);
             if (parentOrg == null)
@@ -81,13 +81,13 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                 var orgId = await _organizationRepository.InsertAndGetIdAsync(orgInfo, conn, trans);
                 department.OrgId = orgId;
                 var deptId = await _departmentRepository.InsertAndGetIdAsync(department, conn, trans);
-                if (input.Postions != null && input.Postions.Any())
+                if (input.Positions != null && input.Positions.Any())
                 {
-                    if (input.Postions.Count(p => p.IsLeadingOfficial) > 1) {
+                    if (input.Positions.Count(p => p.IsLeadingOfficial) > 1) {
                         throw new BusinessException($"部门只允许设置一个负责人岗位");
                     }
                     var sort = 1;
-                    foreach (var positionInput in input.Postions)
+                    foreach (var positionInput in input.Positions)
                     {
                         var position = positionInput.MapTo<Position>();
                         position.DeptId = deptId;
@@ -98,6 +98,13 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                     }
                 }
             }, Connection);
+
+            return new CreateDepartmentOutput()
+            {
+                OrgId = orgInfo.Id,
+                DeptId = department.Id,
+                Tips = "新增部门信息成功"
+            };
         }
 
         public async Task DeleteDepartmentByOrgId(long orgId)
@@ -170,7 +177,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             return departmentOutput;
         }
 
-        public async Task UpdateDepartment(UpdateDepartmentInput input)
+        public async Task<UpdateDepartmentOutput> UpdateDepartment(UpdateDepartmentInput input)
         {
             var department = await _departmentRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
            
@@ -217,6 +224,13 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                     }
                 }
             }, Connection);
+
+            return new UpdateDepartmentOutput()
+            {
+                OrgId = orgInfo.Id,
+                DeptId = department.Id,
+                Tips = "更新部门信息成功"
+            };
         }
     }
 }

@@ -15,11 +15,11 @@ namespace Surging.Hero.Organization.Application.Corporation
         {
             _corporationDomainService = corporationDomainService;
         }
-        public async Task<string> Create(CreateCorporationInput input)
+        public async Task<CreateCorporationOutput> Create(CreateCorporationInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _corporationDomainService.CreateCorporation(input);
-            return "新增公司信息成功";
+            return await _corporationDomainService.CreateCorporation(input);
+           
         }
 
         public async Task<string> DeleteByOrgId(long orgId)
@@ -33,11 +33,11 @@ namespace Surging.Hero.Organization.Application.Corporation
             return await _corporationDomainService.GetCorporation(orgId);
         }
 
-        public async Task<string> Update(UpdateCorporationInput input)
+        public async Task<UpdateCorporationOutput> Update(UpdateCorporationInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _corporationDomainService.UpdateCorporation(input);
-            return "更新公司信息成功";
+            return await _corporationDomainService.UpdateCorporation(input);
+            
         }
     }
 }

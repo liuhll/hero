@@ -27,15 +27,15 @@ namespace Surging.Hero.Organization.Domain.Organizations
         }
 
 
-        public async Task CreateCorporation(CreateCorporationInput input)
+        public async Task<CreateCorporationOutput> CreateCorporation(CreateCorporationInput input)
         {
             if (!input.ParentId.HasValue || input.ParentId == 0)
             {
-                await CreateTopCorporation(input);
+                return await CreateTopCorporation(input);
             }
             else
             {
-                await CreateSubCorporation(input);
+               return await CreateSubCorporation(input);
             }
         }
 
@@ -81,19 +81,19 @@ namespace Surging.Hero.Organization.Domain.Organizations
             return output;
         }
 
-        public async Task UpdateCorporation(UpdateCorporationInput input)
+        public async Task<UpdateCorporationOutput> UpdateCorporation(UpdateCorporationInput input)
         {
             var corporation = await _corporationRepository.SingleAsync(p => p.Id == input.Id);
            
             if (corporation == null)
             {
-                throw new BusinessException($"系统中不存在Id为{input.Id}的企业信息");
+                throw new BusinessException($"系统中不存在Id为{input.Id}的公司信息");
             }
 
             var orgInfo = await _organizationRepository.SingleOrDefaultAsync(p => p.Id == corporation.OrgId);
             if (orgInfo == null)
             {
-                throw new BusinessException($"系统中不存在Id为{input.Id}的企业信息");
+                throw new BusinessException($"系统中不存在Id为{input.Id}的公司信息");
             }
 
             corporation = input.MapTo(corporation);
@@ -103,10 +103,15 @@ namespace Surging.Hero.Organization.Domain.Organizations
                 await _organizationRepository.UpdateAsync(orgInfo, conn, trans);
                 await _corporationRepository.UpdateAsync(corporation, conn, trans);
             }, Connection);
+            return new UpdateCorporationOutput() { 
+                OrgId = orgInfo.Id,
+                CorporationId = corporation.Id,
+                Tips = "更新公司信息成功"
+            };
 
         }
 
-        private async Task CreateSubCorporation(CreateCorporationInput input)
+        private async Task<CreateCorporationOutput> CreateSubCorporation(CreateCorporationInput input)
         {
             var parentCorporation = await _corporationRepository.SingleAsync(p => p.OrgId == input.ParentId.Value);
             if (parentCorporation.Mold == Shared.CorporationMold.Monomer)
@@ -135,9 +140,15 @@ namespace Surging.Hero.Organization.Domain.Organizations
                 await _corporationRepository.InsertAsync(corporation, conn, trans);
                 
             }, Connection);
+            return new CreateCorporationOutput()
+            {
+                OrgId = orgInfo.Id,
+                CorporationId = corporation.Id,
+                Tips = "更新公司信息成功"
+            };
         }
 
-        private async Task CreateTopCorporation(CreateCorporationInput input)
+        private async Task<CreateCorporationOutput> CreateTopCorporation(CreateCorporationInput input)
         {
 
             if (input.Mold != Shared.CorporationMold.Group && input.Mold != Shared.CorporationMold.Monomer)
@@ -164,7 +175,12 @@ namespace Surging.Hero.Organization.Domain.Organizations
                 topCorporation.OrgId = orgId;
                 await _corporationRepository.InsertAsync(topCorporation, conn, trans);
             }, Connection);
-
+            return new CreateCorporationOutput()
+            {
+                OrgId = topOrgInfo.Id,
+                CorporationId = topCorporation.Id,
+                Tips = "更新公司信息成功"
+            };
         }
     }
 }

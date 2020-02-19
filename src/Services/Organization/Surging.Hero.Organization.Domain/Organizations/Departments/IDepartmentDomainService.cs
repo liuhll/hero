@@ -6,8 +6,8 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
 {
     public interface IDepartmentDomainService : ITransientDependency
     {
-        Task CreateDepartment(CreateDepartmentInput input);
-        Task UpdateDepartment(UpdateDepartmentInput input);
+        Task<CreateDepartmentOutput> CreateDepartment(CreateDepartmentInput input);
+        Task<UpdateDepartmentOutput> UpdateDepartment(UpdateDepartmentInput input);
         Task DeleteDepartmentByOrgId(long orgId);
         Task<GetDepartmentOutput> GetDepartment(long id);
         Task<GetDepartmentOutput> GetDepartmentByOrgId(long orgId);

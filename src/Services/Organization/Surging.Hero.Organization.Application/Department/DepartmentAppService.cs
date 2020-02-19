@@ -28,11 +28,11 @@ namespace Surging.Hero.Organization.Application.Department
             return true;
         }
 
-        public async Task<string> Create(CreateDepartmentInput input)
+        public async Task<CreateDepartmentOutput> Create(CreateDepartmentInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _departmentDomainService.CreateDepartment(input);
-            return "新增部门信息成功";
+            return await _departmentDomainService.CreateDepartment(input);
+            
         }
 
         public async Task<string> DeleteByOrgId(long orgId)
@@ -51,11 +51,11 @@ namespace Surging.Hero.Organization.Application.Department
             return await _departmentDomainService.GetDepartmentByOrgId(orgId);
         }
 
-        public async Task<string> Update(UpdateDepartmentInput input)
+        public async Task<UpdateDepartmentOutput> Update(UpdateDepartmentInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _departmentDomainService.UpdateDepartment(input);
-            return "更新部门信息成功";
+            return await _departmentDomainService.UpdateDepartment(input);
+            
         }
     }
 }

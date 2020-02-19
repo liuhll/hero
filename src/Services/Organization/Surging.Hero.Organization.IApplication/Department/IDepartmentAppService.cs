@@ -12,12 +12,12 @@ namespace Surging.Hero.Organization.IApplication.Department
     {
         [HttpPost(true)]
         [ServiceRoute("create")]
-        Task<string> Create(CreateDepartmentInput input);
+        Task<CreateDepartmentOutput> Create(CreateDepartmentInput input);
 
         [ServiceRoute("update")]
         [HttpPost(true)]
         [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
-        Task<string> Update(UpdateDepartmentInput input);
+        Task<UpdateDepartmentOutput> Update(UpdateDepartmentInput input);
 
         [ServiceRoute("delete/{orgId}")]
         [HttpDelete(true)]

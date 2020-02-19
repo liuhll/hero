@@ -11,11 +11,11 @@ namespace Surging.Hero.Organization.IApplication.Corporation
     {
         [HttpPost(true)]
         [ServiceRoute("create")]
-        Task<string> Create(CreateCorporationInput input);
+        Task<CreateCorporationOutput> Create(CreateCorporationInput input);
 
         [HttpPut(true)]
         [ServiceRoute("update")]
-        Task<string> Update(UpdateCorporationInput input);
+        Task<UpdateCorporationOutput> Update(UpdateCorporationInput input);
 
         [ServiceRoute("delete/{orgId}")]
         [HttpDelete(true)]
