@@ -206,14 +206,14 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _organizationRepository.UpdateAsync(orgInfo, conn, trans);
                 await _departmentRepository.UpdateAsync(department, conn, trans);
-                if (input.Postions != null && input.Postions.Any())
+                if (input.Positions != null && input.Positions.Any())
                 {
-                    if (input.Postions.Count(p => p.IsLeadingOfficial) > 1)
+                    if (input.Positions.Count(p => p.IsLeadingOfficial) > 1)
                     {
                         throw new BusinessException($"部门只允许设置一个负责人岗位");
                     }
                     var sort = 1;
-                    foreach (var positionInput in input.Postions)
+                    foreach (var positionInput in input.Positions)
                     {
                         var position = positionInput.MapTo<Position>();
                         position.DeptId = department.Id;
