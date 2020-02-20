@@ -14,5 +14,11 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         public Status Status { get; set; }
 
         public string StatusDesc { get { return Status.GetDescription(); } }
+
+        public DateTime? LastModificationTime { get; set; }
+
+        public string LastModificationUserName { get; set; }
+
+        public long? LastModifierUserId { get; set; }
     }
 }

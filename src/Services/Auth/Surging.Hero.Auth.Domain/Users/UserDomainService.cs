@@ -160,7 +160,15 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
             if (userInfoOutput.PositionId.HasValue) 
             {
                 userInfoOutput.PositionName = (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId.Value)).Name;
-            }            
+            }
+            if (userInfoOutput.LastModifierUserId.HasValue) 
+            {
+                var modifyUserInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == userInfoOutput.LastModifierUserId.Value);
+                if (modifyUserInfo != null) 
+                {
+                    userInfoOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                }
+            }
             userInfoOutput.Roles = (await GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             return userInfoOutput;
         }

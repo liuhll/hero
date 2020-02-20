@@ -20,6 +20,7 @@ using System;
 using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
+using System.Linq.Expressions;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -84,28 +85,27 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query)
         {
-            IPagedResult<GetUserNormOutput> queryResultOutput = null;
-            if (!query.OrgId.HasValue || query.OrgId == 0)
+           
+            Expression<Func<UserInfo, bool>> expression = p => p.UserName.Contains(query.SearchKey)
+                || p.ChineseName.Contains(query.SearchKey)
+                || p.Email.Contains(query.SearchKey)
+                || p.Phone.Contains(query.SearchKey);
+           
+
+           
+            if (query.Status.HasValue) 
             {
-                var queryPageResult = await _userRepository.GetPageAsync(p => p.UserName.Contains(query.SearchKey)
-                 || p.ChineseName.Contains(query.SearchKey)
-                 || p.Email.Contains(query.SearchKey)
-                 || p.Phone.Contains(query.SearchKey), query.PageIndex, query.PageCount);
-
-                queryResultOutput = queryPageResult.Item1.WhereIf(query.Status.HasValue, p => p.Status == query.Status.Value).MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryPageResult.Item2);
-
+                expression = expression.And(p => p.Status == query.Status.Value);
             }
-            else
+            var queryResult = await _userRepository.GetAllAsync(expression);
+
+            if (query.OrgId.HasValue && query.OrgId != 0)
             {
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
-                // :todo 优化
-                var queryResult = await _userRepository.GetAllAsync(p => p.UserName.Contains(query.SearchKey)
-                   || p.ChineseName.Contains(query.SearchKey)
-                   || p.Email.Contains(query.SearchKey)
-                   || p.Phone.Contains(query.SearchKey));
-                queryResult = queryResult.Where(p => subOrgIds.Any(q => q == p.OrgId)).WhereIf(query.Status.HasValue, p => p.Status == query.Status.Value);
-                queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().PageBy(query);
+                queryResult = queryResult.Where(p => subOrgIds.Any(p=> p == query.OrgId.Value));
             }
+
+            var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryResult.Count());
             foreach (var userOutput in queryResultOutput.Items)
             {
                 if (userOutput.OrgId.HasValue)
@@ -117,6 +117,12 @@ namespace Surging.Hero.Auth.Application.User
                     userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
                 }
                 userOutput.Roles = (await _userDomainService.GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                if (userOutput.LastModifierUserId.HasValue) 
+                {
+                    var modifyUserInfo = (await _userRepository.SingleOrDefaultAsync(p=>p.Id == userOutput.LastModifierUserId.Value));
+                    userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                }
+               
             }
 
             return queryResultOutput;
