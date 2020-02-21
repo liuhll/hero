@@ -16,9 +16,9 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
 
         public string Name { get; set; }
 
-        public string Path { get; set; }
-
         public string Title { get; set; }
+
+        public string Path { get; set; }
 
         public MenuMold Mold { get; set; }
 
@@ -31,8 +31,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         public int Sort { get; set; }
 
         public string Memo { get; set; }
-
-        public Status Status { get; set; }
 
     }
 }

@@ -12,6 +12,8 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
         public long Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
+        public string Title { get; set; }
+
         public long ParentId { get; set; }
         public string FullName { get; set; }
         public IEnumerable<GetPermissionTreeOutput> Children { get; set; }
