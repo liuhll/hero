@@ -102,7 +102,7 @@ namespace Surging.Hero.Auth.Application.User
             if (query.OrgId.HasValue && query.OrgId != 0)
             {
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
-                queryResult = queryResult.Where(p => subOrgIds.Any(p=> p == query.OrgId.Value));
+                queryResult = queryResult.Where(p => subOrgIds.Any(q=> q == p.OrgId));
             }
 
             var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryResult.Count());
