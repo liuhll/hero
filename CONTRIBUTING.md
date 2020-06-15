@@ -13,7 +13,7 @@
 
 4. 通过`git fetch` 拉取最新代码，并使用`git rebase`命令与远程仓库的 develop 分支进行合并(变基),如果存在冲突，请解决冲突。
 
-5. push代码到远程仓库,如果是新功能开发，远程分支请以`feature-developernane-function`命名,如果是修复bug请以`bug-issueid`命名；
+5. push代码到远程仓库,如果是新功能开发，远程分支请以`feature-m -function`命名,如果是修复bug请以`bug-issueid`命名；
 
 6. 在gitlab上发起pull request,并指派给项目责任人。
 

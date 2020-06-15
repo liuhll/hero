@@ -9,9 +9,11 @@
     "WanIp": "${WanIp}|0.0.0.0",
     "Libuv": true,
     "SoBacklog": 100,
-    "MaxConcurrentRequests": 20,
-    "DisconnTimeInterval": 30,
-    "ExecutionTimeoutInMilliseconds": 10000,
+    "MaxConcurrentRequests": 500,
+    "DisconnTimeInterval": 1000,
+    "ExecutionTimeoutInMilliseconds": 18000,
+    "HealthCheckTimeout": 100,
+    "BreakeSleepWindowInMilliseconds": 5000,
     "Protocol": "${Protocol}|None", //Http、Tcp、None
     "RootPath": "${RootPath}|./userapp",
     "WebRootPath": "${WebRootPath}|./userapp/wwwroot",
@@ -27,11 +29,11 @@
     "Packages": [
       {
         "TypeName": "EnginePartModule",
-        "Using": "${UseEngineParts}|ServiceProxyModule;DotNettyModule;NLogModule;MessagePackModule;ConsulModule;WSProtocolModule;MqttProtocolModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;DnsProtocolModule;SwaggerModule;ApiGeteWayModule;SkywalkingModule;"
+        "Using": "${UseEngineParts}|ServiceProxyModule;DotNettyModule;Log4netModule;MessagePackModule;ConsulModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;ApiGeteWayModule;AutoMapperModule;DapperModule"
       },
       {
         "TypeName": "KestrelHttpModule",
-        "Using": "${UseKestrelHttpParts}|StageModule;SwaggerModule"
+        "Using": "${UseKestrelHttpParts}"
       }
     ]
   }, //如果引用多个同类型的组件，需要配置Packages，如果是自定义按需引用，无需配置Packages
@@ -99,8 +101,8 @@
   "Swagger": {
     "Info": {
       "Version": "${SwaggerVersion}|V1", // "127.0.0.1:8500",
-      "Title": "${SwaggerTitle}|jingshonline",
-      "Description": "${SwaggerDes}|jingshonline",
+      "Title": "${SwaggerTitle}|surging.hero",
+      "Description": "${SwaggerDes}|surging.hero",
       "Contact": {
         "Name": "API Support",
         "Url": "",
