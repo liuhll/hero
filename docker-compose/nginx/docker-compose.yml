@@ -1,0 +1,11 @@
+version: "3"
+services: 
+ nginx:
+  restart: always
+  container_name: nginx
+  image: nginx:latest
+  ports:
+   - 80:80
+   - 443:443
+  volumes: 
+   - ./hero.conf:/etc/nginx/conf.d/hero.conf
