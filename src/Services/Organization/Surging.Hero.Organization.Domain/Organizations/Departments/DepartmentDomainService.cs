@@ -120,9 +120,10 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                 throw new BusinessException($"请先删除子部门信息");
             }
             var departmentUsers = await GetService<IUserAppService>().GetOrgUser(orgInfo.Id,true);
-            //if (departmentUsers.Any()) {
-            //    throw new BusinessException($"该部门存在用户,请先删除该部门下的用户");
-            //}
+            if (departmentUsers.Any())
+            {
+                throw new BusinessException($"该部门存在用户,请先删除该部门下的用户");
+            }
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _organizationRepository.DeleteAsync(orgInfo, conn, trans);
                 await _departmentRepository.DeleteAsync(department,conn,trans);
