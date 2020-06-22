@@ -15,5 +15,14 @@ namespace Surging.Hero.Auth.IApplication.Action
         [HttpPost(true)]
         [ServiceRoute("init")]
         Task<string> InitActions(ICollection<InitActionActionInput> actions);
+
+        [ServiceRoute("get/host")]
+        Task<IEnumerable<GetServiceHostOutput>> GetServiceHosts(QueryServiceHostInput query);
+
+        [ServiceRoute("get/appservice")]
+        Task<IEnumerable<GetAppServiceOutput>> GetAppServices(QueryAppServiceInput query);
+
+        [ServiceRoute("get/service")]
+        Task<IEnumerable<GetActionOutput>> GetServices(QueryActionInput query);
     }
 }
