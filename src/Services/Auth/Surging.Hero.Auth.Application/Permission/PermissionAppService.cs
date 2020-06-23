@@ -48,18 +48,17 @@ namespace Surging.Hero.Auth.Application.Permission
             _session = NullSurgingSession.Instance;
         }
 
-        public async Task<string> CreateMenu(CreateMenuInput input)
+        public async Task<CreateMenuOutput> CreateMenu(CreateMenuInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _menuDomainService.Create(input);
-            return "新增菜单成功";
+            return await _menuDomainService.Create(input);
         }
 
-        public async Task<string> CreateOperation(CreateOperationInput input)
+        public async Task<CreateOperationOutput> CreateOperation(CreateOperationInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _operationDomainService.Create(input);
-            return "新增操作成功";
+            return await _operationDomainService.Create(input);
+            
         }
 
         public async Task<GetMenuOutput> GetMenu(long id)
@@ -126,18 +125,17 @@ namespace Surging.Hero.Auth.Application.Permission
 
         }
 
-        public async Task<string> UpdateMenu(UpdateMenuInput input)
+        public async Task<UpdateMenuOutput> UpdateMenu(UpdateMenuInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _menuDomainService.Update(input);
-            return "更新菜单信息成功";
+            return await _menuDomainService.Update(input);
+            
         }
 
-        public async Task<string> UpdateOperation(UpdateOperationInput input)
+        public async Task<UpdateOperationOutput> UpdateOperation(UpdateOperationInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            await _operationDomainService.Update(input);
-            return "更新操作成功";
+            return await _operationDomainService.Update(input);            
         }
 
         public async Task<string> Delete(DeletePermissionInput input)

@@ -16,12 +16,10 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 
         public string Path { get; set; }
 
-        public bool AlwaysShow { get; set; }
-
         public string Icon { get; set; }
 
-        [Required(ErrorMessage = "菜单组件名称不允许空")]
-        [MaxLength(50, ErrorMessage = "菜单组件名称不允许超过50")]
+        //[Required(ErrorMessage = "菜单组件名称不允许空")]
+        //[MaxLength(50, ErrorMessage = "菜单组件名称不允许超过50")]
         public string Component { get; set; }
 
         public int Sort { get; set; }

@@ -7,8 +7,8 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
 {
     public interface IOperationDomainService : ITransientDependency
     {
-        Task Create(CreateOperationInput input);
-        Task Update(UpdateOperationInput input);
+        Task<CreateOperationOutput> Create(CreateOperationInput input);
+        Task<UpdateOperationOutput> Update(UpdateOperationInput input);
         Task Delete(long id);
         Task<IEnumerable<Operation>> GetAll();
     }

@@ -31,7 +31,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             _actionRepository = actionRepository;
         }
 
-        public async Task Create(CreateOperationInput input)
+        public async Task<CreateOperationOutput> Create(CreateOperationInput input)
         {
             var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == input.MenuId);
             if (menu == null)
@@ -64,6 +64,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                     }
                 }
             }, Connection);
+            return new CreateOperationOutput() { Id = operation.Id, PermissionId = operation.PermissionId, Tips = "新增操作成功" };
         }
 
         public async Task Delete(long id)
@@ -85,7 +86,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             return await _operationRepository.GetAllAsync();
         }
 
-        public async Task Update(UpdateOperationInput input)
+        public async Task<UpdateOperationOutput> Update(UpdateOperationInput input)
         {
             var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
             if (operation == null)
@@ -124,6 +125,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                     }
                 }
             }, Connection);
+            return new UpdateOperationOutput() { Id = operation.Id, PermissionId = operation.PermissionId, Tips = "更新操作成功" };
 
         }
     }

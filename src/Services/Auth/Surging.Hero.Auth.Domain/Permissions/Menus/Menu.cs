@@ -24,7 +24,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
 
         public string Icon { get; set; }
 
-        public bool AlwaysShow { get; set; }
+        public bool AlwaysShow { get; set; } = true;
 
         public string Component { get; set; }
 

@@ -13,11 +13,11 @@ namespace Surging.Hero.Auth.IApplication.Permission
     {
         [HttpPost(true)]
         [ServiceRoute("menu/create")]
-        Task<string> CreateMenu(CreateMenuInput input);
+        Task<CreateMenuOutput> CreateMenu(CreateMenuInput input);
 
         [HttpPut(true)]
         [ServiceRoute("menu/update")]
-        Task<string> UpdateMenu(UpdateMenuInput input);
+        Task<UpdateMenuOutput> UpdateMenu(UpdateMenuInput input);
 
         [HttpGet(true)]
         [ServiceRoute("get/menu/{id}")]
@@ -25,11 +25,11 @@ namespace Surging.Hero.Auth.IApplication.Permission
 
         [HttpPost(true)]
         [ServiceRoute("operation/create")]
-        Task<string> CreateOperation(CreateOperationInput input);
+        Task<CreateOperationOutput> CreateOperation(CreateOperationInput input);
 
         [HttpPut(true)]
         [ServiceRoute("operation/update")]
-        Task<string> UpdateOperation(UpdateOperationInput input);
+        Task<UpdateOperationOutput> UpdateOperation(UpdateOperationInput input);
 
         [HttpGet(true)]
         [ServiceRoute("get/operation/{id}")]

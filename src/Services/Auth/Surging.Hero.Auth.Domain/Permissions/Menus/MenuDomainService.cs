@@ -31,7 +31,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
 
         }
 
-        public async Task Create(CreateMenuInput input)
+        public async Task<CreateMenuOutput> Create(CreateMenuInput input)
         {
             var menu = input.MapTo<Menu>();
             var thisLevelMenuCount = await _menuRepository.GetCountAsync(p => p.ParentId == input.ParentId);
@@ -56,6 +56,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
                 await _menuRepository.InsertAsync(menu, conn, trans);
 
             },Connection);
+            return new CreateMenuOutput() { Id = menu.Id, PermissionId = menu.PermissionId, Tips = "新增菜单成功" };
         }
 
         public async Task Delete(long id)
@@ -91,7 +92,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             return await _menuRepository.GetAllAsync();
         }
 
-        public async Task Update(UpdateMenuInput input)
+        public async Task<UpdateMenuOutput> Update(UpdateMenuInput input)
         {
             var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
             if (menu == null) {
@@ -105,6 +106,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
                 await _menuRepository.UpdateAsync(menu, conn, trans);
 
             }, Connection);
+            return new UpdateMenuOutput() { Id = menu.Id, PermissionId = menu.PermissionId, Tips = "更新菜单成功" };
         }
     }
 }

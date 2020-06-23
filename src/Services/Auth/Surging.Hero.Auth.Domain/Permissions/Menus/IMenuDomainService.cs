@@ -7,8 +7,8 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
 {
     public interface IMenuDomainService : ITransientDependency
     {
-        Task Create(CreateMenuInput input);
-        Task Update(UpdateMenuInput input);
+        Task<CreateMenuOutput> Create(CreateMenuInput input);
+        Task<UpdateMenuOutput> Update(UpdateMenuInput input);
         Task Delete(long id);
 
         Task<IEnumerable<Menu>> GetAll();
