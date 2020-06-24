@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using Nest;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Actions
 {
@@ -38,6 +39,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                 sql += " HAVING Application LIKE @Application";
                 sqlParams.Add("Application", $"%{query.AppService}%");
             }
+         
             using (Connection)
             {
                 var queryResult = await Connection.QueryAsync<GetAppServiceOutput>(sql, sqlParams);
@@ -57,7 +59,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         {
             var sql = "SELECT ServiceHost FROM `Action` GROUP BY ServiceHost";
             var sqlParams = new Dictionary<string, object>();
-            if (!query.ServiceHost.IsNullOrWhiteSpace()) 
+            if (query != null && !query.ServiceHost.IsNullOrWhiteSpace()) 
             {
                 sql += " HAVING ServiceHost LIKE @ServiceHost";
                 sqlParams.Add("ServiceHost", $"%{query.ServiceHost}%");
@@ -69,18 +71,59 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
             }
         }
 
-        public async Task<IEnumerable<GetActionOutput>> GetServices(QueryActionInput query)
+        public async Task<IEnumerable<GetActionOutput>> GetActionServices(QueryActionInput query)
         {
-            Expression<Func<Action, bool>> queryExpression = p => (p.ServiceId.Contains(query.Service) || p.Name.Contains(query.Service)) && p.Status == Common.Status.Valid;
-            if (!query.ServiceHost.IsNullOrWhiteSpace()) 
+            var sql = "SELECT * FROM  Action  WHERE 1=1";
+            var sqlParams = new Dictionary<string, object>();
+            if (!query.ServiceHost.IsNullOrEmpty()) 
             {
-                queryExpression = queryExpression.And(p => p.ServiceHost == query.ServiceHost);
+                sql += " AND ServiceHost=@ServiceHost";
+                sqlParams.Add("ServiceHost", query.ServiceHost);
             }
-            if (!query.AppService.IsNullOrWhiteSpace())
+            if (!query.AppService.IsNullOrEmpty())
             {
-                queryExpression = queryExpression.And(p => p.Application == query.AppService);
+                sql += " AND Application=@AppService";
+                sqlParams.Add("AppService", query.AppService);
             }
-            return (await _actionRepository.GetAllAsync(queryExpression)).MapTo<IEnumerable<GetActionOutput>>();
+            if (!query.Service.IsNullOrEmpty())
+            {
+                sql += " AND (ServiceId=@Service OR Name=@Service)";
+                sqlParams.Add("Service", query.Service);
+            }
+            if (query.Ids != null && query.Ids.Any())
+            {
+                sql += " AND Id IN @Ids";
+                sqlParams.Add("Ids", query.Ids);
+            }
+            using (Connection) 
+            {
+                var serviceActions = await Connection.QueryAsync<Action>(sql,sqlParams);
+                return serviceActions.MapTo<IEnumerable<GetActionOutput>>();
+            }
+
+        }
+
+        public async Task<IEnumerable<GetTreeActionOutput>> GetServicesTree()
+        {
+            var result = new List<GetTreeActionOutput>();
+            var hosts = await GetServiceHosts(null);
+            if (hosts != null && hosts.Any())
+            {
+                foreach (var host in hosts) 
+                {
+                    var hostOutput = new GetTreeActionOutput() { Lable = host.ServiceHost, Value = host.ServiceHost };
+                    var application = await GetAppServices(new QueryAppServiceInput() { ServiceHost = host.ServiceHost });
+                    hostOutput.Children = application.Select(p => new GetTreeActionOutput() { Lable = p.AppService, Value = p.AppService, Children = GetLeafActions(p.ServiceHost,p.AppService).Result });
+                    result.Add(hostOutput);
+                }
+            }
+            return result;
+        }
+
+        private async Task<IEnumerable<GetTreeActionOutput>> GetLeafActions(string serviceHost, string appService)
+        {
+            var actionServices = await GetActionServices(new QueryActionInput() { ServiceHost = serviceHost, AppService = appService });
+            return actionServices.Select(p => new GetTreeActionOutput() { Lable = !p.Name.IsNullOrEmpty() ? $"{ p.Name}({p.ServiceId})" : p.ServiceId, Value = p.Id.ToString() });
         }
 
         public async Task InitActions(ICollection<InitActionActionInput> actions)

@@ -24,5 +24,9 @@ namespace Surging.Hero.Auth.IApplication.Action
 
         [ServiceRoute("get/service")]
         Task<IEnumerable<GetActionOutput>> GetServices(QueryActionInput query);
+
+        [ServiceRoute("get/service/tree")]
+        Task<IEnumerable<GetTreeActionOutput>> GetServicesTree();
+
     }
 }

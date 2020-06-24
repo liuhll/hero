@@ -20,6 +20,7 @@
     "IsModulePerLifetimeScope": false,
     "ReloadOnChange": false,
     "RequestCacheEnabled": true,
+    "ForceDisplayStackTrace": "${ForceDisplayStackTrace}|false",
     "Ports": {
       "HttpPort": "${HttpPort}|8080",
       "WSPort": "${WSPort}|96",

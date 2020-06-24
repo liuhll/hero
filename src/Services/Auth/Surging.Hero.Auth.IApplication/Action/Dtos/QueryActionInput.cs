@@ -7,18 +7,21 @@ namespace Surging.Hero.Auth.IApplication.Action.Dtos
         /// <summary>
         /// 主机名称
         /// </summary>
-        [Required(ErrorMessage = "主机名称不允许为空")]
         public string ServiceHost { get; set; }
 
         /// <summary>
         /// 应用服务名称
-        /// </summary>
-        [Required(ErrorMessage = "应用服务名称不允许为空")]
+        /// </summary>        
         public string AppService { get; set; }
 
         /// <summary>
         /// 应用服务名称
         /// </summary>
         public string Service { get; set; }
+
+        /// <summary>
+        /// 服务条目Ids
+        /// </summary>
+        public long[] Ids { get; set; }
     }
 }

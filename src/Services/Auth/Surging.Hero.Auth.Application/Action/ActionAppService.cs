@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Runtime.Server;
 using Surging.Core.Dapper.Repositories;
@@ -32,7 +33,12 @@ namespace Surging.Hero.Auth.Application.Action
         public async Task<IEnumerable<GetActionOutput>> GetServices(QueryActionInput query)
         {
             query.CheckDataAnnotations().CheckValidResult();
-            return await _actionDomainService.GetServices(query);
+            return await _actionDomainService.GetActionServices(query);
+        }
+
+        public async Task<IEnumerable<GetTreeActionOutput>> GetServicesTree()
+        {
+            return await _actionDomainService.GetServicesTree();
         }
 
         public async Task<string> InitActions(ICollection<InitActionActionInput> actions)
