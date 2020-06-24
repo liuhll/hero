@@ -49,5 +49,8 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpPost(true)]
         [ServiceRoute("reset/user/org/{id}")]
         Task<bool> ResetUserOrgInfo(long id);
+
+        [Service(DisableNetwork = true)]
+        Task<int> GetPositionUserCount(long positionId);
     }
 }

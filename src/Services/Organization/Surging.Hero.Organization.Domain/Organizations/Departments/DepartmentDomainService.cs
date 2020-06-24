@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Dapper;
+using Nest;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
@@ -26,6 +31,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
         private readonly IDapperRepository<Position, long> _positionRepository;
         private readonly IDapperRepository<Organization, long> _organizationRepository;
         private readonly IPositionDomainService _positionDomainService;
+        private readonly ISurgingSession _session;
     
         public DepartmentDomainService(IDapperRepository<Department, long> departmentRepository,
             IDapperRepository<Corporation, long> corporationRepository,
@@ -38,7 +44,9 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             _positionRepository = positionRepository;
             _organizationRepository = organizationRepository;
             _positionDomainService = positionDomainService;
-           
+            _session = NullSurgingSession.Instance;
+
+
         }
 
         public async Task<CreateDepartmentOutput> CreateDepartment(CreateDepartmentInput input)
@@ -93,7 +101,8 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                         position.DeptId = deptId;
                         position.CheckDataAnnotations().CheckValidResult();
                         var positionCode = orgInfo.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + sort.ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-                        await _positionDomainService.CreatePosition(position, positionCode, conn, trans);
+                        position.Code = positionCode;
+                        await _positionRepository.InsertAsync(position, conn, trans);
                         sort++;
                     }
                 }
@@ -203,25 +212,41 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             }            
             department = input.MapTo(department);
             orgInfo = input.MapTo(orgInfo);
-
+            Debug.Assert(_session.UserId.HasValue, "登录用户的UserId不会为空");
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _organizationRepository.UpdateAsync(orgInfo, conn, trans);
                 await _departmentRepository.UpdateAsync(department, conn, trans);
-                await _positionRepository.DeleteAsync(p => p.DeptId == department.Id, conn, trans);
+
                 if (input.Positions != null && input.Positions.Any())
                 {
                     if (input.Positions.Count(p => p.IsLeadingOfficial) > 1)
                     {
                         throw new BusinessException($"部门只允许设置一个负责人岗位");
                     }
+                    var positionIds = input.Positions.Where(p => p.Id != 0 && p.Id.HasValue).Select(p => p.Id);
+                    var deletePositionSql = "UPDATE `Position` SET IsDeleted=@IsDeleted,DeleteBy=@DeleteBy,DeleteTime=@DeleteTime WHERE DeptId=@DeptId AND Id NOT in @Id";
+                    await conn.ExecuteAsync(deletePositionSql, new { IsDeleted= 1, DeleteBy = _session.UserId.Value, DeleteTime = DateTime.Now, DeptId = department.Id, @Id = positionIds }, trans);
                     var sort = 1;
                     foreach (var positionInput in input.Positions)
                     {
-                        var position = positionInput.MapTo<Position>();
-                        position.DeptId = department.Id;
-                        position.CheckDataAnnotations().CheckValidResult();
                         var positionCode = orgInfo.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + sort.ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
-                        await _positionDomainService.CreatePosition(position, positionCode, conn, trans);
+                        if (positionInput.Id.HasValue && positionInput.Id != 0)
+                        {
+                            var position = await _positionRepository.GetAsync(positionInput.Id.Value);
+                            position.CheckDataAnnotations().CheckValidResult();
+                            position = positionInput.MapTo(position);
+                            position.Code = positionCode;
+                            await _positionRepository.UpdateAsync(position, conn, trans);  
+                        }
+                        else 
+                        {
+                            var position = positionInput.MapTo<Position>();
+                            position.DeptId = department.Id;
+                            position.CheckDataAnnotations().CheckValidResult();
+                            position.Code = positionCode;
+                            await _positionRepository.InsertAsync(position, conn, trans);
+                        }
+                       
                         sort++;
                     }
                 }

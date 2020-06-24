@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Hero.Auth.IApplication.User;
 using Surging.Hero.Organization.Domain.Positions;
 using Surging.Hero.Organization.IApplication.Position;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
@@ -25,6 +27,9 @@ namespace Surging.Hero.Organization.Application.Position
             _departmentRepository = departmentRepository;
         }
 
+
+
+
         public async Task<bool> Check(long positionId)
         {
             var position = await _positionRepository.SingleOrDefaultAsync(p => p.Id == positionId);
@@ -34,6 +39,16 @@ namespace Surging.Hero.Organization.Application.Position
             return true;
         }
 
+        public async Task<bool> CheckCanDeletePosition(CheckCanDeletePositionInput input)
+        {
+            var userAppServiceProxy = GetService<IUserAppService>();
+            var positionUserCount = await userAppServiceProxy.GetPositionUserCount(input.Id);
+            if (positionUserCount >0) 
+            {
+                return false;
+            }
+            return true;
+        }
 
         public async Task<GetPositionOutput> Get(long id)
         {
@@ -57,12 +72,6 @@ namespace Surging.Hero.Organization.Application.Position
             var positions = await _positionRepository.GetAllAsync(p => p.DeptId == dept.Id);
             return positions.MapTo<IEnumerable<GetPositionOutput>>();
         }
-
-        public async Task<string> Update(UpdatePositionInput input)
-        {
-            input.CheckDataAnnotations().CheckValidResult();
-            await _positionDomainService.UpdatePosition(input);
-            return "更新职位信息成功";
-        }
+     
     }
 }

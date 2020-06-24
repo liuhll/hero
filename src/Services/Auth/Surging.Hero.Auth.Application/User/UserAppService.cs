@@ -229,5 +229,10 @@ namespace Surging.Hero.Auth.Application.User
             await _userRepository.UpdateAsync(userInfo);
             return true;
         }
+
+        public async Task<int> GetPositionUserCount(long positionId)
+        {
+            return await _userRepository.GetCountAsync(p => p.PositionId == positionId);
+        }
     }
 }

@@ -27,6 +27,10 @@ namespace Surging.Hero.Organization.IApplication.Position
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = Core.Caching.CacheTargetType.Redis)]
         Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
 
+        [ServiceRoute("check/delete")]
+        [HttpPost]
+        Task<bool> CheckCanDeletePosition(CheckCanDeletePositionInput input);
+
         [Service(DisableNetwork = true)]
         [HttpPost(true)]
         Task<bool> Check(long positionId);

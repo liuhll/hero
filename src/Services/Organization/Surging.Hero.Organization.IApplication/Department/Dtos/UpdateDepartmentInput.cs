@@ -7,6 +7,6 @@ namespace Surging.Hero.Organization.IApplication.Department.Dtos
     {
         public long Id { get; set; }
 
-        public IEnumerable<CreatePositionInput> Positions { get; set; }
+        public IEnumerable<CreateOrUpdatePositionInput> Positions { get; set; }
     }
 }
