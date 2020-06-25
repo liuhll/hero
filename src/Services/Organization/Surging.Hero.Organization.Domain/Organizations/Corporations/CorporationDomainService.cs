@@ -144,7 +144,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
             {
                 OrgId = orgInfo.Id,
                 CorporationId = corporation.Id,
-                Tips = "更新公司信息成功"
+                Tips = "新增公司信息成功"
             };
         }
 
@@ -179,7 +179,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
             {
                 OrgId = topOrgInfo.Id,
                 CorporationId = topCorporation.Id,
-                Tips = "更新公司信息成功"
+                Tips = "新增公司信息成功"
             };
         }
     }
