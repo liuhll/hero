@@ -336,6 +336,7 @@ create table UserUserGroupRelation
 
 alter table UserUserGroupRelation comment '用户与用户关系表';
 
+INSERT INTO `hero_auth`.`UserInfo`(`Id`, `UserName`, `OrgId`, `PositionId`, `Password`, `ChineseName`, `Email`, `Phone`, `Gender`, `Birth`, `NativePlace`, `Address`, `Folk`, `PoliticalStatus`, `GraduateInstitutions`, `Education`, `Major`, `Resume`, `Memo`, `LastLoginTime`, `LoginFailedCount`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'liuhl', 5, 13, 'a6dd7c6107a1d4b30c33fa8a12964e7c', '刘洪亮', '1029765112@qq.com', '13128291911', 0, '1989-09-11', '', '', '', 0, '', '', '', '', '', '0001-01-01 00:00:00', 0, 1, NULL, '2019-09-11 14:16:04', NULL, NULL, 0, NULL, NULL);
 
 INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 1, 0, '0001', 'auth', '权限管理', 1, NULL, 0, b'1', 'auth', NULL, 1, NULL, 1, '2020-06-25 17:19:41', 1, '2020-06-25 17:21:27', 0, NULL, NULL);
 INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (2, 2, 1, '0001.0001', 'user', '用户管理', 2, '#/authorization/user', 1, b'1', 'user', NULL, 0, NULL, 1, '2020-06-25 17:21:54', 1, '2020-06-25 17:22:38', 0, NULL, NULL);
