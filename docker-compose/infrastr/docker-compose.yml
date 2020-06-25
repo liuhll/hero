@@ -34,7 +34,7 @@ services:
     image: redis:latest
     restart: always
     ports:
-      - "6379:6379"
+      - "16379:6379"
     networks:
       - surging_hero_service_net
 
