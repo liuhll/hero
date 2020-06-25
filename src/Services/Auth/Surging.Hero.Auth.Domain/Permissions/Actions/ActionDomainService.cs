@@ -111,9 +111,9 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
             {
                 foreach (var host in hosts) 
                 {
-                    var hostOutput = new GetTreeActionOutput() { Lable = host.ServiceHost, Value = host.ServiceHost };
+                    var hostOutput = new GetTreeActionOutput() { Label = host.ServiceHost, Value = host.ServiceHost };
                     var application = await GetAppServices(new QueryAppServiceInput() { ServiceHost = host.ServiceHost });
-                    hostOutput.Children = application.Select(p => new GetTreeActionOutput() { Lable = p.AppService, Value = p.AppService, Children = GetLeafActions(p.ServiceHost,p.AppService).Result });
+                    hostOutput.Children = application.Select(p => new GetTreeActionOutput() { Label = p.AppService, Value = p.AppService, Children = GetLeafActions(p.ServiceHost,p.AppService).Result });
                     result.Add(hostOutput);
                 }
             }
@@ -123,7 +123,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         private async Task<IEnumerable<GetTreeActionOutput>> GetLeafActions(string serviceHost, string appService)
         {
             var actionServices = await GetActionServices(new QueryActionInput() { ServiceHost = serviceHost, AppService = appService });
-            return actionServices.Select(p => new GetTreeActionOutput() { Lable = !p.Name.IsNullOrEmpty() ? $"{ p.Name}({p.ServiceId})" : p.ServiceId, Value = p.Id.ToString() });
+            return actionServices.Select(p => new GetTreeActionOutput() { Label = !p.Name.IsNullOrEmpty() ? $"{ p.Name}({p.ServiceId})" : p.ServiceId, Value = p.Id.ToString() });
         }
 
         public async Task InitActions(ICollection<InitActionActionInput> actions)

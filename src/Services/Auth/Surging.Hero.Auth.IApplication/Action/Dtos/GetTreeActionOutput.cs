@@ -10,7 +10,7 @@ namespace Surging.Hero.Auth.IApplication.Action.Dtos
         }
         public string Value { get; set; }
 
-        public string Lable { get; set; }
+        public string Label { get; set; }
 
         public IEnumerable<GetTreeActionOutput> Children { get; set; }
     }
