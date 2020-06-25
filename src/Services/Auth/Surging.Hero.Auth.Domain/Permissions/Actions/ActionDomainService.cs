@@ -109,11 +109,17 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
             var hosts = await GetServiceHosts(null);
             if (hosts != null && hosts.Any())
             {
+                var hostIndex = 1;
+                var appServiceIndex = 2;
                 foreach (var host in hosts) 
                 {
-                    var hostOutput = new GetTreeActionOutput() { Label = host.ServiceHost, Value = host.ServiceHost };
-                    var application = await GetAppServices(new QueryAppServiceInput() { ServiceHost = host.ServiceHost });
-                    hostOutput.Children = application.Select(p => new GetTreeActionOutput() { Label = p.AppService, Value = p.AppService, Children = GetLeafActions(p.ServiceHost,p.AppService).Result });
+                    var hostOutput = new GetTreeActionOutput() { Label = host.ServiceHost, Value = hostIndex };
+                    var application = await GetAppServices(new QueryAppServiceInput() { ServiceHost = host.ServiceHost });                    
+                    hostOutput.Children = application.Select(p => 
+                    {                       
+                        var appServiceOutput = new GetTreeActionOutput() { Label = p.AppService, Value = appServiceIndex, Children = GetLeafActions(p.ServiceHost, p.AppService).Result };
+                        return appServiceOutput;
+                    });
                     result.Add(hostOutput);
                 }
             }
@@ -123,7 +129,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         private async Task<IEnumerable<GetTreeActionOutput>> GetLeafActions(string serviceHost, string appService)
         {
             var actionServices = await GetActionServices(new QueryActionInput() { ServiceHost = serviceHost, AppService = appService });
-            return actionServices.Select(p => new GetTreeActionOutput() { Label = !p.Name.IsNullOrEmpty() ? $"{ p.Name}({p.ServiceId})" : p.ServiceId, Value = p.Id.ToString() });
+            return actionServices.Select(p => new GetTreeActionOutput() { Label = !p.Name.IsNullOrEmpty() ? $"{ p.Name}({p.ServiceId})" : p.ServiceId, Value = p.Id });
         }
 
         public async Task InitActions(ICollection<InitActionActionInput> actions)
