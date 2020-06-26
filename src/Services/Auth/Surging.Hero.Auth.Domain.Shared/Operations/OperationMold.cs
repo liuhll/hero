@@ -2,11 +2,13 @@
 {
     public enum OperationMold
     {
-        Create,
+        Create = 0,
 
         Update,
 
         Query,
+
+        Look,
 
         Delete,
 
