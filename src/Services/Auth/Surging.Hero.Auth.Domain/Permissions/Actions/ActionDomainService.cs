@@ -73,8 +73,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
 
         public async Task<IEnumerable<GetActionOutput>> GetActionServices(QueryActionInput query)
         {
-            var sql = "SELECT * FROM  Action  WHERE 1=1";
             var sqlParams = new Dictionary<string, object>();
+            var sql = "SELECT * FROM  Action  WHERE EnableAuthorization=@EnableAuthorization AND AllowPermission=@AllowPermission";
+
+            sqlParams.Add("EnableAuthorization", 1);
+            sqlParams.Add("AllowPermission", 0);
             if (!query.ServiceHost.IsNullOrEmpty()) 
             {
                 sql += " AND ServiceHost=@ServiceHost";
@@ -90,7 +93,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                 sql += " AND (ServiceId=@Service OR Name=@Service)";
                 sqlParams.Add("Service", query.Service);
             }
-            if (query.Ids != null && query.Ids.Any())
+            if (query.Ids != null)
             {
                 sql += " AND Id IN @Ids";
                 sqlParams.Add("Ids", query.Ids);
