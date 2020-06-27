@@ -2,7 +2,7 @@
 {
     public class CreateOperationInput : OperationDtoBase
     {
-        public long MenuId { get; set; }
+        public long PermissionId { get; set; }
         public long[] ActionIds { get; set; }
     }
 }

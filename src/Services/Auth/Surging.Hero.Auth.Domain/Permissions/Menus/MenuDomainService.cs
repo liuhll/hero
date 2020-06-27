@@ -34,17 +34,20 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         public async Task<CreateMenuOutput> Create(CreateMenuInput input)
         {
             var menu = input.MapTo<Menu>();
-            var thisLevelMenuCount = await _menuRepository.GetCountAsync(p => p.ParentId == input.ParentId);
+            long menuParentId = 0;
             if (menu.Mold == MenuMold.Top)
             {
+                var thisLevelMenuCount = await _menuRepository.GetCountAsync(p => p.Mold == MenuMold.Top);
                 menu.Code = (thisLevelMenuCount + 1).ToString().PadRight(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
                 menu.Level = 1;
             }
             else {
-                var parentMenu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == input.ParentId);
+                var parentMenu = await _menuRepository.SingleOrDefaultAsync(p => p.PermissionId == input.ParentPermissionId);
                 if (parentMenu == null) {
-                    throw new BusinessException($"不存在Id为{input.ParentId}的菜单信息");
+                    throw new BusinessException($"不存在PermissionId为{input.ParentPermissionId}的菜单信息");
                 }
+                menuParentId = parentMenu.Id;
+                var thisLevelMenuCount = await _menuRepository.GetCountAsync(p => p.Mold == MenuMold.SubMenu && p.ParentId == parentMenu.Id);
                 menu.Code = parentMenu.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (thisLevelMenuCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
                 menu.Level = parentMenu.Level + 1;
             }
@@ -53,6 +56,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             await UnitOfWorkAsync(async (conn,trans) => {
                 var permissionId = await _permissionRepository.InsertAndGetIdAsync(permission, conn, trans);
                 menu.PermissionId = permissionId;
+                menu.ParentId = menuParentId;
                 await _menuRepository.InsertAsync(menu, conn, trans);
 
             },Connection);

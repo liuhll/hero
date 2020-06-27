@@ -33,15 +33,15 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
 
         public async Task<CreateOperationOutput> Create(CreateOperationInput input)
         {
-            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == input.MenuId);
+            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.PermissionId == input.PermissionId);
             if (menu == null)
             {
-                throw new BusinessException($"不存在Id为{input.MenuId}的菜单信息");
+                throw new BusinessException($"不存在PermissionId为{input.PermissionId}的菜单信息");
             }
             var operation = input.MapTo<Operation>();
             var permission = input.MapTo<Permission>();
 
-            var operationCount = await _operationRepository.GetCountAsync(p => p.MenuId == input.MenuId);
+            var operationCount = await _operationRepository.GetCountAsync(p => p.MenuId == input.PermissionId);
             operation.Code = menu.Code + HeroConstants.CodeRuleRestrain.CodeSeparator + (operationCount + 1).ToString().PadLeft(HeroConstants.CodeRuleRestrain.CodeCoverBit, HeroConstants.CodeRuleRestrain.CodeCoverSymbol);
             operation.Level = menu.Level + 1;
 
@@ -49,6 +49,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             {
                 var permissionId = await _permissionRepository.InsertAndGetIdAsync(permission, conn, trans);
                 operation.PermissionId = permissionId;
+                operation.MenuId = menu.Id;
                 var operationId = await _operationRepository.InsertAndGetIdAsync(operation, conn, trans);
                 if (input.ActionIds != null && input.ActionIds.Any())
                 {
@@ -75,7 +76,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                 throw new BusinessException($"不存在permissionId为{permissionId}的操作信息");
             }
             await UnitOfWorkAsync(async (conn, trans) => {
-                await _operationRepository.DeleteAsync(p => p.Id == permissionId, conn, trans);
+                await _operationRepository.DeleteAsync(p => p.PermissionId == permissionId, conn, trans);
                 await _operationActionRepository.DeleteAsync(p => p.OperationId == permissionId, conn, trans);
                 await _permissionRepository.DeleteAsync(p => p.Id == operation.Id, conn, trans);
             }, Connection);

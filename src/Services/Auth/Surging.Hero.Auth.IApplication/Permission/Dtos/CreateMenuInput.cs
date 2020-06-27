@@ -2,6 +2,6 @@
 {
     public class CreateMenuInput : MenuDtoBase
     {
-        public long ParentId { get; set; }
+        public long ParentPermissionId { get; set; }
     }
 }
