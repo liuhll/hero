@@ -77,7 +77,7 @@ namespace Surging.Hero.Auth.Application.Permission
                 throw new BusinessException($"不存在Id为{id}的操作信息");
             }
             var operationOutput = operation.MapTo<GetOperationOutput>();
-            operationOutput.Actions = (await _actionDomainService.GetOperationOutputActions(operation.Id)).MapTo<IEnumerable<GetActionOutput>>();
+            operationOutput.ActionIds = (await _actionDomainService.GetOperationOutputActions(operation.Id)).Select(p=> p.Id);
             return operationOutput;
         }
 

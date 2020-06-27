@@ -7,6 +7,6 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
     {
         public long Id { get; set; }
 
-        public IEnumerable<GetActionOutput> Actions { get; set; }
+        public IEnumerable<long> ActionIds { get; set; }
     }
 }

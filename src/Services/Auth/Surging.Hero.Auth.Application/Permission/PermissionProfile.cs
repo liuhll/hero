@@ -34,7 +34,7 @@ namespace Surging.Hero.Auth.Application.Permission
             CreateMap<UpdateOperationInput, Operation>();
             CreateMap<UpdateOperationInput, Domain.Permissions.Permission>();
 
-            CreateMap<Operation, GetOperationOutput>().ForMember(d => d.Actions, opt => opt.Ignore());
+            CreateMap<Operation, GetOperationOutput>().ForMember(d => d.ActionIds, opt => opt.Ignore());
 
             CreateMap<Menu, GetPermissionTreeOutput>().ForMember(d=>d.Children,opt=>opt.Ignore()).ForMember(d=>d.Mold,opt=>opt.Ignore()).AfterMap((src,dest)=> {
                 dest.Mold = PermissionMold.Menu;
