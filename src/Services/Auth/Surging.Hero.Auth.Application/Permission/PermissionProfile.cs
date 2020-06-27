@@ -38,9 +38,11 @@ namespace Surging.Hero.Auth.Application.Permission
 
             CreateMap<Menu, GetPermissionTreeOutput>().ForMember(d=>d.Children,opt=>opt.Ignore()).ForMember(d=>d.Mold,opt=>opt.Ignore()).AfterMap((src,dest)=> {
                 dest.Mold = PermissionMold.Menu;
+                dest.Id = src.PermissionId;
             });
             CreateMap<Operation, GetPermissionTreeOutput>().ForMember(d => d.Children, opt => opt.Ignore()).ForMember(d => d.Mold, opt => opt.Ignore()).AfterMap((src, dest) => {
                 dest.Mold = PermissionMold.Operation;
+                dest.Id = src.PermissionId;
             });
             //CreateMap<Menu, GetPermissionTreeOutput>();
             //CreateMap<Operation, GetPermissionTreeOutput>();

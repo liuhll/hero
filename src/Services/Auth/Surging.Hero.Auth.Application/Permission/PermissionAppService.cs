@@ -61,20 +61,20 @@ namespace Surging.Hero.Auth.Application.Permission
             
         }
 
-        public async Task<GetMenuOutput> GetMenu(long id)
+        public async Task<GetMenuOutput> GetMenu(long permissionId)
         {
-            var menu = await _menuRepository.FirstOrDefaultAsync(p => p.Id == id);
+            var menu = await _menuRepository.FirstOrDefaultAsync(p => p.PermissionId == permissionId);
             if (menu == null) {
-                throw new BusinessException($"不存在Id为{id}的菜单信息");
+                throw new BusinessException($"不存在Id为{permissionId}的菜单信息");
             }
             return menu.MapTo<GetMenuOutput>();
         }
 
-        public async Task<GetOperationOutput> GetOperation(long id)
+        public async Task<GetOperationOutput> GetOperation(long permissionId)
         {
-            var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == id);
+            var operation = await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == permissionId);
             if (operation == null) {
-                throw new BusinessException($"不存在Id为{id}的操作信息");
+                throw new BusinessException($"不存在permissionId为{permissionId}的操作信息");
             }
             var operationOutput = operation.MapTo<GetOperationOutput>();
             operationOutput.ActionIds = (await _actionDomainService.GetOperationOutputActions(operation.Id)).Select(p=> p.Id);
