@@ -142,10 +142,10 @@ namespace Surging.Hero.Auth.Application.Permission
         {            
             switch (input.Mold) {
                 case Domain.Shared.Permissions.PermissionMold.Menu:
-                    await _menuDomainService.Delete(input.Id);
+                    await _menuDomainService.Delete(input.PermissionId);
                     break;
                 case Domain.Shared.Permissions.PermissionMold.Operation:
-                    await _operationDomainService.Delete(input.Id);
+                    await _operationDomainService.Delete(input.PermissionId);
                     break;
                 default:
                     throw new BusinessException("PermissionType不正确");

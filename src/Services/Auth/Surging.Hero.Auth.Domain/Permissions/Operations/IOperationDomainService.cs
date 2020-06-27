@@ -9,7 +9,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
     {
         Task<CreateOperationOutput> Create(CreateOperationInput input);
         Task<UpdateOperationOutput> Update(UpdateOperationInput input);
-        Task Delete(long id);
+        Task Delete(long permissionId);
         Task<IEnumerable<Operation>> GetAll();
     }
 }

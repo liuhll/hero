@@ -59,11 +59,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             return new CreateMenuOutput() { Id = menu.Id, PermissionId = menu.PermissionId, Tips = "新增菜单成功" };
         }
 
-        public async Task Delete(long id)
+        public async Task Delete(long permissionId)
         {
-            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Id == id);
+            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.PermissionId == permissionId);
             if (menu == null) {
-                throw new BusinessException($"不存在Id为{id}的菜单信息");
+                throw new BusinessException($"不存在PermissionId为{permissionId}的菜单信息");
             }
             var allNeedDeleteMenus = await _menuRepository.GetAllAsync(p => p.Code.Contains(menu.Code));
            

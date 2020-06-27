@@ -4,7 +4,7 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 {
     public class DeletePermissionInput
     {
-        public long Id { get; set; }
+        public long PermissionId { get; set; }
 
         public PermissionMold Mold { get; set; }
     }

@@ -67,16 +67,16 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             return new CreateOperationOutput() { Id = operation.Id, PermissionId = operation.PermissionId, Tips = "新增操作成功" };
         }
 
-        public async Task Delete(long id)
+        public async Task Delete(long permissionId)
         {
-            var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == id);
+            var operation = await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == permissionId);
             if (operation == null)
             {
-                throw new BusinessException($"不存在Id为{id}的操作信息");
+                throw new BusinessException($"不存在permissionId为{permissionId}的操作信息");
             }
             await UnitOfWorkAsync(async (conn, trans) => {
-                await _operationRepository.DeleteAsync(p => p.Id == id, conn, trans);
-                await _operationActionRepository.DeleteAsync(p => p.OperationId == id, conn, trans);
+                await _operationRepository.DeleteAsync(p => p.Id == permissionId, conn, trans);
+                await _operationActionRepository.DeleteAsync(p => p.OperationId == permissionId, conn, trans);
                 await _permissionRepository.DeleteAsync(p => p.Id == operation.Id, conn, trans);
             }, Connection);
         }
