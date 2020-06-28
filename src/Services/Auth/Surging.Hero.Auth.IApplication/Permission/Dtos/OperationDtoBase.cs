@@ -7,7 +7,7 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
     public abstract class OperationDtoBase
     {
      
-        public string Icon { get; set; }
+        //public string Icon { get; set; }
 
         [Required(ErrorMessage = "操作标识不允许为空")]
         [MaxLength(50, ErrorMessage = "操作标识长度不允许超过50")]

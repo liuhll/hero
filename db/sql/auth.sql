@@ -128,7 +128,6 @@ create table Operation
    Title                 varchar(50) not null comment '操作名称',   
    Code                 varchar(200) not null comment '编码',
    Level                int not null comment '所属层级',
-   Icon                 varchar(50) comment '图标',
    Mold                 int not null comment '操作类型:1.增2.删3.改4.查5.其他操作',
    Sort                 int comment '排序',
    Memo                 varchar(100) comment '备注',

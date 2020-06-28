@@ -14,8 +14,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
 
         public int Level { get; set; }
 
-        public string Icon { get; set; }
-
         public string Name { get; set; }
 
         public string Title { get; set; }
