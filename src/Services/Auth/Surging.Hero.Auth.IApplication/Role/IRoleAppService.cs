@@ -34,9 +34,9 @@ namespace Surging.Hero.Auth.IApplication.Role
         [ServiceRoute("get/permissions/{id}")]
         Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long id);
 
-        [HttpPut(true)]
-        [ServiceRoute("set/permissions")]
-        Task<string> SetPermissions(SetRolePermissionInput input);
+        //[HttpPut(true)]
+        //[ServiceRoute("set/permissions")]
+        //Task<string> SetPermissions(SetRolePermissionInput input);
 
         [HttpDelete(true)]
         [ServiceRoute("delete/{id}")]

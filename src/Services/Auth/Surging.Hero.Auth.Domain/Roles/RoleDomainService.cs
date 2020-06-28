@@ -7,6 +7,8 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.UserGroups;
@@ -23,18 +25,21 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<Permission, long> _permissionRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
+        private readonly IDapperRepository<UserInfo,long> _userInfoRepository;
 
         public RoleDomainService(IDapperRepository<Role, long> roleRepository,
             IDapperRepository<RolePermission, long> rolePermissionRepository,
             IDapperRepository<Permission, long> permissionRepository,
             IDapperRepository<UserRole, long> userRoleRepository,
-            IDapperRepository<UserGroupRole, long> userGroupRoleRepository)
+            IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
+            IDapperRepository<UserInfo, long> userInfoRepository)
         {
             _roleRepository = roleRepository;
             _rolePermissionRepository = rolePermissionRepository;
             _permissionRepository = permissionRepository;
             _userRoleRepository = userRoleRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
+            _userInfoRepository = userInfoRepository;
         }
 
         public async Task<bool> CheckPermission(long roleId, string serviceId)
@@ -65,7 +70,28 @@ namespace Surging.Hero.Auth.Domain.Roles
                 throw new BusinessException($"系统中已经存在{input.Name}的角色");
             }
             var role = input.MapTo<Role>();
-            await _roleRepository.InsertAsync(role);
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                var roleId = await _roleRepository.InsertAndGetIdAsync(role,conn,trans);
+                var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
+
+                var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
+                if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
+                {
+                    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
+                }
+                await _rolePermissionRepository.DeleteAsync(p => p.RoleId == roleId, conn, trans);
+                foreach (var permissionId in input.PermissionIds)
+                {
+                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
+                    if (permission == null)
+                    {
+                        throw new BusinessException($"不存在Id为{permissionId}的权限信息");
+                    }
+                    await _rolePermissionRepository.InsertAsync(new RolePermission() { PermissionId = permissionId, RoleId = roleId }, conn, trans);
+                }
+            }, Connection);
+           
         }
 
         public async Task Delete(long roleid)
@@ -93,6 +119,27 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         }
 
+        public async Task<GetRoleOutput> Get(long id)
+        {
+            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (role == null)
+            {
+                throw new BusinessException($"不存在Id为{id}的角色信息");
+            }
+            var roleOutput = role.MapTo<GetRoleOutput>();
+            if (roleOutput.LastModifierUserId.HasValue)
+            {
+                var modifyUserInfo = await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == roleOutput.LastModifierUserId.Value);
+                if (modifyUserInfo != null)
+                {
+                    roleOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                }
+            }
+            roleOutput.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == role.Id)).Select(p => p.PermissionId).ToArray();
+
+            return roleOutput;
+        }
+
         public async Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId)
         {
             var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
@@ -101,6 +148,27 @@ namespace Surging.Hero.Auth.Domain.Roles
                 throw new BusinessException($"不存在Id为{roleId}的角色信息");
             }
             return await _rolePermissionRepository.GetAllAsync(p => p.RoleId == roleId);
+        }
+
+        public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
+        {
+            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) && p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);
+
+            var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
+            foreach (var output in outputs.Items)
+            {
+                if (output.LastModifierUserId.HasValue)
+                {
+                    var modifyUserInfo = await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.LastModifierUserId.Value);
+                    if (modifyUserInfo != null)
+                    {
+                        output.LastModificationUserName = modifyUserInfo.ChineseName;
+                    }
+                }
+                output.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == output.Id)).Select(p => p.PermissionId).ToArray();
+
+            }
+            return outputs;
         }
 
         public async Task SetPermissions(SetRolePermissionInput input)
@@ -145,7 +213,28 @@ namespace Surging.Hero.Auth.Domain.Roles
 
             }
             role = input.MapTo(role);
-            await _roleRepository.UpdateAsync(role);
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                await _roleRepository.UpdateAsync(role,conn,trans);
+                var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
+
+                var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
+                if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
+                {
+                    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
+                }
+                await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.Id, conn, trans);
+                foreach (var permissionId in input.PermissionIds)
+                {
+                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
+                    if (permission == null)
+                    {
+                        throw new BusinessException($"不存在Id为{permissionId}的权限信息");
+                    }
+                    await _rolePermissionRepository.InsertAsync(new RolePermission() { PermissionId = permissionId, RoleId = input.Id }, conn, trans);
+                }
+            }, Connection);
+            
 
         }
 

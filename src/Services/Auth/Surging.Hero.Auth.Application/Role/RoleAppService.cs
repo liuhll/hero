@@ -48,21 +48,7 @@ namespace Surging.Hero.Auth.Application.Role
 
         public async Task<GetRoleOutput> Get(long id)
         {
-            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == id);
-            if (role == null) {
-                throw new BusinessException($"不存在Id为{id}的角色信息");
-            }
-            var roleOutput = role.MapTo<GetRoleOutput>();
-            if (roleOutput.LastModifierUserId.HasValue)
-            {
-                var modifyUserInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == roleOutput.LastModifierUserId.Value);
-                if (modifyUserInfo != null)
-                {
-                    roleOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-                }
-            }
-
-            return roleOutput;
+            return await _roleDomainService.Get(id);
      
         }
 
@@ -79,22 +65,7 @@ namespace Surging.Hero.Auth.Application.Role
 
         public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
         {
-            Tuple<IEnumerable<Domain.Roles.Role>, int> queryResult = queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) && p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);
-
-            var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
-            foreach (var output in outputs.Items) 
-            {
-                if (output.LastModifierUserId.HasValue) 
-                {
-                    var modifyUserInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == output.LastModifierUserId.Value);
-                    if (modifyUserInfo != null) 
-                    {
-                        output.LastModificationUserName = modifyUserInfo.ChineseName;
-                    }
-                }
-               
-            }
-            return outputs;
+            return await _roleDomainService.Query(query);
         }
 
         public async Task<string> SetPermissions(SetRolePermissionInput input)
