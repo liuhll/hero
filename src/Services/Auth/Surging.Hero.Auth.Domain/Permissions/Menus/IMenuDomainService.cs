@@ -12,5 +12,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         Task Delete(long permissionId);
 
         Task<IEnumerable<Menu>> GetAll();
+        Task<IEnumerable<GetPermissionTreeOutput>> GetTree();
     }
 }

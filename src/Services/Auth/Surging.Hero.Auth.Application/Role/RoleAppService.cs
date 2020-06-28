@@ -68,11 +68,6 @@ namespace Surging.Hero.Auth.Application.Role
             return await _roleDomainService.Query(query);
         }
 
-        public async Task<string> SetPermissions(SetRolePermissionInput input)
-        {
-            await _roleDomainService.SetPermissions(input);
-            return "设置角色权限信息成功";
-        }
 
         public async Task<string> Status(UpdateRoleStatusInput input)
         {

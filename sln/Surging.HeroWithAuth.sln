@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Auth.Domain.Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Common", "..\src\CommonComponents\Surging.Hero.Common\Surging.Hero.Common.csproj", "{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.IntercepteModule", "..\src\CommonComponents\Surging.Hero.IntercepteModule\Surging.Hero.IntercepteModule.csproj", "{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".env", ".env", "{BEFE47EA-C6CE-4ADF-8844-9E0216FB03DD}"
 	ProjectSection(SolutionItems) = preProject
 		..\docker-compose\surging.auth\.env = ..\docker-compose\surging.auth\.env
@@ -62,10 +60,6 @@ Global
 		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FEA0C318-FFED-4D39-8781-265718CA43DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FEA0C318-FFED-4D39-8781-265718CA43DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEA0C318-FFED-4D39-8781-265718CA43DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -84,7 +78,6 @@ Global
 		{B4060558-DAD8-40DC-8AAA-5A63AE90CB89} = {3A8E4991-08D0-40DA-813A-09370909B989}
 		{A10D1FDD-8D37-49C3-A889-0AFD35F5D604} = {3A8E4991-08D0-40DA-813A-09370909B989}
 		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB} = {C88BC2F6-63DC-4035-A1A9-A1095C310E3E}
-		{74435CFC-1D7E-45D2-B1C7-EA28591BF2F5} = {C88BC2F6-63DC-4035-A1A9-A1095C310E3E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F2C335F-D290-4020-B3F5-14AD7D97EF34}
