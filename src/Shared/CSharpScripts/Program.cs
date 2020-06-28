@@ -12,6 +12,7 @@ using Surging.Core.ServiceHosting.Internal.Implementation;
 using SurgingConfig = Surging.Core.CPlatform.AppConfig;
 using System;
 using Surging.Core.System.Intercept;
+using Surging.Core.Zookeeper.Configurations;
 
 namespace Surging.Hero.ServiceHost
 {
@@ -49,6 +50,7 @@ namespace Surging.Hero.ServiceHost
                      build.AddCPlatformFile("${surgingPath}|/app/configs/surgingSettings.json", optional: false, reloadOnChange: true);
                   //   build.AddEventBusFile("${eventBusPath}|/app/configs/eventBusSettings.json", optional: false);
                      build.AddConsulFile("${consulPath}|/app/configs/consul.json", optional: false, reloadOnChange: true);
+                     build.AddZookeeperFile("${zookeeperPath}|/app/configs/zookeeper.json", optional: false, reloadOnChange: true);
 
 
 #else
@@ -56,6 +58,7 @@ namespace Surging.Hero.ServiceHost
                     build.AddCPlatformFile("${surgingPath}|configs/surgingSettings.json", optional: false,reloadOnChange: true);                    
                  //   build.AddEventBusFile("configs/eventBusSettings.json", optional: false);
                     build.AddConsulFile("configs/consul.json", optional: false, reloadOnChange: true);
+                     build.AddZookeeperFile("${zookeeperPath}|configs/zookeeper.json", optional: false, reloadOnChange: true);
 #endif
                  })
                  .UseProxy()                

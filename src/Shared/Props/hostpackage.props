@@ -4,6 +4,7 @@
     <PackageReference Include="Surging.Cloud.Caching" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.Consul" Version="$(SurgingVersion)" />
+	<PackageReference Include="Surging.Cloud.Zookeeper" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.CPlatform" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.DotNetty" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.EventBusRabbitMQ" Version="$(SurgingVersion)" />
@@ -27,6 +28,9 @@
     <None Include="..\..\..\Shared\Configs\consul.json" Link="configs\consul.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\Shared\Configs\zookeeper.json" Link="configs\zookeeper.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>	
     <None Include="..\..\..\Shared\Configs\eventBusSettings.json" Link="configs\eventBusSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
