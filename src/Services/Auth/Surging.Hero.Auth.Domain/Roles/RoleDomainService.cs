@@ -180,13 +180,13 @@ namespace Surging.Hero.Auth.Domain.Roles
             }
             await UnitOfWorkAsync(async (conn, trans) =>
             {
-                var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
+                //var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
 
-                var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
-                if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
-                {
-                    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
-                }
+                //var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
+                //if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
+                //{
+                //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
+                //}
                 await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.RoleId, conn, trans);
                 foreach (var permissionId in input.PermissionIds)
                 {
@@ -216,13 +216,13 @@ namespace Surging.Hero.Auth.Domain.Roles
             await UnitOfWorkAsync(async (conn, trans) =>
             {
                 await _roleRepository.UpdateAsync(role,conn,trans);
-                var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
+                //var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
 
-                var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
-                if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
-                {
-                    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
-                }
+                //var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
+                //if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
+                //{
+                //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
+                //}
                 await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.Id, conn, trans);
                 foreach (var permissionId in input.PermissionIds)
                 {
