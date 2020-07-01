@@ -20,6 +20,7 @@
     "IsModulePerLifetimeScope": false,
     "ReloadOnChange": false,
     "RequestCacheEnabled": true,
+    "EnableRouteWatch": "${EnableRouteWatch}|false",
     "ForceDisplayStackTrace": "${ForceDisplayStackTrace}|false",
     "Ports": {
       "HttpPort": "${HttpPort}|8080",
