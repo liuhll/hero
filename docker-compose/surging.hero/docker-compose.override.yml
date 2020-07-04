@@ -14,7 +14,6 @@ services:
       ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
       DbType: ${AUTH_DB_TYPE:-Mysql}
       ConnectionString: ${AUTH_DB_CONN}
-      EnableRouteWatch: ${ENABLE_ROUTEWATCH:-true}
       InitAction: "${INIT_ACTION:-false}"
 
   surging.hero.basicdata:
@@ -29,7 +28,6 @@ services:
       ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
       DbType: ${BASICDATA_DB_TYPE:-Mysql}
       ConnectionString: ${BASICDATA_DB_CONN}
-      EnableRouteWatch: ${ENABLE_ROUTEWATCH:-true}
       InitAction: "${INIT_ACTION:-false}"
 
   surging.hero.organization:
@@ -44,7 +42,6 @@ services:
       ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
       DbType: ${ORGANIZATION_DB_TYPE:-Mysql}
       ConnectionString: ${ORGANIZATION_DB_CONN}
-      EnableRouteWatch: ${ENABLE_ROUTEWATCH:-true}
       InitAction: "${INIT_ACTION:-false}"
 
   surging.hero.gateway:
