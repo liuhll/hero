@@ -115,9 +115,9 @@ namespace Surging.Hero.Auth.Domain.Users
             var userRoleIds = await GetAllUserRoleIds(userId);
             var sql = @"SELECT DISTINCT m.* FROM RolePermission as rp
 LEFT JOIN Menu as m ON m.PermissionId = rp.PermissionId AND m.IsDeleted=0
-WHERE rp.RoleId in @RoleId AND m.Status=@Status";
+WHERE rp.RoleId in @RoleId";
             using (Connection) {
-                return await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds, Status = Status.Valid });
+                return await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds });
             }
 
         }
@@ -155,6 +155,7 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
             var userInfoOutput = userInfo.MapTo<GetUserNormOutput>();
             if (userInfoOutput.OrgId.HasValue) 
             {
+                userInfoOutput.DeptId = (await GetService<IDepartmentAppService>().GetByOrgId(userInfoOutput.OrgId.Value)).Id;
                 userInfoOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userInfoOutput.OrgId.Value)).Name;
             }
             if (userInfoOutput.PositionId.HasValue) 

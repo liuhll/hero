@@ -15,16 +15,33 @@ namespace Surging.Hero.Organization.IApplication.Organization
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IOrganizationAppService : IServiceKey
     {
+        /// <summary>
+        /// 获取组织结构树形结构
+        /// </summary>
+        /// <returns></returns>
         [HttpGet(true)]
         [ServiceRoute("get/tree")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取组织结构树形结构", AllowPermission = true)]
         Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree();
 
+        /// <summary>
+        /// 查询组织机构
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [HttpPost(true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询组织机构", AllowPermission = true)]
         Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query);
 
+        /// <summary>
+        /// 获取子机构Id
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
         [HttpGet(true)]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetSubOrgIds, Mode = Core.Caching.CacheTargetType.Redis)]
         [ServiceRoute("get/suborgs/{orgId}")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取子机构Id", DisableNetwork =true)]
         Task<IEnumerable<long>> GetSubOrgIds([CacheKey(1)]long orgId);
 
     }

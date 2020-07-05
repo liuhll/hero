@@ -132,7 +132,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         private async Task<IEnumerable<GetTreeActionOutput>> GetLeafActions(string serviceHost, string appService)
         {
             var actionServices = await GetActionServices(new QueryActionInput() { ServiceHost = serviceHost, AppService = appService });
-            return actionServices.Select(p => new GetTreeActionOutput() { Label = !p.Name.IsNullOrEmpty() ? $"{ p.Name}({p.ServiceId})" : p.ServiceId, Value = p.Id });
+            return actionServices.Select(p => new GetTreeActionOutput() { Label = !p.Name.IsNullOrEmpty() ? p.Name : p.ServiceId, Value = p.Id });
         }
 
         public async Task InitActions(ICollection<InitActionActionInput> actions)

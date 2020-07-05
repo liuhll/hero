@@ -11,21 +11,49 @@ namespace Surging.Hero.Auth.IApplication.Action
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface IActionAppService : IServiceKey
     {
-        [Service(DisableNetwork = true)]
+        /// <summary>
+        /// 初始化服务方法
+        /// </summary>
+        /// <param name="actions"></param>
+        /// <returns></returns>
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "初始化服务方法", DisableNetwork = true)]
         [HttpPost(true)]
         [ServiceRoute("init")]
         Task<string> InitActions(ICollection<InitActionActionInput> actions);
 
+        /// <summary>
+        /// 获取微服务主机列表
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [ServiceRoute("get/host")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取微服务主机列表", AllowPermission = true)]
         Task<IEnumerable<GetServiceHostOutput>> GetServiceHosts(QueryServiceHostInput query);
 
+        /// <summary>
+        /// 获取应用服务
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [ServiceRoute("get/appservice")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取应用服务", AllowPermission = true)]
         Task<IEnumerable<GetAppServiceOutput>> GetAppServices(QueryAppServiceInput query);
 
+        /// <summary>
+        /// 查询服务方法
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [ServiceRoute("get/service")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询服务方法", AllowPermission = true)]
         Task<IEnumerable<GetActionOutput>> GetServices(QueryActionInput query);
 
+        /// <summary>
+        /// 获取服务方法树形结构
+        /// </summary>
+        /// <returns></returns>
         [ServiceRoute("get/service/tree")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取服务方法树形结构", AllowPermission = true)]
         Task<IEnumerable<GetTreeActionOutput>> GetServicesTree();
 
     }

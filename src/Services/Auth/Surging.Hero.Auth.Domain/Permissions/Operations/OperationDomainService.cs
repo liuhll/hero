@@ -33,6 +33,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
 
         public async Task<CreateOperationOutput> Create(CreateOperationInput input)
         {
+            var exsitOperation = await _operationRepository.FirstOrDefaultAsync(p => p.Name == input.Name);
+            if (exsitOperation != null)
+            {
+                throw new BusinessException($"系统中已经存在{input.Name}的操作,请勿重复添加");
+            }
             var menu = await _menuRepository.SingleOrDefaultAsync(p => p.PermissionId == input.PermissionId);
             if (menu == null)
             {
@@ -77,8 +82,8 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             }
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _operationRepository.DeleteAsync(p => p.PermissionId == permissionId, conn, trans);
-                await _operationActionRepository.DeleteAsync(p => p.OperationId == permissionId, conn, trans);
-                await _permissionRepository.DeleteAsync(p => p.Id == operation.Id, conn, trans);
+                await _operationActionRepository.DeleteAsync(p => p.OperationId == operation.Id, conn, trans);
+                await _permissionRepository.DeleteAsync(p => p.Id == operation.PermissionId, conn, trans);
             }, Connection);
         }
 

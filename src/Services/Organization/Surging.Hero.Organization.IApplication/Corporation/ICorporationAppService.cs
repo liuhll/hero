@@ -9,20 +9,44 @@ namespace Surging.Hero.Organization.IApplication.Corporation
     [ServiceBundle(HeroConstants.RouteTemplet)]
     public interface ICorporationAppService : IServiceKey
     {
+        /// <summary>
+        /// 新增公司信息
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost(true)]
         [ServiceRoute("create")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增公司信息")]
         Task<CreateCorporationOutput> Create(CreateCorporationInput input);
 
+        /// <summary>
+        /// 更新公司信息
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPut(true)]
         [ServiceRoute("update")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新公司信息")]
         Task<UpdateCorporationOutput> Update(UpdateCorporationInput input);
 
+        /// <summary>
+        /// 删除公司
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
         [ServiceRoute("delete/{orgId}")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除公司")]
         [HttpDelete(true)]
         Task<string> DeleteByOrgId(long orgId);
 
+        /// <summary>
+        /// 获取公司信息
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
         [ServiceRoute("get/org/{orgId}")]
         [HttpGet(true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取公司信息")]
         Task<GetCorporationOutput> GetByOrgId(long orgId);
     }
 }

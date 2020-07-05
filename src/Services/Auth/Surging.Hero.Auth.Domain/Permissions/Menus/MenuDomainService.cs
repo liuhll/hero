@@ -35,6 +35,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         {
             var menu = input.MapTo<Menu>();
             long menuParentId = 0;
+            var exsitMenu = await _menuRepository.FirstOrDefaultAsync(p => p.Name == input.Name);
+            if (exsitMenu != null) 
+            {
+                throw new BusinessException($"系统中已经存在{input.Name}的菜单,请勿重复添加");
+            }
             if (menu.Mold == MenuMold.Top)
             {
                 var thisLevelMenuCount = await _menuRepository.GetCountAsync(p => p.Mold == MenuMold.Top);
@@ -146,6 +151,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             {
                 foreach (var menuChildOutput in menuPermissionChildrenOutput)
                 {
+                    menuChildOutput.ParentPermissionId = permissionTreeOutput.PermissionId;
                     menuChildOutput.FullName = permissionTreeOutput.FullName + HeroConstants.CodeRuleRestrain.CodeSeparator + menuChildOutput.Name;
                     menuChildOutput.Children = await BuildPermissionChildren(menuChildOutput, menus);
                 }
@@ -156,6 +162,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             var operationChildrenOutput = operationChildren.MapTo<IEnumerable<GetPermissionTreeOutput>>();
             foreach (var operationChildOutput in operationChildrenOutput)
             {
+                operationChildOutput.ParentPermissionId = permissionTreeOutput.PermissionId;
                 operationChildOutput.FullName = permissionTreeOutput.FullName + HeroConstants.CodeRuleRestrain.CodeSeparator + operationChildOutput.Name;
             }
             permissionChildren.AddRange(operationChildrenOutput);

@@ -63,14 +63,14 @@ namespace Surging.Hero.ServiceHost
                  })
                  .UseProxy()                
                  .UseStartup<Startup>()
-                 .Build();
+                 .Build(); 
 
             using (host.Run())
             {
                 Console.WriteLine($"服务主机启动成功{DateTime.Now}。");
 
 #if DEBUG
-                Startup.InitActions();
+                //Startup.InitActions();
 #endif
             }
         }

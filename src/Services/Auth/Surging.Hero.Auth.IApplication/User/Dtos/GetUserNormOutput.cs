@@ -22,6 +22,6 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         public string LastModificationUserName { get; set; }
 
         public long? LastModifierUserId { get; set; }
-
+        public long DeptId { get; set; }
     }
 }
