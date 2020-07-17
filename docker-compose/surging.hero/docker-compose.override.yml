@@ -16,6 +16,7 @@ services:
       ConnectionString: ${AUTH_DB_CONN}
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
       InitAction: "${INIT_ACTION:-false}"
+      ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
 
   surging.hero.basicdata:
     environment:
@@ -31,6 +32,7 @@ services:
       ConnectionString: ${BASICDATA_DB_CONN}
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
       InitAction: "${INIT_ACTION:-false}"
+      ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
 
   surging.hero.organization:
     environment:
@@ -46,6 +48,7 @@ services:
       ConnectionString: ${ORGANIZATION_DB_CONN}
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
       InitAction: "${INIT_ACTION:-false}"
+      ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
 
   surging.hero.gateway:
     environment:
@@ -63,5 +66,6 @@ services:
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
       InitAction: "${INIT_ACTION:-false}"
+      ExecutionTimeoutInMilliseconds: ${GATEWAY_EXECUTION_TIMEOUT:-4000}
     ports:
       - "18081:8080"

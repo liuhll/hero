@@ -11,7 +11,7 @@
     "SoBacklog": 100,
     "MaxConcurrentRequests": 500,
     "DisconnTimeInterval": 1000,
-    "ExecutionTimeoutInMilliseconds": 3000,
+    "ExecutionTimeoutInMilliseconds": "${ExecutionTimeoutInMilliseconds}|10000",
     "HealthCheckTimeout": 100,
     "BreakeSleepWindowInMilliseconds": 5000,
     "Protocol": "${Protocol}|None", //Http、Tcp、None
