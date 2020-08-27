@@ -1,5 +1,6 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
 using Surging.Core.System.Intercept;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
@@ -18,7 +19,7 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// <returns></returns>
         [ServiceRoute("get/{id}")]
         [HttpGet(true)]
-        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetPositionById, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetPositionById, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取职位信息", AllowPermission = true)]
         Task<GetPositionOutput> Get([CacheKey(1)]long id);
 
@@ -29,7 +30,7 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// <returns></returns>
         [ServiceRoute("get/dept/{deptId}")]
         [HttpGet(true)]
-        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionById, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionById, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据部门id获取部门职位", AllowPermission = true)]
         Task<IEnumerable<GetPositionOutput>> GetDeptPosition([CacheKey(1)]long deptId);
 
@@ -40,7 +41,7 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// <returns></returns>
         [ServiceRoute("get/org/{orgId}")]
         [HttpGet(true)]
-        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织机构id获取职位列表")]
         Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
 

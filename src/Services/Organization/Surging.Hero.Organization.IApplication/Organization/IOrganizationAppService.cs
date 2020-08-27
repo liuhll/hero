@@ -3,6 +3,7 @@ using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attr
 using Surging.Core.Domain;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.Trees;
+using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
 using Surging.Core.System.Intercept;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.Domain.Shared.Organizations;
@@ -39,7 +40,7 @@ namespace Surging.Hero.Organization.IApplication.Organization
         /// <param name="orgId"></param>
         /// <returns></returns>
         [HttpGet(true)]
-        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetSubOrgIds, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetSubOrgIds, Mode = CacheTargetType.Redis)]
         [ServiceRoute("get/suborgs/{orgId}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取子机构Id", DisableNetwork =true)]
         Task<IEnumerable<long>> GetSubOrgIds([CacheKey(1)]long orgId);

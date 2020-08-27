@@ -1,5 +1,6 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
 using Surging.Core.System.Intercept;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department.Dtos;
@@ -27,7 +28,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         /// <returns></returns>
         [ServiceRoute("update")]
         [HttpPut(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新部门信息")]
         Task<UpdateDepartmentOutput> Update(UpdateDepartmentInput input);
 
@@ -38,7 +39,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         /// <returns></returns>
         [ServiceRoute("delete/{orgId}")]
         [HttpDelete(true)]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds }, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除部门信息")]
         Task<string> DeleteByOrgId(long orgId);
 
@@ -49,7 +50,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         /// <returns></returns>
         [ServiceRoute("get/{id}")]
         [HttpGet(true)]
-        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptById, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptById, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据部门id获取部门信息", AllowPermission = true)]
         Task<GetDepartmentOutput> Get([CacheKey(1)]long id);
 
@@ -60,7 +61,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         /// <returns></returns>
         [ServiceRoute("get/orgid/{orgId}")]
         [HttpGet(true)]
-        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptByOrgId, Mode = Core.Caching.CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptByOrgId, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织id获取部门信息")]
         Task<GetDepartmentOutput> GetByOrgId([CacheKey(1)]long orgId);
 
