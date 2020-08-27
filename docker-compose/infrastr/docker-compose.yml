@@ -1,14 +1,6 @@
-version: '3.7'
+version: "3.7"
 
-services:  
-  hero.redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - "16379:6379"
-    networks:
-      - surging_hero_service_net
-
+services:
   hero.rabbitmq:
     image: rabbitmq:management
     restart: always
@@ -38,12 +30,12 @@ services:
       - "3306:3306"
     networks:
       - surging_hero_service_net
-      
+
 networks:
-  surging_hero_service_net: 
+  surging_hero_service_net:
     driver: bridge
     name: surging_hero_service_net
     ipam:
       driver: default
       config:
-      - subnet: 172.23.0.1/16
+        - subnet: 172.23.0.1/16

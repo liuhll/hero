@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  hero.redis1:
+    image: redis:latest
+    restart: always
+    ports:
+      - "16379:6379"
+    networks:
+      - surging_hero_service_net
+  hero.redis2:
+    image: redis:latest
+    restart: always
+    ports:
+      - "16380:6379"
+    networks:
+      - surging_hero_service_net
+  hero.redis3:
+    image: redis:latest
+    restart: always
+    ports:
+      - "16381:6379"
+    networks:
+      - surging_hero_service_net
+  hero.redis4:
+    image: redis:latest
+    restart: always
+    ports:
+      - "16382:6379"
+    networks:
+      - surging_hero_service_net
+networks:
+  surging_hero_service_net:
+    external:
+      name: surging_hero_service_net

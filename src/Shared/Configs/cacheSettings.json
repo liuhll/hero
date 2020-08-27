@@ -20,11 +20,28 @@
             {
               "Name": "Redis",
               "Properties": [
-               
                 {
                   "Name": null,
                   "Ref": null,
-                  "Value": "hero.redis:6379::1",
+                  "Value": "hero.redis1:6379::1",
+                  "Maps": null
+                },
+                {
+                  "Name": null,
+                  "Ref": null,
+                  "Value": "hero.redis2:6379::1",
+                  "Maps": null
+                },
+                {
+                  "Name": null,
+                  "Ref": null,
+                  "Value": "hero.redis3:6379::1",
+                  "Maps": null
+                },
+                {
+                  "Name": null,
+                  "Ref": null,
+                  "Value": "hero.redis4:6379::1",
                   "Maps": null
                 }
               ]
