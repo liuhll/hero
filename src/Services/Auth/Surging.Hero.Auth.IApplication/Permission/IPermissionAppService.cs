@@ -16,8 +16,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost(true)]
-        [ServiceRoute("menu/create")]
+        [HttpPost]
+        [ServiceRoute("menu")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增菜单")]
         Task<CreateMenuOutput> CreateMenu(CreateMenuInput input);
 
@@ -26,8 +26,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut(true)]
-        [ServiceRoute("menu/update")]
+        [HttpPut]
+        [ServiceRoute("menu")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "编辑菜单")]
         Task<UpdateMenuOutput> UpdateMenu(UpdateMenuInput input);
 
@@ -36,8 +36,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
-        [HttpGet(true)]
-        [ServiceRoute("get/menu/{permissionId}")]
+        [HttpGet]
+        [ServiceRoute("menu/{permissionId}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据权限id获取菜单信息", AllowPermission = true)]
         Task<GetMenuOutput> GetMenu(long permissionId);
 
@@ -46,8 +46,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost(true)]
-        [ServiceRoute("operation/create")]
+        [HttpPost]
+        [ServiceRoute("operation")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增操作")]
         Task<CreateOperationOutput> CreateOperation(CreateOperationInput input);
 
@@ -56,8 +56,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut(true)]
-        [ServiceRoute("operation/update")]
+        [HttpPut]
+        [ServiceRoute("operation")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新操作")]
         Task<UpdateOperationOutput> UpdateOperation(UpdateOperationInput input);
 
@@ -66,8 +66,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
-        [HttpGet(true)]
-        [ServiceRoute("get/operation/{permissionId}")]
+        [HttpGet]
+        [ServiceRoute("operation/{permissionId}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据权限id获取操作", AllowPermission = true)]
         Task<GetOperationOutput> GetOperation(long permissionId);
 
@@ -75,8 +75,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// 获取权限树
         /// </summary>
         /// <returns></returns>
-        [HttpGet(true)]
-        [ServiceRoute("get/tree")]
+        [HttpGet]
+        [ServiceRoute("tree")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取权限树", AllowPermission = true)]
         Task<IEnumerable<GetPermissionTreeOutput>> GetTree();
 
@@ -85,8 +85,8 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpDelete(true)]
-        [ServiceRoute("delete")]
+        [HttpDelete]
+        [ServiceRoute("")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除菜单/操作")]
         Task<string> Delete(DeletePermissionInput input);
 
@@ -95,7 +95,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         /// </summary>
         /// <param name="serviceId"></param>
         /// <returns></returns>
-        [HttpPost(true)]
+        [HttpPost]
         [Service(DisableNetwork = true, Name = "接口鉴权",Director = Developers.Liuhll)]
         [ServiceRoute("check")]
         Task<bool> Check(string serviceId);

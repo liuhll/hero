@@ -2,7 +2,7 @@
 {
     public static class HeroConstants
     {
-        public const string RouteTemplet = "v1/api/{appService}/{method}";
+        public const string RouteTemplet = "api/{appService}";
 
         public static class CodeRuleRestrain {
 

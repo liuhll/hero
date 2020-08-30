@@ -14,8 +14,8 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost(true)]
-        [ServiceRoute("create")]
+        [HttpPost]
+        [ServiceRoute("")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增公司信息")]
         Task<CreateCorporationOutput> Create(CreateCorporationInput input);
 
@@ -24,8 +24,8 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut(true)]
-        [ServiceRoute("update")]
+        [HttpPut]
+        [ServiceRoute("")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新公司信息")]
         Task<UpdateCorporationOutput> Update(UpdateCorporationInput input);
 
@@ -34,9 +34,9 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [ServiceRoute("delete/{orgId}")]
+        [ServiceRoute("{orgId}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除公司")]
-        [HttpDelete(true)]
+        [HttpDelete]
         Task<string> DeleteByOrgId(long orgId);
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [ServiceRoute("get/org/{orgId}")]
-        [HttpGet(true)]
+        [ServiceRoute("org/{orgId}")]
+        [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取公司信息")]
         Task<GetCorporationOutput> GetByOrgId(long orgId);
     }

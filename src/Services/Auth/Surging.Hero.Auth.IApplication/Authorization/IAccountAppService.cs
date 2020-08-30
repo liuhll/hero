@@ -19,7 +19,7 @@ namespace Surging.Hero.Auth.IApplication.Authorization
         /// <param name="input"></param>
         /// <returns></returns>
         [Service(Director = Developers.Liuhll, Date = "2019-07-14", Name = "用户登录接口", EnableAuthorization = false)]
-        [HttpPost(true)]
+        [HttpPost]
         Task<IDictionary<string, object>> Login(LoginInput input);
 
         /// <summary>
@@ -27,17 +27,17 @@ namespace Surging.Hero.Auth.IApplication.Authorization
         /// </summary>
         /// <returns></returns>
         [Service(Director = Developers.Liuhll, Date = "2019-09-21", Name = "获取登录用户信息", EnableAuthorization = true,AllowPermission =true)]
-        [HttpGet(true)]
-        [ServiceRoute("get/userinfo")]
+        [HttpGet]
+        [ServiceRoute("userinfo")]
         Task<LoginUserInfo> GetLoginUser();
 
         /// <summary>
         /// 获取登录用户菜单权限列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet(true)]
+        [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2019-09-23", Name = "获取登录用户菜单权限列表", EnableAuthorization = true, AllowPermission = true)]
-        [ServiceRoute("get/menu")]
+        [ServiceRoute("menu")]
         Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserMenu();
 
         /// <summary>
@@ -45,9 +45,9 @@ namespace Surging.Hero.Auth.IApplication.Authorization
         /// </summary>
         /// <param name="menuId"></param>
         /// <returns></returns>
-        [HttpGet(true)]
+        [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2019-09-23", Name = "通过菜单Id获取用户的操作权限", EnableAuthorization = true, AllowPermission = true)]
-        [ServiceRoute("get/operation/{menuId}")]
+        [ServiceRoute("operation/{menuId}")]
         Task<IEnumerable<GetUserOperationOutput>> GetUserOperation(long menuId);
     }
 }

@@ -17,7 +17,7 @@ namespace Surging.Hero.Auth.IApplication.Action
         /// <param name="actions"></param>
         /// <returns></returns>
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "初始化服务方法", DisableNetwork = true)]
-        [HttpPost(true)]
+        [HttpPost]
         [ServiceRoute("init")]
         Task<string> InitActions(ICollection<InitActionActionInput> actions);
 
@@ -26,7 +26,7 @@ namespace Surging.Hero.Auth.IApplication.Action
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        [ServiceRoute("get/host")]
+        [ServiceRoute("host/search")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取微服务主机列表", AllowPermission = true)]
         Task<IEnumerable<GetServiceHostOutput>> GetServiceHosts(QueryServiceHostInput query);
 
@@ -35,7 +35,7 @@ namespace Surging.Hero.Auth.IApplication.Action
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        [ServiceRoute("get/appservice")]
+        [ServiceRoute("service/search")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取应用服务", AllowPermission = true)]
         Task<IEnumerable<GetAppServiceOutput>> GetAppServices(QueryAppServiceInput query);
 
@@ -44,7 +44,7 @@ namespace Surging.Hero.Auth.IApplication.Action
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        [ServiceRoute("get/service")]
+        [ServiceRoute("action/search")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询服务方法", AllowPermission = true)]
         Task<IEnumerable<GetActionOutput>> GetServices(QueryActionInput query);
 
@@ -52,7 +52,7 @@ namespace Surging.Hero.Auth.IApplication.Action
         /// 获取服务方法树形结构
         /// </summary>
         /// <returns></returns>
-        [ServiceRoute("get/service/tree")]
+        [ServiceRoute("service/tree")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取服务方法树形结构", AllowPermission = true)]
         Task<IEnumerable<GetTreeActionOutput>> GetServicesTree();
 

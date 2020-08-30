@@ -75,7 +75,11 @@ namespace Surging.Hero.Organization.Domain.Organizations
         public async Task<GetCorporationOutput> GetCorporation(long orgId)
         {
             var orgInfo = await _organizationRepository.GetAsync(orgId);
-            var corporation = await _corporationRepository.SingleAsync(p => p.OrgId == orgId);
+            var corporation = await _corporationRepository.SingleOrDefaultAsync(p => p.OrgId == orgId);
+            if (corporation == null) 
+            {
+                throw new BusinessException($"不存在orgid为{orgId}的公司信息");
+            }
             var output = corporation.MapTo<GetCorporationOutput>();
             output = orgInfo.MapTo(output);
             return output;
@@ -83,7 +87,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
 
         public async Task<UpdateCorporationOutput> UpdateCorporation(UpdateCorporationInput input)
         {
-            var corporation = await _corporationRepository.SingleAsync(p => p.Id == input.Id);
+            var corporation = await _corporationRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
            
             if (corporation == null)
             {
@@ -113,7 +117,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
 
         private async Task<CreateCorporationOutput> CreateSubCorporation(CreateCorporationInput input)
         {
-            var parentCorporation = await _corporationRepository.SingleAsync(p => p.OrgId == input.ParentId.Value);
+            var parentCorporation = await _corporationRepository.SingleOrDefaultAsync(p => p.OrgId == input.ParentId.Value);
             if (parentCorporation.Mold == Shared.CorporationMold.Monomer)
             {
                 throw new BusinessException("单体公司不允许增加子公司");

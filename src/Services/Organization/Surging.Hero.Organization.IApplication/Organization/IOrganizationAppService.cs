@@ -20,8 +20,8 @@ namespace Surging.Hero.Organization.IApplication.Organization
         /// 获取组织结构树形结构
         /// </summary>
         /// <returns></returns>
-        [HttpGet(true)]
-        [ServiceRoute("get/tree")]
+        [HttpGet]
+        [ServiceRoute("tree")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取组织结构树形结构", AllowPermission = true)]
         Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree();
 
@@ -30,8 +30,9 @@ namespace Surging.Hero.Organization.IApplication.Organization
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        [HttpPost(true)]
+        [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询组织机构", AllowPermission = true)]
+        [ServiceRoute("search")]
         Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query);
 
         /// <summary>
@@ -39,9 +40,9 @@ namespace Surging.Hero.Organization.IApplication.Organization
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [HttpGet(true)]
+        [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetSubOrgIds, Mode = CacheTargetType.Redis)]
-        [ServiceRoute("get/suborgs/{orgId}")]
+        [ServiceRoute("suborgs/{orgId}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取子机构Id", DisableNetwork =true)]
         Task<IEnumerable<long>> GetSubOrgIds([CacheKey(1)]long orgId);
 

@@ -16,8 +16,8 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost(true)]
-        [ServiceRoute("create")]
+        [HttpPost]
+        [ServiceRoute("")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增用户组")]
         Task<string> Create(CreateUserGroupInput input);
 
@@ -26,8 +26,8 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut(true)]
-        [ServiceRoute("update")]
+        [HttpPut]
+        [ServiceRoute("")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新用户组")]
         Task<string> Update(UpdateUserGroupInput input);
 
@@ -36,8 +36,8 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ServiceRoute("get/{id}")]
-        [HttpGet(true)]
+        [ServiceRoute("{id}")]
+        [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取用户组信息", AllowPermission = true)]
         Task<GetUserGroupOutput> Get(long id);
 
@@ -46,8 +46,8 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ServiceRoute("delete/{id}")]
-        [HttpDelete(true)]
+        [ServiceRoute("{id}")]
+        [HttpDelete]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除用户组")]
         Task<string> Delete(long id);
 
@@ -55,8 +55,8 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// 获取用户组树形结构
         /// </summary>
         /// <returns></returns>
-        [HttpGet(true)]
-        [ServiceRoute("get/tree")]
+        [HttpGet]
+        [ServiceRoute("tree")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取用户组树形结构", AllowPermission = true)]
         Task<IEnumerable<ITree<GetUserGroupTreeOutput>>> GetTree();
     }

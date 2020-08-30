@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Surging.Core.CPlatform.Runtime.Server;
+using Surging.Core.CPlatform.Runtime;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.ProxyGenerator;
 
@@ -15,7 +16,7 @@ namespace Surging.Hero.ServiceHost
     public class Startup
     {
         private readonly IConfigurationBuilder _configurationBuilder;
-        private const string updateHostActionRoute = "v1/api/action/init";
+        private const string updateHostActionRoute = "api/action/init";
         private const int hostNameSegmentLength = 3;
 
         public Startup(IConfigurationBuilder config)
@@ -58,7 +59,7 @@ namespace Surging.Hero.ServiceHost
             var rpcParams = new Dictionary<string, object>() { { "actions", actions } };
             try
             {
-                var result = serviceProxyProvider.Invoke<string>(rpcParams, updateHostActionRoute).Result;
+                var result = serviceProxyProvider.Invoke<string>(rpcParams, updateHostActionRoute,HttpMethod.POST).Result;
                 if (result.IsNullOrEmpty())
                 {
                     logger.LogInformation("≥ı ºªØAction ß∞‹");

@@ -17,8 +17,8 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ServiceRoute("get/{id}")]
-        [HttpGet(true)]
+        [ServiceRoute("{id}")]
+        [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetPositionById, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取职位信息", AllowPermission = true)]
         Task<GetPositionOutput> Get([CacheKey(1)]long id);
@@ -28,8 +28,8 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// </summary>
         /// <param name="deptId"></param>
         /// <returns></returns>
-        [ServiceRoute("get/dept/{deptId}")]
-        [HttpGet(true)]
+        [ServiceRoute("dept/{deptId}")]
+        [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionById, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据部门id获取部门职位", AllowPermission = true)]
         Task<IEnumerable<GetPositionOutput>> GetDeptPosition([CacheKey(1)]long deptId);
@@ -39,8 +39,8 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [ServiceRoute("get/org/{orgId}")]
-        [HttpGet(true)]
+        [ServiceRoute("org/{orgId}")]
+        [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织机构id获取职位列表")]
         Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
@@ -50,18 +50,19 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [ServiceRoute("check/delete")]
-        [HttpPost]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查职位是否允许删除", DisableNetwork = true)]
-        Task<bool> CheckCanDeletePosition(CheckCanDeletePositionInput input);
+       
+        //[HttpPost]
+        //[Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查职位是否允许删除", DisableNetwork = true)]
+        //Task<bool> CheckCanDeletePosition(CheckCanDeletePositionInput input);
 
         /// <summary>
         /// 检查某个职位是否允许删除
         /// </summary>
         /// <param name="positionId"></param>
         /// <returns></returns>
-        [HttpPost(true)]
+        [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查某个职位是否允许删除", DisableNetwork = true)]
+        [ServiceRoute("check/{positionId}")]
         Task<bool> Check(long positionId);
     }
 }

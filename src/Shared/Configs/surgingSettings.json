@@ -54,15 +54,17 @@
     "IsCamelCaseResolver": "${IsCamelCaseResolver}|true",
     "Protocols": "Http1AndHttp2",
     "ApiGetWay": {
-      "AccessTokenExpireTimeSpan": "10080",
-      "AuthenticationRoutePath": "v1/api/account/login",
+      "AuthenticationRoutePath": "api/account/login",
       "AuthenticationServiceKey": "",
       "AuthorizationRoutePath": "",
       "AuthorizationServiceKey": "",
       "TokenEndpointPath": "api/oauth2/token",
       "CacheMode": "ddlCache.Redis", //MemoryCache or  gateway.Redis save token
       "IsUsingTerminal": true,
-      "Terminals": "dashboard,web,iosapp,androidapp"
+      "Terminals": "dashboard,web,iosapp,androidapp",
+      "JwtSecret": "${JwtSecret}|whjfdjkhrtgwe",
+      "DefaultExpired": "${DefaultExpired}|24"
+
     },
     "AccessPolicy": {
       "Origins": [ "*" ],
@@ -119,8 +121,9 @@
       "IgnoreFullyQualified": true,
       "MapRoutePaths": [
         {
-          "SourceRoutePath": "v1/api/account/login",
-          "TargetRoutePath": "api/oauth2/token"
+          "SourceRoutePath": "api/account/login",
+          "TargetRoutePath": "api/oauth2/token",
+          "HttpMethod": "POST"
         }
       ]
       // "IngressName": "Notice"

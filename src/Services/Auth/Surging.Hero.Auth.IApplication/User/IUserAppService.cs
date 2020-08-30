@@ -16,8 +16,9 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost(true)]
+        [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增用户")]
+        [ServiceRoute("")]
         Task<string> Create(CreateUserInput input);
 
         /// <summary>
@@ -25,8 +26,9 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut(true)]
+        [HttpPut]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新用户")]
+        [ServiceRoute("")]
         Task<string> Update(UpdateUserInput input);
 
         /// <summary>
@@ -34,8 +36,8 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete(true)]
-        [ServiceRoute("delete/{id}")]
+        [HttpDelete]
+        [ServiceRoute("{id}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除用户")]
         Task<string> Delete(long id);
 
@@ -44,8 +46,9 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        [HttpPost(true)]
+        [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询用户", AllowPermission = true)]
+        [ServiceRoute("search")]
         Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query);
 
         /// <summary>
@@ -53,8 +56,8 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut(true)]
-        [ServiceRoute("update/status")]
+        [HttpPut]
+        [ServiceRoute("status")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "激活/冻结用户")]
         Task<string> UpdateStatus(UpdateUserStatusInput input);
 
@@ -63,8 +66,8 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut(true)]
-        [ServiceRoute("reset/password")]
+        [HttpPut]
+        [ServiceRoute("password")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "重置密码")]
         Task<string> ResetPassword(ResetPasswordInput input);
 
@@ -74,13 +77,13 @@ namespace Surging.Hero.Auth.IApplication.User
         /// <param name="orgId"></param>
         /// <param name="includeSubOrg"></param>
         /// <returns></returns>
-        [HttpGet(true)]
-        [ServiceRoute("get/org/users")]
+        [HttpGet]
+        [ServiceRoute("org")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织id获取部门的用户", DisableNetwork = true)]
         Task<IEnumerable<GetUserBasicOutput>> GetOrgUser(long orgId,bool includeSubOrg);
 
         //[ServiceRoute("{corporationId}")]
-        //[HttpGet(true)]
+        //[HttpGet]
         //Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId);
 
         /// <summary>
@@ -88,8 +91,8 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ServiceRoute("get/{id}")]
-        [HttpGet(true)]
+        [ServiceRoute("{id}")]
+        [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取用户信息", AllowPermission = true)]
         Task<GetUserNormOutput> Get(long id);
 
@@ -98,8 +101,8 @@ namespace Surging.Hero.Auth.IApplication.User
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost(true)]
-        [ServiceRoute("reset/user/org/{id}")]
+        [HttpPost]
+        [ServiceRoute("user/org/{id}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "修改某个用户的部门信息", DisableNetwork = true)]
         Task<bool> ResetUserOrgInfo(long id);
 
@@ -109,6 +112,8 @@ namespace Surging.Hero.Auth.IApplication.User
         /// <param name="positionId"></param>
         /// <returns></returns>
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取某个职位的用户数")]
+        [HttpGet]
+        [ServiceRoute("position/{positionId}")]
         Task<int> GetPositionUserCount(long positionId);
     }
 }

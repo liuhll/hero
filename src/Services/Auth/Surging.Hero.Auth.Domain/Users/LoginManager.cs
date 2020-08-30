@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Surging.Core.CPlatform;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.Dapper.Repositories;
@@ -33,9 +34,9 @@ namespace Surging.Hero.Auth.Domain.Users
                 throw new BusinessException($"密码不正确");
             }
             var payload = new Dictionary<string, object>() {
-                { "UserId",userInfo.Id },
-                { "UserName",userInfo.UserName},
-                { "OrgId",userInfo.OrgId}
+                { ClaimTypes.UserId,userInfo.Id },
+                { ClaimTypes.UserName,userInfo.UserName},
+                { AuthDomainConstants.ClaimTypes.OrgId,userInfo.OrgId}
             };
             return payload;
         }

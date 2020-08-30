@@ -70,7 +70,7 @@ namespace Surging.Hero.ServiceHost
                 Console.WriteLine($"服务主机启动成功{DateTime.Now}。");
 
 #if DEBUG
-                //Startup.InitActions();
+              //  Startup.InitActions();
 #endif
             }
         }
