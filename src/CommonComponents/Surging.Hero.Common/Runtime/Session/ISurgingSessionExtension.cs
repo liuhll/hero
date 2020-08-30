@@ -10,7 +10,7 @@ namespace Surging.Hero.Common.Runtime.Session
 {
     public static class ISurgingSessionExtension
     {
-        private const string getLoginUserInfoApi = "v1/api/account/getloginuser";
+        private const string getLoginUserInfoApi = "api/account/userinfo";
         private const string accountServiceKey = "account.v1";
 
         public static async Task<LoginUserInfo> GetLoginUserInfo(this ISurgingSession session) {
