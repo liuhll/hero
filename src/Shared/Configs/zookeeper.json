@@ -1,5 +1,6 @@
 {
   "ConnectionString": "${Register_Conn}|127.0.0.1:2181",
   "SessionTimeout": "${Register_SessionTimeout}|5000",
-  "ReloadOnChange": true
+  "ReloadOnChange": true,
+  "LockTimeout": 20
 }
