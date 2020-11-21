@@ -15,6 +15,7 @@
     <PackageReference Include="Surging.Cloud.Codec.MessagePack" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.Codec.ProtoBuffer" Version="$(SurgingVersion)" />
 	<PackageReference Include="Surging.Cloud.Stage" Version="$(SurgingVersion)" />
+	<PackageReference Include="Surging.Cloud.Lock" Version="$(SurgingVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />
