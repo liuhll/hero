@@ -40,7 +40,7 @@
     ]
   }, //如果引用多个同类型的组件，需要配置Packages，如果是自定义按需引用，无需配置Packages
   "Lock": {
-    "LockRedisConnections": "${LockRedisConnections}|hero.redis1:6379"
+    "LockRedisConnection": "${LockRedisConnections}|hero.redis1:6379"
   },
   "DbSetting": {
     "DbType": "${DbType}|MySql", //MySql SqlServer, Oracle, Postgres
