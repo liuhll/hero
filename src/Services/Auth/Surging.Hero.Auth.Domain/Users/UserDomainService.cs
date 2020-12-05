@@ -114,10 +114,11 @@ namespace Surging.Hero.Auth.Domain.Users
         {
             var userRoleIds = await GetAllUserRoleIds(userId);
             var sql = @"SELECT DISTINCT m.* FROM RolePermission as rp
-LEFT JOIN Menu as m ON m.PermissionId = rp.PermissionId AND m.IsDeleted=0
+INNER JOIN Menu as m ON m.PermissionId = rp.PermissionId AND m.IsDeleted=0
 WHERE rp.RoleId in @RoleId";
             using (Connection) {
-                return await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds });
+                var menus = await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds });
+                return menus;
             }
 
         }
