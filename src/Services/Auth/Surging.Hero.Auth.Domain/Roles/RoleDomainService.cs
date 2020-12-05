@@ -26,13 +26,15 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
         private readonly IDapperRepository<UserInfo,long> _userInfoRepository;
+        private readonly IDapperRepository<Operation,long> _operationRepository;
 
         public RoleDomainService(IDapperRepository<Role, long> roleRepository,
             IDapperRepository<RolePermission, long> rolePermissionRepository,
             IDapperRepository<Permission, long> permissionRepository,
             IDapperRepository<UserRole, long> userRoleRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
-            IDapperRepository<UserInfo, long> userInfoRepository)
+            IDapperRepository<UserInfo, long> userInfoRepository, 
+            IDapperRepository<Operation, long> operationRepository)
         {
             _roleRepository = roleRepository;
             _rolePermissionRepository = rolePermissionRepository;
@@ -40,6 +42,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             _userRoleRepository = userRoleRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
             _userInfoRepository = userInfoRepository;
+            _operationRepository = operationRepository;
         }
 
         public async Task<bool> CheckPermission(long roleId, string serviceId)
@@ -53,6 +56,18 @@ namespace Surging.Hero.Auth.Domain.Roles
             if (servicePemission.Status == Common.Status.Invalid)
             {
                 throw new AuthException($"{servicePemission.Name}--{servicePemission.Memo}权限状态无效");
+            }
+            if (servicePemission.Mold == Shared.Permissions.PermissionMold.Operation)
+            {
+                var serviceOperation = await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == servicePemission.Id);
+                if (serviceOperation == null) 
+                {
+                    throw new AuthException($"通过{serviceId}未查询到相关操作,请于管理员联系");
+                }
+                if (serviceOperation.Mold == Shared.Operations.OperationMold.Look || serviceOperation.Mold == Shared.Operations.OperationMold.Query) 
+                {
+                    return true;
+                }
             }
             if (rolePermissions.Any(p => p.PermissionId == servicePemission.Id))
             {
@@ -77,9 +92,9 @@ namespace Surging.Hero.Auth.Domain.Roles
 
                 var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
                 if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
-                {
-                    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
-                }
+                //{
+                //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
+                //}
                 await _rolePermissionRepository.DeleteAsync(p => p.RoleId == roleId, conn, trans);
                 foreach (var permissionId in input.PermissionIds)
                 {
