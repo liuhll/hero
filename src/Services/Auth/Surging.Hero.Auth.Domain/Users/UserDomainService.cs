@@ -29,6 +29,7 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IRoleDomainService _roleDomainService;
         private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IPasswordHelper _passwordHelper;
+        private readonly IMenuDomainService _menuDomainService;
 
         public UserDomainService(IDapperRepository<UserInfo, long> userRepository,
             IDapperRepository<Roles.Role, long> roleRepository,
@@ -37,7 +38,8 @@ namespace Surging.Hero.Auth.Domain.Users
             IDapperRepository<Menu, long> menuRepository,
             IRoleDomainService roleDomainService,
             IUserGroupDomainService userGroupDomainService,
-            IPasswordHelper passwordHelper)
+            IPasswordHelper passwordHelper,
+            IMenuDomainService menuDomainService)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -47,7 +49,7 @@ namespace Surging.Hero.Auth.Domain.Users
             _roleDomainService = roleDomainService;
             _userGroupDomainService = userGroupDomainService;
             _passwordHelper = passwordHelper;
-
+            _menuDomainService = menuDomainService;
         }
 
         public async Task<bool> CheckPermission(long userId, string serviceId)
@@ -113,12 +115,26 @@ namespace Surging.Hero.Auth.Domain.Users
         public async Task<IEnumerable<Menu>> GetUserMenu(long userId)
         {
             var userRoleIds = await GetAllUserRoleIds(userId);
-            var sql = @"SELECT DISTINCT m.* FROM RolePermission as rp
+            var menuSql = @"SELECT DISTINCT m.* FROM RolePermission as rp
 INNER JOIN Menu as m ON m.PermissionId = rp.PermissionId AND m.IsDeleted=0
 WHERE rp.RoleId in @RoleId";
+            var operationSql = @"SELECT DISTINCT m.* FROM RolePermission as rp
+INNER JOIN Operation as o ON o.PermissionId = rp.PermissionId AND o.IsDeleted=0
+INNER JOIN Menu as m ON m.Id = o.MenuId AND m.IsDeleted=0
+WHERE rp.RoleId in @RoleId";
+            var allMenus = new List<Menu>();
             using (Connection) {
-                var menus = await Connection.QueryAsync<Menu>(sql, new { RoleId = userRoleIds });
-                return menus;
+                var menus = await Connection.QueryAsync<Menu>(menuSql, new { RoleId = userRoleIds });
+                foreach (var menu in menus) 
+                {
+                    allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
+                }
+                var operationMenus = await Connection.QueryAsync<Menu>(operationSql, new { RoleId = userRoleIds });
+                foreach (var menu in operationMenus)
+                {
+                    allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
+                }
+                return allMenus.Distinct();
             }
 
         }
