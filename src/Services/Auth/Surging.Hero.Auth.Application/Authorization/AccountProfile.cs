@@ -15,6 +15,7 @@ namespace Surging.Hero.Auth.Application.Authorization
             CreateMap<GetUserNormOutput, LoginUserInfo>();
             CreateMap<IApplication.Role.Dtos.GetDisplayRoleOutput, GetDisplayRoleOutput>();
             CreateMap<Menu, GetUserMenuTreeOutput>().ForMember(p => p.Children, opt => opt.Ignore()).ForMember(p=>p.FullName, opt => opt.Ignore());
+            CreateMap<Menu, GetUserMenuOutput>().ForMember(p => p.FullName, opt => opt.Ignore());
             CreateMap<Operation, GetUserOperationOutput>();
         }
     }

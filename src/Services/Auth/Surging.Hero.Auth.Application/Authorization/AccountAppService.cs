@@ -39,7 +39,7 @@ namespace Surging.Hero.Auth.Application.Authorization
 
         }
 
-        public async Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserMenu()
+        public async Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserTreeMenu()
         {
             if (_surgingSession == null || !_surgingSession.UserId.HasValue)
             {
@@ -48,6 +48,17 @@ namespace Surging.Hero.Auth.Application.Authorization
             var userMenus = await _userDomainService.GetUserMenu(_surgingSession.UserId.Value);
             var treeOutputs = userMenus.MapTo<IEnumerable<GetUserMenuTreeOutput>>();
             return treeOutputs.BuildTree();
+        }
+
+        public async Task<IEnumerable<GetUserMenuOutput>> GetUserMenu()
+        {
+            if (_surgingSession == null || !_surgingSession.UserId.HasValue)
+            {
+                throw new BusinessException("您当前没有登录系统");
+            }
+            var userMenus = await _userDomainService.GetUserMenu(_surgingSession.UserId.Value);
+            var outputs = userMenus.MapTo<IEnumerable<GetUserMenuOutput>>();
+            return outputs;
         }
 
         public async Task<IEnumerable<GetUserOperationOutput>> GetUserOperation(long menuId)
@@ -64,5 +75,6 @@ namespace Surging.Hero.Auth.Application.Authorization
         {
             return await _loginManager.Login(input.UserName, input.Password);
         }
+
     }
 }

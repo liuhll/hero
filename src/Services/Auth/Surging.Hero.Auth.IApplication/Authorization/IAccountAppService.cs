@@ -32,13 +32,22 @@ namespace Surging.Hero.Auth.IApplication.Authorization
         Task<LoginUserInfo> GetLoginUser();
 
         /// <summary>
+        /// 获取登录用户菜单权限列表【树】
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Service(Director = Developers.Liuhll, Date = "2019-09-23", Name = "获取登录用户菜单权限列表", EnableAuthorization = true, AllowPermission = true)]
+        [ServiceRoute("menu/tree")]
+        Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserTreeMenu();
+
+        /// <summary>
         /// 获取登录用户菜单权限列表
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2019-09-23", Name = "获取登录用户菜单权限列表", EnableAuthorization = true, AllowPermission = true)]
         [ServiceRoute("menu")]
-        Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserMenu();
+        Task<IEnumerable<GetUserMenuOutput>> GetUserMenu();
 
         /// <summary>
         /// 通过菜单Id获取用户的操作权限
