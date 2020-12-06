@@ -59,7 +59,7 @@
     "ApiGetWay": {
       "AuthenticationRoutePath": "api/account/login",
       "AuthenticationServiceKey": "",
-      "AuthorizationRoutePath": "",
+      "AuthorizationRoutePath": "api/permission/check",
       "AuthorizationServiceKey": "",
       "TokenEndpointPath": "api/oauth2/token",
       "CacheMode": "ddlCache.Redis", //MemoryCache or  gateway.Redis save token
