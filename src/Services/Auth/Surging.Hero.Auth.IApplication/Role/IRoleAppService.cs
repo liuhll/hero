@@ -80,7 +80,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         //Task<string> SetPermissions(SetRolePermissionInput input);
 
         [HttpDelete]
-        [ServiceRoute("delete/{id}")]
+        [ServiceRoute("{id}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除角色")]
         Task<string> Delete(long id);
     }
