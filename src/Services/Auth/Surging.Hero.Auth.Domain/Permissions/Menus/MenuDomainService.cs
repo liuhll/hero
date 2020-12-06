@@ -169,5 +169,56 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             return permissionChildren;
 
         }
+
+        public async Task<IEnumerable<Menu>> GetParents(long menuId, bool isIncludeSelf = true)
+        {
+            var parentMenus = new List<Menu>();
+            var menu = await _menuRepository.GetAsync(menuId);
+            if (isIncludeSelf)
+            {
+                parentMenus.Add(menu);
+            }
+            return await GetParentMenus(menu.ParentId, parentMenus);
+        }
+
+        public async Task<IEnumerable<Menu>> GetParentsByPermissionId(long permissionId, Shared.Permissions.PermissionMold mold, bool isIncludeSelf = true)
+        {
+            var parentMenus = new List<Menu>();
+            if (mold == Shared.Permissions.PermissionMold.Menu)
+            {
+                var menu = await _menuRepository.SingleAsync(p => p.PermissionId == permissionId);
+                if (isIncludeSelf)
+                {
+                    parentMenus.Add(menu);
+                }
+                return await GetParentMenus(menu.ParentId, parentMenus);
+            }
+            else 
+            {
+                var operation = await _operationRepository.SingleAsync(p => p.PermissionId == permissionId);
+                var menu = await _menuRepository.SingleAsync(p => p.Id == operation.MenuId);
+                parentMenus.Add(menu);
+                return await GetParentMenus(menu.ParentId, parentMenus);
+
+            }
+
+           
+        }
+
+        private async Task<IEnumerable<Menu>> GetParentMenus(long parentId, List<Menu> menus)
+        {
+            if (parentId != 0)
+            {
+                var parentMenu = await _menuRepository.GetAsync(parentId);
+                menus.Add(parentMenu);
+                if (parentMenu.ParentId != 0)
+                {
+                    await GetParentMenus(parentMenu.ParentId, menus);
+                }
+            }
+            return menus;
+        }
+
+
     }
 }

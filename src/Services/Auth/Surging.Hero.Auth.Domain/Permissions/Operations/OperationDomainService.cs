@@ -110,7 +110,9 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                 throw new BusinessException($"不存在Id为{operation.MenuId}的菜单信息");
             }
             operation = input.MapTo(operation);
-            permission = input.MapTo(permission);
+            //permission = input.MapTo(permission);
+            permission.Name = input.Name;
+            permission.Memo = input.Memo;
 
             await UnitOfWorkAsync(async (conn, trans) =>
             {

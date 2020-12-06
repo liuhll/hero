@@ -13,5 +13,8 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
 
         Task<IEnumerable<Menu>> GetAll();
         Task<IEnumerable<GetPermissionTreeOutput>> GetTree();
+
+        Task<IEnumerable<Menu>> GetParents(long menuId, bool isIncludeSelf = true);
+        Task<IEnumerable<Menu>> GetParentsByPermissionId(long permissionId, Shared.Permissions.PermissionMold mold, bool isIncludeSelf = true);
     }
 }
