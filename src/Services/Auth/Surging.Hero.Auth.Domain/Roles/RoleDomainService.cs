@@ -51,18 +51,18 @@ namespace Surging.Hero.Auth.Domain.Roles
             var servicePemission = await GetservicePemission(serviceId);
             if (servicePemission == null)
             {
-                throw new AuthException($"通过{serviceId}未查询到相关权限信息,请于管理员联系");
+                throw new AuthException($"通过{serviceId}未查询到相关权限信息,请于管理员联系", StatusCode.UnAuthorized);
             }
             if (servicePemission.Status == Common.Status.Invalid)
             {
-                throw new AuthException($"{servicePemission.Name}--{servicePemission.Memo}权限状态无效");
+                throw new AuthException($"{servicePemission.Name}--{servicePemission.Memo}权限状态无效", StatusCode.UnAuthorized);
             }
             if (servicePemission.Mold == Shared.Permissions.PermissionMold.Operation)
             {
                 var serviceOperation = await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == servicePemission.Id);
                 if (serviceOperation == null)
                 {
-                    throw new AuthException($"通过{serviceId}未查询到相关操作,请于管理员联系");
+                    throw new AuthException($"通过{serviceId}未查询到相关操作,请于管理员联系", StatusCode.UnAuthorized);
                 }
                 if (serviceOperation.Mold == Shared.Operations.OperationMold.Look || serviceOperation.Mold == Shared.Operations.OperationMold.Query)
                 {
