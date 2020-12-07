@@ -62,7 +62,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         [ServiceRoute("org/{orgId}")]
         [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptByOrgId, Mode = CacheTargetType.Redis)]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织id获取部门信息")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织id获取部门信息", AllowPermission = true)]
         Task<GetDepartmentOutput> GetByOrgId([CacheKey(1)]long orgId);
 
         /// <summary>

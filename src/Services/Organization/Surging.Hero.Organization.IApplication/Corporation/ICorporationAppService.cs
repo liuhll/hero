@@ -46,7 +46,7 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         /// <returns></returns>
         [ServiceRoute("org/{orgId}")]
         [HttpGet]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取公司信息")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取公司信息", AllowPermission = true)]
         Task<GetCorporationOutput> GetByOrgId(long orgId);
     }
 }
