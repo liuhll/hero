@@ -98,7 +98,7 @@ namespace Surging.Hero.Auth.Domain.Permissions
             var checkPermissionResult = await _userDomainService.CheckPermission(userId,serviceId) || await  _userGroupDomainService.CheckPermission(userId,serviceId);
             if (!checkPermissionResult) {
                 var actionName = servcieRoute.ServiceDescriptor.GroupName().IsNullOrEmpty() ? servcieRoute.ServiceDescriptor.RoutePath : servcieRoute.ServiceDescriptor.GroupName();
-                throw new AuthException($"您没有访问{actionName}的权限");
+                throw new AuthException($"您没有{actionName}的权限", StatusCode.UnAuthorized);
             }
             return true;
         }
