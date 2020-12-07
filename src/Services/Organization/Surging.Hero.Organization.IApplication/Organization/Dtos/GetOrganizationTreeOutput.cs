@@ -2,6 +2,7 @@
 using Surging.Core.Domain.Trees;
 using Surging.Hero.Organization.Domain.Shared.Organizations;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 {
@@ -22,6 +23,8 @@ namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 
         public long ParentId { get; set; }
         public string FullName { get; set; }
-        public IEnumerable<ITree<GetOrganizationTreeOutput>> Children { get; set; }
+
+        private IEnumerable<ITree<GetOrganizationTreeOutput>> _children;
+        public IEnumerable<ITree<GetOrganizationTreeOutput>> Children { get { if (_children == null || !_children.Any()) { return null; } return _children; } set { _children = value; } }
     }
 }
