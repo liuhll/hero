@@ -42,7 +42,7 @@ namespace Surging.Hero.Organization.IApplication.Position
         [ServiceRoute("org/{orgId}")]
         [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = CacheTargetType.Redis)]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织机构id获取职位列表")]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织机构id获取职位列表", AllowPermission = true)]
         Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
 
         /// <summary>
