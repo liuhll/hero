@@ -21,6 +21,7 @@ namespace Surging.Hero.Auth.Application.Permission
             });
             CreateMap<CreateMenuInput, Domain.Permissions.Permission>().AfterMap((src,dest)=> {
                 dest.Mold = PermissionMold.Menu;
+                dest.Status = Common.Status.Valid;
             });
             CreateMap<UpdateMenuInput, Menu>();
             CreateMap<UpdateMenuInput, Domain.Permissions.Permission>();
@@ -29,6 +30,7 @@ namespace Surging.Hero.Auth.Application.Permission
             CreateMap<CreateOperationInput, Operation>();
             CreateMap<CreateOperationInput, Domain.Permissions.Permission>().AfterMap((src, dest) => {
                 dest.Mold = PermissionMold.Operation;
+                dest.Status = Common.Status.Valid;
             });
 
             CreateMap<UpdateOperationInput, Operation>();
