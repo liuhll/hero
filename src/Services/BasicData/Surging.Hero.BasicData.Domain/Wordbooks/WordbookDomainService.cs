@@ -6,7 +6,10 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
+using SortType = Surging.Core.Dapper.Repositories.SortType;
 
 namespace Surging.Hero.BasicData.Domain.Wordbooks
 {
@@ -119,18 +122,34 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             {
                 throw new BusinessException($"系统中不存在code为{code}的字典类型");
             }
-            return await GetWordbookItems(wordbook.Id);
+         
+            var wordbookItems = await _wordbookItemRepository.GetAllAsync(p => p.WordbookId == wordbook.Id);
+            var wordbookItemOutputs = wordbookItems.MapTo<IEnumerable<GetWordbookItemOutput>>().Select(p => { p.WordbookCode = wordbook.Code; return p; }).OrderBy(p => p.Sort);
+            return wordbookItemOutputs;
         }
 
-        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
+        public async Task<IPagedResult<GetWordbookItemOutput>> GetWordbookItems(GetWordbookItemsInput input)
         {
-            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == wordbookId);
-            if (wordbook == null)
+            Wordbook wordbook = null;
+            if (input.WordbookId.HasValue)
             {
-                throw new BusinessException($"系统中不存在Id为{wordbookId}的字典类型");
+                wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Id == input.WordbookId);
+                if (wordbook == null)
+                {
+                    throw new BusinessException($"系统中不存在Id为{input.WordbookId}的字典类型");
+                }
             }
-            var wordbookItems = await _wordbookItemRepository.GetAllAsync(p => p.WordbookId == wordbookId);
-            var wordbookItemOutputs = wordbookItems.MapTo<IEnumerable<GetWordbookItemOutput>>().Select(p => { p.WordbookCode = wordbook.Code; return p; }).OrderBy(p=>p.Sort);
+            else 
+            {
+                wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Code == input.Code);
+                if (wordbook == null)
+                {
+                    throw new BusinessException($"系统中不存在Code为{input.Code}的字典类型");
+                }
+            }
+            
+            var wordbookItems = await _wordbookItemRepository.GetPageAsync(p => p.WordbookId == input.WordbookId, input.PageIndex, input.PageCount, new Dictionary<string, SortType>() { { "Sort", SortType.Desc } });
+            var wordbookItemOutputs = wordbookItems.Item1.MapTo<IEnumerable<GetWordbookItemOutput>>().Select(p => { p.WordbookCode = wordbook.Code; return p; }).GetPagedResult(wordbookItems.Item2);
             return wordbookItemOutputs;
         }
 

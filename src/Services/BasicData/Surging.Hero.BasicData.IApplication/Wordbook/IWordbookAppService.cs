@@ -68,13 +68,12 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// <summary>
         /// 获取字典项
         /// </summary>
-        /// <param name="wordbookId"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        [ServiceRoute("items/{wordbookId}")]
-        [HttpGet]
-        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetWordBookItemsById, Mode = CacheTargetType.Redis)]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取字典项")]
-        Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems([CacheKey(1)]long wordbookId);
+        [ServiceRoute("items/page")]
+        [HttpPost]        
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取字典项", AllowPermission = true)]
+        Task<IPagedResult<GetWordbookItemOutput>> GetWordbookItems(GetWordbookItemsInput input);
 
         /// <summary>
         /// 新增字典项

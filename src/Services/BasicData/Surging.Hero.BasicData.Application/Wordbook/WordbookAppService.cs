@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
+using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Domain;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
@@ -67,9 +69,13 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             return await _wordbookDomainService.GetWordbookItemByCode(code);
         }
 
-        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItems(long wordbookId)
+        public async Task<IPagedResult<GetWordbookItemOutput>> GetWordbookItems(GetWordbookItemsInput input)
         {
-            return await _wordbookDomainService.GetWordbookItems(wordbookId);
+            if (input.Code.IsNullOrEmpty() && !input.WordbookId.HasValue) 
+            {
+                throw new BusinessException("字典编码和字典Id不能同时为空");
+            }
+            return await _wordbookDomainService.GetWordbookItems(input);
         }
 
         public async Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query)
