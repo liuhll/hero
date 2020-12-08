@@ -149,6 +149,15 @@ namespace Surging.Hero.Auth.Domain.Roles
                     roleOutput.LastModificationUserName = modifyUserInfo.ChineseName;
                 }
             }
+            if (roleOutput.CreatorUserId.HasValue)
+            {
+                var creatorUserInfo = await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == roleOutput.CreatorUserId.Value);
+                if (creatorUserInfo != null)
+                {
+                    roleOutput.CreatorUserName = creatorUserInfo.ChineseName;
+                }
+            }
+
             roleOutput.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == role.Id)).Select(p => p.PermissionId).ToArray();
 
             return roleOutput;
@@ -177,6 +186,14 @@ namespace Surging.Hero.Auth.Domain.Roles
                     if (modifyUserInfo != null)
                     {
                         output.LastModificationUserName = modifyUserInfo.ChineseName;
+                    }
+                }
+                if (output.CreatorUserId.HasValue)
+                {
+                    var creatorUserInfo = await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.CreatorUserId.Value);
+                    if (creatorUserInfo != null)
+                    {
+                        output.CreatorUserName = creatorUserInfo.ChineseName;
                     }
                 }
                 output.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == output.Id)).Select(p => p.PermissionId).ToArray();

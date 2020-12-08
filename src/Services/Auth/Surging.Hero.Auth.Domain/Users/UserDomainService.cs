@@ -168,7 +168,11 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
 
         public async Task<GetUserNormOutput> GetUserNormInfoById(long id)
         {
-            var userInfo = await _userRepository.GetAsync(id);
+            var userInfo = await _userRepository.SingleOrDefaultAsync(p=> p.Id == id);
+            if (userInfo == null) 
+            {
+                throw new BusinessException($"系统中不存在Id为{id}的用户");
+            }
             var userInfoOutput = userInfo.MapTo<GetUserNormOutput>();
             if (userInfoOutput.OrgId.HasValue) 
             {
@@ -185,6 +189,14 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                 if (modifyUserInfo != null) 
                 {
                     userInfoOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                }
+            }
+            if (userInfoOutput.CreatorUserId.HasValue)
+            {
+                var creatorUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userInfoOutput.CreatorUserId.Value));
+                if (creatorUserInfo != null)
+                {
+                    userInfoOutput.CreatorUserName = creatorUserInfo.ChineseName;
                 }
             }
             userInfoOutput.Roles = (await GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();

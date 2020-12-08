@@ -17,11 +17,18 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 
         public string DisplayRoles { get { return string.Join(",", Roles.Select(p => p.Name)); } }
 
+        public virtual DateTime CreationTime { get; set; }
+        public virtual long? CreatorUserId { get; set; }
+
+        public virtual string CreatorUserName { get; set; }
+
         public DateTime? LastModificationTime { get; set; }
 
         public string LastModificationUserName { get; set; }
 
         public long? LastModifierUserId { get; set; }
+
+
         public long DeptId { get; set; }
     }
 }

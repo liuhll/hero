@@ -129,7 +129,15 @@ namespace Surging.Hero.Auth.Application.User
                     }
                    
                 }
-               
+                if (userOutput.CreatorUserId.HasValue)
+                {
+                    var creatorUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value));
+                    if (creatorUserInfo != null)
+                    {
+                        userOutput.CreatorUserName = creatorUserInfo.ChineseName;
+                    }
+                }
+
             }
 
             return queryResultOutput;

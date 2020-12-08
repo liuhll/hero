@@ -29,6 +29,11 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         /// </summary>
         public string StatusDesc { get { return Status.GetDescription(); } }
 
+        public virtual DateTime CreationTime { get; set; }
+        public virtual long? CreatorUserId { get; set; }
+
+        public virtual string CreatorUserName { get; set; }
+
         /// <summary>
         /// 最后修改时间
         /// </summary>
