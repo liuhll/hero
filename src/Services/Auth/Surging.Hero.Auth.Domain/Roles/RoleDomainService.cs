@@ -175,7 +175,7 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
         {
-            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) && p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);
+            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) || p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);
 
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items)
