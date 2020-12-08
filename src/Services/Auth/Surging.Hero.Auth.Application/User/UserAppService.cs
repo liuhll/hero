@@ -21,6 +21,7 @@ using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using System.Linq.Expressions;
+using Surging.Core.CPlatform.Runtime.Session;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -29,15 +30,13 @@ namespace Surging.Hero.Auth.Application.User
     {
         private readonly IUserDomainService _userDomainService;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
-        private readonly IDapperRepository<Domain.Roles.Role, long> _roleRepository;
-
+        private readonly ISurgingSession _session;
         public UserAppService(IUserDomainService userDomainService,
-            IDapperRepository<UserInfo, long> userRepository,
-            IDapperRepository<Domain.Roles.Role, long> roleRepository)
+            IDapperRepository<UserInfo, long> userRepository)
         {
             _userDomainService = userDomainService;
             _userRepository = userRepository;
-            _roleRepository = roleRepository;
+            _session = NullSurgingSession.Instance;
         }
 
 
@@ -74,6 +73,10 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<string> Delete(long id)
         {
+            if (_session.UserId.Value == id) 
+            {
+                throw new BusinessException($"不允许删除当前登录用户");
+            }
             var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == id);
             if (userInfo == null)
             {
@@ -120,7 +123,11 @@ namespace Surging.Hero.Auth.Application.User
                 if (userOutput.LastModifierUserId.HasValue) 
                 {
                     var modifyUserInfo = (await _userRepository.SingleOrDefaultAsync(p=>p.Id == userOutput.LastModifierUserId.Value));
-                    userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                    if (modifyUserInfo != null) 
+                    {
+                        userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                    }
+                   
                 }
                
             }
