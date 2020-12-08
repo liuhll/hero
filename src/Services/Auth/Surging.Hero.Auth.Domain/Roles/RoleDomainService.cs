@@ -94,14 +94,15 @@ namespace Surging.Hero.Auth.Domain.Roles
                 //{
                 //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
                 //}
-                await _rolePermissionRepository.DeleteAsync(p => p.RoleId == roleId, conn, trans);
+                var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
+                await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
                 foreach (var permissionId in input.PermissionIds)
                 {
-                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
-                    if (permission == null)
-                    {
-                        throw new BusinessException($"不存在Id为{permissionId}的权限信息");
-                    }
+                    //var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
+                    //if (permission == null)
+                    //{
+                    //    throw new BusinessException($"不存在Id为{permissionId}的权限信息");
+                    //}
                     await _rolePermissionRepository.InsertAsync(new RolePermission() { PermissionId = permissionId, RoleId = roleId }, conn, trans);
                 }
             }, Connection);
@@ -254,14 +255,16 @@ namespace Surging.Hero.Auth.Domain.Roles
                 //{
                 //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
                 //}
-                await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.Id, conn, trans);
+                //await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.Id, conn, trans);
+                var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
+                await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
                 foreach (var permissionId in input.PermissionIds)
                 {
-                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
-                    if (permission == null)
-                    {
-                        throw new BusinessException($"不存在Id为{permissionId}的权限信息");
-                    }
+                    //var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
+                    //if (permission == null)
+                    //{
+                    //    throw new BusinessException($"不存在Id为{permissionId}的权限信息");
+                    //}
                     await _rolePermissionRepository.InsertAsync(new RolePermission() { PermissionId = permissionId, RoleId = input.Id }, conn, trans);
                 }
             }, Connection);
