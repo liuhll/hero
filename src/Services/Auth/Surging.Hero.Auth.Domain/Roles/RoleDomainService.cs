@@ -97,7 +97,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 await _rolePermissionRepository.DeleteAsync(p => p.RoleId == roleId, conn, trans);
                 foreach (var permissionId in input.PermissionIds)
                 {
-                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
+                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
                     if (permission == null)
                     {
                         throw new BusinessException($"不存在Id为{permissionId}的权限信息");
@@ -257,7 +257,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.Id, conn, trans);
                 foreach (var permissionId in input.PermissionIds)
                 {
-                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
+                    var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
                     if (permission == null)
                     {
                         throw new BusinessException($"不存在Id为{permissionId}的权限信息");
