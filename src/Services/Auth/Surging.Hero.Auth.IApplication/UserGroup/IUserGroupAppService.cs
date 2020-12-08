@@ -1,6 +1,8 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.Trees;
+using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
 using System.Collections.Generic;
@@ -52,12 +54,42 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         Task<string> Delete(long id);
 
         /// <summary>
-        /// 获取用户组树形结构
+        /// 检索用户组
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        [ServiceRoute("tree")]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取用户组树形结构", AllowPermission = true)]
-        Task<IEnumerable<ITree<GetUserGroupTreeOutput>>> GetTree();
+        [HttpPost]
+        [ServiceRoute("search")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "查询用户组", AllowPermission = true)]
+        Task<IPagedResult<GetUserGroupOutput>> Search(QueryUserGroupInput query);
+
+        /// <summary>
+        /// 给用户组分配用户
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ServiceRoute("users")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "分配用户", AllowPermission = true)]
+        Task<string> AllocationUsers(AllocationUserIdsInput input);
+
+        /// <summary>
+        /// 获取该用户组所辖用户
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ServiceRoute("users/search")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "获取用户组相关用户")]
+        Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
+
+        /// <summary>
+        /// 获取该用户组所辖用户
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ServiceRoute("users")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "删除用户组相关用户")]
+        Task<string> DeleteUserGroupUser(DeleteUserGroupUserInput input);
     }
 }

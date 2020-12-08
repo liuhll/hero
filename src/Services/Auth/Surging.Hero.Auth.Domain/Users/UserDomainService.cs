@@ -24,7 +24,7 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IDapperRepository<UserInfo, long> _userRepository;
         private readonly IDapperRepository<Roles.Role, long> _roleRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
-        private readonly IDapperRepository<UserUserGroupRelation,long> _userUserGroupRelationRoleRepository;
+        private readonly IDapperRepository<UserUserGroupRelation,long> _userUserGroupRelationRepository;
         private readonly IDapperRepository<Menu, long> _menuRepository;
         private readonly IRoleDomainService _roleDomainService;
         private readonly IUserGroupDomainService _userGroupDomainService;
@@ -44,7 +44,7 @@ namespace Surging.Hero.Auth.Domain.Users
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
-            _userUserGroupRelationRoleRepository = userUserGroupRelationRoleRepository;
+            _userUserGroupRelationRepository = userUserGroupRelationRoleRepository;
             _menuRepository = menuRepository;
             _roleDomainService = roleDomainService;
             _userGroupDomainService = userGroupDomainService;
@@ -105,7 +105,7 @@ namespace Surging.Hero.Auth.Domain.Users
             await UnitOfWorkAsync(async (conn, trans) => {
                 await _userRepository.DeleteAsync(p=>p.Id == id, conn, trans);
                 await _userRoleRepository.DeleteAsync(p => p.UserId == id, conn, trans);
-                await _userUserGroupRelationRoleRepository.DeleteAsync(p => p.UserId == id, conn, trans);
+                await _userUserGroupRelationRepository.DeleteAsync(p => p.UserId == id, conn, trans);
 
                 // todo: 删除其他关联表
 
@@ -156,7 +156,7 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
         {
             var userRoles = await _userRoleRepository.GetAllAsync(p => p.UserId == userId);
             var userRoleIds = userRoles.Select(p => p.RoleId).ToList();
-            var userGroups = await _userUserGroupRelationRoleRepository.GetAllAsync(p => p.UserId == userId);
+            var userGroups = await _userUserGroupRelationRepository.GetAllAsync(p => p.UserId == userId);
             foreach (var userGroup in userGroups)
             {
                 var userGroupRoles = await _userGroupDomainService.GetUserGroupRoles(userGroup.UserGroupId);

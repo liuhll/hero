@@ -15,5 +15,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId);
         Task<IEnumerable<GetUserBasicOutput>> GetUserGroupUsers(long userGroupId);
         Task<bool> CheckPermission(long userId, string serviceId);
+        Task<string> AllocationUsers(AllocationUserIdsInput input);
+        Task DeleteUserGroupUser(DeleteUserGroupUserInput input);
     }
 }

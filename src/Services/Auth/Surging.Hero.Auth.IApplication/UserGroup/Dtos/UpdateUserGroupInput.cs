@@ -4,8 +4,9 @@
     {
         public long Id { get; set; }
 
-        public long[] UserIds { get; set; }
-
-        public long[] RoleIds { get; set; }
+        public long[] RoleIds
+        {
+            get; set;
+        }
     }
 }
