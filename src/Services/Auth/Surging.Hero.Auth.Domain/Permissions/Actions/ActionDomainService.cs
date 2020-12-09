@@ -14,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using Nest;
+using Surging.Core.Lock.Provider;
+using Surging.Core.Lock;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Actions
 {
@@ -21,13 +23,15 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
     {
         private readonly IDapperRepository<Action, long> _actionRepository;
         private readonly IDapperRepository<OperationActionRelation, long> _operationActionRelationRepository;
-        private readonly AsyncLocal<string> _lock = new AsyncLocal<string>();
+        private readonly ILockerProvider _lockerProvider;
 
         public ActionDomainService(IDapperRepository<Action, long> actionRepository,
-            IDapperRepository<OperationActionRelation, long> operationActionRelationRepository)
+            IDapperRepository<OperationActionRelation, long> operationActionRelationRepository,
+            ILockerProvider lockProvider)
         {
             _actionRepository = actionRepository;
             _operationActionRelationRepository = operationActionRelationRepository;
+            _lockerProvider = lockProvider;
         }
 
         public async Task<IEnumerable<GetAppServiceOutput>> GetAppServices(QueryAppServiceInput query)
@@ -137,44 +141,51 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
 
         public async Task InitActions(ICollection<InitActionActionInput> actions)
         {
-            await UnitOfWorkAsync(async (conn, trans) => {
-                foreach (var action in actions)
+            using (var locker = await _lockerProvider.CreateLockAsync("InitActions")) 
+            {
+                foreach (var action in actions) 
                 {
-                    var actionEntity = await _actionRepository.SingleOrDefaultAsync(p => p.ServiceId == action.ServiceId);
-                    if (actionEntity == null)
+                    await locker.Lock(async () => 
                     {
-                        actionEntity = action.MapTo<Action>();
-                        var actionId = await _actionRepository.InsertAndGetIdAsync(actionEntity, conn, trans);
-                        var operationActionRelations = await _operationActionRelationRepository.GetAllAsync(p => p.ServiceId == action.ServiceId);
-                        if (operationActionRelations.Any())
+                        await UnitOfWorkAsync(async (conn, trans) =>
                         {
-                            foreach (var operationActionRelation in operationActionRelations)
+                            var actionEntity = await _actionRepository.SingleOrDefaultAsync(p => p.ServiceId == action.ServiceId);
+                            if (actionEntity == null)
                             {
-                                operationActionRelation.ActionId = actionId;
-                                await _operationActionRelationRepository.UpdateAsync(operationActionRelation, conn, trans);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        actionEntity = action.MapTo(actionEntity);
-                        await _actionRepository.UpdateAsync(actionEntity, conn, trans);
-                        var operationActionRelations = await _operationActionRelationRepository.GetAllAsync(p => p.ServiceId == action.ServiceId);
-                        if (operationActionRelations.Any())
-                        {
-                            foreach (var operationActionRelation in operationActionRelations)
-                            {
-                                if (operationActionRelation.ActionId != actionEntity.Id)
+                                actionEntity = action.MapTo<Action>();
+                                var actionId = await _actionRepository.InsertAndGetIdAsync(actionEntity, conn, trans);
+                                var operationActionRelations = await _operationActionRelationRepository.GetAllAsync(p => p.ServiceId == action.ServiceId, conn, trans);
+                                if (operationActionRelations.Any())
                                 {
-                                    operationActionRelation.ActionId = actionEntity.Id;
-                                    await _operationActionRelationRepository.UpdateAsync(operationActionRelation, conn, trans);
+                                    foreach (var operationActionRelation in operationActionRelations)
+                                    {
+                                        operationActionRelation.ActionId = actionId;
+                                        await _operationActionRelationRepository.UpdateAsync(operationActionRelation, conn, trans);
+                                    }
                                 }
-
                             }
-                        }
-                    }
+                            else
+                            {
+                                actionEntity = action.MapTo(actionEntity);
+                                await _actionRepository.UpdateAsync(actionEntity, conn, trans);
+                                var operationActionRelations = await _operationActionRelationRepository.GetAllAsync(p => p.ServiceId == action.ServiceId);
+                                if (operationActionRelations.Any())
+                                {
+                                    foreach (var operationActionRelation in operationActionRelations)
+                                    {
+                                        if (operationActionRelation.ActionId != actionEntity.Id)
+                                        {
+                                            operationActionRelation.ActionId = actionEntity.Id;
+                                            await _operationActionRelationRepository.UpdateAsync(operationActionRelation, conn, trans);
+                                        }
+
+                                    }
+                                }
+                            }
+                        }, Connection);
+                    });
                 }
-            }, Connection);
+            }
 
         }
     }

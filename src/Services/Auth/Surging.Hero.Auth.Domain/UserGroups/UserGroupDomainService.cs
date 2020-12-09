@@ -6,6 +6,8 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Lock;
+using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
@@ -25,13 +27,15 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<UserInfo, long> _userRepository;
         private readonly IDapperRepository<Roles.Role, long> _roleRepository;
         private readonly IRoleDomainService _roleDomainService;
+        private readonly ILockerProvider _lockerProvider;
 
         public UserGroupDomainService(IDapperRepository<UserGroup, long> userGroupRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
             IDapperRepository<UserUserGroupRelation, long> userUserGroupRelationRepository,
             IDapperRepository<UserInfo, long> userRepository,
             IDapperRepository<Roles.Role, long> roleRepository,
-            IRoleDomainService roleDomainService)
+            IRoleDomainService roleDomainService,
+            ILockerProvider lockerProvider)
         {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
@@ -39,6 +43,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _roleDomainService = roleDomainService;
+            _lockerProvider = lockerProvider;
         }
 
         public async Task Create(CreateUserGroupInput input)
@@ -49,19 +54,26 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 throw new BusinessException($"系统中已经存在{input.Name}的用户组");
             }
             var userGroup = input.MapTo<UserGroup>();
-            await UnitOfWorkAsync(async (conn, trans) =>
+            using (var locker = await _lockerProvider.CreateLockAsync("CreateUserGroup"))
             {
-                var userGroupId = await _userGroupRepository.InsertAndGetIdAsync(userGroup, conn, trans);    
-                foreach (var roleId in input.RoleIds)
+                await locker.Lock(async () =>
                 {
-                    var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, conn, trans);
-                    if (roleInfo == null)
+                    await UnitOfWorkAsync(async (conn, trans) =>
                     {
-                        throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
-                    }
-                    await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroupId, RoleId = roleId }, conn, trans);
-                }
-            }, Connection);
+                        var userGroupId = await _userGroupRepository.InsertAndGetIdAsync(userGroup, conn, trans);
+                        foreach (var roleId in input.RoleIds)
+                        {
+                            var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, conn, trans);
+                            if (roleInfo == null)
+                            {
+                                throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
+                            }
+                            await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroupId, RoleId = roleId }, conn, trans);
+                        }
+                    }, Connection);
+                });
+            }
+           
 
         }
 
@@ -72,13 +84,20 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             {
                 throw new BusinessException($"不存在Id为{id}的用户组信息");
             }
-            await UnitOfWorkAsync(async (conn, trans) =>
+            using (var locker = await _lockerProvider.CreateLockAsync("DeleteUserGroup"))
             {
-                await _userGroupRepository.DeleteAsync(p => p.Id == id, conn, trans);
-                await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
-                await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
+                await locker.Lock(async () =>
+                {
+                    await UnitOfWorkAsync(async (conn, trans) =>
+                    {
+                        await _userGroupRepository.DeleteAsync(p => p.Id == id, conn, trans);
+                        await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
+                        await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
 
-            }, Connection);
+                    }, Connection);
+                });
+            }
+    
         }
 
         public async Task Update(UpdateUserGroupInput input)
@@ -97,21 +116,28 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 }
             }
             userGroup = input.MapTo(userGroup);
-            await UnitOfWorkAsync(async (conn, trans) =>
+            using (var locker = await _lockerProvider.CreateLockAsync("UpdateUserGroup"))
             {
-                await _userGroupRepository.UpdateAsync(userGroup, conn, trans);
-                await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
-             
-                foreach (var roleId in input.RoleIds)
+                await locker.Lock(async () =>
                 {
-                    var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, conn, trans);
-                    if (roleInfo == null)
+                    await UnitOfWorkAsync(async (conn, trans) =>
                     {
-                        throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
-                    }
-                    await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroup.Id, RoleId = roleId }, conn, trans);
-                }
-            }, Connection);
+                        await _userGroupRepository.UpdateAsync(userGroup, conn, trans);
+                        await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
+
+                        foreach (var roleId in input.RoleIds)
+                        {
+                            var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, conn, trans);
+                            if (roleInfo == null)
+                            {
+                                throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
+                            }
+                            await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroup.Id, RoleId = roleId }, conn, trans);
+                        }
+                    }, Connection);
+                });
+            }
+          
         }
 
         public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId)
@@ -172,23 +198,30 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             {
                 throw new BusinessException($"不存在Id为{input.UserGroupId}的用户组");
             }
-            await UnitOfWorkAsync(async (conn, trans) =>
+            using (var locker = await _lockerProvider.CreateLockAsync("AllocationUsers"))
             {
-                foreach (var userId in input.UserIds)
+                return await locker.Lock(async () =>
                 {
-                    var userInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == userId, conn, trans);
-                    if (userInfo == null)
+                    await UnitOfWorkAsync(async (conn, trans) =>
                     {
-                        throw new BusinessException($"不存在用户Id为{userId}的用户信息");
-                    }
-                    var userUserGroupRelation = await _userUserGroupRelationRepository.SingleOrDefaultAsync(p => p.UserId == userId && p.UserGroupId == input.UserGroupId, conn, trans);
-                    if (userUserGroupRelation == null) 
-                    {
-                        await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserGroupId = userGroup.Id, UserId = userId }, conn, trans);
-                    }
-                }
-            }, Connection);
-            return $"为用户组{userGroup.Name}分配用户成功";
+                        foreach (var userId in input.UserIds)
+                        {
+                            var userInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == userId, conn, trans);
+                            if (userInfo == null)
+                            {
+                                throw new BusinessException($"不存在用户Id为{userId}的用户信息");
+                            }
+                            var userUserGroupRelation = await _userUserGroupRelationRepository.SingleOrDefaultAsync(p => p.UserId == userId && p.UserGroupId == input.UserGroupId, conn, trans);
+                            if (userUserGroupRelation == null)
+                            {
+                                await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserGroupId = userGroup.Id, UserId = userId }, conn, trans);
+                            }
+                        }
+                    }, Connection);
+                    return $"为用户组{userGroup.Name}分配用户成功";
+                });
+            }
+           
         }
 
         public async Task DeleteUserGroupUser(DeleteUserGroupUserInput input)

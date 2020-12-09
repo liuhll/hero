@@ -6,6 +6,8 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Lock;
+using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Shared.Menus;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
@@ -19,16 +21,19 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         private readonly IDapperRepository<Permission, long> _permissionRepository;
         private readonly IDapperRepository<Operation, long> _operationRepository;
         private readonly IDapperRepository<OperationActionRelation, long> _operationActionRepository;
+        private readonly ILockerProvider _lockerProvider;
 
         public MenuDomainService(IDapperRepository<Menu, long> menuRepository,
             IDapperRepository<Permission, long> permissionRepository,
             IDapperRepository<Operation, long> operationRepository,
-            IDapperRepository<OperationActionRelation, long> operationActionRepository) {
+            IDapperRepository<OperationActionRelation, long> operationActionRepository,
+            ILockerProvider lockerProvider)
+        {
             _menuRepository = menuRepository;
             _permissionRepository = permissionRepository;
             _operationRepository = operationRepository;
             _operationActionRepository = operationActionRepository;
-
+            _lockerProvider = lockerProvider;
         }
 
         public async Task<CreateMenuOutput> Create(CreateMenuInput input)
@@ -57,15 +62,23 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
                 menu.Level = parentMenu.Level + 1;
             }
             var permission = input.MapTo<Permission>();
-            
-            await UnitOfWorkAsync(async (conn,trans) => {
-                var permissionId = await _permissionRepository.InsertAndGetIdAsync(permission, conn, trans);
-                menu.PermissionId = permissionId;
-                menu.ParentId = menuParentId;
-                await _menuRepository.InsertAsync(menu, conn, trans);
 
-            },Connection);
-            return new CreateMenuOutput() { Id = menu.Id, PermissionId = menu.PermissionId, Tips = "新增菜单成功" };
+            using (var locker = await _lockerProvider.CreateLockAsync("CreateMenu")) 
+            {
+                return await locker.Lock(async()=> 
+                {
+                    await UnitOfWorkAsync(async (conn, trans) => {
+                        var permissionId = await _permissionRepository.InsertAndGetIdAsync(permission, conn, trans);
+                        menu.PermissionId = permissionId;
+                        menu.ParentId = menuParentId;
+                        await _menuRepository.InsertAsync(menu, conn, trans);
+
+                    }, Connection);
+                    return new CreateMenuOutput() { Id = menu.Id, PermissionId = menu.PermissionId, Tips = "新增菜单成功" };
+                });
+            }
+
+                
         }
 
         public async Task Delete(long permissionId)
@@ -75,25 +88,34 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
                 throw new BusinessException($"不存在PermissionId为{permissionId}的菜单信息");
             }
             var allNeedDeleteMenus = await _menuRepository.GetAllAsync(p => p.Code.Contains(menu.Code));
-           
-            await UnitOfWorkAsync(async (conn, trans) => {
-                await _menuRepository.DeleteAsync(p => p.Code.Contains(menu.Code), conn, trans);
-                foreach (var needDeleteMenu in allNeedDeleteMenus) {
-                    await _permissionRepository.DeleteAsync(p => p.Id == needDeleteMenu.PermissionId, conn, trans);
-                    var operations = await _operationRepository.GetAllAsync(p => p.MenuId == needDeleteMenu.Id);
-                    await _operationRepository.DeleteAsync(p => p.MenuId == needDeleteMenu.Id, conn, trans);
-                    if (operations.Any())
-                    {
-                        foreach (var operation in operations)
+
+            using (var locker = await _lockerProvider.CreateLockAsync("DeleteMenu")) 
+            {
+                await locker.Lock(async()=> 
+                {
+                    await UnitOfWorkAsync(async (conn, trans) => {
+                        await _menuRepository.DeleteAsync(p => p.Code.Contains(menu.Code), conn, trans);
+                        foreach (var needDeleteMenu in allNeedDeleteMenus)
                         {
-                          
-                            await _operationActionRepository.DeleteAsync(p => p.OperationId == operation.Id, conn, trans);
-                            await _permissionRepository.DeleteAsync(p=> p.Id == operation.PermissionId, conn, trans);
+                            await _permissionRepository.DeleteAsync(p => p.Id == needDeleteMenu.PermissionId, conn, trans);
+                            var operations = await _operationRepository.GetAllAsync(p => p.MenuId == needDeleteMenu.Id);
+                            await _operationRepository.DeleteAsync(p => p.MenuId == needDeleteMenu.Id, conn, trans);
+                            if (operations.Any())
+                            {
+                                foreach (var operation in operations)
+                                {
+
+                                    await _operationActionRepository.DeleteAsync(p => p.OperationId == operation.Id, conn, trans);
+                                    await _permissionRepository.DeleteAsync(p => p.Id == operation.PermissionId, conn, trans);
+                                }
+                            }
                         }
-                    }
-                }
-                
-            }, Connection);
+
+                    }, Connection);
+                });
+            }
+
+
         }
 
         public async Task<IEnumerable<Menu>> GetAll()
@@ -111,12 +133,19 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             var permission = await _permissionRepository.GetAsync(menu.PermissionId);
             menu = input.MapTo(menu);
             permission = input.MapTo(permission);
-            await UnitOfWorkAsync(async (conn, trans) => {
-                await _permissionRepository.UpdateAsync(permission, conn, trans);               
-                await _menuRepository.UpdateAsync(menu, conn, trans);
+            using (var locker = await _lockerProvider.CreateLockAsync("UpdateMenu")) 
+            {
+                return await locker.Lock(async () => 
+                {
+                    await UnitOfWorkAsync(async (conn, trans) => {
+                        await _permissionRepository.UpdateAsync(permission, conn, trans);
+                        await _menuRepository.UpdateAsync(menu, conn, trans);
 
-            }, Connection);
-            return new UpdateMenuOutput() { Id = menu.Id, PermissionId = menu.PermissionId, Tips = "更新菜单成功" };
+                    }, Connection);
+                    return new UpdateMenuOutput() { Id = menu.Id, PermissionId = menu.PermissionId, Tips = "更新菜单成功" };
+                });
+            }
+                
         }
 
         public async Task<IEnumerable<GetPermissionTreeOutput>> GetTree()

@@ -5,6 +5,7 @@
     <PackageReference Include="Surging.Cloud.CPlatform" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.Domain" Version="$(SurgingVersion)" />
     <PackageReference Include="Surging.Cloud.Dapper" Version="$(SurgingVersion)" />
+	<PackageReference Include="Surging.Cloud.Lock" Version="$(SurgingVersion)" />
     <PackageReference Include="FluentValidation" Version="8.1.3" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

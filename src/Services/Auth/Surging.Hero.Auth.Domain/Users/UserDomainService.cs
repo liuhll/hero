@@ -3,6 +3,8 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Lock;
+using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
@@ -30,6 +32,7 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IPasswordHelper _passwordHelper;
         private readonly IMenuDomainService _menuDomainService;
+        private readonly ILockerProvider _lockerProvider;
 
         public UserDomainService(IDapperRepository<UserInfo, long> userRepository,
             IDapperRepository<Roles.Role, long> roleRepository,
@@ -39,7 +42,8 @@ namespace Surging.Hero.Auth.Domain.Users
             IRoleDomainService roleDomainService,
             IUserGroupDomainService userGroupDomainService,
             IPasswordHelper passwordHelper,
-            IMenuDomainService menuDomainService)
+            IMenuDomainService menuDomainService, 
+            ILockerProvider lockerProvider)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -50,6 +54,7 @@ namespace Surging.Hero.Auth.Domain.Users
             _userGroupDomainService = userGroupDomainService;
             _passwordHelper = passwordHelper;
             _menuDomainService = menuDomainService;
+            _lockerProvider = lockerProvider;
         }
 
         public async Task<bool> CheckPermission(long userId, string serviceId)
@@ -85,31 +90,48 @@ namespace Surging.Hero.Auth.Domain.Users
             }
         
             userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);
-            await UnitOfWorkAsync(async (conn, trans) => {
-                var userId =  await _userRepository.InsertAndGetIdAsync(userInfo, conn, trans);
-                foreach (var roleId in input.RoleIds) {
-                    var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
-                    if (role == null) {
-                        throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
-                    }
-                    
-                    await _userRoleRepository.InsertAsync(new UserRole() { UserId = userId,RoleId = roleId }, conn, trans);
-                }
-               
-            }, Connection);
+            using (var locker = await _lockerProvider.CreateLockAsync("CreateUser"))
+            {
+                await locker.Lock(async () =>
+                {
+                    await UnitOfWorkAsync(async (conn, trans) => {
+                        var userId = await _userRepository.InsertAndGetIdAsync(userInfo, conn, trans);
+                        foreach (var roleId in input.RoleIds)
+                        {
+                            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
+                            if (role == null)
+                            {
+                                throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
+                            }
+
+                            await _userRoleRepository.InsertAsync(new UserRole() { UserId = userId, RoleId = roleId }, conn, trans);
+                        }
+
+                    }, Connection);
+                });
+            }
+
            
         }
 
         public async Task Delete(long id)
         {
-            await UnitOfWorkAsync(async (conn, trans) => {
-                await _userRepository.DeleteAsync(p=>p.Id == id, conn, trans);
-                await _userRoleRepository.DeleteAsync(p => p.UserId == id, conn, trans);
-                await _userUserGroupRelationRepository.DeleteAsync(p => p.UserId == id, conn, trans);
+            using (var locker = await _lockerProvider.CreateLockAsync("DeleteUser"))
+            {
+                await locker.Lock(async () =>
+                {
+                    await UnitOfWorkAsync(async (conn, trans) => {
+                        await _userRepository.DeleteAsync(p => p.Id == id, conn, trans);
+                        await _userRoleRepository.DeleteAsync(p => p.UserId == id, conn, trans);
+                        await _userUserGroupRelationRepository.DeleteAsync(p => p.UserId == id, conn, trans);
 
-                // todo: 删除其他关联表
+                        // todo: 删除其他关联表
 
-            }, Connection);
+                    }, Connection);
+                });
+            }
+
+            
         }
 
         public async Task<IEnumerable<Menu>> GetUserMenu(long userId)
@@ -263,21 +285,30 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
             }
              
             updateUser = input.MapTo(updateUser);
-            await UnitOfWorkAsync(async (conn, trans) => {
-                await _userRepository.UpdateAsync(updateUser, conn, trans);
-                await _userRoleRepository.DeleteAsync(p => p.UserId == updateUser.Id, conn, trans);
-                foreach (var roleId in input.RoleIds)
+            using (var locker = await _lockerProvider.CreateLockAsync("UpdateUser"))
+            {
+                await locker.Lock(async () =>
                 {
-                    var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
-                    if (role == null)
-                    {
-                        throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
-                    }
-                    
-                    await _userRoleRepository.InsertAsync(new UserRole() { UserId = updateUser.Id, RoleId = roleId },conn,trans);
-                }
+                    await UnitOfWorkAsync(async (conn, trans) => {
+                        await _userRepository.UpdateAsync(updateUser, conn, trans);
+                        await _userRoleRepository.DeleteAsync(p => p.UserId == updateUser.Id, conn, trans);
+                        foreach (var roleId in input.RoleIds)
+                        {
+                            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
+                            if (role == null)
+                            {
+                                throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
+                            }
 
-            }, Connection);
+                            await _userRoleRepository.InsertAsync(new UserRole() { UserId = updateUser.Id, RoleId = roleId }, conn, trans);
+                        }
+
+                    }, Connection);
+                });
+            }
+
+
+            
         }
     }
 }
