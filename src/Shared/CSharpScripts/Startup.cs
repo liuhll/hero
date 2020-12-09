@@ -48,6 +48,7 @@ namespace Surging.Hero.ServiceHost
                 ServiceHost = GetServiceHost(p.Type.FullName),
                 Application = GetApplication(p.Type.FullName),
                 WebApi = p.RoutePath,
+                Method = string.Join(",",p.Methods),
                 Name = p.Descriptor.GetMetadata<string>("GroupName"),
                 DisableNetwork = p.Descriptor.GetMetadata<bool>("DisableNetwork"),
                 EnableAuthorization = p.Descriptor.GetMetadata<bool>("EnableAuthorization"),

@@ -14,6 +14,8 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
 
         public string WebApi { get; set; }
 
+        public string Method { get; set; }
+
         public bool DisableNetwork { get; set; }
 
         public bool EnableAuthorization { get; set; }

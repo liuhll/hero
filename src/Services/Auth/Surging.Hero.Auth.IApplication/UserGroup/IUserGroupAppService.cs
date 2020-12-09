@@ -79,7 +79,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// <returns></returns>
         [HttpPost]
         [ServiceRoute("users/search")]
-        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "获取用户组相关用户", AllowPermission = true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "查询用户组相关用户")]
         Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
 
         /// <summary>
