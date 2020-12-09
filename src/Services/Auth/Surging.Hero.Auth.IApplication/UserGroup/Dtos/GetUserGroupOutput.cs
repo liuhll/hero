@@ -1,8 +1,8 @@
 ﻿using Surging.Hero.Auth.IApplication.Role.Dtos;
-using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 {
@@ -11,6 +11,10 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         public long Id { get; set; }
 
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
+
+        public string DisplayRoles { get { return string.Join(",", Roles.Select(p => p.Name)); } }
+
+        public IEnumerable<long> RoleIds { get { return Roles.Select(p => p.Id); } }
 
         /// <summary>
         /// 用户组状态
