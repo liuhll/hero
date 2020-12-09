@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
+using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
@@ -17,5 +18,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         Task<bool> CheckPermission(long userId, string serviceId);
         Task<string> AllocationUsers(AllocationUserIdsInput input);
         Task DeleteUserGroupUser(DeleteUserGroupUserInput input);
+        Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
     }
 }

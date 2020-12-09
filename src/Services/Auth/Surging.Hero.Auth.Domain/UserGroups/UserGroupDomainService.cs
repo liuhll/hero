@@ -4,8 +4,11 @@ using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Roles;
@@ -15,6 +18,7 @@ using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
+using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Hero.Organization.IApplication.Position;
 
 namespace Surging.Hero.Auth.Domain.UserGroups
@@ -227,6 +231,97 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task DeleteUserGroupUser(DeleteUserGroupUserInput input)
         {
             await _userUserGroupRelationRepository.DeleteAsync(p => p.UserId == input.UserId && p.UserGroupId == input.UserGroupId);
+        }
+
+        public async Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)
+        {
+            var querySql = @"SELECT {0} 
+FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr on ug.Id=uugr.UserGroupId AND ug.IsDeleted=0
+INNER JOIN UserInfo as u on uugr.UserId=u.Id AND u.IsDeleted=0
+WHERE UserGroupId=@UserGroupId";
+            var sqlParams = new Dictionary<string, object>();
+            sqlParams.Add("UserGroupId", query.UserGroupId);
+            if (query.OrgId.HasValue && query.OrgId.Value !=0) 
+            {
+                var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
+                querySql += " AND u.OrgId in @OrgIds";
+                sqlParams.Add("OrgIds", subOrgIds);
+            }
+            if (query.PositionId.HasValue && query.PositionId.Value != 0)
+            {
+                querySql += " AND u.PositionId=@PositionId";
+                sqlParams.Add("PositionId", query.PositionId.Value);
+            }
+            if (!query.SearchKey.IsNullOrEmpty()) 
+            {
+                querySql += " AND (u.UserName like @UserName or u.ChineseName like @ChineseName or u.Phone like @Phone or u.Email like @Email)";
+                sqlParams.Add("UserName", $"%{query.SearchKey}%");
+                sqlParams.Add("ChineseName", $"%{query.SearchKey}%");
+                sqlParams.Add("Phone", $"%{query.SearchKey}%");
+                sqlParams.Add("Email", $"%{query.SearchKey}%");
+            }
+            var queryCountSql = string.Format(querySql,"COUNT(u.Id)");
+
+            if (!query.Sorting.IsNullOrEmpty())
+            {
+                querySql += $" ORDER BY u.{query.Sorting} {query.SortType}";
+            }
+            else 
+            {
+                querySql += $" ORDER BY u.Id DESC";
+            }
+            querySql += $" LIMIT {(query.PageCount - 1) * query.PageIndex} , {query.PageCount} ";
+            querySql = string.Format(querySql, "u.*");
+            using (var conn = Connection) 
+            {
+                var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
+                var queryCount = await conn.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
+
+                var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryCount);
+                foreach (var userOutput in queryResultOutput.Items)
+                {
+                    if (userOutput.OrgId.HasValue)
+                    {
+                        userOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
+                    }
+                    if (userOutput.PositionId.HasValue)
+                    {
+                        userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
+                    }
+                    userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                    if (userOutput.LastModifierUserId.HasValue)
+                    {
+                        var modifyUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.LastModifierUserId.Value));
+                        if (modifyUserInfo != null)
+                        {
+                            userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                        }
+
+                    }
+                    if (userOutput.CreatorUserId.HasValue)
+                    {
+                        var creatorUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value));
+                        if (creatorUserInfo != null)
+                        {
+                            userOutput.CreatorUserName = creatorUserInfo.ChineseName;
+                        }
+                    }
+
+                }
+
+                return queryResultOutput;
+            }
+
+        }
+
+        private async Task<IEnumerable<Role>> GetUserRoles(long userId)
+        {
+            var sql = @"SELECT r.* FROM UserRole as ur 
+                        LEFT JOIN Role as r on ur.RoleId = r.Id WHERE ur.UserId=@UserId";
+            using (Connection)
+            {
+                return (await Connection.QueryAsync<Role>(sql, param: new { UserId = userId }));
+            }
         }
     }
 }

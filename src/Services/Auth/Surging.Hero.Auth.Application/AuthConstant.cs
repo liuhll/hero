@@ -11,6 +11,7 @@
 
             public const string AccountMoudleName = "account.v1";
         }
-        
+
+        public static string[] UserGroupSortingFileds = new string[] { "Id", "UserName", "ChineseName", "UpdateTime", "CreateTime" };
     }
 }

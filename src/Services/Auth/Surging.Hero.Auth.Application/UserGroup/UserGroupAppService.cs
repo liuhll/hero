@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain;
 using Surging.Core.Domain.PagedAndSorted;
@@ -118,9 +120,17 @@ namespace Surging.Hero.Auth.Application.UserGroup
             return outputs;
         }
 
-        public Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)
+        public async Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)
         {
-            throw new System.NotImplementedException();
+            if (query.UserGroupId <= 0) 
+            {
+                throw new BusinessException("必须指定合法的UserGroupId");
+            }
+            if (!query.Sorting.IsNullOrEmpty() && !AuthConstant.UserGroupSortingFileds.Any(p=> p == query.Sorting)) 
+            {
+                throw new BusinessException("指定的排序字段无效");
+            }
+            return await _userGroupDomainService.SearchUserGroupUser(query);
         }
 
         public async Task<string> Update(UpdateUserGroupInput input)
