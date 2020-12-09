@@ -148,5 +148,14 @@ namespace Surging.Hero.Auth.Application.UserGroup
             return "更新用户组成功"; ;
         }
 
+        public async Task<string> UpdateStatus(UpdateUserGroupStatusInput input)
+        {
+            await _userGroupDomainService.UpdateStatus(input);
+            if (input.Status == Status.Valid) 
+            {
+                return "激活用户组状态成功";
+            }
+            return "冻结用户组状态成功";
+        }
     }
 }

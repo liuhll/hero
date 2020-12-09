@@ -330,5 +330,16 @@ WHERE UserGroupId=@UserGroupId";
                 return (await Connection.QueryAsync<Role>(sql, param: new { UserId = userId }));
             }
         }
+
+        public async Task UpdateStatus(UpdateUserGroupStatusInput input)
+        {
+            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (userGroup == null) 
+            {
+                throw new BusinessException($"不存在id为{input.Id}的用户组");
+            }
+            userGroup.Status = input.Status;
+            await _userGroupRepository.UpdateAsync(userGroup);
+        }
     }
 }

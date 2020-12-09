@@ -19,5 +19,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         Task<string> AllocationUsers(AllocationUserIdsInput input);
         Task DeleteUserGroupUser(DeleteUserGroupUserInput input);
         Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
+        Task UpdateStatus(UpdateUserGroupStatusInput input);
     }
 }
