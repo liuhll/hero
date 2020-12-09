@@ -270,7 +270,7 @@ WHERE UserGroupId=@UserGroupId";
             {
                 querySql += $" ORDER BY u.Id DESC";
             }
-            querySql += $" LIMIT {(query.PageCount - 1) * query.PageIndex} , {query.PageCount} ";
+            querySql += $" LIMIT {(query.PageIndex - 1) * query.PageCount} , {query.PageCount} ";
             querySql = string.Format(querySql, "u.*");
             using (var conn = Connection) 
             {

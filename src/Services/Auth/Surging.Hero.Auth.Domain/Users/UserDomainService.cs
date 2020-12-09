@@ -1,8 +1,11 @@
 ﻿using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
@@ -13,6 +16,7 @@ using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
+using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Hero.Organization.IApplication.Position;
 using System;
 using System.Collections.Generic;
@@ -309,6 +313,89 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
 
 
             
+        }
+
+        public async Task<IPagedResult<GetUserNormOutput>> Search(QueryUserInput query)
+        {
+            var querySql = @"SELECT {0} FROM  UserInfo as u 
+                WHERE u.IsDeleted=0 ";
+
+            var sqlParams = new Dictionary<string, object>();
+            if (query.OrgId.HasValue && query.OrgId.Value != 0)
+            {
+                var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
+                querySql += " AND u.OrgId in @OrgIds";
+                sqlParams.Add("OrgIds", subOrgIds);
+            }
+            if (query.Status.HasValue) 
+            {
+                querySql += " AND u.Status=@Status";
+                sqlParams.Add("Status", query.Status.Value);
+            }
+            if (query.PositionId.HasValue && query.PositionId.Value != 0)
+            {
+                querySql += " AND u.PositionId=@PositionId";
+                sqlParams.Add("PositionId", query.PositionId.Value);
+            }
+            if (!query.SearchKey.IsNullOrEmpty())
+            {
+                querySql += " AND (u.UserName like @UserName or u.ChineseName like @ChineseName or u.Phone like @Phone or u.Email like @Email)";
+                sqlParams.Add("UserName", $"%{query.SearchKey}%");
+                sqlParams.Add("ChineseName", $"%{query.SearchKey}%");
+                sqlParams.Add("Phone", $"%{query.SearchKey}%");
+                sqlParams.Add("Email", $"%{query.SearchKey}%");
+            }
+            var queryCountSql = string.Format(querySql, "COUNT(u.Id)");
+
+            if (!query.Sorting.IsNullOrEmpty())
+            {
+                querySql += $" ORDER BY u.{query.Sorting} {query.SortType}";
+            }
+            else
+            {
+                querySql += $" ORDER BY u.Id DESC";
+            }
+            querySql += $" LIMIT {(query.PageIndex - 1) * query.PageCount} , {query.PageCount} ";
+            querySql = string.Format(querySql, "u.*");
+            using (var conn = Connection)
+            {
+                var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
+                var queryCount = await conn.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
+
+                var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryCount);
+                foreach (var userOutput in queryResultOutput.Items)
+                {
+                    if (userOutput.OrgId.HasValue)
+                    {
+                        userOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
+                    }
+                    if (userOutput.PositionId.HasValue)
+                    {
+                        userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
+                    }
+                    userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                    if (userOutput.LastModifierUserId.HasValue)
+                    {
+                        var modifyUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.LastModifierUserId.Value));
+                        if (modifyUserInfo != null)
+                        {
+                            userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                        }
+
+                    }
+                    if (userOutput.CreatorUserId.HasValue)
+                    {
+                        var creatorUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value));
+                        if (creatorUserInfo != null)
+                        {
+                            userOutput.CreatorUserName = creatorUserInfo.ChineseName;
+                        }
+                    }
+
+                }
+
+                return queryResultOutput;
+            }
         }
     }
 }
