@@ -52,11 +52,6 @@ namespace Surging.Hero.Auth.Application.Role
      
         }
 
-        public async Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long id)
-        {
-            return await _permissionDomainService.GetRolePermissions(id);
-        }
-
         public async Task<IEnumerable<GetRoleOutput>> List(string searchKey)
         {
             var queryRoles = await _roleRepository.GetAllAsync(p => p.Name.Contains(searchKey));

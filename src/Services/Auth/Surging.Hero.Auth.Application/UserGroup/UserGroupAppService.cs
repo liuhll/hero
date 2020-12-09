@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
@@ -17,6 +19,7 @@ using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Application.UserGroup
 {
@@ -94,7 +97,12 @@ namespace Surging.Hero.Auth.Application.UserGroup
 
         public async Task<IPagedResult<GetUserGroupOutput>> Search(QueryUserGroupInput query)
         {
-            var queryResult = await _userGroupRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) || p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);
+            Expression<Func<Domain.UserGroups.UserGroup, bool>> predicate = p => p.Name.Contains(query.SearchKey) || p.Memo.Contains(query.SearchKey);
+            if (query.Status.HasValue) 
+            {
+                predicate = predicate.And(p => p.Status == query.Status);
+            }
+            var queryResult = await _userGroupRepository.GetPageAsync(predicate, query.PageIndex, query.PageCount);
 
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetUserGroupOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items) 

@@ -1,5 +1,6 @@
 ﻿using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
+using Surging.Hero.Common;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +11,12 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         public long Id { get; set; }
 
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
+
+        /// <summary>
+        /// 用户组状态
+        /// </summary>
+        public Status Status { get; set; }
+
         public virtual DateTime CreationTime { get; set; }
         public virtual long? CreatorUserId { get; set; }
 

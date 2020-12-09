@@ -180,19 +180,26 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
         public async Task<bool> CheckPermission(long userId, string serviceId)
         {
-            var userGroups = await _userUserGroupRelationRepository.GetAllAsync(p => p.UserId == userId);
-            foreach (var userGroup in userGroups)
+            var querySql = @"SELECT ug.* FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr ON ug.Id = uugr.UserGroupId
+                            WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status";
+            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", 1 }, { "Status", Status.Valid } };
+            using (var conn = Connection) 
             {
-                var userGroupRoles = await GetUserGroupRoles(userGroup.UserGroupId);
-                foreach (var userGroupRole in userGroupRoles)
-                {
-                    if (await _roleDomainService.CheckPermission(userGroupRole.Id,serviceId))
+                var userGroups = await conn.QueryAsync<UserGroup>(querySql, sqlParams);
+                foreach (var userGroup in userGroups)
+                {                  
+                    var userGroupRoles = await GetUserGroupRoles(userGroup.Id);
+                    foreach (var userGroupRole in userGroupRoles)
                     {
-                        return true;
+                        if (await _roleDomainService.CheckPermission(userGroupRole.Id, serviceId))
+                        {
+                            return true;
+                        }
                     }
                 }
+                return false;
             }
-            return false;
+          
         }
 
         public async Task<string> AllocationUsers(AllocationUserIdsInput input)

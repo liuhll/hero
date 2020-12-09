@@ -52,6 +52,15 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task<bool> CheckPermission(long roleId, string serviceId)
         {
+            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
+            if (role == null)
+            {
+                throw new BusinessException($"不存在Id为{roleId}的角色信息");
+            }
+            if (role.Status == Common.Status.Invalid) 
+            {
+                return false;
+            }
             var rolePermissions = await GetRolePermissions(roleId);
             var servicePemission = await GetservicePemission(serviceId);
             if (servicePemission == null)
@@ -186,11 +195,7 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId)
         {
-            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
-            if (role == null)
-            {
-                throw new BusinessException($"不存在Id为{roleId}的角色信息");
-            }
+
             return await _rolePermissionRepository.GetAllAsync(p => p.RoleId == roleId);
         }
 

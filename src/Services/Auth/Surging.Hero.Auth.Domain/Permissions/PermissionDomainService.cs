@@ -42,28 +42,6 @@ namespace Surging.Hero.Auth.Domain.Permissions
             _userGroupDomainService = userGroupDomainService;
         }
 
-        public async Task<IEnumerable<GetRolePermissionTreeOutput>> GetRolePermissions(long roleId)
-        {
-            var menus = await _menuDomainService.GetAll();
-            var operations = await _operationDomainService.GetAll();
-            var rolePermissions = await _roleDomainService.GetRolePermissions(roleId);
-
-            return BuildRolePermissionTree(menus,operations,rolePermissions);
-        }
-
-        private IEnumerable<GetRolePermissionTreeOutput> BuildRolePermissionTree(IEnumerable<Menu> menus, IEnumerable<Operation> operations, IEnumerable<RolePermission> rolePermissions)
-        {
-            var topMenus = menus.Where(p => p.Mold == MenuMold.Top);
-            var topMenuOutputs = topMenus.MapTo<IEnumerable<GetRolePermissionTreeOutput>>();
-            foreach (var topMenuOutput in topMenuOutputs) {
-                topMenuOutput.CheckStatus = rolePermissions.Any(p => p.PermissionId == topMenuOutput.PermissionId) ? CheckStatus.Checked : CheckStatus.UnChecked;
-                //topMenuOutput.PermissionMold = PermissionMold.Menu;
-                topMenuOutput.Children = BuildRolePermissionChildren(topMenuOutput, menus, operations, rolePermissions);
-            }
-            return topMenuOutputs;
-
-        }
-
         private IEnumerable<GetRolePermissionTreeOutput> BuildRolePermissionChildren(GetRolePermissionTreeOutput menuOutput, IEnumerable<Menu> menus, IEnumerable<Operation> operations, IEnumerable<RolePermission> rolePermissions)
         {
             var children = new List<GetRolePermissionTreeOutput>();
