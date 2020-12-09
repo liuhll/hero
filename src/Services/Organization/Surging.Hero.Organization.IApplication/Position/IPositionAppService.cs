@@ -58,7 +58,7 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// <returns></returns>
         [HttpPost]
         [ServiceRoute("check/{positionId}")]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查某个职位是否允许删除", DisableNetwork = true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查某个职位是否允许删除", AllowPermission = true)]
         Task<bool> CheckCanDeletePosition(long positionId);
 
         /// <summary>
