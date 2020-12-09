@@ -45,6 +45,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
             {
                 throw new BusinessException($"系统中已经存在{input.Name}的菜单,请勿重复添加");
             }
+            var exsitPermission = await _permissionRepository.FirstOrDefaultAsync(p => p.Name == input.Name);
+            if (exsitPermission != null)
+            {
+                throw new BusinessException($"系统中已经存在{input.Name}的权限,请勿重复添加");
+            }
             if (menu.Mold == MenuMold.Top)
             {
                 var thisLevelMenuCount = await _menuRepository.GetCountAsync(p => p.Mold == MenuMold.Top);
