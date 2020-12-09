@@ -87,7 +87,7 @@ namespace Surging.Hero.Auth.Domain.Users
             }
             var positionAppServiceProxy = GetService<IPositionAppService>();
             if (userInfo.PositionId.HasValue) {
-                if (!await positionAppServiceProxy.Check(userInfo.PositionId.Value))
+                if (!await positionAppServiceProxy.CheckExsit(userInfo.PositionId.Value))
                 {
                     throw new BusinessException($"不存在Id为{userInfo.PositionId}的职位信息");
                 }
@@ -282,7 +282,7 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
             var positionAppServiceProxy = GetService<IPositionAppService>();
             if (input.PositionId.HasValue) 
             {
-                if (!await positionAppServiceProxy.Check(input.PositionId.Value))
+                if (!await positionAppServiceProxy.CheckExsit(input.PositionId.Value))
                 {
                     throw new BusinessException($"不存在Id为{input.PositionId}的职位信息");
                 }

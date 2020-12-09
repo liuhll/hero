@@ -113,7 +113,7 @@ namespace Surging.Hero.Auth.IApplication.User
         /// <returns></returns>
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取某个职位的用户数")]
         [HttpGet]
-        [ServiceRoute("position/{positionId}")]
+        [ServiceRoute("position/count/{positionId}")]
         Task<int> GetPositionUserCount(long positionId);
     }
 }

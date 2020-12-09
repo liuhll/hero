@@ -50,10 +50,6 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-       
-        //[HttpPost]
-        //[Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查职位是否允许删除", DisableNetwork = true)]
-        //Task<bool> CheckCanDeletePosition(CheckCanDeletePositionInput input);
 
         /// <summary>
         /// 检查某个职位是否允许删除
@@ -61,8 +57,18 @@ namespace Surging.Hero.Organization.IApplication.Position
         /// <param name="positionId"></param>
         /// <returns></returns>
         [HttpPost]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查某个职位是否允许删除", AllowPermission = true)]
         [ServiceRoute("check/{positionId}")]
-        Task<bool> Check(long positionId);
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查某个职位是否允许删除", DisableNetwork = true)]
+        Task<bool> CheckCanDeletePosition(long positionId);
+
+        /// <summary>
+        /// 检查某个职位是否存在
+        /// </summary>
+        /// <param name="positionId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查某个职位是否存在", DisableNetwork = true)]
+        Task<bool> CheckExsit(long positionId);
+
     }
 }

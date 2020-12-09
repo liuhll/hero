@@ -30,7 +30,7 @@ namespace Surging.Hero.Organization.Application.Position
 
 
 
-        public async Task<bool> Check(long positionId)
+        public async Task<bool> CheckExsit(long positionId)
         {
             var position = await _positionRepository.SingleOrDefaultAsync(p => p.Id == positionId);
             if (position == null) {
@@ -39,10 +39,10 @@ namespace Surging.Hero.Organization.Application.Position
             return true;
         }
 
-        public async Task<bool> CheckCanDeletePosition(CheckCanDeletePositionInput input)
+        public async Task<bool> CheckCanDeletePosition(long positionId)
         {
             var userAppServiceProxy = GetService<IUserAppService>();
-            var positionUserCount = await userAppServiceProxy.GetPositionUserCount(input.Id);
+            var positionUserCount = await userAppServiceProxy.GetPositionUserCount(positionId);
             if (positionUserCount >0) 
             {
                 return false;
