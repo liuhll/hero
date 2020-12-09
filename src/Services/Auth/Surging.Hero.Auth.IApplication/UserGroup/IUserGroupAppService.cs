@@ -93,7 +93,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
 
         /// <summary>
-        /// 获取该用户组所辖用户
+        /// 删除用户组用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
