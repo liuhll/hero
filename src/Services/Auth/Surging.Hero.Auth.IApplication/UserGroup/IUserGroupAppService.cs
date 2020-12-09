@@ -69,7 +69,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// <returns></returns>
         [HttpPost]
         [ServiceRoute("users")]
-        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "分配用户", AllowPermission = true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "分配用户组相关用户")]
         Task<string> AllocationUsers(AllocationUserIdsInput input);
 
         /// <summary>
