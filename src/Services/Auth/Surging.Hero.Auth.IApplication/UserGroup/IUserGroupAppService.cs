@@ -69,7 +69,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// <returns></returns>
         [HttpPost]
         [ServiceRoute("users")]
-        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "分配用户组相关用户")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "添加用户组用户")]
         Task<string> AllocationUsers(AllocationUserIdsInput input);
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// <returns></returns>
         [HttpPost]
         [ServiceRoute("users/search")]
-        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "查询用户组相关用户")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "查询用户组用户")]
         Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         /// <returns></returns>
         [HttpDelete]
         [ServiceRoute("users")]
-        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "删除用户组相关用户")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-08", Name = "删除用户组用户")]
         Task<string> DeleteUserGroupUser(DeleteUserGroupUserInput input);
     }
 }
