@@ -271,7 +271,7 @@ WHERE UserGroupId=@UserGroupId";
                 querySql += $" ORDER BY u.Id DESC";
             }
             querySql += $" LIMIT {(query.PageIndex - 1) * query.PageCount} , {query.PageCount} ";
-            querySql = string.Format(querySql, "u.*");
+            querySql = string.Format(querySql, "u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime");
             using (var conn = Connection) 
             {
                 var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
