@@ -51,7 +51,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         [ServiceRoute("{id}")]
         [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取用户组信息", AllowPermission = true)]
-        Task<GetUserGroupOutput> Get(long id);
+        Task<GetUserEditGroupOutput> Get(long id);
 
         /// <summary>
         /// 删除用户组

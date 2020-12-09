@@ -66,31 +66,15 @@ namespace Surging.Hero.Auth.Application.UserGroup
             return "删除用户成功";
         }
 
-        public async Task<GetUserGroupOutput> Get(long id)
+        public async Task<GetUserEditGroupOutput> Get(long id)
         {
             var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == id);
             if (userGroup == null) {
                 throw new UserFriendlyException($"不存在id为{id}的用户组信息");
             }
           
-            var userGroupOutput = userGroup.MapTo<GetUserGroupOutput>();
-            if (userGroupOutput.LastModifierUserId.HasValue)
-            {
-                var modifyUserInfo = await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == userGroupOutput.LastModifierUserId.Value);
-                if (modifyUserInfo != null)
-                {
-                    userGroupOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-                }
-            }
-            if (userGroupOutput.CreatorUserId.HasValue)
-            {
-                var creatorUserInfo = await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == userGroupOutput.CreatorUserId.Value);
-                if (creatorUserInfo != null)
-                {
-                    userGroupOutput.CreatorUserName = creatorUserInfo.ChineseName;
-                }
-            }
-            userGroupOutput.Roles = await _userGroupDomainService.GetUserGroupRoles(id);         
+            var userGroupOutput = userGroup.MapTo<GetUserEditGroupOutput>();
+            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoles(id)).Select(p=> p.Id);         
             return userGroupOutput;
            
         }
