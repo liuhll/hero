@@ -379,6 +379,14 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                 sqlParams.Add("Phone", $"%{query.SearchKey}%");
                 sqlParams.Add("Email", $"%{query.SearchKey}%");
             }
+
+            if (query.UserIds != null &&  query.UserIds.Ids != null && query.UserIds.Ids.Any()) 
+            {
+                var includeKey = query.UserIds.Include ? " in " : "not in ";
+                querySql += $" AND u.Id {includeKey} @UserId";
+                sqlParams.Add("UserId", query.UserIds.Ids);
+            }
+
             var queryCountSql = string.Format(querySql, "COUNT(u.Id)");
 
             if (!query.Sorting.IsNullOrEmpty())
