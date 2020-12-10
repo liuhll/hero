@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain.PagedAndSorted;
@@ -30,6 +31,7 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<UserInfo, long> _userInfoRepository;
         private readonly IDapperRepository<Operation, long> _operationRepository;
         private readonly ILockerProvider _lockerProvider;
+        private readonly ISurgingSession _session;
 
         public RoleDomainService(IDapperRepository<Role, long> roleRepository,
             IDapperRepository<RolePermission, long> rolePermissionRepository,
@@ -48,6 +50,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             _userInfoRepository = userInfoRepository;
             _operationRepository = operationRepository;
             _lockerProvider = lockerProvider;
+            _session = NullSurgingSession.Instance;
         }
 
         public async Task<bool> CheckPermission(long roleId, string serviceId)
@@ -99,6 +102,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 throw new BusinessException($"系统中已经存在{input.Name}的角色");
             }
             var role = input.MapTo<Role>();
+
             using (var locker = await _lockerProvider.CreateLockAsync("CreateRole"))
             {
                 await locker.Lock(async () =>
@@ -106,15 +110,11 @@ namespace Surging.Hero.Auth.Domain.Roles
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         var roleId = await _roleRepository.InsertAndGetIdAsync(role, conn, trans);
-                        //var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
-                        //var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
-                        //if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
-                        //{
-                        //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
-                        //}
-                        //var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
-                        //await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
+                        var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
+                        await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
+                        var insertSql = "INSERT INTO RolePermission(PermissionId,RoleId,CreationTime,CreatorUserId) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
+                        var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
                         {
                             //var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
@@ -122,8 +122,9 @@ namespace Surging.Hero.Auth.Domain.Roles
                             //{
                             //    throw new BusinessException($"不存在Id为{permissionId}的权限信息");
                             //}
-                            await _rolePermissionRepository.InsertAsync(new RolePermission() { PermissionId = permissionId, RoleId = roleId }, conn, trans);
+                            rolePermissions.Add(new RolePermission() { PermissionId = permissionId, RoleId = roleId, CreationTime = DateTime.Now, CreatorUserId = _session.UserId });
                         }
+                        await conn.ExecuteAsync(insertSql, rolePermissions,trans);
                     }, Connection);
                 });
             }
@@ -284,18 +285,12 @@ namespace Surging.Hero.Auth.Domain.Roles
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         await _roleRepository.UpdateAsync(role, conn, trans);
-                        //var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
-
-                        //var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
-                        //if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
-                        //{
-                        //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
-                        //}
-                        //await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.Id, conn, trans);
-                        //var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
-                        //await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
+                        var roleId = await _roleRepository.InsertAndGetIdAsync(role, conn, trans);
+                        var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
+                        await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
-
+                        var insertSql = "INSERT INTO RolePermission(PermissionId,RoleId,CreationTime,CreatorUserId) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
+                        var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
                         {
                             //var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
@@ -303,8 +298,9 @@ namespace Surging.Hero.Auth.Domain.Roles
                             //{
                             //    throw new BusinessException($"不存在Id为{permissionId}的权限信息");
                             //}
-                            await _rolePermissionRepository.InsertAsync(new RolePermission() { PermissionId = permissionId, RoleId = input.Id }, conn, trans);
+                            rolePermissions.Add(new RolePermission() { PermissionId = permissionId, RoleId = roleId, CreationTime = DateTime.Now, CreatorUserId = _session.UserId });
                         }
+                        await conn.ExecuteAsync(insertSql, rolePermissions, trans);
                     }, Connection);
                 });
             }
