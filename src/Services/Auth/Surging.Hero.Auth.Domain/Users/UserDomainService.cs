@@ -367,7 +367,9 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                 {
                     if (userOutput.OrgId.HasValue)
                     {
-                        userOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
+                        var department = await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value);
+                        userOutput.DeptId = department.Id;
+                        userOutput.DeptName = department.Name;
                     }
                     if (userOutput.PositionId.HasValue)
                     {
