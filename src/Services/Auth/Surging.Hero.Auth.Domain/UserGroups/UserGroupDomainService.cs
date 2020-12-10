@@ -296,6 +296,7 @@ WHERE UserGroupId=@UserGroupId";
                         userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
                     }
                     userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                    userOutput.UserGroups = (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
                     if (userOutput.LastModifierUserId.HasValue)
                     {
                         var modifyUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.LastModifierUserId.Value));
@@ -319,6 +320,16 @@ WHERE UserGroupId=@UserGroupId";
                 return queryResultOutput;
             }
 
+        }
+
+        private async Task<IEnumerable<UserGroup>> GetUserGroups(long userId)
+        {
+            var sql = @"SELECT ug.* FROM  UserGroup as ug 
+                        LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id WHERE uugr.UserId=@UserId";
+            using (Connection)
+            {
+                return (await Connection.QueryAsync<UserGroup>(sql, param: new { UserId = userId }));
+            }
         }
 
         private async Task<IEnumerable<Role>> GetUserRoles(long userId)

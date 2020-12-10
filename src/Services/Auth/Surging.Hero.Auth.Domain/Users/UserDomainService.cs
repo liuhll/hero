@@ -14,6 +14,7 @@ using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
+using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Organization;
@@ -239,10 +240,19 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                 }
             }
             userInfoOutput.Roles = (await GetUserRoles(id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+            userInfoOutput.UserGroups = (await GetUserGroups(id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
             return userInfoOutput;
         }
 
-     
+        private async Task<IEnumerable<UserGroup>> GetUserGroups(long userId)
+        {
+            var sql = @"SELECT ug.* FROM  UserGroup as ug 
+                        LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id WHERE uugr.UserId=@UserId";
+            using (Connection)
+            {
+                return (await Connection.QueryAsync<UserGroup>(sql, param: new { UserId = userId }));
+            }
+        }
 
         public async Task<IEnumerable<Role>> GetUserRoles(long userId)
         {
@@ -400,6 +410,7 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                         userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
                     }
                     userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                    userOutput.UserGroups = (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
                     if (userOutput.LastModifierUserId.HasValue)
                     {
                         var modifyUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.LastModifierUserId.Value));
