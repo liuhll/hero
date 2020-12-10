@@ -169,7 +169,7 @@ WHERE rp.RoleId in @RoleId";
                 {
                     allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
                 }
-                var operationMenus = await Connection.QueryAsync<Menu>(operationSql, new { RoleId = userRoleIds });
+                var operationMenus = await Connection.QueryAsync<Menu>(operationSql, new { RoleId = userRoleIds, IsDeleted = HeroConstants.UnDeletedFlag });
                 foreach (var menu in operationMenus)
                 {
                     allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
