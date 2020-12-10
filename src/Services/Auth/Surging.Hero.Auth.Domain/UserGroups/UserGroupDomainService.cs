@@ -217,7 +217,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     {
                         foreach (var userId in input.UserIds)
                         {
-                            var userInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == userId, conn, trans);
+                            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == userId, conn, trans);
                             if (userInfo == null)
                             {
                                 throw new BusinessException($"不存在用户Id为{userId}的用户信息");
