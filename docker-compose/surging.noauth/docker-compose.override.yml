@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  surging.hero.basicdata:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${NORMAL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName: ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword: ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      DbType: ${BASICDATA_DB_TYPE:-Mysql}
+      ConnectionString: ${BASICDATA_DB_CONN}
+      EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
+      InitAction: "${INIT_ACTION:-false}"
+      ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
+
+  surging.hero.organization:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${NORMAL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      DbType: ${ORGANIZATION_DB_TYPE:-Mysql}
+      ConnectionString: ${ORGANIZATION_DB_CONN}
+      EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
+      InitAction: "${INIT_ACTION:-false}"
+      ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
+
+  surging.hero.gateway:
+    environment:
+      Register_Conn: ${REGISTER_CONN:-hero.consul:8500}
+      Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
+      UseEngineParts: ${GETEWAY_SERVER_ENGINE}
+      UseKestrelHttpParts: ${KESTREL_SERVER_ENGINE}
+      EventBusConnection: ${RABBITMQ_CONNECTION:-hero.rabbitmq}
+      EventBusUserName: ${RABBITMQ_USERNAME:-rabbitmq}
+      EventBusPassword: ${RABBITMQ_PASSWORD:-rabbitmq}
+      EventBusPort: ${RABBITMQ_PORT:-5672}
+      ForceDisplayStackTrace: ${FORCED_DISPLAY_STACKTRACE:-false}
+      SwaggerTitle: "surging.hero webapi文档"
+      SwaggerDes: "Surging.Hero"
+      SupportName: "liuhongliang"
+      SupportEmail: "1029765111@qq.com"
+      InitAction: "${INIT_ACTION:-false}"
+      ExecutionTimeoutInMilliseconds: ${GATEWAY_EXECUTION_TIMEOUT:-4000}
+    ports:
+      - "18082:8080"

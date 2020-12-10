@@ -1,0 +1,150 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A8796E3C-81DB-4AA7-A94C-BE3C944FBEB3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B6FD548E-F7EC-4BD8-AD78-693EFFAD0ED1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BasicData", "BasicData", "{2D982DCC-9C0F-4BCE-9E67-DC16F0C76231}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Organization", "Organization", "{BE7B0023-28ED-4E7C-8B4A-8D2BEB37CD95}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonComponents", "CommonComponents", "{C88BC2F6-63DC-4035-A1A9-A1095C310E3E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Common", "..\src\CommonComponents\Surging.Hero.Common\Surging.Hero.Common.csproj", "{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.BasicDataHost", "..\src\Services\BasicData\Surging.Hero.BasicDataHost\Surging.Hero.BasicDataHost.csproj", "{B9C36F2E-99E7-4CCC-A741-9C65F0F999EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.BasicData.IApplication", "..\src\Services\BasicData\Surging.Hero.BasicData.IApplication\Surging.Hero.BasicData.IApplication.csproj", "{DE57132E-2E4E-4CBE-AACD-0329D07FB357}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.BasicData.Domain.Shared", "..\src\Services\BasicData\Surging.Hero.BasicData.Domain.Shared\Surging.Hero.BasicData.Domain.Shared.csproj", "{405D2E78-7674-454C-88ED-325D66E94FB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.BasicData.Domain", "..\src\Services\BasicData\Surging.Hero.BasicData.Domain\Surging.Hero.BasicData.Domain.csproj", "{DB83E382-7612-466F-8FF2-F0BECD51759F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.BasicData.Application", "..\src\Services\BasicData\Surging.Hero.BasicData.Application\Surging.Hero.BasicData.Application.csproj", "{BA5E7C12-38E7-4475-A9FF-DB333BF59E18}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Organization.Application", "..\src\Services\Organization\Surging.Hero.Organization.Application\Surging.Hero.Organization.Application.csproj", "{5CB5C0B8-2F2F-47AB-8483-9EB7E4F04864}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Organization.Domain", "..\src\Services\Organization\Surging.Hero.Organization.Domain\Surging.Hero.Organization.Domain.csproj", "{6321ADCF-8A7A-4C3A-97CC-12C015E16258}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Organization.Domain.Shared", "..\src\Services\Organization\Surging.Hero.Organization.Domain.Shared\Surging.Hero.Organization.Domain.Shared.csproj", "{5E830F0B-EBE5-4FAA-AF87-529CDAFD45E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Organization.IApplication", "..\src\Services\Organization\Surging.Hero.Organization.IApplication\Surging.Hero.Organization.IApplication.csproj", "{CEC37902-8D59-4E5E-9071-D19C52E21B04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.OrganizationHost", "..\src\Services\Organization\Surging.Hero.OrganizationHost\Surging.Hero.OrganizationHost.csproj", "{C8CF426B-10B7-4505-83BF-2D88573B8BC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".env", ".env", "{BEFE47EA-C6CE-4ADF-8844-9E0216FB03DD}"
+	ProjectSection(SolutionItems) = preProject
+		..\docker-compose\surging.hero\.env = ..\docker-compose\surging.hero\.env
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{18E4B670-6A8A-4E8D-A3B8-DFA82D051A5A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Gateway", "..\src\Services\Gateway\Surging.Hero.Gateway\Surging.Hero.Gateway.csproj", "{D92024D7-7D95-4A22-B4A4-D9D571B4C251}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "..\docker-compose\surging.noauth\docker-compose.dcproj", "{FEA0C318-FFED-4D39-8781-265718CA43DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{28FB44B7-B8F9-47E6-97CD-777A7DB7F4D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Auth.IApplication", "..\src\Services\Auth\Surging.Hero.Auth.IApplication\Surging.Hero.Auth.IApplication.csproj", "{E806E794-F68B-4026-8D5A-1C49ABE00CBC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Surging.Hero.Auth.Domain.Shared", "..\src\Services\Auth\Surging.Hero.Auth.Domain.Shared\Surging.Hero.Auth.Domain.Shared.csproj", "{8AC0E594-F4B9-4D7D-A2CC-B875167CE4D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9C36F2E-99E7-4CCC-A741-9C65F0F999EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C36F2E-99E7-4CCC-A741-9C65F0F999EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C36F2E-99E7-4CCC-A741-9C65F0F999EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C36F2E-99E7-4CCC-A741-9C65F0F999EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE57132E-2E4E-4CBE-AACD-0329D07FB357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE57132E-2E4E-4CBE-AACD-0329D07FB357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE57132E-2E4E-4CBE-AACD-0329D07FB357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE57132E-2E4E-4CBE-AACD-0329D07FB357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{405D2E78-7674-454C-88ED-325D66E94FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{405D2E78-7674-454C-88ED-325D66E94FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{405D2E78-7674-454C-88ED-325D66E94FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{405D2E78-7674-454C-88ED-325D66E94FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB83E382-7612-466F-8FF2-F0BECD51759F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB83E382-7612-466F-8FF2-F0BECD51759F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB83E382-7612-466F-8FF2-F0BECD51759F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB83E382-7612-466F-8FF2-F0BECD51759F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA5E7C12-38E7-4475-A9FF-DB333BF59E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA5E7C12-38E7-4475-A9FF-DB333BF59E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA5E7C12-38E7-4475-A9FF-DB333BF59E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA5E7C12-38E7-4475-A9FF-DB333BF59E18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CB5C0B8-2F2F-47AB-8483-9EB7E4F04864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CB5C0B8-2F2F-47AB-8483-9EB7E4F04864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CB5C0B8-2F2F-47AB-8483-9EB7E4F04864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CB5C0B8-2F2F-47AB-8483-9EB7E4F04864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6321ADCF-8A7A-4C3A-97CC-12C015E16258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6321ADCF-8A7A-4C3A-97CC-12C015E16258}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6321ADCF-8A7A-4C3A-97CC-12C015E16258}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6321ADCF-8A7A-4C3A-97CC-12C015E16258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E830F0B-EBE5-4FAA-AF87-529CDAFD45E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E830F0B-EBE5-4FAA-AF87-529CDAFD45E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E830F0B-EBE5-4FAA-AF87-529CDAFD45E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E830F0B-EBE5-4FAA-AF87-529CDAFD45E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEC37902-8D59-4E5E-9071-D19C52E21B04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEC37902-8D59-4E5E-9071-D19C52E21B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEC37902-8D59-4E5E-9071-D19C52E21B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEC37902-8D59-4E5E-9071-D19C52E21B04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8CF426B-10B7-4505-83BF-2D88573B8BC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8CF426B-10B7-4505-83BF-2D88573B8BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8CF426B-10B7-4505-83BF-2D88573B8BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8CF426B-10B7-4505-83BF-2D88573B8BC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D92024D7-7D95-4A22-B4A4-D9D571B4C251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D92024D7-7D95-4A22-B4A4-D9D571B4C251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D92024D7-7D95-4A22-B4A4-D9D571B4C251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D92024D7-7D95-4A22-B4A4-D9D571B4C251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEA0C318-FFED-4D39-8781-265718CA43DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEA0C318-FFED-4D39-8781-265718CA43DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEA0C318-FFED-4D39-8781-265718CA43DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEA0C318-FFED-4D39-8781-265718CA43DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E806E794-F68B-4026-8D5A-1C49ABE00CBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E806E794-F68B-4026-8D5A-1C49ABE00CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E806E794-F68B-4026-8D5A-1C49ABE00CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E806E794-F68B-4026-8D5A-1C49ABE00CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AC0E594-F4B9-4D7D-A2CC-B875167CE4D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AC0E594-F4B9-4D7D-A2CC-B875167CE4D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AC0E594-F4B9-4D7D-A2CC-B875167CE4D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AC0E594-F4B9-4D7D-A2CC-B875167CE4D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B6FD548E-F7EC-4BD8-AD78-693EFFAD0ED1} = {A8796E3C-81DB-4AA7-A94C-BE3C944FBEB3}
+		{2D982DCC-9C0F-4BCE-9E67-DC16F0C76231} = {B6FD548E-F7EC-4BD8-AD78-693EFFAD0ED1}
+		{BE7B0023-28ED-4E7C-8B4A-8D2BEB37CD95} = {B6FD548E-F7EC-4BD8-AD78-693EFFAD0ED1}
+		{C88BC2F6-63DC-4035-A1A9-A1095C310E3E} = {A8796E3C-81DB-4AA7-A94C-BE3C944FBEB3}
+		{C60E3E6C-E05D-4C3E-836F-953031A1AEEB} = {C88BC2F6-63DC-4035-A1A9-A1095C310E3E}
+		{B9C36F2E-99E7-4CCC-A741-9C65F0F999EC} = {2D982DCC-9C0F-4BCE-9E67-DC16F0C76231}
+		{DE57132E-2E4E-4CBE-AACD-0329D07FB357} = {2D982DCC-9C0F-4BCE-9E67-DC16F0C76231}
+		{405D2E78-7674-454C-88ED-325D66E94FB9} = {2D982DCC-9C0F-4BCE-9E67-DC16F0C76231}
+		{DB83E382-7612-466F-8FF2-F0BECD51759F} = {2D982DCC-9C0F-4BCE-9E67-DC16F0C76231}
+		{BA5E7C12-38E7-4475-A9FF-DB333BF59E18} = {2D982DCC-9C0F-4BCE-9E67-DC16F0C76231}
+		{5CB5C0B8-2F2F-47AB-8483-9EB7E4F04864} = {BE7B0023-28ED-4E7C-8B4A-8D2BEB37CD95}
+		{6321ADCF-8A7A-4C3A-97CC-12C015E16258} = {BE7B0023-28ED-4E7C-8B4A-8D2BEB37CD95}
+		{5E830F0B-EBE5-4FAA-AF87-529CDAFD45E3} = {BE7B0023-28ED-4E7C-8B4A-8D2BEB37CD95}
+		{CEC37902-8D59-4E5E-9071-D19C52E21B04} = {BE7B0023-28ED-4E7C-8B4A-8D2BEB37CD95}
+		{C8CF426B-10B7-4505-83BF-2D88573B8BC6} = {BE7B0023-28ED-4E7C-8B4A-8D2BEB37CD95}
+		{18E4B670-6A8A-4E8D-A3B8-DFA82D051A5A} = {A8796E3C-81DB-4AA7-A94C-BE3C944FBEB3}
+		{D92024D7-7D95-4A22-B4A4-D9D571B4C251} = {18E4B670-6A8A-4E8D-A3B8-DFA82D051A5A}
+		{28FB44B7-B8F9-47E6-97CD-777A7DB7F4D1} = {B6FD548E-F7EC-4BD8-AD78-693EFFAD0ED1}
+		{E806E794-F68B-4026-8D5A-1C49ABE00CBC} = {28FB44B7-B8F9-47E6-97CD-777A7DB7F4D1}
+		{8AC0E594-F4B9-4D7D-A2CC-B875167CE4D0} = {28FB44B7-B8F9-47E6-97CD-777A7DB7F4D1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F2C335F-D290-4020-B3F5-14AD7D97EF33}
+	EndGlobalSection
+EndGlobal

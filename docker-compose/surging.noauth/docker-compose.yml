@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  surging.hero.basicdata:
+    image: surgingcloud/surging.hero.basicdata:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Services/BasicData/Surging.Hero.BasicDataHost/Dockerfile
+      args:
+        host_workdir: src/Services/BasicData/Surging.Hero.BasicDataHost
+        host_name: Surging.Hero.BasicDataHost.dll
+        sln_name: sln/Surging.Hero.sln
+    volumes:
+      - ${LOG_DIR:-/var/logs}/basicdata:/app/logs
+    networks:
+      - surging_hero_service_net
+
+  surging.hero.organization:
+    image: surgingcloud/surging.hero.organization:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Services/Organization/Surging.Hero.OrganizationHost/Dockerfile
+      args:
+        host_workdir: src/Services/Organization/Surging.Hero.OrganizationHost
+        host_name: Surging.Hero.OrganizationHost.dll
+        sln_name: sln/Surging.Hero.sln
+    volumes:
+      - ${LOG_DIR:-/var/logs}/organization:/app/logs
+    networks:
+      - surging_hero_service_net      
+
+  surging.hero.gateway:
+    image: surgingcloud/surging.hero.gateway:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Services/Gateway/Surging.Hero.Gateway/Dockerfile
+      args:
+        host_workdir: src/Services/Gateway/Surging.Hero.Gateway
+        host_name: Surging.Hero.Gateway.dll
+        sln_name: sln/Surging.Hero.sln
+    depends_on:
+      - surging.hero.basicdata
+      - surging.hero.organization
+    volumes:
+      - ${LOG_DIR:-/var/logs}/gateway:/app/logs
+    networks:
+      - surging_hero_service_net
+networks:
+  surging_hero_service_net: 
+    external:
+      name: surging_hero_service_net
