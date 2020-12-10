@@ -247,14 +247,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 await locker.Lock(async () =>
                 {
                     await UnitOfWorkAsync(async (conn, trans) =>
-                    {
-                        //var queryOperationSql = "SELECT o.* FROM `Operation` as o LEFT JOIN Permission as p ON o.PermissionId = p.Id AND p.IsDeleted = 0 AND o.IsDeleted = 0 WHERE o.PermissionId IN @PermissionIds";
-
-                        //var operations = await conn.QueryAsync<Operation>(queryOperationSql, new { PermissionIds = input.PermissionIds }, transaction: trans);
-                        //if (!operations.Any(p => p.Mold == Shared.Operations.OperationMold.Query || p.Mold == Shared.Operations.OperationMold.Look))
-                        //{
-                        //    throw new BusinessException($"分配的权限至少要包含查询或是查看类型操作");
-                        //}
+                    {   
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.RoleId, conn, trans);
                         foreach (var permissionId in input.PermissionIds)
                         {
@@ -322,13 +315,13 @@ namespace Surging.Hero.Auth.Domain.Roles
         private async Task<Permission> GetservicePemission(string serviceId)
         {
             var sql = @"SELECT p.* FROM OperationActionRelation as oar 
-LEFT JOIN Operation as o on oar.OperationId = o.Id AND o.IsDeleted = 0
-LEFT JOIN Permission as p on p.Id = o.PermissionId AND p.Mold=1 AND  p.IsDeleted = 0
+LEFT JOIN Operation as o on oar.OperationId = o.Id AND o.IsDeleted = @IsDeleted
+LEFT JOIN Permission as p on p.Id = o.PermissionId AND p.Mold=1 AND  p.IsDeleted = @IsDeleted
 WHERE oar.ServiceId=@ServiceId";
 
             using (Connection)
             {
-                var permission = await Connection.QueryAsync<Permission>(sql, new { ServiceId = serviceId });
+                var permission = await Connection.QueryAsync<Permission>(sql, new { ServiceId = serviceId, IsDeleted= HeroConstants.UnDeletedFlag });
                 return permission.FirstOrDefault();
             }
 

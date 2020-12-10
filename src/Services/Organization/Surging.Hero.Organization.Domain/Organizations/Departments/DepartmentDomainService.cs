@@ -225,7 +225,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                     }
                     var positionIds = input.Positions.Where(p => p.Id != 0 && p.Id.HasValue).Select(p => p.Id);
                     var deletePositionSql = "UPDATE `Position` SET IsDeleted=@IsDeleted,DeleteBy=@DeleteBy,DeleteTime=@DeleteTime WHERE DeptId=@DeptId AND Id NOT in @Id";
-                    await conn.ExecuteAsync(deletePositionSql, new { IsDeleted= 1, DeleteBy = _session.UserId.Value, DeleteTime = DateTime.Now, DeptId = department.Id, @Id = positionIds }, trans);
+                    await conn.ExecuteAsync(deletePositionSql, new { IsDeleted= HeroConstants.DeletedFlag, DeleteBy = _session.UserId.Value, DeleteTime = DateTime.Now, DeptId = department.Id, @Id = positionIds }, trans);
                     var sort = 1;
                     foreach (var positionInput in input.Positions)
                     {

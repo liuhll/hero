@@ -5,6 +5,7 @@ using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.IApplication.User.Dtos;
+using Surging.Hero.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace Surging.Hero.Auth.Domain.Users
         Task Update(UpdateUserInput input);
         Task Delete(long id);
 
-        Task<IEnumerable<Role>> GetUserRoles(long userId);
+        Task<IEnumerable<Role>> GetUserRoles(long userId, Status? status = null);
         Task<GetUserNormOutput> GetUserNormInfoById(long id);
         Task<bool> CheckPermission(long userId, string serviceId);
         Task<IEnumerable<Menu>> GetUserMenu(long userId);

@@ -144,13 +144,20 @@ namespace Surging.Hero.Auth.Domain.UserGroups
           
         }
 
-        public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId)
+        public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId, Common.Status? status = null)
         {
             var sql = @"SELECT r.* FROM UserGroupRole as ugr 
-                        LEFT JOIN Role as r on ugr.RoleId = r.Id WHERE ugr.UserGroupId=@UserGroupId";
+                        LEFT JOIN Role as r on ugr.RoleId = r.Id WHERE ugr.UserGroupId=@UserGroupId 
+                        AND r.Status=@Status";
+            var sqlParams = new Dictionary<string, object>();
+            sqlParams.Add("UserGroupId", userGroupId);
+            if (status.HasValue) 
+            {
+                sqlParams.Add("Status", status.Value);
+            }
             using (Connection)
             {
-                return (await Connection.QueryAsync<Role>(sql, param: new { UserGroupId = userGroupId })).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                return (await Connection.QueryAsync<Role>(sql, param: sqlParams)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             }
         }
 
@@ -182,13 +189,13 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         {
             var querySql = @"SELECT ug.* FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr ON ug.Id = uugr.UserGroupId
                             WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status";
-            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", 1 }, { "Status", Status.Valid } };
+            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag }, { "Status", Status.Valid } };
             using (var conn = Connection) 
             {
                 var userGroups = await conn.QueryAsync<UserGroup>(querySql, sqlParams);
                 foreach (var userGroup in userGroups)
                 {                  
-                    var userGroupRoles = await GetUserGroupRoles(userGroup.Id);
+                    var userGroupRoles = await GetUserGroupRoles(userGroup.Id, Status.Valid);
                     foreach (var userGroupRole in userGroupRoles)
                     {
                         if (await _roleDomainService.CheckPermission(userGroupRole.Id, serviceId))
@@ -243,11 +250,12 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)
         {
             var querySql = @"SELECT {0} 
-FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr on ug.Id=uugr.UserGroupId AND ug.IsDeleted=0
-INNER JOIN UserInfo as u on uugr.UserId=u.Id AND u.IsDeleted=0
+FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr on ug.Id=uugr.UserGroupId AND ug.IsDeleted=@IsDeleted
+INNER JOIN UserInfo as u on uugr.UserId=u.Id AND u.IsDeleted=@IsDeleted
 WHERE UserGroupId=@UserGroupId";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("UserGroupId", query.UserGroupId);
+            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
             if (query.OrgId.HasValue && query.OrgId.Value !=0) 
             {
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);

@@ -4,6 +4,10 @@
     {
         public const string RouteTemplet = "api/{appService}";
 
+        public const int UnDeletedFlag = 0;
+
+        public const int DeletedFlag = 1;
+
         public static class CodeRuleRestrain {
 
             public const string CodeSeparator = ".";
