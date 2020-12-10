@@ -113,7 +113,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                         var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
                         await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
-                        var insertSql = "INSERT INTO RolePermission(PermissionId,RoleId,CreationTime,CreatorUserId) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
+                        var insertSql = "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
                         var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
                         {
@@ -289,7 +289,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                         var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
                         await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
-                        var insertSql = "INSERT INTO RolePermission(PermissionId,RoleId,CreationTime,CreatorUserId) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
+                        var insertSql = "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
                         var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
                         {
