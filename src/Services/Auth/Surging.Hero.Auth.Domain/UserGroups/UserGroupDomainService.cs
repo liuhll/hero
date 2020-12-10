@@ -147,12 +147,13 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId, Common.Status? status = null)
         {
             var sql = @"SELECT r.* FROM UserGroupRole as ugr 
-                        LEFT JOIN Role as r on ugr.RoleId = r.Id WHERE ugr.UserGroupId=@UserGroupId 
-                        AND r.Status=@Status";
+                        LEFT JOIN Role as r on ugr.RoleId = r.Id AND r.IsDeleted=@IsDeleted WHERE ugr.UserGroupId=@UserGroupId ";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("UserGroupId", userGroupId);
+            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
             if (status.HasValue) 
             {
+                sql += " AND r.Status=@Status";
                 sqlParams.Add("Status", status.Value);
             }
             using (Connection)
