@@ -267,9 +267,10 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
         public async Task<IEnumerable<Role>> GetUserRoles(long userId, Status? status = null)
         {
             var sql = @"SELECT r.* FROM UserRole as ur 
-                        LEFT JOIN Role as r on ur.RoleId = r.Id WHERE ur.UserId=@UserId";
+                        LEFT JOIN Role as r on ur.RoleId = r.Id AND r.IsDeleted=@IsDeleted WHERE ur.UserId=@UserId";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("UserId", userId);
+            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
             if (status.HasValue) 
             {
                 sql += " AND r.Status=@Status";
