@@ -34,6 +34,17 @@ namespace Surging.Hero.Auth.IApplication.UserGroup
         Task<string> Update(UpdateUserGroupInput input);
 
         /// <summary>
+        /// 冻结/激活用户组状态
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [ServiceRoute("status")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-10", Name = "冻结/激活用户组状态")]
+        Task<string> UpdateStatus(UpdateUserGroupStatusInput input);
+
+
+        /// <summary>
         /// 更新用户组状态
         /// </summary>
         /// <param name="input"></param>
