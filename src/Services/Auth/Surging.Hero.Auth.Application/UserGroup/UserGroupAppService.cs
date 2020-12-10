@@ -81,7 +81,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
 
         public async Task<IPagedResult<GetUserGroupOutput>> Search(QueryUserGroupInput query)
         {
-            Expression<Func<Domain.UserGroups.UserGroup, bool>> predicate = p => p.Name.Contains(query.SearchKey) || p.Memo.Contains(query.SearchKey);
+            Expression<Func<Domain.UserGroups.UserGroup, bool>> predicate = p => p.Name.Contains(query.SearchKey);
             if (query.Status.HasValue) 
             {
                 predicate = predicate.And(p => p.Status == query.Status);

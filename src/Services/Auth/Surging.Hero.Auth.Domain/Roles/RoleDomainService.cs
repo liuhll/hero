@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
@@ -17,6 +18,7 @@ using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Department;
 
 namespace Surging.Hero.Auth.Domain.Roles
@@ -196,13 +198,17 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId)
         {
-
             return await _rolePermissionRepository.GetAllAsync(p => p.RoleId == roleId);
         }
 
         public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
         {
-            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey) || p.Memo.Contains(query.SearchKey), query.PageIndex, query.PageCount);
+            Expression<Func<Role, bool>> predicate = p => p.Name.Contains(query.SearchKey);
+            if (query.Status.HasValue)
+            {
+                predicate = predicate.And(p => p.Status == query.Status);
+            }
+            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey), query.PageIndex, query.PageCount);
 
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items)
