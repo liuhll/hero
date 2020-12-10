@@ -285,7 +285,6 @@ namespace Surging.Hero.Auth.Domain.Roles
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         await _roleRepository.UpdateAsync(role, conn, trans);
-                        var roleId = await _roleRepository.InsertAndGetIdAsync(role, conn, trans);
                         var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
                         await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, transaction: trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
@@ -298,7 +297,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                             //{
                             //    throw new BusinessException($"不存在Id为{permissionId}的权限信息");
                             //}
-                            rolePermissions.Add(new RolePermission() { PermissionId = permissionId, RoleId = roleId, CreationTime = DateTime.Now, CreatorUserId = _session.UserId });
+                            rolePermissions.Add(new RolePermission() { PermissionId = permissionId, RoleId = role.Id, CreationTime = DateTime.Now, CreatorUserId = _session.UserId });
                         }
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
                     }, Connection);
