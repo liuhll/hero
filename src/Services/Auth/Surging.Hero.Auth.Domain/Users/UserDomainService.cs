@@ -30,6 +30,7 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IDapperRepository<UserInfo, long> _userRepository;
         private readonly IDapperRepository<Roles.Role, long> _roleRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
+        private readonly IDapperRepository<UserGroup, long> _userGroupRepository;
         private readonly IDapperRepository<UserUserGroupRelation,long> _userUserGroupRelationRepository;
         private readonly IDapperRepository<Menu, long> _menuRepository;
         private readonly IRoleDomainService _roleDomainService;
@@ -46,8 +47,9 @@ namespace Surging.Hero.Auth.Domain.Users
             IRoleDomainService roleDomainService,
             IUserGroupDomainService userGroupDomainService,
             IPasswordHelper passwordHelper,
-            IMenuDomainService menuDomainService, 
-            ILockerProvider lockerProvider)
+            IMenuDomainService menuDomainService,
+            ILockerProvider lockerProvider, 
+            IDapperRepository<UserGroup, long> userGroupRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -59,6 +61,7 @@ namespace Surging.Hero.Auth.Domain.Users
             _passwordHelper = passwordHelper;
             _menuDomainService = menuDomainService;
             _lockerProvider = lockerProvider;
+            _userGroupRepository = userGroupRepository;
         }
 
         public async Task<bool> CheckPermission(long userId, string serviceId)
@@ -109,6 +112,16 @@ namespace Surging.Hero.Auth.Domain.Users
                             }
 
                             await _userRoleRepository.InsertAsync(new UserRole() { UserId = userId, RoleId = roleId }, conn, trans);
+                        }
+                        foreach (var userGroupId in input.UserGroupIds) 
+                        {
+                            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == userGroupId);
+                            if (userGroup == null)
+                            {
+                                throw new BusinessException($"系统中不存在Id为{userGroupId}的用户组信息");
+                            }
+
+                            await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserId = userId, UserGroupId = userGroupId }, conn, trans);
                         }
 
                     }, Connection);
@@ -296,6 +309,7 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                     await UnitOfWorkAsync(async (conn, trans) => {
                         await _userRepository.UpdateAsync(updateUser, conn, trans);
                         await _userRoleRepository.DeleteAsync(p => p.UserId == updateUser.Id, conn, trans);
+                        await _userUserGroupRelationRepository.DeleteAsync(p => p.UserId == updateUser.Id, conn, trans);
                         foreach (var roleId in input.RoleIds)
                         {
                             var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
@@ -305,6 +319,16 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                             }
 
                             await _userRoleRepository.InsertAsync(new UserRole() { UserId = updateUser.Id, RoleId = roleId }, conn, trans);
+                        }
+                        foreach (var userGroupId in input.UserGroupIds)
+                        {
+                            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == userGroupId);
+                            if (userGroup == null)
+                            {
+                                throw new BusinessException($"系统中不存在Id为{userGroupId}的用户组信息");
+                            }
+
+                            await _userUserGroupRelationRepository.InsertAsync(new UserUserGroupRelation() { UserId = updateUser.Id, UserGroupId = userGroupId }, conn, trans);
                         }
 
                     }, Connection);

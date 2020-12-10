@@ -8,6 +8,14 @@
 
         public long? PositionId { get; set; }
 
+        /// <summary>
+        /// 分配的角色
+        /// </summary>
         public long[] RoleIds { get; set; }
+
+        /// <summary>
+        /// 分配的用户组
+        /// </summary>
+        public long[] UserGroupIds { get; set; }
     }
 }
