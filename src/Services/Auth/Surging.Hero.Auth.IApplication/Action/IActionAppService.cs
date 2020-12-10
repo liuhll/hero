@@ -22,6 +22,15 @@ namespace Surging.Hero.Auth.IApplication.Action
         Task<string> InitActions(ICollection<InitActionActionInput> actions);
 
         /// <summary>
+        /// 初始化所有服务方法
+        /// </summary>
+        /// <returns></returns>
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "初始化所有服务方法", AllowPermission = true)]
+        [HttpPost]
+        [ServiceRoute("init/all")]
+        Task<string> InitAllActions();
+
+        /// <summary>
         /// 获取微服务主机列表
         /// </summary>
         /// <param name="query"></param>

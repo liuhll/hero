@@ -143,9 +143,10 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         {
             using (var locker = await _lockerProvider.CreateLockAsync("InitActions")) 
             {
-                foreach (var action in actions) 
+
+                await locker.Lock(async () =>
                 {
-                    await locker.Lock(async () => 
+                    foreach (var action in actions)
                     {
                         await UnitOfWorkAsync(async (conn, trans) =>
                         {
@@ -183,8 +184,12 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                                 }
                             }
                         }, Connection);
-                    });
-                }
+                    }
+
+                    
+                });
+
+
             }
 
         }
