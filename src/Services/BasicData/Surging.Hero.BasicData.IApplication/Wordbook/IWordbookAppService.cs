@@ -70,7 +70,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [ServiceRoute("items/page")]
+        [ServiceRoute("items/search")]
         [HttpPost]        
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取字典项", AllowPermission = true)]
         Task<IPagedResult<GetWordbookItemOutput>> GetWordbookItems(GetWordbookItemsInput input);
@@ -81,7 +81,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
-        [ServiceRoute("items")]
+        [ServiceRoute("item")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增字典项")]
         Task<string> CreateWordbookItem(CreateWordbookItemInput input);
 
@@ -91,7 +91,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut]
-        [ServiceRoute("items")]
+        [ServiceRoute("item")]
         [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.GetWordBookItemsById,CacheKeyConstant.GetWordBookItemById, CacheKeyConstant.RemoveGetWordBookItem, CacheKeyConstant.RemoveGetWordBookItems }, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新字典项")]
         Task<string> UpdateWordbookItem(UpdateWordbookItemInput input);
@@ -101,7 +101,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ServiceRoute("items/{id}")]
+        [ServiceRoute("item/{id}")]
         [HttpDelete]
         [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new string[] { CacheKeyConstant.GetWordBookItemsById, CacheKeyConstant.GetWordBookItemById, CacheKeyConstant.RemoveGetWordBookItem,CacheKeyConstant.RemoveGetWordBookItems }, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除字典项")]
@@ -112,7 +112,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ServiceRoute("items/{id}")]
+        [ServiceRoute("item/{id}")]
         [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetWordBookItemById, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取字典项目", AllowPermission = true)]
@@ -128,7 +128,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查是否存在某个字典项", DisableNetwork = true)]
         Task<bool> Check(CheckWordbookInput input);
 
-        [ServiceRoute("items/code/{code}")]
+        [ServiceRoute("item/code/{code}")]
         [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetWordBookItemsByCode, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据字典标识获取字典项", AllowPermission = true)]
