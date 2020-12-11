@@ -1,6 +1,8 @@
 ﻿using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Core.Domain.PagedAndSorted;
+using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
+using Surging.Core.System.Intercept;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common;
 using System.Collections.Generic;
@@ -29,6 +31,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpPut]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新用户")]
         [ServiceRoute("")]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetUserNormInfoById }, Mode = CacheTargetType.Redis)]
         Task<string> Update(UpdateUserInput input);
 
         /// <summary>
@@ -39,6 +42,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpDelete]
         [ServiceRoute("{id}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除用户")]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetUserNormInfoById }, Mode = CacheTargetType.Redis)]
         Task<string> Delete(long id);
 
         /// <summary>
@@ -59,6 +63,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpPut]
         [ServiceRoute("status")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "激活/冻结用户")]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetUserNormInfoById }, Mode = CacheTargetType.Redis)]
         Task<string> UpdateStatus(UpdateUserStatusInput input);
 
         /// <summary>
@@ -115,5 +120,12 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpGet]
         [ServiceRoute("position/count/{positionId}")]
         Task<int> GetPositionUserCount(long positionId);
+
+
+        [HttpGet]
+        [ServiceRoute("user/basic/{id}")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-11", Name = "获取某个用户的基本信息【不包含角色信息,有缓存】", AllowPermission = true, DisableNetwork = true)]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetUserNormInfoById, Mode = CacheTargetType.Redis)]
+        public Task<GetUserBasicOutput> GetUserBasicInfo([CacheKey(1)]long id);
     }
 }

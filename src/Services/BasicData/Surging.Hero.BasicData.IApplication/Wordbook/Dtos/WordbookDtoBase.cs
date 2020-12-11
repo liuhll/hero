@@ -1,10 +1,11 @@
 ﻿using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
 using Surging.Hero.Common;
+using Surging.Hero.Common.FullAuditDtos;
 using System.ComponentModel.DataAnnotations;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 {
-    public abstract class WordbookDtoBase
+    public abstract class WordbookDtoBase : FullAuditDto
     {
 
         [Required(ErrorMessage = "字典类型名称不允许为空")]

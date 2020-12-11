@@ -12,8 +12,6 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 
         public bool IsSysPreset { get; set; }
 
-        public DateTime CreationTime { get; set; }
-
         public string TypeDesc
         {
             get
@@ -21,5 +19,6 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
                 return Type.GetDescription();
             }
          }
+
     }
 }

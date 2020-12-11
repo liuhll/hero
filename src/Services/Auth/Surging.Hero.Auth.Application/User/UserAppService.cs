@@ -22,6 +22,7 @@ using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using System.Linq.Expressions;
 using Surging.Core.CPlatform.Runtime.Session;
+using Surging.Core.System.Intercept;
 
 namespace Surging.Hero.Auth.Application.User
 {
@@ -257,6 +258,16 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<int> GetPositionUserCount(long positionId)
         {
             return await _userRepository.GetCountAsync(p => p.PositionId == positionId);
+        }
+
+        public async Task<GetUserBasicOutput> GetUserBasicInfo([CacheKey(1)] long id)
+        {
+            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (userInfo == null) 
+            {
+                return null;
+            }
+            return userInfo.MapTo<GetUserBasicOutput>();
         }
     }
 }

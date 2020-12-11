@@ -1,7 +1,10 @@
-﻿namespace Surging.Hero.Auth.IApplication.User.Dtos
+﻿using Surging.Core.System.Intercept;
+
+namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
     public class UpdateUserInput : UserDtoBase
     {
+        [CacheKey(1)]
         public long Id { get; set; }
 
         public long? OrgId { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
+﻿using System;
+
+namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 {
     public class GetWordbookItemOutput : WordbookItemDtoBase
     {
@@ -9,6 +11,6 @@
         public string Key { get; set; }
 
         public string WordbookCode { get; set; }
-      
+
     }
 }
