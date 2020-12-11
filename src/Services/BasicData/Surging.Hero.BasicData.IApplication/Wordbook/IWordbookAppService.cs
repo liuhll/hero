@@ -70,9 +70,9 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [ServiceRoute("items/search")]
+        [ServiceRoute("items/page")]
         [HttpPost]        
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取字典项", AllowPermission = true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取字典项")]
         Task<IPagedResult<GetWordbookItemOutput>> GetWordbookItems(GetWordbookItemsInput input);
 
         /// <summary>
