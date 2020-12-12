@@ -4,6 +4,6 @@
     {
         public string WordbookCode { get; set; }
 
-        public long WordbookItemId { get; set; }
+        public string WordbookItemKey { get; set; }
     }
 }

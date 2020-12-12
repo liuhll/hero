@@ -19,5 +19,7 @@
         public const string GetWordBookItemByCode = "GetWordBookItemBy_Code_{0}";
 
         public const string RemoveGetWordBookItem = "GetWordBookItemBy_*";
+
+        public const string GetWordBookItemByKey = "GetWordBookItemByKey_{0}_{1}";
     }
 }

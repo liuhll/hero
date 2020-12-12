@@ -10,9 +10,9 @@ namespace Surging.Hero.Organization.Domain.Positions
 
         public string Name { get; set; }
 
-        public long FunctionId { get; set; }
+        public string FunctionKey { get; set; }
 
-        public long PositionLevelId { get; set; }
+        public string PositionLevelKey { get; set; }
 
         public string PostResponsibility { get; set; }
 

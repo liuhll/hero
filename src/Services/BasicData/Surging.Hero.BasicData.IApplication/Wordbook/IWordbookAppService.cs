@@ -128,10 +128,16 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "检查是否存在某个字典项", DisableNetwork = true)]
         Task<bool> Check(CheckWordbookInput input);
 
-        [ServiceRoute("item/code/{code}")]
+        [ServiceRoute("items/code/{code}")]
         [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetWordBookItemsByCode, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据字典标识获取字典项", AllowPermission = true)]
-        Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemByCode([CacheKey(1)]string code);
+        Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemsByCode([CacheKey(1)]string code);
+
+        [ServiceRoute("item/key/{key}")]
+        [HttpGet]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetWordBookItemByKey, Mode = CacheTargetType.Redis)]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-13", Name = "根据字典项的key获取字典信息", AllowPermission = true)]
+        Task<GetWordbookItemOutput> GetWordbookItemByKey([CacheKey(1)]string wordbookCode,[CacheKey(2)]string key);
     }
 }

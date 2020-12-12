@@ -9,6 +9,7 @@ using Nest;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Runtime.Session;
+using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
@@ -57,12 +58,12 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                 throw new BusinessException($"不存在Id为{input.ParentId}的上级信息");
             }
 
-            if (input.DeptTypeId == 0)
+            if (input.DeptTypeKey.IsNullOrEmpty())
             {
                 throw new BusinessException($"请选择部门类型");
             }
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
-            var checkDeptTypeResult = await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.DeptType, WordbookItemId = input.DeptTypeId });
+            var checkDeptTypeResult = await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.DeptType, WordbookItemKey = input.DeptTypeKey });
             if (!checkDeptTypeResult)
             {
                 throw new BusinessException($"部门类型Id不正确,请选择正确的部门类型");
@@ -199,13 +200,13 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                 throw new BusinessException($"系统中不存在Id为{department.Id}的部门信息");
             }
 
-            if (input.DeptTypeId == 0)
+            if (input.DeptTypeKey.IsNullOrEmpty())
             {
                 throw new BusinessException($"请选择部门类型");
             }
           
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
-            var checkDeptTypeResult = await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.DeptType, WordbookItemId = input.DeptTypeId });
+            var checkDeptTypeResult = await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.DeptType, WordbookItemKey = input.DeptTypeKey });
             if (!checkDeptTypeResult)
             {
                 throw new BusinessException($"部门类型Id不正确,请选择正确的部门类型");

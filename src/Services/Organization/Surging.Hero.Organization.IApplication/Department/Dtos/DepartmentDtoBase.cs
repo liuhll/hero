@@ -12,7 +12,7 @@ namespace Surging.Hero.Organization.IApplication.Department.Dtos
 
         public string Location { get; set; }
 
-        public long DeptTypeId { get; set; }
+        public string DeptTypeKey { get; set; }
 
         [MaxLength(100, ErrorMessage = "部门简介长度不允许超过100")]
         public string BriefIntro { get; set; }

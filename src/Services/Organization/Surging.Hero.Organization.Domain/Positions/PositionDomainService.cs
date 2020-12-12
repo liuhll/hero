@@ -50,10 +50,23 @@ namespace Surging.Hero.Organization.Domain.Positions
         {
             var positions = await _positionRepository.GetAllAsync(p => p.DeptId == deptId);
             var positionOutputs = positions.MapTo<IEnumerable<GetPositionOutput>>();
-            foreach (var positionOutput in positionOutputs) 
+            foreach (var positionOutput in positionOutputs)
             {
-                positionOutput.PositionLevelName = (await GetService<IWordbookAppService>().GetWordbookItem(positionOutput.PositionLevelId)).Value;
-                positionOutput.FunctionName = (await GetService<IWordbookAppService>().GetWordbookItem(positionOutput.FunctionId)).Value;
+                var wordbookAppServiceProxy = GetService<IWordbookAppService>();
+                var positionLevleInfo = await wordbookAppServiceProxy.GetWordbookItemByKey(
+                    OrganizationConstant.PositionPositionLevelWordbookCode, positionOutput.PositionLevelKey);
+                if (positionLevleInfo != null)
+                {
+                    positionOutput.PositionLevelName = positionLevleInfo.Value;
+                }
+                var positionFunctionInfo = await wordbookAppServiceProxy.GetWordbookItemByKey(
+                    OrganizationConstant.PositionPositionLevelWordbookCode, positionOutput.PositionLevelKey);
+                if (positionFunctionInfo != null)
+                {
+                    positionOutput.FunctionName = positionFunctionInfo.Value;
+                }
+               
+                positionOutput.FunctionName = (await GetService<IWordbookAppService>().GetWordbookItemByKey(OrganizationConstant.PositionFunctionWordbookCode,positionOutput.FunctionKey)).Value;
             }
             return positionOutputs;
         }
@@ -62,11 +75,11 @@ namespace Surging.Hero.Organization.Domain.Positions
         {
             var position = await _positionRepository.GetAsync(input.Id);          
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
-            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemId = input.FunctionId }))
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemKey = input.FunctionKey }))
             {
                 throw new BusinessException($"系统中不存在指定的岗位职能类型");
             }
-            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionLevel, WordbookItemId = input.PositionLevelId }))
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionLevel, WordbookItemKey = input.PositionLevelKey }))
             {
                 throw new BusinessException($"系统中不存在指定的岗位级别");
             }
@@ -86,11 +99,11 @@ namespace Surging.Hero.Organization.Domain.Positions
         private async Task CheckPosition(Position position)
         {         
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
-            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemId = position.FunctionId }))
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionFunction, WordbookItemKey = position.FunctionKey }))
             {
                 throw new BusinessException($"系统中不存在指定的岗位职能类型");
             }
-            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionLevel, WordbookItemId = position.PositionLevelId }))
+            if (!await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.PositionLevel, WordbookItemKey = position.PositionLevelKey }))
             {
                 throw new BusinessException($"系统中不存在指定的岗位级别");
             }

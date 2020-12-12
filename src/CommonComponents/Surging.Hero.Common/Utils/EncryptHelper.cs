@@ -34,6 +34,7 @@ namespace Surging.Hero.Common.Utils
         /// 用MD5加密字符串
         /// </summary>
         /// <param name="line">待加密的字符串</param>
+        /// <param name="length"></param>
         /// <returns></returns>
         public static string Md5(string line, MD5Length length = MD5Length.L32)
         {

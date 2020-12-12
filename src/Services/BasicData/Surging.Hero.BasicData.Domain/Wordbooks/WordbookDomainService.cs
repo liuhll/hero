@@ -30,7 +30,7 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
                 throw new BusinessException($"系统中不存在Code为{input.WordbookCode}的字典项");
             }
             var wordbookItems = await _wordbookItemRepository.GetAllAsync(p => p.WordbookId == wordbook.Id);
-            if (wordbookItems.Any(p => p.Id == input.WordbookItemId)) {
+            if (wordbookItems.Any(p => p.Key == input.WordbookItemKey)) {
                 return true;
             }
             return false;
@@ -115,7 +115,7 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             return wordbookItemOutput;
         }
 
-        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemByCode(string code)
+        public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemsByCode(string code)
         {
             var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Code == code);
             if (wordbook == null)
@@ -126,6 +126,28 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             var wordbookItems = await _wordbookItemRepository.GetAllAsync(p => p.WordbookId == wordbook.Id);
             var wordbookItemOutputs = wordbookItems.MapTo<IEnumerable<GetWordbookItemOutput>>().Select(p => { p.WordbookCode = wordbook.Code; return p; }).OrderBy(p => p.Sort);
             return wordbookItemOutputs;
+        }
+
+        public async Task<GetWordbookItemOutput> GetWordbookItemByKey(string wordBookCode,string key)
+        {
+            var wordbook = await _wordbookRepository.SingleOrDefaultAsync(p => p.Code == wordBookCode);
+            if (wordbook == null)
+            {
+                //throw new BusinessException($"系统中不存在Code为{wordBookCode}的字典类型");
+                return null;
+            }
+            
+            var wordbookItem = await _wordbookItemRepository.SingleOrDefaultAsync(p=> p.WordbookId == wordbook.Id &&  p.Key == key);
+            if (wordbookItem == null)
+            {
+                //throw new  BusinessException($"系统中不存在{key}的字典的值");
+                return null;
+            }
+
+
+            var wordbookItemOutput = wordbookItem.MapTo<GetWordbookItemOutput>();
+            wordbookItemOutput.WordbookCode = wordbook.Code;
+            return wordbookItemOutput;
         }
 
         public async Task<IPagedResult<GetWordbookItemOutput>> GetWordbookItems(GetWordbookItemsInput input)
