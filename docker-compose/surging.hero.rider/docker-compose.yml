@@ -5,12 +5,11 @@ services:
     image: surgingcloud/surging.hero.auth:${TAG:-latest}
     build:
       context: ../..
-      dockerfile: src/Services/Auth/Surging.Hero.AuthHost/Dockerfile.Rider.Debug
+      dockerfile: src/Services/Auth/Surging.Hero.AuthHost/Dockerfile.Rider.v2.Debug
       args:
         host_workdir: src/Services/Auth/Surging.Hero.AuthHost
         host_name: Surging.Hero.AuthHost.dll
         sln_name: sln/Surging.Hero.sln
-    command: Surging.Hero.AuthHost.dll
     volumes:
       - ${LOG_DIR:-/var/logs}/auth:/app/logs
     networks:
@@ -20,12 +19,11 @@ services:
     image: surgingcloud/surging.hero.basicdata:${TAG:-latest}
     build:
       context: ../..
-      dockerfile: src/Services/BasicData/Surging.Hero.BasicDataHost/Dockerfile.Rider.Debug
+      dockerfile: src/Services/BasicData/Surging.Hero.BasicDataHost/Dockerfile.Rider.v2.Debug
       args:
         host_workdir: src/Services/BasicData/Surging.Hero.BasicDataHost
         host_name: Surging.Hero.BasicDataHost.dll
-        sln_name: sln/Surging.Hero.sln
-    command: Surging.Hero.BasicDataHost.dll      
+        sln_name: sln/Surging.Hero.sln    
     volumes:
       - ${LOG_DIR:-/var/logs}/basicdata:/app/logs
     networks:
@@ -35,12 +33,11 @@ services:
     image: surgingcloud/surging.hero.organization:${TAG:-latest}
     build:
       context: ../..
-      dockerfile: src/Services/Organization/Surging.Hero.OrganizationHost/Dockerfile.Rider.Debug
+      dockerfile: src/Services/Organization/Surging.Hero.OrganizationHost/Dockerfile.Rider.v2.Debug
       args:
         host_workdir: src/Services/Organization/Surging.Hero.OrganizationHost
         host_name: Surging.Hero.OrganizationHost.dll
-        sln_name: sln/Surging.Hero.sln
-    command: Surging.Hero.OrganizationHost.dll         
+        sln_name: sln/Surging.Hero.sln      
     volumes:
       - ${LOG_DIR:-/var/logs}/organization:/app/logs
     networks:
@@ -50,12 +47,11 @@ services:
     image: surgingcloud/surging.hero.gateway:${TAG:-latest}
     build:
       context: ../..
-      dockerfile: src/Services/Gateway/Surging.Hero.Gateway/Dockerfile.Rider.Debug
+      dockerfile: src/Services/Gateway/Surging.Hero.Gateway/Dockerfile.Rider.v2.Debug
       args:
         host_workdir: src/Services/Gateway/Surging.Hero.Gateway
         host_name: Surging.Hero.Gateway.dll
-        sln_name: sln/Surging.Hero.sln
-    command: Surging.Hero.Gateway.dll          
+        sln_name: sln/Surging.Hero.sln        
     depends_on:
       - surging.hero.auth
       - surging.hero.basicdata
