@@ -44,13 +44,7 @@ namespace Surging.Hero.Organization.IApplication.Position
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetDeptPositionByOrgId, Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织机构id获取职位列表", AllowPermission = true)]
         Task<IEnumerable<GetPositionOutput>> GetDeptPositionByOrgId([CacheKey(1)]long orgId);
-
-        /// <summary>
-        /// 检查职位是否允许删除
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-
+        
         /// <summary>
         /// 检查某个职位是否允许删除
         /// </summary>
