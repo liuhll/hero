@@ -24,7 +24,7 @@ Components
 cli-windows
 cli-mac
 cli-linux
-**/bin/
+#**/bin/
 **/obj/
 #**/node_modules/
 **/bower_components/
