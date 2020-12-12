@@ -9,4 +9,4 @@ RUN dotnet restore ${sln_name} && \
 WORKDIR ${host_workdir}    
 RUN dotnet publish --no-restore -o /app
 WORKDIR /app
-ENTRYPOINT dotnet ${host_name}
+ENTRYPOINT ["dotnet", "Surging.Hero.AuthHost.dll"]
