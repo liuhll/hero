@@ -65,8 +65,6 @@ namespace Surging.Hero.Organization.Domain.Positions
                 {
                     positionOutput.FunctionName = positionFunctionInfo.Value;
                 }
-               
-                positionOutput.FunctionName = (await GetService<IWordbookAppService>().GetWordbookItemByKey(OrganizationConstant.PositionFunctionWordbookCode,positionOutput.FunctionKey)).Value;
             }
             return positionOutputs;
         }

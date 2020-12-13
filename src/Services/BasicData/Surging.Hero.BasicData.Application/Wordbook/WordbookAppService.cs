@@ -90,8 +90,8 @@ namespace Surging.Hero.BasicData.Application.Wordbook
 
         public async Task<GetWordbookItemOutput> GetWordbookItemByKey(string wordbookCode,string key)
         {
-            var wordbookOutput = (await _wordbookDomainService.GetWordbookItemByKey(wordbookCode, key)).MapTo<GetWordbookItemOutput>();
-            await wordbookOutput.SetAuditInfo();
+            
+            var wordbookOutput = (await _wordbookDomainService.GetWordbookItemByKey(wordbookCode, key));
             return wordbookOutput;
         }
 

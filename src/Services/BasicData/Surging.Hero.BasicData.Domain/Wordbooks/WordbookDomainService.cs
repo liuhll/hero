@@ -9,6 +9,7 @@ using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
+using  Surging.Hero.Auth.IApplication.FullAuditDtos;
 using SortType = Surging.Core.Dapper.Repositories.SortType;
 
 namespace Surging.Hero.BasicData.Domain.Wordbooks
@@ -143,9 +144,8 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
                 //throw new  BusinessException($"系统中不存在{key}的字典的值");
                 return null;
             }
-
-
             var wordbookItemOutput = wordbookItem.MapTo<GetWordbookItemOutput>();
+            await wordbookItemOutput.SetAuditInfo();
             wordbookItemOutput.WordbookCode = wordbook.Code;
             return wordbookItemOutput;
         }
