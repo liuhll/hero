@@ -66,7 +66,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             var checkDeptTypeResult = await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.DeptType, WordbookItemKey = input.DeptTypeKey });
             if (!checkDeptTypeResult)
             {
-                throw new BusinessException($"部门类型Id不正确,请选择正确的部门类型");
+                throw new BusinessException($"指定的部门类型Key不正确,请选择正确的部门类型");
             }
             var department = input.MapTo<Department>();
             var orgInfo = input.MapTo<Organization>();
