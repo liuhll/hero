@@ -188,9 +188,9 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
             {
                 throw new BusinessException($"系统中不存在Id为{input.Id}的字典类型");            
             }
-            if (wordbook.IsSysPreset)
+            if (wordbook.IsSysPreset && wordbook.Code != input.Code)
             {
-                throw new BusinessException($"不允许修改系统预设的字典类型");
+                throw new BusinessException($"不允许修改系统预设的字典类型标识");
             }
             wordbook = input.MapTo(wordbook);
             await _wordbookRepository.UpdateAsync(wordbook);
