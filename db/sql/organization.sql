@@ -7,12 +7,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 drop database if exists hero_organization;
 create database hero_organization;
 use hero_organization;
-
-drop table if exists Organization;
-
 drop table if exists Corporation;
 
 drop table if exists Department;
+
+drop table if exists Organization;
 
 drop table if exists Position;
 
@@ -79,6 +78,7 @@ create table Organization
    Name                 varchar(50) not null comment '公司名称',
    Code                 varchar(200) not null comment '唯一编码',
    Level                int comment '层级',
+   OrgType              int not null default 1 comment '组织机构类型',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',

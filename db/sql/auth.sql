@@ -78,7 +78,7 @@ drop table if exists UserUserGroupRelation;
 create table Action
 (
    Id                   bigint not null auto_increment comment '主键',
-   ServiceId            varchar(100) not null comment '服务id',
+   ServiceId            varchar(500) not null comment '服务id',
    ServiceHost          varchar(50) not null comment '服务主机',
    Application          varchar(50) not null comment '所属应用服务',
    Name                 varchar(50) comment '名称',
@@ -190,7 +190,7 @@ create table OperationActionRelation
    Id                   bigint not null auto_increment comment '主键',
    OperationId          bigint not null comment '操作Id',
    ActionId             bigint not null comment 'ActionId',
-   ServiceId            varchar(100) not null comment '服务Id',
+   ServiceId            varchar(500) not null comment '服务Id',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
