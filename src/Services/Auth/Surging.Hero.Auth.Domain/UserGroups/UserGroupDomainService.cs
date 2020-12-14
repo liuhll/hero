@@ -189,8 +189,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task<bool> CheckPermission(long userId, string serviceId)
         {
             var querySql = @"SELECT ug.* FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr ON ug.Id = uugr.UserGroupId
-                            WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status";
-            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag }, { "Status", Status.Valid } };
+                            WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status  AND uugr.UserId=@UserId";
+            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag }, { "Status", Status.Valid }, { "UserId", userId } };
             using (var conn = Connection) 
             {
                 var userGroups = await conn.QueryAsync<UserGroup>(querySql, sqlParams);
