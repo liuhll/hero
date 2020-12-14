@@ -22,7 +22,6 @@ create table Corporation
 (
    Id                   bigint not null auto_increment comment '主键',
    OrgId                bigint not null comment '对应的组织机构Id',
-   Name                 varchar(50) not null comment '公司名称',
    Mold                 int not null comment '0.集团公司;1.单体公司;2.子公司3.控股公司',
    Address              varchar(200) not null comment '公司地址',
    Logo                 varchar(50) comment 'logo名称',
@@ -124,7 +123,7 @@ create table Position
 alter table Position comment '职位表';
 
 
-INSERT INTO `hero_organization`.`Corporation`(`Id`, `OrgId`, `Name`, `Mold`, `Address`, `Logo`, `LogoPosition`, `CorporateRepresentative`, `RegisterDate`, `OpenDate`, `Trade`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 1, '1', 0, '中国北京通州', '', '', '', '2020-12-14 08:36:18', '2020-12-14 14:52:27', '', '1', 1, '2020-12-14 14:52:36', 1, '2020-12-14 14:52:55', 0, NULL, NULL);
+INSERT INTO `hero_organization`.`Corporation`(`Id`, `OrgId`, `Mold`, `Address`, `Logo`, `LogoPosition`, `CorporateRepresentative`, `RegisterDate`, `OpenDate`, `Trade`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 1, 0, '中国北京通州', '', '', '', '2020-12-14 08:36:18', '2020-12-14 14:52:27', '', '1', 1, '2020-12-14 14:52:36', 1, '2020-12-14 14:52:55', 0, NULL, NULL);
 
 
 INSERT INTO `hero_organization`.`Department`(`Id`, `OrgId`, `Location`, `DeptTypeKey`, `BriefIntro`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 2, '朝阳区', 'Develop', NULL, NULL, '2020-12-14 16:15:41', 1, '2020-12-14 16:16:39', 0, NULL, NULL);
