@@ -29,6 +29,13 @@ namespace Surging.Hero.Organization.Domain.Organizations
 
         public async Task<CreateCorporationOutput> CreateCorporation(CreateCorporationInput input)
         {
+            var exsitOrg =
+                await _organizationRepository.SingleOrDefaultAsync(p => p.Identification == input.Identification);
+            if (exsitOrg != null)
+            {
+                throw new BusinessException($"系统中已经存在标识为{input.Identification}的组织机构");
+            }
+            
             if (!input.ParentId.HasValue || input.ParentId == 0)
             {
                 return await CreateTopCorporation(input);
@@ -98,6 +105,15 @@ namespace Surging.Hero.Organization.Domain.Organizations
             if (orgInfo == null)
             {
                 throw new BusinessException($"系统中不存在Id为{input.Id}的公司信息");
+            }
+            if (!input.Identification.Equals(orgInfo.Identification))
+            {
+                var exsitOrg =
+                    await _organizationRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification);
+                if (exsitOrg != null)
+                {
+                    throw new BusinessException($"系统中已经存在标识为{input.Identification}的组织机构");
+                }
             }
 
             corporation = input.MapTo(corporation);

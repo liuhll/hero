@@ -62,6 +62,14 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             {
                 throw new BusinessException($"请选择部门类型");
             }
+
+            var exsitOrg =
+                await _organizationRepository.SingleOrDefaultAsync(p => p.Identification == input.Identification);
+            if (exsitOrg != null)
+            {
+                throw new BusinessException($"系统中已经存在标识为{input.Identification}的组织机构");
+            }
+
             var workbookAppServiceProxy = GetService<IWordbookAppService>();
             var checkDeptTypeResult = await workbookAppServiceProxy.Check(new CheckWordbookInput() { WordbookCode = SystemPresetWordbookCode.Organization.DeptType, WordbookItemKey = input.DeptTypeKey });
             if (!checkDeptTypeResult)
@@ -190,6 +198,7 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
 
         public async Task<UpdateDepartmentOutput> UpdateDepartment(UpdateDepartmentInput input)
         {
+          
             var department = await _departmentRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
            
             if (department == null) {
@@ -198,6 +207,16 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
             var orgInfo = await _organizationRepository.SingleOrDefaultAsync(p => p.Id == department.OrgId);
             if (orgInfo == null) {
                 throw new BusinessException($"系统中不存在Id为{department.Id}的部门信息");
+            }
+
+            if (!input.Identification.Equals(orgInfo.Identification))
+            {
+                var exsitOrg =
+                    await _organizationRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification);
+                if (exsitOrg != null)
+                {
+                    throw new BusinessException($"系统中已经存在标识为{input.Identification}的组织机构");
+                }
             }
 
             if (input.DeptTypeKey.IsNullOrEmpty())

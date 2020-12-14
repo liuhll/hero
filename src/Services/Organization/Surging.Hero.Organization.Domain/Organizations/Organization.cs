@@ -11,6 +11,8 @@ namespace Surging.Hero.Organization.Domain
 
         public string Name { get; set; }
 
+        public string Identification { get; set; }
+
         public int Level { get; set; }
 
         public OrganizationType OrgType { get; set; }
