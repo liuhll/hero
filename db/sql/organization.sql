@@ -75,7 +75,8 @@ create table Organization
 (
    Id                   bigint not null auto_increment comment '主键',
    ParentId             bigint not null comment '父级组织机构Id',
-   Name                 varchar(50) not null comment '公司名称',
+   Name                 varchar(50) not null comment '组织机构名称',
+   Identification       varchar(50) not null comment '唯一标识',
    Code                 varchar(200) not null comment '唯一编码',
    Level                int comment '层级',
    OrgType              int not null default 1 comment '组织机构类型',
@@ -91,6 +92,7 @@ create table Organization
 );
 
 alter table Organization comment '组织机构表';
+
 
 /*==============================================================*/
 /* Table: Position                                              */
