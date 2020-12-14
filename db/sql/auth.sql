@@ -22,9 +22,15 @@ drop table if exists Permission;
 
 drop table if exists Role;
 
+drop table if exists RoleDataPermissionOrgRelation;
+
 drop table if exists RolePermission;
 
 drop table if exists UserGroup;
+
+drop table if exists UserGroupDataPermissionOrgRelation;
+
+drop table if exists UserGroupPermission;
 
 drop table if exists UserGroupRole;
 
@@ -45,6 +51,7 @@ create table Action
    Application          varchar(50) not null comment '所属应用服务',
    Name                 varchar(50) comment '名称',
    WebApi               varchar(50) not null comment 'webapi',
+   Method               varchar(50) not null comment '请求方法',
    DisableNetwork       bit comment '是否禁用外网',
    EnableAuthorization  bit comment '是否需要认证',
    AllowPermission      bit comment '是否需要鉴权',
@@ -95,9 +102,9 @@ create table Menu
    ParentId             bigint comment '父级菜单Id',
    Code                 varchar(200),
    Name                 varchar(50) not null comment '菜单标识',
-   Title                 varchar(50) not null comment '菜单名称',   
+   Title                varchar(50) not null comment '菜单名称',
    Level                int not null comment '层级',
-   Path                 varchar(50) null comment '前端菜单页面锚点',
+   Path                 varchar(50) comment '前端菜单页面锚点',
    Mold                 int not null comment '菜单类型',
    AlwaysShow           bit not null comment '是否总是显示前端',
    Icon                 varchar(100) comment 'icon图标',
@@ -124,9 +131,9 @@ create table Operation
    Id                   bigint not null auto_increment comment '主键',
    PermissionId         bigint not null comment 'PermissionId',
    MenuId               bigint not null comment '菜单Id',
-   Name                 varchar(50) not null comment '操作标识',
-   Title                 varchar(50) not null comment '操作名称',   
-   Code                 varchar(200) not null comment '编码',
+   Name                 varchar(50) not null comment '名称',
+   Title                varchar(50) not null comment '菜单名称',
+   Code                 varchar(50)) not null comment '编码',
    Level                int not null comment '所属层级',
    Mold                 int not null comment '操作类型:1.增2.删3.改4.查5.其他操作',
    Sort                 int comment '排序',
@@ -192,6 +199,8 @@ create table Role
    Name                 varchar(50) not null comment '角色名称',
    Memo                 varchar(100) comment '备注',
    Status               int not null comment '状态',
+   OrgId                bigint comment '组织机构Id',
+   PermissionDataType   int not null default 1 comment '数据权限类型',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
@@ -205,13 +214,28 @@ create table Role
 alter table Role comment '角色表';
 
 /*==============================================================*/
+/* Table: RoleDataPermissionOrgRelation                         */
+/*==============================================================*/
+create table RoleDataPermissionOrgRelation
+(
+   Id                   bigint not null auto_increment comment '主键',
+   RoleId               bigint not null comment '角色Id',
+   OrgId                bigint not null comment '组织机构Id',
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   primary key (Id)
+);
+
+alter table RoleDataPermissionOrgRelation comment '角色的自定义数据权限表【查看的组织机构数据】';
+
+/*==============================================================*/
 /* Table: RolePermission                                        */
 /*==============================================================*/
 create table RolePermission
 (
    Id                   bigint not null auto_increment comment '主键',
    RoleId               bigint not null,
-   PermissionId           char(10) not null,
+   PermissionId         bigint not null,
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
@@ -227,12 +251,11 @@ alter table RolePermission comment '角色权限表';
 create table UserGroup
 (
    Id                   bigint not null auto_increment comment '主键',
-   ParentId             bigint not null comment '父用户组Id',
-   Code                 varchar(200),
    Name                 varchar(50) not null comment '用户组名称',
-   Level                int not null,
    Memo                 varchar(200),
    Status               int not null comment '状态',
+   OrgId                bigint comment '组织机构Id',
+   PermissionDataType   int not null default 1 comment '数据权限类型',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
@@ -244,6 +267,38 @@ create table UserGroup
 );
 
 alter table UserGroup comment '用户组表';
+
+/*==============================================================*/
+/* Table: UserGroupDataPermissionOrgRelation                    */
+/*==============================================================*/
+create table UserGroupDataPermissionOrgRelation
+(
+   Id                   bigint not null auto_increment comment '主键',
+   UserGroupId          bigint not null comment '用户组Id',
+   OrgId                bigint not null comment '组织机构Id',
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   primary key (Id)
+);
+
+alter table UserGroupDataPermissionOrgRelation comment '用户组的自定义数据权限表【查看的组织机构数据】';
+
+/*==============================================================*/
+/* Table: UserGroupPermission                                   */
+/*==============================================================*/
+create table UserGroupPermission
+(
+   Id                   bigint not null auto_increment comment '主键',
+   UserGroupId          bigint not null,
+   PermissionId         bigint not null,
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
+   primary key (Id)
+);
+
+alter table UserGroupPermission comment '用户组权限表';
 
 /*==============================================================*/
 /* Table: UserGroupRole                                         */
@@ -268,8 +323,8 @@ alter table UserGroupRole comment '用户组角色关系表';
 create table UserInfo
 (
    Id                   bigint not null auto_increment comment '主键',
-   UserName             varchar(50) comment '用户名',
-   OrgId                bigint not null comment '所属部门Id',
+   UserName             varchar(50) not null comment '用户名',
+   OrgId                bigint comment '所属部门Id',
    PositionId           bigint comment '职位Id',
    Password             varchar(100) not null comment '密码',
    ChineseName          varchar(50) not null comment '中文名',
@@ -335,32 +390,3 @@ create table UserUserGroupRelation
 
 alter table UserUserGroupRelation comment '用户与用户关系表';
 
-INSERT INTO `hero_auth`.`UserInfo`(`Id`, `UserName`, `OrgId`, `PositionId`, `Password`, `ChineseName`, `Email`, `Phone`, `Gender`, `Birth`, `NativePlace`, `Address`, `Folk`, `PoliticalStatus`, `GraduateInstitutions`, `Education`, `Major`, `Resume`, `Memo`, `LastLoginTime`, `LoginFailedCount`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'liuhl', 5, 13, 'a6dd7c6107a1d4b30c33fa8a12964e7c', '刘洪亮', '1029765112@qq.com', '13128291911', 0, '1989-09-11', '', '', '', 0, '', '', '', '', '', '0001-01-01 00:00:00', 0, 1, NULL, '2019-09-11 14:16:04', NULL, NULL, 0, NULL, NULL);
-
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'auth', 0, NULL, 0, 1, '2020-06-25 17:18:42', 1, '2020-06-25 17:21:27', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (2, 'user', 0, NULL, 0, 1, '2020-06-25 17:21:54', 1, '2020-06-25 17:22:38', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (3, 'role', 0, NULL, 0, 1, '2020-06-25 17:22:23', 1, '2020-06-25 17:22:23', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (4, 'org', 0, NULL, 0, 1, '2020-06-25 17:23:15', 1, '2020-06-25 17:23:27', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (5, 'menu', 0, NULL, 0, 1, '2020-06-25 17:23:59', 1, '2020-06-25 17:23:59', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (6, 'system', 0, NULL, 0, 1, '2020-06-25 17:24:58', 1, '2020-06-25 17:26:54', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (7, 'dict', 0, NULL, 0, 1, '2020-06-25 17:25:43', 1, '2020-06-25 17:25:43', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (8, 'system-config', 0, NULL, 0, 1, '2020-06-25 17:26:40', 1, '2020-06-25 17:26:40', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (9, 'system-mange', 0, NULL, 0, 1, '2020-06-25 17:27:33', 1, '2020-06-25 17:27:33', 0, NULL, NULL);
-
-
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 1, 0, '0001', 'auth', '权限管理', 1, NULL, 0, b'1', 'auth', NULL, 1, NULL, 1, '2020-06-25 17:19:41', 1, '2020-06-25 17:21:27', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (2, 2, 1, '0001.0001', 'user', '用户管理', 2, '#/authorization/user', 1, b'1', 'user', NULL, 0, NULL, 1, '2020-06-25 17:21:54', 1, '2020-06-25 17:22:38', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (3, 3, 1, '0001.0002', 'role', '角色管理', 2, '#/authorization/role', 1, b'1', 'role', NULL, 0, NULL, 1, '2020-06-25 17:22:23', 1, '2020-06-25 17:22:23', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (4, 4, 1, '0001.0003', 'org', '组织机构', 2, '#/authorization/organization', 1, b'1', NULL, NULL, 0, NULL, 1, '2020-06-25 17:23:15', 1, '2020-06-25 17:23:27', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (5, 5, 1, '0001.0004', 'menu', '菜单管理', 2, '#/authorization/menu', 1, b'1', 'menu', NULL, 0, NULL, 1, '2020-06-25 17:23:59', 1, '2020-06-25 17:23:59', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (6, 6, 0, '2000', 'system', '系统管理', 1, NULL, 0, b'1', NULL, NULL, 0, NULL, 1, '2020-06-25 17:24:58', 1, '2020-06-25 17:26:54', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (7, 7, 6, '2000.0001', 'dict', '字典管理', 2, '#/system/dict', 1, b'1', NULL, NULL, 0, NULL, 1, '2020-06-25 17:25:43', 1, '2020-06-25 17:25:43', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (8, 8, 6, '2000.0002', 'system-config', '系统配置', 2, '#/system/config', 1, b'1', NULL, NULL, 0, NULL, 1, '2020-06-25 17:26:40', 1, '2020-06-25 17:26:40', 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Menu`(`Id`, `PermissionId`, `ParentId`, `Code`, `Name`, `Title`, `Level`, `Path`, `Mold`, `AlwaysShow`, `Icon`, `Component`, `Sort`, `Memo`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (9, 9, 6, '2000.0003', 'system-mange', '服务管理', 2, '#/system/mange', 1, b'1', NULL, NULL, 0, NULL, 1, '2020-06-25 17:27:33', 1, '2020-06-25 17:27:33', 0, NULL, NULL);
-
-
-INSERT INTO `hero_auth`.`Role`(`Id`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, '超级管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:14:18', NULL, NULL, 0, NULL, NULL);
-INSERT INTO `hero_auth`.`Role`(`Id`, `Name`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (2, '管理员', '负责hero系统维护', 1, NULL, '2019-09-11 14:15:46', NULL, NULL, 0, NULL, NULL);
-
-INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (1, 1, 1, NULL, '2019-09-11 14:16:04', NULL, NULL);
-INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (2, 1, 2, NULL, '2019-09-11 14:16:04', NULL, NULL);
