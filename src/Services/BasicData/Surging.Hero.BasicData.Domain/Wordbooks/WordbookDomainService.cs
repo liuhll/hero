@@ -10,7 +10,6 @@ using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
 using  Surging.Hero.Auth.IApplication.FullAuditDtos;
-using SortType = Surging.Core.Dapper.Repositories.SortType;
 
 namespace Surging.Hero.BasicData.Domain.Wordbooks
 {
