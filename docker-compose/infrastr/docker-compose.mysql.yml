@@ -16,8 +16,11 @@ services:
       - "3306:3306"
     networks:
       - surging_hero_service_net
-
 networks:
   surging_hero_service_net:
-    external:
-      name: surging_hero_service_net
+    driver: bridge
+    name: surging_hero_service_net
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.23.0.1/16
