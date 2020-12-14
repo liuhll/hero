@@ -641,15 +641,54 @@ INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `Cr
 
 INSERT INTO `hero_auth`.`Role`(`Id`, `Name`, `Memo`, `Status`, `OrgId`, `PermissionDataType`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, '管理员', '初始化系统时新增', 1, NULL, 1, NULL, '2020-12-14 16:07:27', 1, '2020-12-14 16:07:27', 0, NULL, NULL);
 
-
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (7, 1, 1, 1, '2020-12-14 16:07:27', NULL, NULL);
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (8, 1, 2, 1, '2020-12-14 16:07:27', NULL, NULL);
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (9, 1, 3, 1, '2020-12-14 16:07:27', NULL, NULL);
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (10, 1, 4, 1, '2020-12-14 16:07:27', NULL, NULL);
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (11, 1, 5, 1, '2020-12-14 16:07:27', NULL, NULL);
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (12, 1, 6, 1, '2020-12-14 16:07:27', NULL, NULL);
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (13, 1, 7, 1, '2020-12-14 16:07:27', NULL, NULL);
-INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (14, 1, 8, 1, '2020-12-14 16:07:27', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (16, 1, 1, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (17, 1, 2, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (18, 1, 9, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (19, 1, 10, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (20, 1, 11, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (21, 1, 12, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (22, 1, 13, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (23, 1, 14, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (24, 1, 3, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (25, 1, 15, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (26, 1, 16, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (27, 1, 17, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (28, 1, 18, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (29, 1, 19, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (30, 1, 20, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (31, 1, 21, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (32, 1, 22, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (33, 1, 4, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (34, 1, 23, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (35, 1, 24, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (36, 1, 25, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (37, 1, 26, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (38, 1, 5, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (39, 1, 27, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (40, 1, 28, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (41, 1, 29, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (42, 1, 30, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (43, 1, 31, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (44, 1, 32, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (45, 1, 33, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (46, 1, 6, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (47, 1, 34, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (48, 1, 35, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (49, 1, 36, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (50, 1, 37, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (51, 1, 38, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (52, 1, 39, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (53, 1, 40, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (54, 1, 7, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (55, 1, 8, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (56, 1, 41, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (57, 1, 42, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (58, 1, 43, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (59, 1, 44, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (60, 1, 45, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (61, 1, 46, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (62, 1, 47, 1, '2020-12-14 21:30:58', NULL, NULL);
+INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (63, 1, 48, 1, '2020-12-14 21:30:58', NULL, NULL);
 
 
 INSERT INTO `hero_auth`.`UserInfo`(`Id`, `UserName`, `OrgId`, `PositionId`, `Password`, `ChineseName`, `Email`, `Phone`, `Gender`, `Birth`, `NativePlace`, `Address`, `Folk`, `PoliticalStatus`, `GraduateInstitutions`, `Education`, `Major`, `Resume`, `Memo`, `LastLoginTime`, `LoginFailedCount`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'admin', 2, 7, 'de4b550727f5b0ff46328be48c0765c3', '管理员', 'admin@liuhl-hero.com', '13122222222', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, 0, 1, NULL, '2020-12-14 16:22:46', 1, '2020-12-14 17:50:37', 0, NULL, NULL);
