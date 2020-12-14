@@ -40,6 +40,38 @@ drop table if exists UserRole;
 
 drop table if exists UserUserGroupRelation;
 
+drop table if exists Action;
+
+drop table if exists File;
+
+drop table if exists Menu;
+
+drop table if exists Operation;
+
+drop table if exists OperationActionRelation;
+
+drop table if exists Permission;
+
+drop table if exists Role;
+
+drop table if exists RoleDataPermissionOrgRelation;
+
+drop table if exists RolePermission;
+
+drop table if exists UserGroup;
+
+drop table if exists UserGroupDataPermissionOrgRelation;
+
+drop table if exists UserGroupPermission;
+
+drop table if exists UserGroupRole;
+
+drop table if exists UserInfo;
+
+drop table if exists UserRole;
+
+drop table if exists UserUserGroupRelation;
+
 /*==============================================================*/
 /* Table: Action                                                */
 /*==============================================================*/
@@ -133,7 +165,7 @@ create table Operation
    MenuId               bigint not null comment '菜单Id',
    Name                 varchar(50) not null comment '名称',
    Title                varchar(50) not null comment '菜单名称',
-   Code                 varchar(50)) not null comment '编码',
+   Code                 varchar(50) not null comment '编码',
    Level                int not null comment '所属层级',
    Mold                 int not null comment '操作类型:1.增2.删3.改4.查5.其他操作',
    Sort                 int comment '排序',
