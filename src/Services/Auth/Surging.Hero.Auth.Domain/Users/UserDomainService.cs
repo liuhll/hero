@@ -154,22 +154,36 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public async Task<IEnumerable<Menu>> GetUserMenu(long userId)
         {
-            var userRoleIds = await GetAllUserRoleIds(userId, Status.Valid);
+            var userRoleIdsAndGroupIds = await GetAllUserRoleIdsAndUserGroupIds(userId, Status.Valid);
+            var userRoleIds = userRoleIdsAndGroupIds.Item1;
+            var userGroupIds = userRoleIdsAndGroupIds.Item2;
             var menuSql = @"SELECT DISTINCT m.* FROM RolePermission as rp
 INNER JOIN Menu as m ON m.PermissionId = rp.PermissionId AND m.IsDeleted=@IsDeleted
-WHERE rp.RoleId in @RoleId";
+WHERE rp.RoleId in @RoleIds
+UNION
+SELECT DISTINCT m.* FROM UserGroupPermission as ugp
+INNER JOIN Operation as o ON o.PermissionId=ugp.PermissionId AND o.IsDeleted=@IsDeleted 
+INNER JOIN Menu as m ON m.Id =o.MenuId AND m.IsDeleted=@IsDeleted
+WHERE ugp.UserGroupId=@UserGroupIds
+";
             var operationSql = @"SELECT DISTINCT m.* FROM RolePermission as rp
 INNER JOIN Operation as o ON o.PermissionId = rp.PermissionId AND o.IsDeleted=@IsDeleted
 INNER JOIN Menu as m ON m.Id = o.MenuId AND m.IsDeleted=@IsDeleted
-WHERE rp.RoleId in @RoleId";
+WHERE rp.RoleId in @RoleIds
+UNION
+SELECT DISTINCT m.* FROM UserGroupPermission as ugp
+INNER JOIN Operation as o ON o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
+INNER JOIN Menu as m ON m.Id = o.MenuId AND m.IsDeleted=@IsDeleted
+WHERE ugp.UserGroupIds in @UserGroupId
+";
             var allMenus = new List<Menu>();
             using (Connection) {
-                var menus = await Connection.QueryAsync<Menu>(menuSql, new { RoleId = userRoleIds, IsDeleted = HeroConstants.UnDeletedFlag });
+                var menus = await Connection.QueryAsync<Menu>(menuSql, new { RoleIds = userRoleIds, UserGroupIds = userGroupIds, IsDeleted = HeroConstants.UnDeletedFlag });
                 foreach (var menu in menus) 
                 {
                     allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
                 }
-                var operationMenus = await Connection.QueryAsync<Menu>(operationSql, new { RoleId = userRoleIds, IsDeleted = HeroConstants.UnDeletedFlag });
+                var operationMenus = await Connection.QueryAsync<Menu>(operationSql, new { RoleId = userRoleIds, UserGroupId = userGroupIds, IsDeleted = HeroConstants.UnDeletedFlag });
                 foreach (var menu in operationMenus)
                 {
                     allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
@@ -178,23 +192,35 @@ WHERE rp.RoleId in @RoleId";
             }
 
         }
+        
 
         public async Task<IEnumerable<Operation>> GetUserOperation(long userId, long menuId)
         {
-            var userRoleIds = await GetAllUserRoleIds(userId, Status.Valid);
+            var userRoleIdsAndGroupIds = await GetAllUserRoleIdsAndUserGroupIds(userId, Status.Valid);
+            var userRoleIds = userRoleIdsAndGroupIds.Item1;
+            var userGroupIds = userRoleIdsAndGroupIds.Item2;
 
             var sql = @"SELECT DISTINCT o.* FROM RolePermission as rp
-LEFT JOIN Operation as o ON o.PermissionId = rp.PermissionId AND o.IsDeleted=0
-WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
+LEFT JOIN Operation as o ON o.PermissionId = rp.PermissionId AND o.IsDeleted=@IsDeleted
+WHERE rp.RoleId in @RoleIds AND o.Status=@Status AND o.MenuId=@MenuId
+UNION
+SELECT DISTINCT o.* FROM UserGroupPermission as ugp
+LEFT JOIN Operation as o ON o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
+WHERE ugp.UserGroupId in @UserGroupIds AND o.Status=@Status AND o.MenuId=@MenuId
+";
             using (Connection)
             {
-                return await Connection.QueryAsync<Operation>(sql, new { RoleId = userRoleIds, Status = Status.Valid, MenuId = menuId });
+                var operations = await Connection.QueryAsync<Operation>(sql, new { RoleIds = userRoleIds, UserGroupIds= userGroupIds,  Status = Status.Valid, MenuId = menuId, IsDeleted = HeroConstants.UnDeletedFlag });
+                return operations.Distinct();
             }
         }
+        
+     
 
-        private async Task<long[]> GetAllUserRoleIds(long userId, Status? status = Status.Valid)
+        private async Task<Tuple<long[],long[]>> GetAllUserRoleIdsAndUserGroupIds(long userId, Status? status = Status.Valid)
         {
             var allUserRoleIds = new List<long>();
+            var allUserGroupIds = new List<long>();
             var userRoles = await GetUserRoles(userId, status);
             allUserRoleIds.AddRange(userRoles.Select(p => p.Id));
             var userGroupRelations = await _userUserGroupRelationRepository.GetAllAsync(p => p.UserId == userId);
@@ -209,11 +235,12 @@ WHERE rp.RoleId in @RoleId AND o.Status=@Status AND o.MenuId=@MenuId";
                 {
                     continue;
                 }
+                allUserGroupIds.Add(userGroup.Id);
                 var userGroupRoles = await _userGroupDomainService.GetUserGroupRoles(userGroup.Id, status);
                 allUserRoleIds.AddRange(userGroupRoles.Select(p => p.Id));
             }
 
-            return allUserRoleIds.ToArray();
+            return new Tuple<long[], long[]>(allUserRoleIds.ToArray(),allUserGroupIds.ToArray());
         }
 
         public async Task<GetUserNormOutput> GetUserNormInfoById(long id)

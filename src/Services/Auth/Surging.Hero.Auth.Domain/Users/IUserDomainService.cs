@@ -17,7 +17,6 @@ namespace Surging.Hero.Auth.Domain.Users
         Task ResetPassword(UserInfo userInfo, string newPassword);
         Task Update(UpdateUserInput input);
         Task Delete(long id);
-
         Task<IEnumerable<Role>> GetUserRoles(long userId, Status? status = null);
         Task<GetUserNormOutput> GetUserNormInfoById(long id);
         Task<bool> CheckPermission(long userId, string serviceId);
