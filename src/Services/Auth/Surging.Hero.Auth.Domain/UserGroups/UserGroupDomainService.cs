@@ -392,5 +392,21 @@ WHERE UserGroupId=@UserGroupId";
             userGroup.Status = input.Status;
             await _userGroupRepository.UpdateAsync(userGroup);
         }
+
+        public async Task<IEnumerable<GetDisplayPermissionOutput>> GetUserGroupPermissions(long userGroupId, Status status = Status.Valid)
+        {
+            var sql = @"SELECT p.Id,o.`Name`,o.Tile FROM UserGroupPermission as ugp 
+                        LEFT JOIN Permission as p on ugp.PermissionId = p.Id AND p.IsDeleted=@IsDeleted 
+												LEFT JOIN Operation as o on o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
+												WHERE ugp.UserGroupId=@UserGroupId AND p.Status=@Status";
+            var sqlParams = new Dictionary<string, object>();
+            sqlParams.Add("UserGroupId", userGroupId);
+            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
+            sqlParams.Add("Status", status);
+            using (Connection)
+            {
+                return (await Connection.QueryAsync<GetDisplayPermissionOutput>(sql, param: sqlParams));
+            }           
+        }
     }
 }

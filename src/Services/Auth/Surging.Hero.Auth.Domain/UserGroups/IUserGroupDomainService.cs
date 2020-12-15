@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.Domain.PagedAndSorted;
+using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.UserGroups
 {
@@ -20,5 +22,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         Task DeleteUserGroupUser(DeleteUserGroupUserInput input);
         Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
         Task UpdateStatus(UpdateUserGroupStatusInput input);
+        Task<IEnumerable<GetDisplayPermissionOutput>> GetUserGroupPermissions(long userGroupId, Status status = Status.Valid);
     }
 }

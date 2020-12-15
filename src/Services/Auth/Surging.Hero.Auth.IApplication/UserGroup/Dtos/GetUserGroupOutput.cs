@@ -11,11 +11,16 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         public long Id { get; set; }
 
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
-
+        
         public string DisplayRoles { get { return string.Join(",", Roles.Select(p => p.Name)); } }
 
         public IEnumerable<long> RoleIds { get { return Roles.Select(p => p.Id); } }
 
+        public IEnumerable<GetDisplayPermissionOutput> Permissions { get; set; }
+        public string DisplayPermissions { get { return string.Join(",", Permissions.Select(p => p.Title)); } }
+
+        public IEnumerable<long> PermissionIds { get { return Permissions.Select(p => p.Id); } }
+        
         /// <summary>
         /// 用户组状态
         /// </summary>

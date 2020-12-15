@@ -74,7 +74,8 @@ namespace Surging.Hero.Auth.Application.UserGroup
             }
           
             var userGroupOutput = userGroup.MapTo<GetUserEditGroupOutput>();
-            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoles(id)).Select(p=> p.Id);         
+            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoles(id)).Select(p=> p.Id);
+            userGroupOutput.PermissionIds = (await _userGroupDomainService.GetUserGroupPermissions(id)).Select(p=> p.Id);
             return userGroupOutput;
            
         }
@@ -108,6 +109,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
                     }
                 }
                 output.Roles = await _userGroupDomainService.GetUserGroupRoles(output.Id);
+                output.Permissions = await _userGroupDomainService.GetUserGroupPermissions(output.Id);
             }
             return outputs;
         }
