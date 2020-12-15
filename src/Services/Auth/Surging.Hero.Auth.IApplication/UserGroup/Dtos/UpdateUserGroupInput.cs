@@ -8,5 +8,11 @@
         {
             get; set;
         }
+        
+        public long[] PermissionIds 
+        {
+            get;
+            set;
+        }
     }
 }

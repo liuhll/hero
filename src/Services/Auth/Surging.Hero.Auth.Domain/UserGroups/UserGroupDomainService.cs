@@ -11,6 +11,7 @@ using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
+using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
@@ -30,6 +31,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<UserUserGroupRelation, long> _userUserGroupRelationRepository;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
         private readonly IDapperRepository<Roles.Role, long> _roleRepository;
+        private readonly IDapperRepository<Permissions.Permission, long> _permissionRepository;
+        private readonly IDapperRepository<UserGroupPermission, long> _userGroupPermissionRepository;
         private readonly IRoleDomainService _roleDomainService;
         private readonly ILockerProvider _lockerProvider;
 
@@ -39,7 +42,9 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             IDapperRepository<UserInfo, long> userRepository,
             IDapperRepository<Roles.Role, long> roleRepository,
             IRoleDomainService roleDomainService,
-            ILockerProvider lockerProvider)
+            ILockerProvider lockerProvider,
+            IDapperRepository<Permission, long> permissionRepository, 
+            IDapperRepository<UserGroupPermission, long> userGroupPermissionRepository)
         {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
@@ -48,6 +53,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             _roleRepository = roleRepository;
             _roleDomainService = roleDomainService;
             _lockerProvider = lockerProvider;
+            _permissionRepository = permissionRepository;
+            _userGroupPermissionRepository = userGroupPermissionRepository;
         }
 
         public async Task Create(CreateUserGroupInput input)
@@ -70,9 +77,21 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                             var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, conn, trans);
                             if (roleInfo == null)
                             {
-                                throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
+                                throw new BusinessException($"不存在角色Id为{roleId}的角色信息");
                             }
                             await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroupId, RoleId = roleId }, conn, trans);
+                        }
+
+                        foreach (var permissionId in input.PermissionIds)
+                        {
+                            var permissionInfo =
+                                await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
+                            if (permissionInfo == null)
+                            {
+                                throw new BusinessException($"不存在权限Id为{permissionId}的权限信息");
+                            }
+
+                            await _userGroupPermissionRepository.InsertAsync(new UserGroupPermission(){ UserGroupId = userGroupId, PermissionId = permissionId},conn,trans);
                         }
                     }, Connection);
                 });
@@ -128,15 +147,27 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     {
                         await _userGroupRepository.UpdateAsync(userGroup, conn, trans);
                         await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
-
+                        await _userGroupPermissionRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn,
+                            trans);
                         foreach (var roleId in input.RoleIds)
                         {
                             var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, conn, trans);
                             if (roleInfo == null)
                             {
-                                throw new BusinessException($"不存在用户Id为{roleId}的角色信息");
+                                throw new BusinessException($"不存在角色Id为{roleId}的角色信息");
                             }
                             await _userGroupRoleRepository.InsertAsync(new UserGroupRole() { UserGroupId = userGroup.Id, RoleId = roleId }, conn, trans);
+                        }
+                        foreach (var permissionId in input.PermissionIds)
+                        {
+                            var permissionInfo =
+                                await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
+                            if (permissionInfo == null)
+                            {
+                                throw new BusinessException($"不存在权限Id为{permissionId}的权限信息");
+                            }
+
+                            await _userGroupPermissionRepository.InsertAsync(new UserGroupPermission(){ UserGroupId = userGroup.Id, PermissionId = permissionId},conn,trans);
                         }
                     }, Connection);
                 });
