@@ -164,7 +164,7 @@ UNION
 SELECT DISTINCT m.* FROM UserGroupPermission as ugp
 INNER JOIN Operation as o ON o.PermissionId=ugp.PermissionId AND o.IsDeleted=@IsDeleted 
 INNER JOIN Menu as m ON m.Id =o.MenuId AND m.IsDeleted=@IsDeleted
-WHERE ugp.UserGroupId=@UserGroupIds
+WHERE ugp.UserGroupId in @UserGroupIds
 ";
             var operationSql = @"SELECT DISTINCT m.* FROM RolePermission as rp
 INNER JOIN Operation as o ON o.PermissionId = rp.PermissionId AND o.IsDeleted=@IsDeleted
@@ -174,7 +174,7 @@ UNION
 SELECT DISTINCT m.* FROM UserGroupPermission as ugp
 INNER JOIN Operation as o ON o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
 INNER JOIN Menu as m ON m.Id = o.MenuId AND m.IsDeleted=@IsDeleted
-WHERE ugp.UserGroupIds in @UserGroupId
+WHERE ugp.UserGroupId in @UserGroupIds
 ";
             var allMenus = new List<Menu>();
             using (Connection) {
@@ -183,7 +183,7 @@ WHERE ugp.UserGroupIds in @UserGroupId
                 {
                     allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
                 }
-                var operationMenus = await Connection.QueryAsync<Menu>(operationSql, new { RoleId = userRoleIds, UserGroupId = userGroupIds, IsDeleted = HeroConstants.UnDeletedFlag });
+                var operationMenus = await Connection.QueryAsync<Menu>(operationSql, new { RoleIds = userRoleIds, UserGroupIds = userGroupIds, IsDeleted = HeroConstants.UnDeletedFlag });
                 foreach (var menu in operationMenus)
                 {
                     allMenus.AddRange(await _menuDomainService.GetParents(menu.Id));
