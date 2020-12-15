@@ -117,6 +117,13 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             return await _operationRepository.GetAllAsync();
         }
 
+        public async Task<bool> CheckPermission(long operationId, string serviceId)
+        {
+            var operationActionRelations =
+                await _operationActionRepository.GetAllAsync(p => p.OperationId == operationId);
+            return operationActionRelations.Any(p => p.ServiceId == serviceId);
+        }
+
         public async Task<UpdateOperationOutput> Update(UpdateOperationInput input)
         {
             var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == input.Id);

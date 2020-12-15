@@ -11,5 +11,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
         Task<UpdateOperationOutput> Update(UpdateOperationInput input);
         Task Delete(long permissionId);
         Task<IEnumerable<Operation>> GetAll();
+        Task<bool> CheckPermission(long operationId, string serviceId);
     }
 }

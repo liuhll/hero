@@ -17,6 +17,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
             CreateMap<Domain.UserGroups.UserGroup,GetUserGroupTreeOutput>();
             CreateMap<Domain.Roles.Role, GetDisplayRoleOutput>();
             CreateMap<Domain.UserGroups.UserGroup, GetDisplayUserGroupOutput>();
+            CreateMap<Domain.UserGroups.UserGroupPermissionModel, GetDisplayPermissionOutput>();
         }
     }
 }

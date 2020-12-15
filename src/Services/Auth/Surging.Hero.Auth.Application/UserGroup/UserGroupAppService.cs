@@ -109,7 +109,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
                     }
                 }
                 output.Roles = await _userGroupDomainService.GetUserGroupRoles(output.Id);
-                output.Permissions = await _userGroupDomainService.GetUserGroupPermissions(output.Id);
+                output.Permissions = (await _userGroupDomainService.GetUserGroupPermissions(output.Id)).MapTo<IEnumerable<GetDisplayPermissionOutput>>();
             }
             return outputs;
         }

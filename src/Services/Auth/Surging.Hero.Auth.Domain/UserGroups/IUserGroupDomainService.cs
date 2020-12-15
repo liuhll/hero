@@ -22,6 +22,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         Task DeleteUserGroupUser(DeleteUserGroupUserInput input);
         Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query);
         Task UpdateStatus(UpdateUserGroupStatusInput input);
-        Task<IEnumerable<GetDisplayPermissionOutput>> GetUserGroupPermissions(long userGroupId, Status status = Status.Valid);
+        Task<IEnumerable<UserGroupPermissionModel>> GetUserGroupPermissions(long userGroupId, Status status = Status.Valid);
     }
 }

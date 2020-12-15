@@ -12,6 +12,7 @@ using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions;
+using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
@@ -34,6 +35,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<Permissions.Permission, long> _permissionRepository;
         private readonly IDapperRepository<UserGroupPermission, long> _userGroupPermissionRepository;
         private readonly IRoleDomainService _roleDomainService;
+        private readonly IOperationDomainService _operationDomainService;
         private readonly ILockerProvider _lockerProvider;
 
         public UserGroupDomainService(IDapperRepository<UserGroup, long> userGroupRepository,
@@ -44,7 +46,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             IRoleDomainService roleDomainService,
             ILockerProvider lockerProvider,
             IDapperRepository<Permission, long> permissionRepository, 
-            IDapperRepository<UserGroupPermission, long> userGroupPermissionRepository)
+            IDapperRepository<UserGroupPermission, long> userGroupPermissionRepository, 
+            IOperationDomainService operationDomainService)
         {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
@@ -55,6 +58,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             _lockerProvider = lockerProvider;
             _permissionRepository = permissionRepository;
             _userGroupPermissionRepository = userGroupPermissionRepository;
+            _operationDomainService = operationDomainService;
         }
 
         public async Task Create(CreateUserGroupInput input)
@@ -220,13 +224,22 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task<bool> CheckPermission(long userId, string serviceId)
         {
             var querySql = @"SELECT ug.* FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr ON ug.Id = uugr.UserGroupId
-                            WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status  AND uugr.UserId=@UserId";
+                            WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status  AND uugr.UserId=@UserId ";
             var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag }, { "Status", Status.Valid }, { "UserId", userId } };
             using (var conn = Connection) 
             {
                 var userGroups = await conn.QueryAsync<UserGroup>(querySql, sqlParams);
                 foreach (var userGroup in userGroups)
-                {                  
+                {
+                    var userGroupPermissions = await GetUserGroupPermissions(userGroup.Id);
+                    foreach (var userGroupPermission in userGroupPermissions)
+                    {
+                        if (await _operationDomainService.CheckPermission(userGroupPermission.OperationId, serviceId))
+                        {
+                            return true;
+                        }
+                    }
+                    
                     var userGroupRoles = await GetUserGroupRoles(userGroup.Id, Status.Valid);
                     foreach (var userGroupRole in userGroupRoles)
                     {
@@ -393,9 +406,9 @@ WHERE UserGroupId=@UserGroupId";
             await _userGroupRepository.UpdateAsync(userGroup);
         }
 
-        public async Task<IEnumerable<GetDisplayPermissionOutput>> GetUserGroupPermissions(long userGroupId, Status status = Status.Valid)
+        public async Task<IEnumerable<UserGroupPermissionModel>> GetUserGroupPermissions(long userGroupId, Status status = Status.Valid)
         {
-            var sql = @"SELECT p.Id,o.`Name`,o.Tile FROM UserGroupPermission as ugp 
+            var sql = @"SELECT p.Id,o.`Name`,o.Title,o.Id as OperationId FROM UserGroupPermission as ugp 
                         LEFT JOIN Permission as p on ugp.PermissionId = p.Id AND p.IsDeleted=@IsDeleted 
 												LEFT JOIN Operation as o on o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
 												WHERE ugp.UserGroupId=@UserGroupId AND p.Status=@Status";
@@ -405,7 +418,7 @@ WHERE UserGroupId=@UserGroupId";
             sqlParams.Add("Status", status);
             using (Connection)
             {
-                return (await Connection.QueryAsync<GetDisplayPermissionOutput>(sql, param: sqlParams));
+                return (await Connection.QueryAsync<UserGroupPermissionModel>(sql, param: sqlParams));
             }           
         }
     }
