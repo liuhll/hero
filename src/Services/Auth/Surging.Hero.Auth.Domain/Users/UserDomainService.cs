@@ -159,7 +159,7 @@ INNER JOIN Menu as m ON m.Id = o.MenuId AND m.IsDeleted=@IsDeleted
 WHERE ugp.UserGroupId in @UserGroupIds
 ";
             var allMenus = new List<Menu>();
-            using (Connection)
+            await using (Connection)
             {
                 var menus = await Connection.QueryAsync<Menu>(menuSql,
                     new {RoleIds = userRoleIds, UserGroupIds = userGroupIds, IsDeleted = HeroConstants.UnDeletedFlag});
@@ -186,7 +186,7 @@ SELECT DISTINCT o.* FROM UserGroupPermission as ugp
 LEFT JOIN Operation as o ON o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
 WHERE ugp.UserGroupId in @UserGroupIds AND o.Status=@Status AND o.MenuId=@MenuId
 ";
-            using (Connection)
+            await using (Connection)
             {
                 var operations = await Connection.QueryAsync<Operation>(sql,
                     new
@@ -246,7 +246,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.Status=@Status AND o.MenuId=@MenuId
                 sqlParams.Add("Status", status);
             }
 
-            using (Connection)
+            await using (Connection)
             {
                 return await Connection.QueryAsync<Role>(sql, sqlParams);
             }
@@ -369,45 +369,43 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.Status=@Status AND o.MenuId=@MenuId
             querySql += $" LIMIT {(query.PageIndex - 1) * query.PageCount} , {query.PageCount} ";
             querySql = string.Format(querySql,
                 "u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime");
-            using (var conn = Connection)
+            await using var conn = Connection;
+            var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
+            var queryCount = await conn.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
+
+            var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryCount);
+            foreach (var userOutput in queryResultOutput.Items)
             {
-                var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
-                var queryCount = await conn.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
-
-                var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryCount);
-                foreach (var userOutput in queryResultOutput.Items)
+                if (userOutput.OrgId.HasValue)
                 {
-                    if (userOutput.OrgId.HasValue)
-                    {
-                        var department = await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value);
-                        userOutput.DeptId = department.Id;
-                        userOutput.DeptName = department.Name;
-                    }
-
-                    if (userOutput.PositionId.HasValue)
-                        userOutput.PositionName =
-                            (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
-                    userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
-                    userOutput.UserGroups =
-                        (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
-                    if (userOutput.LastModifierUserId.HasValue)
-                    {
-                        var modifyUserInfo =
-                            await _userRepository.SingleOrDefaultAsync(p =>
-                                p.Id == userOutput.LastModifierUserId.Value);
-                        if (modifyUserInfo != null) userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-                    }
-
-                    if (userOutput.CreatorUserId.HasValue)
-                    {
-                        var creatorUserInfo =
-                            await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value);
-                        if (creatorUserInfo != null) userOutput.CreatorUserName = creatorUserInfo.ChineseName;
-                    }
+                    var department = await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value);
+                    userOutput.DeptId = department.Id;
+                    userOutput.DeptName = department.Name;
                 }
 
-                return queryResultOutput;
+                if (userOutput.PositionId.HasValue)
+                    userOutput.PositionName =
+                        (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
+                userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                userOutput.UserGroups =
+                    (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
+                if (userOutput.LastModifierUserId.HasValue)
+                {
+                    var modifyUserInfo =
+                        await _userRepository.SingleOrDefaultAsync(p =>
+                            p.Id == userOutput.LastModifierUserId.Value);
+                    if (modifyUserInfo != null) userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
+                }
+
+                if (userOutput.CreatorUserId.HasValue)
+                {
+                    var creatorUserInfo =
+                        await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value);
+                    if (creatorUserInfo != null) userOutput.CreatorUserName = creatorUserInfo.ChineseName;
+                }
             }
+
+            return queryResultOutput;
         }
 
 
@@ -437,7 +435,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.Status=@Status AND o.MenuId=@MenuId
         {
             var sql = @"SELECT ug.* FROM  UserGroup as ug 
                         LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id WHERE uugr.UserId=@UserId";
-            using (Connection)
+            await using (Connection)
             {
                 return await Connection.QueryAsync<UserGroup>(sql, new {UserId = userId});
             }

@@ -278,7 +278,7 @@ LEFT JOIN Operation as o on oar.OperationId = o.Id AND o.IsDeleted = @IsDeleted
 LEFT JOIN Permission as p on p.Id = o.PermissionId AND p.Mold=1 AND  p.IsDeleted = @IsDeleted
 WHERE oar.ServiceId=@ServiceId";
 
-            using (Connection)
+            await using (Connection)
             {
                 var permission = await Connection.QueryAsync<Permission>(sql,
                     new {ServiceId = serviceId, IsDeleted = HeroConstants.UnDeletedFlag});

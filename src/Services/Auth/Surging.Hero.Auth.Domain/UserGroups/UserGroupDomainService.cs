@@ -170,7 +170,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                 sqlParams.Add("Status", status.Value);
             }
 
-            using (Connection)
+            await using (Connection)
             {
                 return (await Connection.QueryAsync<Role>(sql, sqlParams)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
             }
@@ -180,7 +180,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         {
             var sql = @"SELECT uugr.*,u.* FROM UserUserGroupRelation as uugr 
                         LEFT JOIN UserInfo as u on uugr.UserId = u.Id WHERE uugr.UserGroupId=@UserGroupId";
-            using (Connection)
+            await using (Connection)
             {
                 return await Connection.QueryAsync<UserUserGroupRelation, UserInfo, GetUserBasicOutput>(sql,
                     (uugr, u) =>
@@ -206,24 +206,22 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                             WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status  AND uugr.UserId=@UserId ";
             var sqlParams = new Dictionary<string, object>
                 {{"IsDeleted", HeroConstants.UnDeletedFlag}, {"Status", Status.Valid}, {"UserId", userId}};
-            using (var conn = Connection)
+            await using var conn = Connection;
+            var userGroups = await conn.QueryAsync<UserGroup>(querySql, sqlParams);
+            foreach (var userGroup in userGroups)
             {
-                var userGroups = await conn.QueryAsync<UserGroup>(querySql, sqlParams);
-                foreach (var userGroup in userGroups)
-                {
-                    var userGroupPermissions = await GetUserGroupPermissions(userGroup.Id);
-                    foreach (var userGroupPermission in userGroupPermissions)
-                        if (await _operationDomainService.CheckPermission(userGroupPermission.OperationId, serviceId))
-                            return true;
+                var userGroupPermissions = await GetUserGroupPermissions(userGroup.Id);
+                foreach (var userGroupPermission in userGroupPermissions)
+                    if (await _operationDomainService.CheckPermission(userGroupPermission.OperationId, serviceId))
+                        return true;
 
-                    var userGroupRoles = await GetUserGroupRoles(userGroup.Id, Status.Valid);
-                    foreach (var userGroupRole in userGroupRoles)
-                        if (await _roleDomainService.CheckPermission(userGroupRole.Id, serviceId))
-                            return true;
-                }
-
-                return false;
+                var userGroupRoles = await GetUserGroupRoles(userGroup.Id, Status.Valid);
+                foreach (var userGroupRole in userGroupRoles)
+                    if (await _roleDomainService.CheckPermission(userGroupRole.Id, serviceId))
+                        return true;
             }
+
+            return false;
         }
 
         public async Task<string> AllocationUsers(AllocationUserIdsInput input)
@@ -301,41 +299,39 @@ WHERE UserGroupId=@UserGroupId";
             querySql += $" LIMIT {(query.PageIndex - 1) * query.PageCount} , {query.PageCount} ";
             querySql = string.Format(querySql,
                 "u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime");
-            using (var conn = Connection)
+            await using var conn = Connection;
+            var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
+            var queryCount = await conn.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
+
+            var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryCount);
+            foreach (var userOutput in queryResultOutput.Items)
             {
-                var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
-                var queryCount = await conn.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
-
-                var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryCount);
-                foreach (var userOutput in queryResultOutput.Items)
+                if (userOutput.OrgId.HasValue)
+                    userOutput.DeptName =
+                        (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
+                if (userOutput.PositionId.HasValue)
+                    userOutput.PositionName =
+                        (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
+                userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                userOutput.UserGroups =
+                    (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
+                if (userOutput.LastModifierUserId.HasValue)
                 {
-                    if (userOutput.OrgId.HasValue)
-                        userOutput.DeptName =
-                            (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
-                    if (userOutput.PositionId.HasValue)
-                        userOutput.PositionName =
-                            (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
-                    userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
-                    userOutput.UserGroups =
-                        (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
-                    if (userOutput.LastModifierUserId.HasValue)
-                    {
-                        var modifyUserInfo =
-                            await _userRepository.SingleOrDefaultAsync(p =>
-                                p.Id == userOutput.LastModifierUserId.Value);
-                        if (modifyUserInfo != null) userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-                    }
-
-                    if (userOutput.CreatorUserId.HasValue)
-                    {
-                        var creatorUserInfo =
-                            await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value);
-                        if (creatorUserInfo != null) userOutput.CreatorUserName = creatorUserInfo.ChineseName;
-                    }
+                    var modifyUserInfo =
+                        await _userRepository.SingleOrDefaultAsync(p =>
+                            p.Id == userOutput.LastModifierUserId.Value);
+                    if (modifyUserInfo != null) userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
                 }
 
-                return queryResultOutput;
+                if (userOutput.CreatorUserId.HasValue)
+                {
+                    var creatorUserInfo =
+                        await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value);
+                    if (creatorUserInfo != null) userOutput.CreatorUserName = creatorUserInfo.ChineseName;
+                }
             }
+
+            return queryResultOutput;
         }
 
         public async Task UpdateStatus(UpdateUserGroupStatusInput input)
@@ -357,7 +353,7 @@ WHERE UserGroupId=@UserGroupId";
             sqlParams.Add("UserGroupId", userGroupId);
             sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
             sqlParams.Add("Status", status);
-            using (Connection)
+            await using (Connection)
             {
                 return await Connection.QueryAsync<UserGroupPermissionModel>(sql, sqlParams);
             }
@@ -367,7 +363,7 @@ WHERE UserGroupId=@UserGroupId";
         {
             var sql = @"SELECT ug.* FROM  UserGroup as ug 
                         LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id WHERE uugr.UserId=@UserId";
-            using (Connection)
+            await using (Connection)
             {
                 return await Connection.QueryAsync<UserGroup>(sql, new {UserId = userId});
             }
@@ -377,7 +373,7 @@ WHERE UserGroupId=@UserGroupId";
         {
             var sql = @"SELECT r.* FROM UserRole as ur 
                         LEFT JOIN Role as r on ur.RoleId = r.Id WHERE ur.UserId=@UserId";
-            using (Connection)
+            await using (Connection)
             {
                 return await Connection.QueryAsync<Role>(sql, new {UserId = userId});
             }

@@ -40,7 +40,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                 sqlParams.Add("Application", $"%{query.AppService}%");
             }
 
-            using (Connection)
+            await using (Connection)
             {
                 var queryResult = await Connection.QueryAsync<GetAppServiceOutput>(sql, sqlParams);
                 return queryResult;
@@ -51,7 +51,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         {
             var sql =
                 "SELECT a.* FROM OperationActionRelation as oar LEFT JOIN Action as a on oar.ActionId = a.Id  WHERE oar.OperationId = @OperationId";
-            using (Connection)
+            await using (Connection)
             {
                 return await Connection.QueryAsync<Action>(sql, new {OperationId = id});
             }
@@ -67,7 +67,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                 sqlParams.Add("ServiceHost", $"%{query.ServiceHost}%");
             }
 
-            using (Connection)
+            await using (Connection)
             {
                 var queryResult = await Connection.QueryAsync<GetServiceHostOutput>(sql, sqlParams);
                 return queryResult;
@@ -106,7 +106,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                 sqlParams.Add("Ids", query.Ids);
             }
 
-            using (Connection)
+            await using (Connection)
             {
                 var serviceActions = await Connection.QueryAsync<Action>(sql, sqlParams);
                 return serviceActions.MapTo<IEnumerable<GetActionOutput>>();
