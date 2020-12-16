@@ -1,5 +1,5 @@
-﻿using Surging.Hero.Common;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
@@ -9,6 +9,5 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 
         [RegularExpression(RegExpConstants.Password, ErrorMessage = "密码格式不正确")]
         public string NewPassword { get; set; }
-
     }
 }

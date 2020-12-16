@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Surging.Hero.Auth.IApplication.Authorization.Dtos
+﻿namespace Surging.Hero.Auth.IApplication.Authorization.Dtos
 {
     public enum LoginResultType
     {
@@ -10,6 +6,6 @@ namespace Surging.Hero.Auth.IApplication.Authorization.Dtos
 
         Fail = 1,
 
-        Error = 2,
+        Error = 2
     }
 }

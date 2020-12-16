@@ -1,12 +1,10 @@
-﻿using Surging.Hero.Auth.Domain.Shared.Operations;
-using Surging.Hero.Common;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Surging.Hero.Auth.Domain.Shared.Operations;
 
 namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 {
     public abstract class OperationDtoBase
     {
-     
         //public string Icon { get; set; }
 
         [Required(ErrorMessage = "操作标识不允许为空")]
@@ -20,6 +18,5 @@ namespace Surging.Hero.Auth.IApplication.Permission.Dtos
         public OperationMold Mold { get; set; }
 
         public string Memo { get; set; }
-
     }
 }

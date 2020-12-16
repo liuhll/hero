@@ -2,11 +2,7 @@
 
 namespace Surging.Hero.Organization.Domain.ClassMapper
 {
-    class CorporationClassMapper : HeroClassMapper<Corporation>
+    internal class CorporationClassMapper : HeroClassMapper<Corporation>
     {
-        public CorporationClassMapper()
-        {
-           
-        }
     }
 }

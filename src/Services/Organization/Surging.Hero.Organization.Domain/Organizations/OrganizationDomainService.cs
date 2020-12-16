@@ -1,10 +1,7 @@
-﻿using Dapper;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Surging.Hero.Organization.Domain
 {
@@ -27,7 +24,6 @@ namespace Surging.Hero.Organization.Domain
         {
             var organizations = await _organizationRepository.GetAllAsync();
             return organizations;
-
         }
 
         public async Task<IEnumerable<Organization>> GetSubOrgs(long orgId)

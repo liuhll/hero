@@ -1,6 +1,4 @@
-﻿using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
-using Surging.Hero.Common.Extensions;
-using System;
+﻿using Surging.Hero.Common.Extensions;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 {
@@ -12,13 +10,6 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 
         public bool IsSysPreset { get; set; }
 
-        public string TypeDesc
-        {
-            get
-            {
-                return Type.GetDescription();
-            }
-         }
-
+        public string TypeDesc => Type.GetDescription();
     }
 }

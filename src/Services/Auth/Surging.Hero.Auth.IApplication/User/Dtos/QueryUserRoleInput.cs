@@ -3,6 +3,5 @@
     public class QueryUserRoleInput
     {
         public long? UserId { get; set; }
-
     }
 }

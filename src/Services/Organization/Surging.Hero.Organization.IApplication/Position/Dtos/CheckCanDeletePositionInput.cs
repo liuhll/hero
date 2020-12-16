@@ -3,7 +3,7 @@
     public class CheckCanDeletePositionInput
     {
         /// <summary>
-        /// 职务Id
+        ///     职务Id
         /// </summary>
         public long Id { get; set; }
     }

@@ -1,5 +1,4 @@
-﻿using DapperExtensions.Mapper;
-using Surging.Hero.Common.ClassMapper;
+﻿using Surging.Hero.Common.ClassMapper;
 
 namespace Surging.Hero.Auth.Domain.Roles.ClassMapper
 {

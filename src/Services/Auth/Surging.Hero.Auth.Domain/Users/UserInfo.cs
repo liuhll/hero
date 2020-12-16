@@ -1,7 +1,7 @@
-﻿using Surging.Core.Domain.Entities.Auditing;
+﻿using System;
+using Surging.Core.Domain.Entities.Auditing;
 using Surging.Hero.Auth.Domain.Shared.Users;
 using Surging.Hero.Common;
-using System;
 
 namespace Surging.Hero.Auth.Domain.Users
 {
@@ -48,14 +48,10 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public string Memo { get; set; }
 
-        public DateTime? LastLoginTime { get; set; } 
+        public DateTime? LastLoginTime { get; set; }
 
         public int LoginFailedCount { get; set; }
 
         public Status Status { get; set; }
-
-
     }
 }
-
-

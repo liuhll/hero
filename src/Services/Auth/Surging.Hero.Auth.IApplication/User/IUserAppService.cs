@@ -1,12 +1,12 @@
-﻿using Surging.Core.CPlatform.Ioc;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
 using Surging.Core.System.Intercept;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.User
 {
@@ -14,7 +14,7 @@ namespace Surging.Hero.Auth.IApplication.User
     public interface IUserAppService : IServiceKey
     {
         /// <summary>
-        /// 新增用户
+        ///     新增用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -24,29 +24,31 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<string> Create(CreateUserInput input);
 
         /// <summary>
-        /// 更新用户
+        ///     更新用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新用户")]
         [ServiceRoute("")]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetUserNormInfoById }, Mode = CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById},
+            Mode = CacheTargetType.Redis)]
         Task<string> Update(UpdateUserInput input);
 
         /// <summary>
-        /// 删除用户
+        ///     删除用户
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
         [ServiceRoute("{id}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除用户")]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetUserNormInfoById }, Mode = CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById},
+            Mode = CacheTargetType.Redis)]
         Task<string> Delete(long id);
 
         /// <summary>
-        /// 查询用户
+        ///     查询用户
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
@@ -56,18 +58,19 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query);
 
         /// <summary>
-        /// 激活/冻结用户
+        ///     激活/冻结用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut]
         [ServiceRoute("status")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "激活/冻结用户")]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] { CacheKeyConstant.GetUserNormInfoById }, Mode = CacheTargetType.Redis)]
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById},
+            Mode = CacheTargetType.Redis)]
         Task<string> UpdateStatus(UpdateUserStatusInput input);
 
         /// <summary>
-        /// 重置密码
+        ///     重置密码
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -77,7 +80,7 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<string> ResetPassword(ResetPasswordInput input);
 
         /// <summary>
-        /// 根据组织id获取部门的用户
+        ///     根据组织id获取部门的用户
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="includeSubOrg"></param>
@@ -85,14 +88,14 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpGet]
         [ServiceRoute("org")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织id获取部门的用户", DisableNetwork = true)]
-        Task<IEnumerable<GetUserBasicOutput>> GetOrgUser(long orgId,bool includeSubOrg);
+        Task<IEnumerable<GetUserBasicOutput>> GetOrgUser(long orgId, bool includeSubOrg);
 
         //[ServiceRoute("{corporationId}")]
         //[HttpGet]
         //Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId);
 
         /// <summary>
-        /// 获取用户信息
+        ///     获取用户信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -102,7 +105,7 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<GetUserNormOutput> Get(long id);
 
         /// <summary>
-        /// 修改某个用户的部门信息
+        ///     修改某个用户的部门信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -112,7 +115,7 @@ namespace Surging.Hero.Auth.IApplication.User
         Task<bool> ResetUserOrgInfo(long id);
 
         /// <summary>
-        /// 获取某个职位的用户数
+        ///     获取某个职位的用户数
         /// </summary>
         /// <param name="positionId"></param>
         /// <returns></returns>
@@ -124,8 +127,9 @@ namespace Surging.Hero.Auth.IApplication.User
 
         [HttpGet]
         [ServiceRoute("user/basic/{id}")]
-        [Service(Director = Developers.Liuhll, Date = "2020-12-11", Name = "获取某个用户的基本信息【不包含角色信息,有缓存】", AllowPermission = true, DisableNetwork = true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-11", Name = "获取某个用户的基本信息【不包含角色信息,有缓存】",
+            AllowPermission = true, DisableNetwork = true)]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetUserNormInfoById, Mode = CacheTargetType.Redis)]
-        public Task<GetUserBasicOutput> GetUserBasicInfo([CacheKey(1)]long id);
+        public Task<GetUserBasicOutput> GetUserBasicInfo([CacheKey(1)] long id);
     }
 }

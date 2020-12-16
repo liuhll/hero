@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Surging.Core.CPlatform.Runtime.Server;
 using Surging.Core.CPlatform.Utilities;
-using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.Permissions.Actions;
@@ -16,13 +15,13 @@ namespace Surging.Hero.Auth.Application.Action
 {
     public class ActionAppService : ProxyServiceBase, IActionAppService
     {
-        private readonly IActionDomainService _actionDomainService;
-        private readonly IServiceEntryProvider _serviceEntryProvider;
-        private readonly ILogger<ActionAppService> _logger;
         private const int hostNameSegmentLength = 3;
+        private readonly IActionDomainService _actionDomainService;
+        private readonly ILogger<ActionAppService> _logger;
+        private readonly IServiceEntryProvider _serviceEntryProvider;
 
         public ActionAppService(IActionDomainService actionDomainService,
-            IServiceEntryProvider serviceEntryProvider, 
+            IServiceEntryProvider serviceEntryProvider,
             ILogger<ActionAppService> logger)
         {
             _actionDomainService = actionDomainService;
@@ -74,9 +73,8 @@ namespace Surging.Hero.Auth.Application.Action
                 AllowPermission = p.Descriptor.GetMetadata<bool>("AllowPermission"),
                 Developer = p.Descriptor.GetMetadata<string>("Director"),
                 Date = GetDevDate(p.Descriptor.GetMetadata<string>("Date"))
-
             }).ToList();
-            
+
             try
             {
                 await _actionDomainService.InitActions(actions);
@@ -85,7 +83,7 @@ namespace Surging.Hero.Auth.Application.Action
             {
                 _logger.LogError(ex.Message, ex);
             }
- 
+
             return $"根据主机服务条目更新服务功能列表成功,一共有{actions.Count}个服务条目";
         }
 
@@ -102,10 +100,7 @@ namespace Surging.Hero.Auth.Application.Action
 
         private DateTime? GetDevDate(string dateStr)
         {
-            if (dateStr.IsNullOrEmpty())
-            {
-                return null;
-            }
+            if (dateStr.IsNullOrEmpty()) return null;
             return Convert.ToDateTime(dateStr);
         }
     }

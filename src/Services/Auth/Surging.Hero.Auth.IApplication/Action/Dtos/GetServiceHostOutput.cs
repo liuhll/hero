@@ -3,6 +3,5 @@
     public class GetServiceHostOutput
     {
         public string ServiceHost { get; set; }
-
     }
 }

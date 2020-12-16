@@ -1,6 +1,5 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
 using Surging.Hero.Common;
-using System.ComponentModel.DataAnnotations;
 
 namespace Surging.Hero.Auth.IApplication.Authorization.Dtos
 {

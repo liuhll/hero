@@ -3,12 +3,12 @@
     public class GetAppServiceOutput
     {
         /// <summary>
-        /// 主机名称
+        ///     主机名称
         /// </summary>
         public string ServiceHost { get; set; }
 
         /// <summary>
-        /// 应用服务名称
+        ///     应用服务名称
         /// </summary>
         public string AppService { get; set; }
     }

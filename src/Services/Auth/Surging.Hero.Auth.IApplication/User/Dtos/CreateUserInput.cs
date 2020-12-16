@@ -1,5 +1,5 @@
-﻿using Surging.Hero.Common;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
@@ -18,12 +18,12 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         public string Password { get; set; }
 
         /// <summary>
-        /// 分配的角色
+        ///     分配的角色
         /// </summary>
         public long[] RoleIds { get; set; }
 
         /// <summary>
-        /// 分配的用户组
+        ///     分配的用户组
         /// </summary>
         public long[] UserGroupIds { get; set; }
     }

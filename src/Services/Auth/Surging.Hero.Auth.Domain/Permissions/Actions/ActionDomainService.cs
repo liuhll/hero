@@ -1,29 +1,24 @@
-﻿using Dapper;
-using Surging.Hero.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
+using Surging.Core.Lock;
+using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.IApplication.Action.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using Nest;
-using Surging.Core.Lock.Provider;
-using Surging.Core.Lock;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Actions
 {
     public class ActionDomainService : ManagerBase, IActionDomainService
     {
         private readonly IDapperRepository<Action, long> _actionRepository;
-        private readonly IDapperRepository<OperationActionRelation, long> _operationActionRelationRepository;
         private readonly ILockerProvider _lockerProvider;
+        private readonly IDapperRepository<OperationActionRelation, long> _operationActionRelationRepository;
 
         public ActionDomainService(IDapperRepository<Action, long> actionRepository,
             IDapperRepository<OperationActionRelation, long> operationActionRelationRepository,
@@ -128,11 +123,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                 var appServiceIndex = 2;
                 foreach (var host in hosts)
                 {
-                    var hostOutput = new GetTreeActionOutput() {Label = host.ServiceHost, Value = hostIndex};
-                    var application = await GetAppServices(new QueryAppServiceInput() {ServiceHost = host.ServiceHost});
+                    var hostOutput = new GetTreeActionOutput {Label = host.ServiceHost, Value = hostIndex};
+                    var application = await GetAppServices(new QueryAppServiceInput {ServiceHost = host.ServiceHost});
                     hostOutput.Children = application.Select(p =>
                     {
-                        var appServiceOutput = new GetTreeActionOutput()
+                        var appServiceOutput = new GetTreeActionOutput
                         {
                             Label = p.AppService, Value = appServiceIndex,
                             Children = GetLeafActions(p.ServiceHost, p.AppService).Result
@@ -146,14 +141,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
             return result;
         }
 
-        private async Task<IEnumerable<GetTreeActionOutput>> GetLeafActions(string serviceHost, string appService)
-        {
-            var actionServices = await GetActionServices(new QueryActionInput()
-                {ServiceHost = serviceHost, AppService = appService});
-            return actionServices.Select(p => new GetTreeActionOutput()
-                {Label = !p.Name.IsNullOrEmpty() ? p.Name : p.ServiceId, Value = p.Id});
-        }
-
         public async Task InitActions(ICollection<InitActionActionInput> actions)
         {
             using (var locker = await _lockerProvider.CreateLockAsync("InitActions"))
@@ -161,7 +148,6 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                 await locker.Lock(async () =>
                 {
                     foreach (var action in actions)
-                    {
                         await UnitOfWorkAsync(async (conn, trans) =>
                         {
                             try
@@ -177,14 +163,12 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                                         await _operationActionRelationRepository.GetAllAsync(
                                             p => p.ServiceId == action.ServiceId, conn, trans);
                                     if (operationActionRelations.Any())
-                                    {
                                         foreach (var operationActionRelation in operationActionRelations)
                                         {
                                             operationActionRelation.ActionId = actionId;
                                             await _operationActionRelationRepository.UpdateAsync(
                                                 operationActionRelation, conn, trans);
                                         }
-                                    }
                                 }
                                 else
                                 {
@@ -194,17 +178,13 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                                         await _operationActionRelationRepository.GetAllAsync(p =>
                                             p.ServiceId == action.ServiceId);
                                     if (operationActionRelations.Any())
-                                    {
                                         foreach (var operationActionRelation in operationActionRelations)
-                                        {
                                             if (operationActionRelation.ActionId != actionEntity.Id)
                                             {
                                                 operationActionRelation.ActionId = actionEntity.Id;
                                                 await _operationActionRelationRepository.UpdateAsync(
                                                     operationActionRelation, conn, trans);
                                             }
-                                        }
-                                    }
                                 }
                             }
                             catch (Exception e)
@@ -213,9 +193,16 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
                                 throw e;
                             }
                         }, Connection);
-                    }
                 });
             }
+        }
+
+        private async Task<IEnumerable<GetTreeActionOutput>> GetLeafActions(string serviceHost, string appService)
+        {
+            var actionServices = await GetActionServices(new QueryActionInput
+                {ServiceHost = serviceHost, AppService = appService});
+            return actionServices.Select(p => new GetTreeActionOutput
+                {Label = !p.Name.IsNullOrEmpty() ? p.Name : p.ServiceId, Value = p.Id});
         }
     }
 }

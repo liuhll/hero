@@ -1,6 +1,5 @@
 ﻿using Surging.Core.Domain.Entities.Auditing;
 using Surging.Hero.Auth.Domain.Shared.Operations;
-using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Operations
 {
@@ -21,6 +20,5 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
         public OperationMold Mold { get; set; }
 
         public string Memo { get; set; }
-
     }
 }

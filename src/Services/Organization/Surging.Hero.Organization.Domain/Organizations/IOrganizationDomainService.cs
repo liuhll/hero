@@ -1,7 +1,6 @@
-﻿using Surging.Core.CPlatform.Ioc;
-using Surging.Hero.Organization.Domain.Shared.Organizations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Surging.Core.CPlatform.Ioc;
 
 namespace Surging.Hero.Organization.Domain
 {

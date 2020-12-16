@@ -1,5 +1,4 @@
-﻿using Surging.Hero.Auth.IApplication.Action.Dtos;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 {

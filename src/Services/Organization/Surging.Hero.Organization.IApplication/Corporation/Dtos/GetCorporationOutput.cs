@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Surging.Hero.Organization.IApplication.Corporation.Dtos
+﻿namespace Surging.Hero.Organization.IApplication.Corporation.Dtos
 {
     public class GetCorporationOutput : CorporationDtoBase
     {

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Utilities;
-using Surging.Core.Domain;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.ProxyGenerator;
@@ -74,38 +73,31 @@ namespace Surging.Hero.BasicData.Application.Wordbook
         {
             var wordbookOutputs = await _wordbookDomainService.GetWordbookItemsByCode(code);
             var userAppServiceProxy = GetService<IUserAppService>();
-            foreach (var wordbookOutput in wordbookOutputs) 
+            foreach (var wordbookOutput in wordbookOutputs)
             {
                 if (wordbookOutput.CreatorUserId.HasValue)
-                {
-                    wordbookOutput.CreatorUserName = (await userAppServiceProxy.Get(wordbookOutput.CreatorUserId.Value)).ChineseName;
-                }
+                    wordbookOutput.CreatorUserName = (await userAppServiceProxy.Get(wordbookOutput.CreatorUserId.Value))
+                        .ChineseName;
                 if (wordbookOutput.LastModifierUserId.HasValue)
-                {
-                    wordbookOutput.LastModificationUserName = (await userAppServiceProxy.Get(wordbookOutput.LastModifierUserId.Value)).ChineseName;
-                }
+                    wordbookOutput.LastModificationUserName =
+                        (await userAppServiceProxy.Get(wordbookOutput.LastModifierUserId.Value)).ChineseName;
             }
+
             return wordbookOutputs;
         }
 
-        public async Task<GetWordbookItemOutput> GetWordbookItemByKey(string wordbookCode,string key)
+        public async Task<GetWordbookItemOutput> GetWordbookItemByKey(string wordbookCode, string key)
         {
-            
-            var wordbookOutput = (await _wordbookDomainService.GetWordbookItemByKey(wordbookCode, key));
+            var wordbookOutput = await _wordbookDomainService.GetWordbookItemByKey(wordbookCode, key);
             return wordbookOutput;
         }
 
         public async Task<IPagedResult<GetWordbookItemOutput>> GetWordbookItems(GetWordbookItemsInput input)
         {
-            if (input.Code.IsNullOrEmpty() && !input.WordbookId.HasValue) 
-            {
+            if (input.Code.IsNullOrEmpty() && !input.WordbookId.HasValue)
                 throw new BusinessException("字典编码和字典Id不能同时为空");
-            }
             var outputs = await _wordbookDomainService.GetWordbookItems(input);
-            foreach (var output in outputs.Items) 
-            {
-                await output.SetAuditInfo();
-            }
+            foreach (var output in outputs.Items) await output.SetAuditInfo();
             return outputs;
         }
 
@@ -114,10 +106,7 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             var queryResult = await _wordbookDomainService.QueryWordbooks(query);
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetWordbookOutput>>().GetPagedResult(queryResult.Item2);
             // todo 抽象
-            foreach (var output in outputs.Items)
-            {
-                await output.SetAuditInfo();
-            }
+            foreach (var output in outputs.Items) await output.SetAuditInfo();
             return outputs;
         }
 

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.Dapper.Repositories;
-using Surging.Core.Domain;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.Domain.Trees;
@@ -17,18 +16,18 @@ namespace Surging.Hero.Organization.Application.Organization
     public class OrganizationAppService : ProxyServiceBase, IOrganizationAppService
     {
         private readonly IOrganizationDomainService _organizationDomainService;
-        private readonly IDapperRepository<Domain.Organization,long> _organizationRepository;
+        private readonly IDapperRepository<Domain.Organization, long> _organizationRepository;
 
         public OrganizationAppService(IOrganizationDomainService organizationDomainService,
-            IDapperRepository<Domain.Organization, long> organizationRepository) {
+            IDapperRepository<Domain.Organization, long> organizationRepository)
+        {
             _organizationDomainService = organizationDomainService;
             _organizationRepository = organizationRepository;
         }
 
         public async Task<IEnumerable<long>> GetSubOrgIds(long orgId)
         {
-            return (await _organizationDomainService.GetSubOrgs(orgId)).Select(p=>p.Id);
-            
+            return (await _organizationDomainService.GetSubOrgs(orgId)).Select(p => p.Id);
         }
 
         public async Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree()
@@ -40,10 +39,10 @@ namespace Surging.Hero.Organization.Application.Organization
 
         public async Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query)
         {
-            var organizations = await _organizationRepository.GetAllAsync(p => p.Code.Contains(query.Code) && p.Name.Contains(query.SearchKey));
-          //  organizations = organizations.WhereIf(!query.Code.IsNullOrEmpty(), p => p.Code.Contains(query.SearchKey)).WhereIf(!query.SearchKey.IsNullOrEmpty(), p=> p.Name.Contains(query.SearchKey));
+            var organizations = await _organizationRepository.GetAllAsync(p =>
+                p.Code.Contains(query.Code) && p.Name.Contains(query.SearchKey));
+            //  organizations = organizations.WhereIf(!query.Code.IsNullOrEmpty(), p => p.Code.Contains(query.SearchKey)).WhereIf(!query.SearchKey.IsNullOrEmpty(), p=> p.Name.Contains(query.SearchKey));
             return organizations.MapTo<IEnumerable<QueryOrganizationOutput>>().PageBy(query);
         }
-
     }
 }

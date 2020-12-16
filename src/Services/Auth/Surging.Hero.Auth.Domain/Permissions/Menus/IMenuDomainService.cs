@@ -1,7 +1,8 @@
-﻿using Surging.Core.CPlatform.Ioc;
-using Surging.Hero.Auth.IApplication.Permission.Dtos;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Surging.Core.CPlatform.Ioc;
+using Surging.Hero.Auth.Domain.Shared.Permissions;
+using Surging.Hero.Auth.IApplication.Permission.Dtos;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Menus
 {
@@ -15,6 +16,8 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         Task<IEnumerable<GetPermissionTreeOutput>> GetTree();
 
         Task<IEnumerable<Menu>> GetParents(long menuId, bool isIncludeSelf = true);
-        Task<IEnumerable<Menu>> GetParentsByPermissionId(long permissionId, Shared.Permissions.PermissionMold mold, bool isIncludeSelf = true);
+
+        Task<IEnumerable<Menu>> GetParentsByPermissionId(long permissionId, PermissionMold mold,
+            bool isIncludeSelf = true);
     }
 }

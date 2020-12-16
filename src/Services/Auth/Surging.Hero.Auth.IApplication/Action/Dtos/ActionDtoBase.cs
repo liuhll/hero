@@ -1,8 +1,4 @@
-﻿using Surging.Core.CPlatform;
-using Surging.Hero.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Surging.Hero.Auth.IApplication.Action.Dtos
 {
@@ -25,6 +21,5 @@ namespace Surging.Hero.Auth.IApplication.Action.Dtos
         public string Developer { get; set; }
 
         public DateTime? Date { get; set; }
-        
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.Organization.Domain.Positions.ClassMapper
 {
-    class PositionClassMapper : HeroClassMapper<Position>
+    internal class PositionClassMapper : HeroClassMapper<Position>
     {
     }
 }

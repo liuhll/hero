@@ -2,15 +2,8 @@
 {
     public class CreateUserGroupInput : UserGroupDtoBase
     {
-        public long[] RoleIds
-        {
-            get; set;
-        }
+        public long[] RoleIds { get; set; }
 
-        public long[] PermissionIds 
-        {
-            get;
-            set;
-        }
+        public long[] PermissionIds { get; set; }
     }
 }

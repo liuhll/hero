@@ -4,7 +4,7 @@
     {
         //public long DeptId { get; set; }
         /// <summary>
-        /// 职务id
+        ///     职务id
         /// </summary>
         public long? Id { get; set; }
     }

@@ -1,8 +1,5 @@
-﻿using Surging.Hero.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 {

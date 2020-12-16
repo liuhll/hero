@@ -1,8 +1,8 @@
-﻿using Surging.Core.CPlatform.Ioc;
+﻿using System.Threading.Tasks;
+using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;
-using System.Threading.Tasks;
 
 namespace Surging.Hero.Organization.IApplication.Corporation
 {
@@ -10,7 +10,7 @@ namespace Surging.Hero.Organization.IApplication.Corporation
     public interface ICorporationAppService : IServiceKey
     {
         /// <summary>
-        /// 新增公司信息
+        ///     新增公司信息
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -20,7 +20,7 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         Task<CreateCorporationOutput> Create(CreateCorporationInput input);
 
         /// <summary>
-        /// 更新公司信息
+        ///     更新公司信息
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -30,7 +30,7 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         Task<UpdateCorporationOutput> Update(UpdateCorporationInput input);
 
         /// <summary>
-        /// 删除公司
+        ///     删除公司
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
@@ -40,7 +40,7 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         Task<string> DeleteByOrgId(long orgId);
 
         /// <summary>
-        /// 获取公司信息
+        ///     获取公司信息
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>

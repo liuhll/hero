@@ -11,6 +11,5 @@
         public string DeptName { get; set; }
 
         public string PositionName { get; set; }
-       
     }
 }

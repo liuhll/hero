@@ -8,8 +8,8 @@
 
         public const int DeletedFlag = 1;
 
-        public static class CodeRuleRestrain {
-
+        public static class CodeRuleRestrain
+        {
             public const string CodeSeparator = ".";
 
             public const char CodeCoverSymbol = '0';
@@ -17,7 +17,6 @@
             public const int CodeCoverBit = 4;
 
             public const string FullNameSeparator = "-";
-
         }
     }
 }

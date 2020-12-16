@@ -1,6 +1,5 @@
 ﻿using Surging.Core.Domain.Entities.Auditing;
 using Surging.Hero.Auth.Domain.Shared.Menus;
-using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Menus
 {
@@ -31,6 +30,5 @@ namespace Surging.Hero.Auth.Domain.Permissions.Menus
         public int Sort { get; set; }
 
         public string Memo { get; set; }
-
     }
 }

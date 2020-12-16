@@ -1,7 +1,6 @@
-﻿using Surging.Hero.Auth.Domain.Shared.Users;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Surging.Hero.Auth.Domain.Shared.Users;
 
 namespace Surging.Hero.Common.Runtime.Session
 {
@@ -50,8 +49,6 @@ namespace Surging.Hero.Common.Runtime.Session
         public Status Status { get; set; }
 
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
-
-
     }
 
     public class GetDisplayRoleOutput

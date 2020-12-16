@@ -1,6 +1,5 @@
 ﻿using Surging.Core.Domain.Entities.Auditing;
 
-
 namespace Surging.Hero.BasicData.Domain.Wordbooks
 {
     public class WordbookItem : FullAuditedEntity<long>

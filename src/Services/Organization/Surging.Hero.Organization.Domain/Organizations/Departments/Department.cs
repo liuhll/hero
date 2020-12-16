@@ -4,7 +4,6 @@ namespace Surging.Hero.Organization.Domain
 {
     public class Department : FullAuditedEntity<long>
     {
-
         public long OrgId { get; set; }
 
         public string Location { get; set; }
@@ -12,6 +11,5 @@ namespace Surging.Hero.Organization.Domain
         public string DeptTypeKey { get; set; }
 
         public string BriefIntro { get; set; }
-
     }
 }

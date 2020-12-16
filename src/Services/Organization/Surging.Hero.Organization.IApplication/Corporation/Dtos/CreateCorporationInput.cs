@@ -2,7 +2,6 @@
 {
     public class CreateCorporationInput : CorporationDtoBase
     {
-
         public long? ParentId { get; set; }
     }
 }

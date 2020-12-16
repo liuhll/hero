@@ -2,8 +2,7 @@
 
 namespace Surging.Hero.Auth.Domain.UserGroups.ClassMapper
 {
-    public class UserGroupPermissionClassMapper: HeroClassMapper<UserGroupPermission>
+    public class UserGroupPermissionClassMapper : HeroClassMapper<UserGroupPermission>
     {
-        
     }
 }

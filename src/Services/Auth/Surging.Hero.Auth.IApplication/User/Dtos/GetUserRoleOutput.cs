@@ -9,6 +9,5 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         public string Name { get; set; }
 
         public CheckStatus Checked { get; set; }
-
     }
 }

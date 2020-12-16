@@ -1,15 +1,13 @@
-﻿using Surging.Hero.Auth.Domain.Shared.Users;
-using Surging.Hero.Common;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Surging.Hero.Auth.Domain.Shared.Users;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
     public abstract class UserDtoBase
     {
-
-        [Required(ErrorMessage = "员工名称不允许为空")]
-        public string ChineseName { get; set; }
+        [Required(ErrorMessage = "员工名称不允许为空")] public string ChineseName { get; set; }
 
         [EmailAddress(ErrorMessage = "电子邮箱格式不正确")]
         public string Email { get; set; }
@@ -17,8 +15,7 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
         [RegularExpression(RegExpConstants.Phone, ErrorMessage = "手机号码格式不正确")]
         public string Phone { get; set; }
 
-        [Required(ErrorMessage = "性别不允许为空")]
-        public Gender? Gender { get; set; }
+        [Required(ErrorMessage = "性别不允许为空")] public Gender? Gender { get; set; }
 
         public DateTime? Birth { get; set; }
 

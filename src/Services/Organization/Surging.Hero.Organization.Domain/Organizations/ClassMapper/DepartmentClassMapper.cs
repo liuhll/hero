@@ -2,11 +2,7 @@
 
 namespace Surging.Hero.Organization.Domain.ClassMapper
 {
-    class DepartmentClassMapper : HeroClassMapper<Department>
+    internal class DepartmentClassMapper : HeroClassMapper<Department>
     {
-        public DepartmentClassMapper() 
-        {
-            
-        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.Auth.Domain.Permissions.ClassMapper
 {
-    class PermissionClassMapper : HeroClassMapper<Permission>
+    internal class PermissionClassMapper : HeroClassMapper<Permission>
     {
     }
 }

@@ -1,5 +1,5 @@
-﻿using Surging.Hero.Organization.IApplication.Position.Dtos;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Surging.Hero.Organization.IApplication.Position.Dtos;
 
 namespace Surging.Hero.Organization.IApplication.Department.Dtos
 {

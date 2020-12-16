@@ -1,8 +1,8 @@
-﻿using Surging.Hero.Auth.IApplication.Role.Dtos;
-using Surging.Hero.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 {
@@ -11,18 +11,31 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         public long Id { get; set; }
 
         public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
-        
-        public string DisplayRoles { get { return string.Join(",", Roles.Select(p => p.Name)); } }
 
-        public IEnumerable<long> RoleIds { get { return Roles.Select(p => p.Id); } }
+        public string DisplayRoles
+        {
+            get { return string.Join(",", Roles.Select(p => p.Name)); }
+        }
+
+        public IEnumerable<long> RoleIds
+        {
+            get { return Roles.Select(p => p.Id); }
+        }
 
         public IEnumerable<GetDisplayPermissionOutput> Permissions { get; set; }
-        public string DisplayPermissions { get { return string.Join(",", Permissions.Select(p => p.Title)); } }
 
-        public IEnumerable<long> PermissionIds { get { return Permissions.Select(p => p.Id); } }
-        
+        public string DisplayPermissions
+        {
+            get { return string.Join(",", Permissions.Select(p => p.Title)); }
+        }
+
+        public IEnumerable<long> PermissionIds
+        {
+            get { return Permissions.Select(p => p.Id); }
+        }
+
         /// <summary>
-        /// 用户组状态
+        ///     用户组状态
         /// </summary>
         public Status Status { get; set; }
 
@@ -32,16 +45,15 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         public virtual string CreatorUserName { get; set; }
 
         /// <summary>
-        /// 最后修改时间
+        ///     最后修改时间
         /// </summary>
         public DateTime? LastModificationTime { get; set; }
 
         public string LastModificationUserName { get; set; }
 
         /// <summary>
-        /// 最后修改人
+        ///     最后修改人
         /// </summary>
         public long? LastModifierUserId { get; set; }
-
     }
 }

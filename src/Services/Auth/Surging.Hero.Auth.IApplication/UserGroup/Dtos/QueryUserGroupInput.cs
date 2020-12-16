@@ -7,7 +7,16 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
     public class QueryUserGroupInput : PagedResultRequestDto
     {
         private string _searchKey;
-        public string SearchKey { get { if (_searchKey.IsNullOrWhiteSpace()) { return null; } return _searchKey; } set { _searchKey = value; } }
+
+        public string SearchKey
+        {
+            get
+            {
+                if (_searchKey.IsNullOrWhiteSpace()) return null;
+                return _searchKey;
+            }
+            set => _searchKey = value;
+        }
 
         public Status? Status { get; set; }
     }

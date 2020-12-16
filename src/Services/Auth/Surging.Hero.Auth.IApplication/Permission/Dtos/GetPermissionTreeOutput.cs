@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Surging.Core.Domain;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 
 namespace Surging.Hero.Auth.IApplication.Permission.Dtos
 {
     public class GetPermissionTreeOutput
     {
-        public GetPermissionTreeOutput() {
+        public GetPermissionTreeOutput()
+        {
             Children = new List<GetPermissionTreeOutput>();
         }
 

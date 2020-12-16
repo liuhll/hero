@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.Auth.Domain.Users.ClassMapper
 {
-    class UserRoleClassMapper : HeroClassMapper<UserRole>
+    internal class UserRoleClassMapper : HeroClassMapper<UserRole>
     {
     }
 }

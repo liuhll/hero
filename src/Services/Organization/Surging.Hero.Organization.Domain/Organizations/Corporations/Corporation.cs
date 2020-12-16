@@ -1,6 +1,6 @@
-﻿using Surging.Core.Domain.Entities.Auditing;
+﻿using System;
+using Surging.Core.Domain.Entities.Auditing;
 using Surging.Hero.Organization.Domain.Shared;
-using System;
 
 namespace Surging.Hero.Organization.Domain
 {
@@ -25,6 +25,5 @@ namespace Surging.Hero.Organization.Domain
         public string Memo { get; set; }
 
         public long OrgId { get; set; }
-
     }
 }

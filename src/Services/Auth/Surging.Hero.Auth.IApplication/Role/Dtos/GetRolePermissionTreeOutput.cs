@@ -1,13 +1,14 @@
-﻿using Surging.Core.CPlatform.Exceptions;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 using Surging.Hero.Common;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Surging.Hero.Auth.IApplication.Role.Dtos
 {
     public class GetRolePermissionTreeOutput
     {
+        private CheckStatus _checkStatus;
+
         public GetRolePermissionTreeOutput()
         {
             Children = new List<GetRolePermissionTreeOutput>();
@@ -21,7 +22,6 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
 
         public string Name { get; set; }
 
-        private CheckStatus _checkStatus;
         public CheckStatus CheckStatus
         {
             get
@@ -29,28 +29,18 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
                 if (Children.Any())
                 {
                     if (Children.All(p => p.CheckStatus == CheckStatus.Checked))
-                    {
                         return CheckStatus.Checked;
-                    }
-                    else if (Children.All(p => p.CheckStatus == CheckStatus.UnChecked)) {
-                        return CheckStatus.UnChecked;
-                    }
+                    if (Children.All(p => p.CheckStatus == CheckStatus.UnChecked)) return CheckStatus.UnChecked;
                     return CheckStatus.Indeterminate;
                 }
+
                 return _checkStatus;
-                
             }
-            set
-            {
-                _checkStatus = value;
-            }
-            
+            set => _checkStatus = value;
         }
 
         public PermissionMold PermissionMold { get; set; }
 
         public IEnumerable<GetRolePermissionTreeOutput> Children { get; set; }
-
-        
     }
 }

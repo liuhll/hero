@@ -1,10 +1,10 @@
-﻿using Surging.Core.CPlatform.Ioc;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Common;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.Role
 {
@@ -12,7 +12,7 @@ namespace Surging.Hero.Auth.IApplication.Role
     public interface IRoleAppService : IServiceKey
     {
         /// <summary>
-        /// 新增角色
+        ///     新增角色
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -22,7 +22,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<string> Create(CreateRoleInput input);
 
         /// <summary>
-        /// 更新角色
+        ///     更新角色
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -32,7 +32,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<string> Update(UpdateRoleInput input);
 
         /// <summary>
-        /// 激活/冻结角色
+        ///     激活/冻结角色
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -42,7 +42,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<string> Status(UpdateRoleStatusInput input);
 
         /// <summary>
-        /// 获取角色信息
+        ///     获取角色信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -52,7 +52,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<GetRoleOutput> Get(long id);
 
         /// <summary>
-        /// 查询角色
+        ///     查询角色
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
@@ -62,7 +62,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query);
 
         /// <summary>
-        /// 获取角色列表
+        ///     获取角色列表
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>

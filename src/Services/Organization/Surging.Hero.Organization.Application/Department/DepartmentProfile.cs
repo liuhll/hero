@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Surging.Hero.Organization.Domain.Shared.Organizations;
 using Surging.Hero.Organization.IApplication.Department.Dtos;
 
 namespace Surging.Hero.Organization.Application.Department
@@ -11,7 +12,7 @@ namespace Surging.Hero.Organization.Application.Department
 
             CreateMap<CreateDepartmentInput, Domain.Organization>().AfterMap((src, dest) =>
             {
-                dest.OrgType = Domain.Shared.Organizations.OrganizationType.Department;
+                dest.OrgType = OrganizationType.Department;
             }).ForMember(p => p.Id, opt => opt.Ignore());
 
             CreateMap<UpdateDepartmentInput, Domain.Department>();

@@ -1,5 +1,4 @@
-﻿
-using Surging.Core.Domain.Entities.Auditing;
+﻿using Surging.Core.Domain.Entities.Auditing;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Operations
 {

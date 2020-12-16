@@ -1,10 +1,9 @@
-﻿using Surging.Core.Domain;
-using Surging.Core.Domain.PagedAndSorted;
+﻿using Surging.Core.Domain.PagedAndSorted;
 using Surging.Hero.Organization.Domain.Shared.Organizations;
 
 namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 {
-    public class QueryOrganizationInput :  PagedResultRequestDto
+    public class QueryOrganizationInput : PagedResultRequestDto
     {
         public string Code { get; set; }
 

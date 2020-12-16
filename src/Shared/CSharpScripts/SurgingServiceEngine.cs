@@ -7,11 +7,13 @@ namespace Surging.Hero.ServiceHost
     {
         public SurgingServiceEngine()
         {
-            ModuleServiceLocationFormats = new[] {
-                EnvironmentHelper.GetEnvironmentVariable("${ModulePath1}|Modules"),
+            ModuleServiceLocationFormats = new[]
+            {
+                EnvironmentHelper.GetEnvironmentVariable("${ModulePath1}|Modules")
             };
-            ComponentServiceLocationFormats = new[] {
-                 EnvironmentHelper.GetEnvironmentVariable("${ComponentPath1}|Components"),
+            ComponentServiceLocationFormats = new[]
+            {
+                EnvironmentHelper.GetEnvironmentVariable("${ComponentPath1}|Components")
             };
         }
     }

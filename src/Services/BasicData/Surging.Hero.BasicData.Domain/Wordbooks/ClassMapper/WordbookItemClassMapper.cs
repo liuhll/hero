@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.BasicData.Domain.Wordbooks.ClassMapper
 {
-    class WordbookItemClassMapper : HeroClassMapper<WordbookItem>
+    internal class WordbookItemClassMapper : HeroClassMapper<WordbookItem>
     {
     }
 }

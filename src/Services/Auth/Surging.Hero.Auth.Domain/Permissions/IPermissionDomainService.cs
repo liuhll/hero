@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
-using Surging.Hero.Auth.IApplication.Role.Dtos;
 
 namespace Surging.Hero.Auth.Domain.Permissions
 {

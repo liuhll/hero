@@ -4,10 +4,8 @@ namespace Surging.Hero.BasicData.Domain.Shared.Wordbooks
 {
     public enum WordbookType
     {
-        [Description("系统类")]
-        System = 1,
+        [Description("系统类")] System = 1,
 
-        [Description("业务类")]
-        Business
+        [Description("业务类")] Business
     }
 }

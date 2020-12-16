@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Surging.Hero.Auth.IApplication.Role.Dtos
+﻿namespace Surging.Hero.Auth.IApplication.Role.Dtos
 {
     public class SetRolePermissionInput
     {

@@ -1,6 +1,5 @@
-﻿using Surging.Core.Domain;
+﻿using System.Collections.Generic;
 using Surging.Core.Domain.Trees;
-using System.Collections.Generic;
 
 namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 {

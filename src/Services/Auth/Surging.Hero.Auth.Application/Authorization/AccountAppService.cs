@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Session;
-using Surging.Core.Domain;
 using Surging.Core.Domain.Trees;
 using Surging.Core.ProxyGenerator;
 using Surging.Hero.Auth.Domain.Users;
@@ -15,12 +13,13 @@ using Surging.Hero.Common.Runtime.Session;
 
 namespace Surging.Hero.Auth.Application.Authorization
 {
-    [ModuleName(AuthConstant.V1.AccountMoudleName,Version = AuthConstant.V1.Version)]
+    [ModuleName(AuthConstant.V1.AccountMoudleName, Version = AuthConstant.V1.Version)]
     public class AccountAppService : ProxyServiceBase, IAccountAppService
     {
         private readonly ILoginManager _loginManager;
-        private readonly IUserDomainService _userDomainService;
         private readonly ISurgingSession _surgingSession;
+        private readonly IUserDomainService _userDomainService;
+
         public AccountAppService(ILoginManager loginManager,
             IUserDomainService userDomainService)
         {
@@ -31,20 +30,14 @@ namespace Surging.Hero.Auth.Application.Authorization
 
         public async Task<LoginUserInfo> GetLoginUser()
         {
-            if (_surgingSession == null || !_surgingSession.UserId.HasValue) {
-                throw new BusinessException("您当前没有登录系统");
-            }
+            if (_surgingSession == null || !_surgingSession.UserId.HasValue) throw new BusinessException("您当前没有登录系统");
             var userInfo = await _userDomainService.GetUserNormInfoById(_surgingSession.UserId.Value);
             return userInfo.MapTo<LoginUserInfo>();
-
         }
 
         public async Task<IEnumerable<ITree<GetUserMenuTreeOutput>>> GetUserTreeMenu()
         {
-            if (_surgingSession == null || !_surgingSession.UserId.HasValue)
-            {
-                throw new BusinessException("您当前没有登录系统");
-            }
+            if (_surgingSession == null || !_surgingSession.UserId.HasValue) throw new BusinessException("您当前没有登录系统");
             var userMenus = await _userDomainService.GetUserMenu(_surgingSession.UserId.Value);
             var treeOutputs = userMenus.MapTo<IEnumerable<GetUserMenuTreeOutput>>();
             return treeOutputs.BuildTree();
@@ -52,10 +45,7 @@ namespace Surging.Hero.Auth.Application.Authorization
 
         public async Task<IEnumerable<GetUserMenuOutput>> GetUserMenu()
         {
-            if (_surgingSession == null || !_surgingSession.UserId.HasValue)
-            {
-                throw new BusinessException("您当前没有登录系统");
-            }
+            if (_surgingSession == null || !_surgingSession.UserId.HasValue) throw new BusinessException("您当前没有登录系统");
             var userMenus = await _userDomainService.GetUserMenu(_surgingSession.UserId.Value);
             var outputs = userMenus.MapTo<IEnumerable<GetUserMenuOutput>>();
             return outputs;
@@ -63,11 +53,8 @@ namespace Surging.Hero.Auth.Application.Authorization
 
         public async Task<IEnumerable<GetUserOperationOutput>> GetUserOperation(long menuId)
         {
-            if (_surgingSession == null || !_surgingSession.UserId.HasValue)
-            {
-                throw new BusinessException("您当前没有登录系统");
-            }
-            var userOperations = await _userDomainService.GetUserOperation(_surgingSession.UserId.Value,menuId);
+            if (_surgingSession == null || !_surgingSession.UserId.HasValue) throw new BusinessException("您当前没有登录系统");
+            var userOperations = await _userDomainService.GetUserOperation(_surgingSession.UserId.Value, menuId);
             return userOperations.MapTo<IEnumerable<GetUserOperationOutput>>();
         }
 
@@ -75,6 +62,5 @@ namespace Surging.Hero.Auth.Application.Authorization
         {
             return await _loginManager.Login(input.UserName, input.Password);
         }
-
     }
 }

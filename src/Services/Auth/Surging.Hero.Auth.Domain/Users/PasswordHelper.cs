@@ -1,7 +1,4 @@
 ﻿using Surging.Hero.Common.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Surging.Hero.Auth.Domain.Users
 {

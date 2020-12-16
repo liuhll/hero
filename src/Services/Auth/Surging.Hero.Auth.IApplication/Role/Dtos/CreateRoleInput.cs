@@ -3,7 +3,7 @@
     public class CreateRoleInput : RoleDtoBase
     {
         /// <summary>
-        /// 选定的权限Ids
+        ///     选定的权限Ids
         /// </summary>
         public long[] PermissionIds { get; set; }
     }

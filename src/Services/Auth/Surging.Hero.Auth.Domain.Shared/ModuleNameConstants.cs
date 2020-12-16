@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Surging.Hero.Auth.Domain.Shared
+﻿namespace Surging.Hero.Auth.Domain.Shared
 {
     public static class ModuleNameConstants
     {

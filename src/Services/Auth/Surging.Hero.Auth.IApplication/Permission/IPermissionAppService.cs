@@ -1,10 +1,9 @@
-﻿using Surging.Core.CPlatform.Ioc;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
-using Surging.Core.Domain;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 using Surging.Hero.Common;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Surging.Hero.Auth.IApplication.Permission
 {
@@ -12,7 +11,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
     public interface IPermissionAppService : IServiceKey
     {
         /// <summary>
-        /// 新增菜单
+        ///     新增菜单
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -22,7 +21,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<CreateMenuOutput> CreateMenu(CreateMenuInput input);
 
         /// <summary>
-        /// 编辑菜单
+        ///     编辑菜单
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -32,7 +31,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<UpdateMenuOutput> UpdateMenu(UpdateMenuInput input);
 
         /// <summary>
-        /// 根据权限id获取菜单信息
+        ///     根据权限id获取菜单信息
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
@@ -42,7 +41,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<GetMenuOutput> GetMenu(long permissionId);
 
         /// <summary>
-        /// 新增操作
+        ///     新增操作
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -52,7 +51,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<CreateOperationOutput> CreateOperation(CreateOperationInput input);
 
         /// <summary>
-        /// 更新操作
+        ///     更新操作
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -62,7 +61,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<UpdateOperationOutput> UpdateOperation(UpdateOperationInput input);
 
         /// <summary>
-        /// 根据权限id获取操作
+        ///     根据权限id获取操作
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
@@ -72,7 +71,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<GetOperationOutput> GetOperation(long permissionId);
 
         /// <summary>
-        /// 获取权限树
+        ///     获取权限树
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -81,7 +80,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<IEnumerable<GetPermissionTreeOutput>> GetTree();
 
         /// <summary>
-        /// 删除菜单/操作
+        ///     删除菜单/操作
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -91,12 +90,12 @@ namespace Surging.Hero.Auth.IApplication.Permission
         Task<string> Delete(DeletePermissionInput input);
 
         /// <summary>
-        /// 接口鉴权
+        ///     接口鉴权
         /// </summary>
         /// <param name="serviceId"></param>
         /// <returns></returns>
         [HttpPost]
-        [Service(DisableNetwork = true, Name = "接口鉴权",Director = Developers.Liuhll)]
+        [Service(DisableNetwork = true, Name = "接口鉴权", Director = Developers.Liuhll)]
         [ServiceRoute("check")]
         Task<bool> Check(string serviceId);
     }

@@ -9,9 +9,7 @@ namespace Surging.Hero.Auth.Application.Action
         public ActionProfile()
         {
             CreateMap<InitActionActionInput, Domain.Permissions.Actions.Action>()
-                .AfterMap((src,dest)=> {
-                    dest.Status = Status.Valid;
-                });
+                .AfterMap((src, dest) => { dest.Status = Status.Valid; });
 
             CreateMap<Domain.Permissions.Actions.Action, GetActionOutput>();
         }
