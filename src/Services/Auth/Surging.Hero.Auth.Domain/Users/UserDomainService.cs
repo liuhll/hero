@@ -180,11 +180,11 @@ WHERE ugp.UserGroupId in @UserGroupIds
 
             var sql = @"SELECT DISTINCT o.* FROM RolePermission as rp
 LEFT JOIN Operation as o ON o.PermissionId = rp.PermissionId AND o.IsDeleted=@IsDeleted
-WHERE rp.RoleId in @RoleIds AND o.Status=@Status AND o.MenuId=@MenuId
+WHERE rp.RoleId in @RoleIds AND o.MenuId=@MenuId
 UNION
 SELECT DISTINCT o.* FROM UserGroupPermission as ugp
 LEFT JOIN Operation as o ON o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
-WHERE ugp.UserGroupId in @UserGroupIds AND o.Status=@Status AND o.MenuId=@MenuId
+WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
 ";
             await using (Connection)
             {
