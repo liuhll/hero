@@ -53,7 +53,7 @@ namespace Surging.Hero.Organization.Domain.Positions
                     OrganizationConstant.PositionPositionLevelWordbookCode, positionOutput.PositionLevelKey);
                 if (positionLevleInfo != null) positionOutput.PositionLevelName = positionLevleInfo.Value;
                 var positionFunctionInfo = await wordbookAppServiceProxy.GetWordbookItemByKey(
-                    OrganizationConstant.PositionPositionLevelWordbookCode, positionOutput.PositionLevelKey);
+                    OrganizationConstant.PositionFunctionWordbookCode, positionOutput.FunctionKey);
                 if (positionFunctionInfo != null) positionOutput.FunctionName = positionFunctionInfo.Value;
             }
 
