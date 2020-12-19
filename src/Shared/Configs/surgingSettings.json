@@ -1,8 +1,8 @@
 {
   "Surging": {
-    "Ip": "${Surging_Server_IP}|0.0.0.0",
+    "Ip": "${RpcIp}|0.0.0.0",
     "WatchInterval": 30,
-    "Port": "${Surging_Server_Port}|100",
+    "Port": "${RpcPort}|100",
     "MappingIp": "${Mapping_ip}",
     "MappingPort": "${Mapping_Port}",
     "Token": "true",
@@ -40,7 +40,7 @@
     ]
   }, //如果引用多个同类型的组件，需要配置Packages，如果是自定义按需引用，无需配置Packages
   "Lock": {
-    "LockRedisConnection": "${LockRedisConnections}|hero.redis1:6379"
+    "LockRedisConnection": "${LockRedisConnection}|hero.redis1:6379"
   },
   "DbSetting": {
     "DbType": "${DbType}|MySql", //MySql SqlServer, Oracle, Postgres
