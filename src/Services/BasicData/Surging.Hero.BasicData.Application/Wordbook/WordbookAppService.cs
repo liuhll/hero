@@ -72,17 +72,7 @@ namespace Surging.Hero.BasicData.Application.Wordbook
         public async Task<IEnumerable<GetWordbookItemOutput>> GetWordbookItemsByCode(string code)
         {
             var wordbookOutputs = await _wordbookDomainService.GetWordbookItemsByCode(code);
-            var userAppServiceProxy = GetService<IUserAppService>();
-            foreach (var wordbookOutput in wordbookOutputs)
-            {
-                if (wordbookOutput.CreatorUserId.HasValue)
-                    wordbookOutput.CreatorUserName = (await userAppServiceProxy.Get(wordbookOutput.CreatorUserId.Value))
-                        .ChineseName;
-                if (wordbookOutput.LastModifierUserId.HasValue)
-                    wordbookOutput.LastModificationUserName =
-                        (await userAppServiceProxy.Get(wordbookOutput.LastModifierUserId.Value)).ChineseName;
-            }
-
+            foreach (var wordbookOutput in wordbookOutputs) await wordbookOutput.SetAuditInfo();
             return wordbookOutputs;
         }
 
