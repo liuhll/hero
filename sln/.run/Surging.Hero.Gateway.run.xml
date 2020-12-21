@@ -1,0 +1,52 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Surging.Hero.Gateway" type="DotNetProject" factoryName=".NET Project">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/../src/Services/Gateway/Surging.Hero.Gateway/bin/Debug/netcoreapp3.1/Surging.Hero.Gateway.dll" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../src/Services/Gateway/Surging.Hero.Gateway/bin/Debug/netcoreapp3.1" />
+    <option name="PASS_PARENT_ENVS" value="1" />
+    <envs>
+      <env name="EventBusUserName" value="rabbitmq" />
+      <env name="# GatewayUseEngineParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;KestrelHttpModule;SwaggerModule;ServiceProxyModule;ApiGeteWayModule;" />
+      <env name="EventBusPassword" value="rabbitmq" />
+      <env name="LockRedisConnection" value="127.0.0.1:16379" />
+      <env name="ForceDisplayStackTrace" value="false" />
+      <env name="RpcPort" value="1104" />
+      <env name="# UseEngineParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
+      <env name="# UseKestrelHttpParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;WSProtocolModule;AutoMapperModule;ServiceProxyModule;" />
+      <env name="EventBusConnection" value="127.0.0.1" />
+      <env name="UseEngineParts" value="ServiceProxyModule;DotNettyModule;Log4netModule;MessagePackModule;LockModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;ApiGeteWayModule;AutoMapperModule;DapperModule;" />
+      <env name="HostIp" value="0.0.0.0" />
+      <env name="HttpPort" value="8094" />
+      <env name="ConnectTimeout" value="500" />
+      <env name="# Register_Conn" value="hero.consul:8500" />
+      <env name="surgingPath" value="configs/surgingSettings.json" />
+      <env name="Libuv" value="true" />
+      <env name="MaxConcurrentRequests" value="100" />
+      <env name="EnableHealthCheck" value="true" />
+      <env name="UseKestrelHttpParts" value="SwaggerModule;StageModule;" />
+      <env name="eventBusPath" value="configs/eventBusSettings.json" />
+      <env name="consulPath" value="configs/consul.json" />
+      <env name="#UseEngineParts" value="DotNettyModule;Log4netModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
+      <env name="ExecutionTimeoutInMilliseconds" value="5000" />
+      <env name="Register_SessionTimeout" value="1000" />
+      <env name="EventBusPort" value="5672" />
+      <env name="Register_Conn" value="127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183;" />
+      <env name="zookeeperPath" value="configs/zookeeper.json" />
+      <env name="cachePath" value="configs/cacheSettings.local.json" />
+      <env name="Environment" value="Development" />
+      <env name="AnnotationXmlDir" value="AnnotationXmlDir" />
+    </envs>
+    <option name="USE_EXTERNAL_CONSOLE" value="0" />
+    <option name="USE_MONO" value="0" />
+    <option name="RUNTIME_ARGUMENTS" value="" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/../src/Services/Gateway/Surging.Hero.Gateway/Surging.Hero.Gateway.csproj" />
+    <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+    <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+    <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+    <option name="PROJECT_KIND" value="DotNetCore" />
+    <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+    <method v="2">
+      <option name="Build" />
+    </method>
+  </configuration>
+</component>
