@@ -12,6 +12,7 @@ using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Actions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
+using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 using Surging.Hero.Auth.IApplication.Permission;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
@@ -114,6 +115,11 @@ namespace Surging.Hero.Auth.Application.Permission
             if (_session == null || !_session.UserId.HasValue) throw new AuthException("您还没有登录系统");
 
             return await _permissionDomainService.Check(_session.UserId.Value, serviceId);
+        }
+
+        public async Task<IEnumerable<EnumDto>> GetDataPermissionTypes()
+        {
+            return typeof(DataPermissionType).GetAllEnumValues();
         }
     }
 }

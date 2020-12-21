@@ -4,6 +4,7 @@ using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Common.Extensions;
 
 namespace Surging.Hero.Auth.IApplication.Permission
 {
@@ -98,5 +99,14 @@ namespace Surging.Hero.Auth.IApplication.Permission
         [Service(DisableNetwork = true, Name = "接口鉴权", Director = Developers.Liuhll)]
         [ServiceRoute("check")]
         Task<bool> Check(string serviceId);
+
+        /// <summary>
+        /// 获取数据权限类型
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Service(Date = "2020-12-31", Name = "获取数据权限类型", Director = Developers.Liuhll, AllowPermission = true)]
+        [ServiceRoute("datapermissiontypes")]
+        Task<IEnumerable<EnumDto>> GetDataPermissionTypes();
     }
 }

@@ -5,7 +5,7 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Users
 {
-    public class UserInfo : FullAuditedEntity<long>
+    public class UserInfo : FullAuditedEntity<long>, IOrgAudited
     {
         public UserInfo()
         {
