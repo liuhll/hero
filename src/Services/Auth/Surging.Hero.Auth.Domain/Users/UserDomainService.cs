@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
@@ -16,6 +17,7 @@ using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
+using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
@@ -40,6 +42,8 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IDapperRepository<UserInfo, long> _userRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<UserUserGroupRelation, long> _userUserGroupRelationRepository;
+        private readonly IDapperRepository<UserGroupPermission, long> _userGroupPermissionRepository;
+        private readonly ISurgingSession _session;
 
         public UserDomainService(IDapperRepository<UserInfo, long> userRepository,
             IDapperRepository<Role, long> roleRepository,
@@ -51,7 +55,8 @@ namespace Surging.Hero.Auth.Domain.Users
             IPasswordHelper passwordHelper,
             IMenuDomainService menuDomainService,
             ILockerProvider lockerProvider,
-            IDapperRepository<UserGroup, long> userGroupRepository)
+            IDapperRepository<UserGroup, long> userGroupRepository,
+            IDapperRepository<UserGroupPermission, long> userGroupPermissionRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -64,6 +69,8 @@ namespace Surging.Hero.Auth.Domain.Users
             _menuDomainService = menuDomainService;
             _lockerProvider = lockerProvider;
             _userGroupRepository = userGroupRepository;
+            _userGroupPermissionRepository = userGroupPermissionRepository;
+            _session = NullSurgingSession.Instance;
         }
 
         public async Task<bool> CheckPermission(long userId, string serviceId)
@@ -237,7 +244,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
         public async Task<IEnumerable<Role>> GetUserRoles(long userId, Status? status = null)
         {
             var sql = @"SELECT r.* FROM UserRole as ur 
-                        LEFT JOIN Role as r on ur.RoleId = r.Id AND r.IsDeleted=@IsDeleted WHERE ur.UserId=@UserId";
+                        LEFT JOIN Role as r on ur.RoleId = r.Id AND r.IsDeleted=@IsDeleted WHERE ur.UserId=@UserId and r.IsDeleted=@IsDeleted";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("UserId", userId);
             sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
@@ -409,9 +416,104 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
             return queryResultOutput;
         }
 
-        public Task<CheckPermissionResult> GetDataPermissions(long userId, Operation first)
+        public async Task<CheckPermissionResult> GetDataPermissions(long userId, long permissionId)
         {
-            throw new NotImplementedException();
+            var roles = await GetUserRoles(userId, Status.Valid);
+            DataPermissionType dataPermissionType = DataPermissionType.OnlySelfOrg;
+            var userDefinedRoleIds = new List<long>();
+            foreach (var role in roles)
+            {
+                var rolePermissions = await _roleDomainService.GetRolePermissions(role.Id);
+                if (!rolePermissions.Any(p => p.PermissionId == permissionId))
+                {
+                    continue;
+                }
+                if (role.DataPermissionType > dataPermissionType)
+                {
+                    dataPermissionType = role.DataPermissionType;
+                }
+
+                if (dataPermissionType == DataPermissionType.UserDefined)
+                {
+                    userDefinedRoleIds.Add(role.Id);
+                }
+            }
+
+            var userGroups = await GetUserGroups(userId);
+            var userDefinedUserGroupIds = new List<long>();
+            foreach (var userGroup in userGroups)
+            {
+                var userGroupPermissions = await 
+                    _userGroupPermissionRepository.GetAllAsync(p => p.UserGroupId == userGroup.Id);
+                if (!userGroupPermissions.Any(p => p.PermissionId == permissionId))
+                {
+                    continue;
+                }
+
+                if (userGroup.DataPermissionType > dataPermissionType)
+                {
+                    dataPermissionType = userGroup.DataPermissionType;
+                }
+                if (dataPermissionType == DataPermissionType.UserDefined)
+                {
+                    userDefinedUserGroupIds.Add(userGroup.Id);
+                }
+
+                var userGroupRoles = await _userGroupDomainService.GetUserGroupRoles(userGroup.Id, Status.Valid);
+                foreach (var userGroupRole in userGroupRoles)
+                {
+                    var rolePermissions = await _roleDomainService.GetRolePermissions(userGroupRole.Id);
+                    if (!rolePermissions.Any(p => p.PermissionId == permissionId))
+                    {
+                        continue;
+                    }
+                    if (userGroupRole.DataPermissionType > dataPermissionType)
+                    {
+                        dataPermissionType = userGroupRole.DataPermissionType;
+                    }
+
+                    if (dataPermissionType == DataPermissionType.UserDefined)
+                    {
+                        userDefinedRoleIds.Add(userGroupRole.Id);
+                    }
+                }
+            }
+            
+            var checkPermission = new CheckPermissionResult(dataPermissionType);
+            switch (dataPermissionType)
+            {
+                case DataPermissionType.AllOrg:
+                    checkPermission.DataPermissionOrgIds = null;
+                    break;
+                case DataPermissionType.OnlySelfOrg:
+                    DebugCheck.NotNull(_session.OrgId);
+                    checkPermission.DataPermissionOrgIds = new[] { _session.OrgId.Value };
+                    break;
+                case DataPermissionType.SelfAndLowerOrg:
+                    DebugCheck.NotNull(_session.OrgId);
+                    var organizationAppServiceProxy = GetService<IOrganizationAppService>();
+                    var subOrgIds = await organizationAppServiceProxy.GetSubOrgIds(_session.OrgId.Value);
+                    checkPermission.DataPermissionOrgIds = subOrgIds.ToArray();
+                    break;
+                case DataPermissionType.UserDefined:
+                    checkPermission.DataPermissionOrgIds = await GetUserDefinedPermissionOrgIds(userDefinedRoleIds,userDefinedUserGroupIds);
+                    break;
+            }
+
+            return checkPermission;
+        }
+
+        private async Task<long[]> GetUserDefinedPermissionOrgIds(List<long> userDefinedRoleIds, List<long> userDefinedUserGroupIds)
+        {
+            var sql = @"
+SELECT up.OrgId FROM UserGroupDataPermissionOrgRelation up WHERE up.UserGroupId IN @UserGroupId
+UNION
+SELECT rp.OrgId FROM RoleDataPermissionOrgRelation as rp WHERE rp.RoleId IN @RoleId
+";
+            await using (Connection)
+            {
+                return (await Connection.QueryAsync<long>(sql, new { RoleId = userDefinedRoleIds, UserGroupId = userDefinedUserGroupIds })).ToArray();
+            }
         }
 
 
@@ -430,20 +532,28 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                 if (userGroup == null) continue;
                 if (status.HasValue && userGroup.Status != status) continue;
                 allUserGroupIds.Add(userGroup.Id);
-                var userGroupRoles = await _userGroupDomainService.GetUserGroupRoles(userGroup.Id, status);
+                var userGroupRoles = await _userGroupDomainService.GetUserGroupRoleOutputs(userGroup.Id, status);
                 allUserRoleIds.AddRange(userGroupRoles.Select(p => p.Id));
             }
 
             return new Tuple<long[], long[]>(allUserRoleIds.ToArray(), allUserGroupIds.ToArray());
         }
 
-        private async Task<IEnumerable<UserGroup>> GetUserGroups(long userId)
+        private async Task<IEnumerable<UserGroup>> GetUserGroups(long userId, Status? status = Status.Valid)
         {
             var sql = @"SELECT ug.* FROM  UserGroup as ug 
-                        LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id WHERE uugr.UserId=@UserId";
+                        LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id WHERE uugr.UserId=@UserId and ug.Status=@Status and ug.IsDeleted=@IsDeleted";
+            var sqlParams = new Dictionary<string, object>();
+            sqlParams.Add("UserId", userId);
+            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
+            if (status.HasValue)
+            {
+                sql += " AND ug.Status=@Status";
+                sqlParams.Add("Status", status);
+            }
             await using (Connection)
             {
-                return await Connection.QueryAsync<UserGroup>(sql, new {UserId = userId});
+                return await Connection.QueryAsync<UserGroup>(sql, sqlParams);
             }
         }
     }

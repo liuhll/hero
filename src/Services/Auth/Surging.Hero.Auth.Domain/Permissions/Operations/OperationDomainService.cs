@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -73,12 +74,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                                 if (operation.Mold == OperationMold.Look || operation.Mold == OperationMold.Query)
                                 {
                                     if (await _operationActionRepository.GetCountAsync(p =>
-                                        p.ServiceId == action.ServiceId) > 1)
+                                        p.ServiceId == action.ServiceId,conn,trans) > 1)
                                     {
                                         throw new BusinessException($"一个查询接口仅被允许分配给一个操作");
                                     }
                                 }
-
                                 var operationAction = new OperationActionRelation
                                     {ActionId = actionId, OperationId = operationId, ServiceId = action.ServiceId};
                                 await _operationActionRepository.InsertAsync(operationAction, conn, trans);
@@ -127,6 +127,11 @@ OperationActionRelation as oac on o.Id=oac.OperationId
 WHERE o.IsDeleted=@IsDeleted AND oac.ServiceId=@ServiceId";
             await using (var  conn = Connection)
             {
+                if (conn.State != ConnectionState.Open)
+                {
+                    await conn.OpenAsync();
+                }
+
                 return  await  conn.QueryAsync<Operation>(sql, new { IsDeleted = HeroConstants.UnDeletedFlag, ServiceId = serviceId });
             }
         }

@@ -157,7 +157,12 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             }
         }
 
-        public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoles(long userGroupId, Status? status = null)
+        public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoleOutputs(long userGroupId, Status? status = null)
+        {
+            return (await GetUserGroupRoles(userGroupId, status)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+        }
+        
+        public async Task<IEnumerable<Role>> GetUserGroupRoles(long userGroupId, Status? status = null)
         {
             var sql = @"SELECT r.* FROM UserGroupRole as ugr 
                         LEFT JOIN Role as r on ugr.RoleId = r.Id AND r.IsDeleted=@IsDeleted WHERE ugr.UserGroupId=@UserGroupId ";
@@ -172,7 +177,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
             await using (Connection)
             {
-                return (await Connection.QueryAsync<Role>(sql, sqlParams)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
+                return (await Connection.QueryAsync<Role>(sql, sqlParams));
             }
         }
 
@@ -215,7 +220,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     if (await _operationDomainService.CheckPermission(userGroupPermission.OperationId, serviceId))
                         return true;
 
-                var userGroupRoles = await GetUserGroupRoles(userGroup.Id, Status.Valid);
+                var userGroupRoles = await GetUserGroupRoleOutputs(userGroup.Id, Status.Valid);
                 foreach (var userGroupRole in userGroupRoles)
                     if (await _roleDomainService.CheckPermission(userGroupRole.Id, serviceId))
                         return true;

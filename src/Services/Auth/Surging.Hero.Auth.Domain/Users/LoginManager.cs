@@ -30,7 +30,7 @@ namespace Surging.Hero.Auth.Domain.Users
             {
                 {ClaimTypes.UserId, userInfo.Id},
                 {ClaimTypes.UserName, userInfo.UserName},
-                {AuthDomainConstants.ClaimTypes.OrgId, userInfo.OrgId}
+                {ClaimTypes.OrgId, userInfo.OrgId}
             };
             return payload;
         }

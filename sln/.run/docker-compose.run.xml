@@ -1,0 +1,143 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="docker-compose" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="envVars">
+          <list>
+            <DockerEnvVarImpl>
+              <option name="name" value="# REGISTER_CONN" />
+              <option name="value" value="hero.consul:8500" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="REGISTER_CONN" />
+              <option name="value" value="hero.zoo1:2181,hero.zoo2:2181,hero.zoo3:2181;hero.zoo4:2181,hero.zoo5:2181,hero.zoo6:2181" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="# REGISTER_SESSION_TIMEOUT" />
+              <option name="value" value="5000" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="RABBITMQ_CONNECTION" />
+              <option name="value" value="hero.rabbitmq" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="RABBITMQ_USERNAME" />
+              <option name="value" value="rabbitmq" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="RABBITMQ_PASSWORD" />
+              <option name="value" value="rabbitmq" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="RABBITMQ_PORT" />
+              <option name="value" value="5672" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="# NORMAL_SERVER_ENGINE" />
+              <option name="value" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="# GETEWAY_SERVER_ENGINE" />
+              <option name="value" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;KestrelHttpModule;SwaggerModule;ServiceProxyModule;ApiGeteWayModule;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="# WS_SERVER_ENGINE" />
+              <option name="value" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;WSProtocolModule;AutoMapperModule;ServiceProxyModule;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="NORMAL_SERVER_ENGINE" />
+              <option name="value" value="DotNettyModule;Log4netModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="GETEWAY_SERVER_ENGINE" />
+              <option name="value" value="DotNettyModule;Log4netModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;LockModule;KestrelHttpModule;SwaggerModule;ServiceProxyModule;ApiGeteWayModule;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="WS_SERVER_ENGINE" />
+              <option name="value" value="DotNettyModule;Log4netModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;LockModule;WSProtocolModule;AutoMapperModule;ServiceProxyModule;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="KESTREL_SERVER_ENGINE" />
+              <option name="value" value="SwaggerModule;StageModule;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="ENVIRONMENT" />
+              <option name="value" value="Development" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="FORCED_DISPLAY_STACKTRACE" />
+              <option name="value" value="false" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="AUTH_DB_TYPE" />
+              <option name="value" value="MySql" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="AUTH_DB_CONN" />
+              <option name="value" value="Server=hero.mysql;Database=hero_auth;Uid=root;Port=3306;Pwd=qwe!P4ss;pooling=true;min pool size=5;max pool size=512;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="BASICDATA_DB_TYPE" />
+              <option name="value" value="MySql" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="BASICDATA_DB_CONN" />
+              <option name="value" value="Server=hero.mysql;Database=hero_basicdata;Uid=root;Port=3306;Pwd=qwe!P4ss;pooling=true;min pool size=5;max pool size=512;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="ORGANIZATION_DB_TYPE" />
+              <option name="value" value="MySql" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="ORGANIZATION_DB_CONN" />
+              <option name="value" value="Server=hero.mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss;pooling=true;min pool size=5;max pool size=512;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="POSITION_DB_TYPE" />
+              <option name="value" value="MySql" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="POSITION_DB_CONN" />
+              <option name="value" value="Server=hero.mysql;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss;pooling=true;min pool size=5;max pool size=512;" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="LOG_DIR" />
+              <option name="value" value="./logs" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="INIT_ACTION" />
+              <option name="value" value="true" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="ENABLE_ROUTE_WATCH" />
+              <option name="value" value="false" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="EXECUTION_TIMEOUT" />
+              <option name="value" value="60000" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="GATEWAY_EXECUTION_TIMEOUT" />
+              <option name="value" value="5000" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="ENABLE_HEALTH_CHECK" />
+              <option name="value" value="false" />
+            </DockerEnvVarImpl>
+          </list>
+        </option>
+        <option name="commandLineOptions" value="--build" />
+        <option name="secondarySourceFiles">
+          <list>
+            <option value="../docker-compose/surging.hero.rider/docker-compose.vs.debug.yml" />
+            <option value="../docker-compose/surging.hero.rider/docker-compose.yml" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="../docker-compose/surging.hero.rider/docker-compose.override.yml" />
+      </settings>
+    </deployment>
+    <method v="2">
+      <option name="Build Solution" enabled="true" />
+    </method>
+  </configuration>
+</component>

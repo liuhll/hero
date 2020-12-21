@@ -69,7 +69,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
             if (userGroup == null) throw new UserFriendlyException($"不存在id为{id}的用户组信息");
 
             var userGroupOutput = userGroup.MapTo<GetUserEditGroupOutput>();
-            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoles(id)).Select(p => p.Id);
+            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoleOutputs(id)).Select(p => p.Id);
             userGroupOutput.PermissionIds =
                 (await _userGroupDomainService.GetUserGroupPermissions(id)).Select(p => p.Id);
             return userGroupOutput;
@@ -98,7 +98,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
                     if (creatorUserInfo != null) output.CreatorUserName = creatorUserInfo.ChineseName;
                 }
 
-                output.Roles = await _userGroupDomainService.GetUserGroupRoles(output.Id);
+                output.Roles = await _userGroupDomainService.GetUserGroupRoleOutputs(output.Id);
                 output.Permissions = (await _userGroupDomainService.GetUserGroupPermissions(output.Id))
                     .MapTo<IEnumerable<GetDisplayPermissionOutput>>();
             }

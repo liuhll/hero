@@ -15,6 +15,7 @@ services:
       DbType: ${AUTH_DB_TYPE:-Mysql}
       ConnectionString: ${AUTH_DB_CONN}
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
+      EnableHealthCheck: ${ENABLE_HEALTH_CHECK:-true}      
       InitAction: "${INIT_ACTION:-false}"
       ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
 
@@ -31,6 +32,7 @@ services:
       DbType: ${BASICDATA_DB_TYPE:-Mysql}
       ConnectionString: ${BASICDATA_DB_CONN}
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
+      EnableHealthCheck: ${ENABLE_HEALTH_CHECK:-true}        
       InitAction: "${INIT_ACTION:-false}"
       ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
 
@@ -47,6 +49,7 @@ services:
       DbType: ${ORGANIZATION_DB_TYPE:-Mysql}
       ConnectionString: ${ORGANIZATION_DB_CONN}
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
+      EnableHealthCheck: ${ENABLE_HEALTH_CHECK:-true}        
       InitAction: "${INIT_ACTION:-false}"
       ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
 
@@ -66,6 +69,7 @@ services:
       SupportName: "liuhongliang"
       SupportEmail: "1029765111@qq.com"
       InitAction: "${INIT_ACTION:-false}"
+      EnableHealthCheck: ${ENABLE_HEALTH_CHECK:-true}        
       ExecutionTimeoutInMilliseconds: ${GATEWAY_EXECUTION_TIMEOUT:-4000}
     ports:
       - "18081:8080"

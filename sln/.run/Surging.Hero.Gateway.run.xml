@@ -22,12 +22,12 @@
       <env name="surgingPath" value="configs/surgingSettings.json" />
       <env name="Libuv" value="true" />
       <env name="MaxConcurrentRequests" value="100" />
-      <env name="EnableHealthCheck" value="true" />
+      <env name="EnableHealthCheck" value="false" />
       <env name="UseKestrelHttpParts" value="SwaggerModule;StageModule;" />
       <env name="eventBusPath" value="configs/eventBusSettings.json" />
       <env name="consulPath" value="configs/consul.json" />
       <env name="#UseEngineParts" value="DotNettyModule;Log4netModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
-      <env name="ExecutionTimeoutInMilliseconds" value="5000" />
+      <env name="ExecutionTimeoutInMilliseconds" value="50000" />
       <env name="Register_SessionTimeout" value="1000" />
       <env name="EventBusPort" value="5672" />
       <env name="Register_Conn" value="127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183;" />

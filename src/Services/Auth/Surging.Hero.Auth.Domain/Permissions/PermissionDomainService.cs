@@ -5,11 +5,13 @@ using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Routing;
+using Surging.Core.CPlatform.Transport.Implementation;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Hero.Auth.Domain.Permissions.Actions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
+using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.Shared.Operations;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.Domain.Users;
@@ -42,22 +44,25 @@ namespace Surging.Hero.Auth.Domain.Permissions
             _userGroupDomainService = userGroupDomainService;
         }
 
-        public async Task<bool> Check(long userId, string serviceId)
+        public async Task<IDictionary<string,object>> Check(long userId, string serviceId)
         {
+            var permissionResult = new Dictionary<string, object>();
             var servcieRoute = await _serviceRouteProvider.Locate(serviceId);
-
-            if (servcieRoute.ServiceDescriptor.GetMetadata<bool>("AllowPermission")) return true;
-
-            var checkPermissionResult = await _userDomainService.CheckPermission(userId, serviceId);
+            var isPermission = false;
+            if (servcieRoute.ServiceDescriptor.GetMetadata<bool>("AllowPermission")) isPermission = true;
             var actionName = servcieRoute.ServiceDescriptor.GroupName().IsNullOrEmpty()
                 ? servcieRoute.ServiceDescriptor.RoutePath
                 : servcieRoute.ServiceDescriptor.GroupName();
-            if (!checkPermissionResult)
+            if (!isPermission)
             {
+                isPermission = await _userDomainService.CheckPermission(userId, serviceId);
+                if (!isPermission)
+                {
                 
-                throw new AuthException($"您没有{actionName}的权限", StatusCode.UnAuthorized);
+                    throw new AuthException($"您没有{actionName}的权限", StatusCode.UnAuthorized);
+                }
             }
-
+            permissionResult.Add("IsPermission",isPermission);
             var operations = await _operationDomainService.GetOperationsByServiceId(serviceId);
             if (operations.Any(p => p.Mold == OperationMold.Query || p.Mold == OperationMold.Look))
             {
@@ -66,10 +71,13 @@ namespace Surging.Hero.Auth.Domain.Permissions
                     throw new BusinessException($"{actionName}的权限被分配到两个以上的操作,权限分配异常,请与开发者联系");
                 }
 
-                var dataPermissions = await _userDomainService.GetDataPermissions(userId, operations.First(p=>  p.Mold == OperationMold.Query || p.Mold == OperationMold.Look));
+                var dataPermission = await _userDomainService.GetDataPermissions(userId, operations.First(p=>  p.Mold == OperationMold.Query || p.Mold == OperationMold.Look).PermissionId);
+                permissionResult.Add(ClaimTypes.DataPermission, dataPermission.DataPermissionType);
+                permissionResult.Add(ClaimTypes.DataPermissionOrgIds, dataPermission.DataPermissionOrgIds);
+                permissionResult.Add(ClaimTypes.IsAllOrg, dataPermission.DataPermissionType == DataPermissionType.AllOrg);
             }
 
-            return true;
+            return permissionResult;
         }
 
         private IEnumerable<GetRolePermissionTreeOutput> BuildRolePermissionChildren(

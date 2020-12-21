@@ -53,7 +53,7 @@ namespace Surging.Hero.Auth.IApplication.User
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpPost]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询用户", AllowPermission = true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询用户")]
         [ServiceRoute("search")]
         Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query);
 

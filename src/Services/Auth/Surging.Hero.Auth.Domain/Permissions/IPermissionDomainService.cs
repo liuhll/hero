@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 
 namespace Surging.Hero.Auth.Domain.Permissions
 {
     public interface IPermissionDomainService : ITransientDependency
     {
-        Task<bool> Check(long userId, string serviceId);
+        Task<IDictionary<string,object>> Check(long userId, string serviceId);
     }
 }

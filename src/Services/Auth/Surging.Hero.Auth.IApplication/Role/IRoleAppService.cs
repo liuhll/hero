@@ -57,7 +57,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpPost]
-        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询角色", AllowPermission = true)]
+        [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询角色")]
         [ServiceRoute("search")]
         Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query);
 

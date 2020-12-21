@@ -110,7 +110,7 @@ namespace Surging.Hero.Auth.Application.Permission
             return $"删除{input.Mold.GetDescription()}成功";
         }
 
-        public async Task<bool> Check(string serviceId)
+        public async Task<IDictionary<string,object>> Check(string serviceId)
         {
             if (_session == null || !_session.UserId.HasValue) throw new AuthException("您还没有登录系统");
 

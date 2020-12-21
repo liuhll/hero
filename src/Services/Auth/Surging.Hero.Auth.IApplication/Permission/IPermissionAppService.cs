@@ -98,7 +98,7 @@ namespace Surging.Hero.Auth.IApplication.Permission
         [HttpPost]
         [Service(DisableNetwork = true, Name = "接口鉴权", Director = Developers.Liuhll)]
         [ServiceRoute("check")]
-        Task<bool> Check(string serviceId);
+        Task<IDictionary<string,object>> Check(string serviceId);
 
         /// <summary>
         /// 获取数据权限类型
