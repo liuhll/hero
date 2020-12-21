@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.Domain.PagedAndSorted;
+using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
@@ -22,5 +23,6 @@ namespace Surging.Hero.Auth.Domain.Users
         Task<IEnumerable<Menu>> GetUserMenu(long userId);
         Task<IEnumerable<Operation>> GetUserOperation(long userId, long menuId);
         Task<IPagedResult<GetUserNormOutput>> Search(QueryUserInput query);
+        Task<CheckPermissionResult> GetDataPermissions(long userId, Operation first);
     }
 }

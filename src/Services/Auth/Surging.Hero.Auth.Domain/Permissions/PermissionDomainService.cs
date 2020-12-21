@@ -6,9 +6,11 @@ using Surging.Core.CPlatform;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Routing;
 using Surging.Core.CPlatform.Utilities;
+using Surging.Hero.Auth.Domain.Permissions.Actions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
+using Surging.Hero.Auth.Domain.Shared.Operations;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
@@ -46,14 +48,25 @@ namespace Surging.Hero.Auth.Domain.Permissions
 
             if (servcieRoute.ServiceDescriptor.GetMetadata<bool>("AllowPermission")) return true;
 
-            var checkPermissionResult = await _userDomainService.CheckPermission(userId, serviceId) ||
-                                        await _userGroupDomainService.CheckPermission(userId, serviceId);
+            var checkPermissionResult = await _userDomainService.CheckPermission(userId, serviceId);
+            var actionName = servcieRoute.ServiceDescriptor.GroupName().IsNullOrEmpty()
+                ? servcieRoute.ServiceDescriptor.RoutePath
+                : servcieRoute.ServiceDescriptor.GroupName();
             if (!checkPermissionResult)
             {
-                var actionName = servcieRoute.ServiceDescriptor.GroupName().IsNullOrEmpty()
-                    ? servcieRoute.ServiceDescriptor.RoutePath
-                    : servcieRoute.ServiceDescriptor.GroupName();
+                
                 throw new AuthException($"您没有{actionName}的权限", StatusCode.UnAuthorized);
+            }
+
+            var operations = await _operationDomainService.GetOperationsByServiceId(serviceId);
+            if (operations.Any(p => p.Mold == OperationMold.Query || p.Mold == OperationMold.Look))
+            {
+                if (operations.Count(p => p.Mold == OperationMold.Query || p.Mold == OperationMold.Look) >1)
+                {
+                    throw new BusinessException($"{actionName}的权限被分配到两个以上的操作,权限分配异常,请与开发者联系");
+                }
+
+                var dataPermissions = await _userDomainService.GetDataPermissions(userId, operations.First(p=>  p.Mold == OperationMold.Query || p.Mold == OperationMold.Look));
             }
 
             return true;

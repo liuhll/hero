@@ -11,6 +11,7 @@ using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.IApplication.Action.Dtos;
+using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Actions
 {
@@ -139,6 +140,11 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
             }
 
             return result;
+        }
+
+        public async Task<IEnumerable<Action>> GetActionsByServiceId(string serviceId)
+        {
+            return await _actionRepository.GetAllAsync(p => p.ServiceId == serviceId && p.Status == Status.Valid);
         }
 
         public async Task InitActions(ICollection<InitActionActionInput> actions)

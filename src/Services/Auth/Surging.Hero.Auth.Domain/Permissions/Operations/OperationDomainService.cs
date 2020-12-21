@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.Dapper.Manager;
@@ -9,6 +10,7 @@ using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions.Actions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
+using Surging.Hero.Auth.Domain.Shared.Operations;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 using Surging.Hero.Common;
 
@@ -68,6 +70,15 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                             {
                                 var action = await _actionRepository.SingleOrDefaultAsync(p => p.Id == actionId);
                                 if (action == null) throw new BusinessException($"系统中不存在Id为{actionId}的方法");
+                                if (operation.Mold == OperationMold.Look || operation.Mold == OperationMold.Query)
+                                {
+                                    if (await _operationActionRepository.GetCountAsync(p =>
+                                        p.ServiceId == action.ServiceId) > 1)
+                                    {
+                                        throw new BusinessException($"一个查询接口仅被允许分配给一个操作");
+                                    }
+                                }
+
                                 var operationAction = new OperationActionRelation
                                     {ActionId = actionId, OperationId = operationId, ServiceId = action.ServiceId};
                                 await _operationActionRepository.InsertAsync(operationAction, conn, trans);
@@ -109,6 +120,17 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             return operationActionRelations.Any(p => p.ServiceId == serviceId);
         }
 
+        public async Task<IEnumerable<Operation>> GetOperationsByServiceId(string serviceId)
+        {
+            var sql = @"SELECT o.* FROM Operation as o INNER JOIN 
+OperationActionRelation as oac on o.Id=oac.OperationId
+WHERE o.IsDeleted=@IsDeleted AND oac.ServiceId=@ServiceId";
+            await using (var  conn = Connection)
+            {
+                return  await  conn.QueryAsync<Operation>(sql, new { IsDeleted = HeroConstants.UnDeletedFlag, ServiceId = serviceId });
+            }
+        }
+
         public async Task<UpdateOperationOutput> Update(UpdateOperationInput input)
         {
             var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
@@ -137,6 +159,14 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
                                 var action =
                                     await _actionRepository.SingleOrDefaultAsync(p => p.Id == actionId, conn, trans);
                                 if (action == null) throw new BusinessException($"系统中不存在Id为{actionId}的方法");
+                                if (operation.Mold == OperationMold.Look || operation.Mold == OperationMold.Query)
+                                {
+                                    if (await _operationActionRepository.GetCountAsync(p =>
+                                        p.ServiceId == action.ServiceId,conn,trans) > 1)
+                                    {
+                                        throw new BusinessException($"一个查询接口仅被允许分配给一个操作");
+                                    }
+                                }
                                 var operationAction = new OperationActionRelation
                                     {ActionId = actionId, OperationId = operation.Id, ServiceId = action.ServiceId};
                                 await _operationActionRepository.InsertAsync(operationAction, conn, trans);

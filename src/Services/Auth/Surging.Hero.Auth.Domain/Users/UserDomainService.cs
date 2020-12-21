@@ -12,6 +12,7 @@ using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.Domain.PagedAndSorted.Extensions;
 using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
+using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
@@ -71,7 +72,7 @@ namespace Surging.Hero.Auth.Domain.Users
             foreach (var userRole in userRoles)
                 if (await _roleDomainService.CheckPermission(userRole.Id, serviceId))
                     return true;
-            return false;
+            return await _userGroupDomainService.CheckPermission(userId, serviceId);
         }
 
         public async Task Create(CreateUserInput input)
@@ -406,6 +407,11 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
             }
 
             return queryResultOutput;
+        }
+
+        public Task<CheckPermissionResult> GetDataPermissions(long userId, Operation first)
+        {
+            throw new NotImplementedException();
         }
 
 

@@ -13,5 +13,7 @@ namespace Surging.Hero.Auth.Domain.Permissions.Actions
         Task<IEnumerable<GetAppServiceOutput>> GetAppServices(QueryAppServiceInput query);
         Task<IEnumerable<GetActionOutput>> GetActionServices(QueryActionInput query);
         Task<IEnumerable<GetTreeActionOutput>> GetServicesTree();
+        
+        Task<IEnumerable<Action>> GetActionsByServiceId(string serviceId);
     }
 }

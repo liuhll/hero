@@ -119,7 +119,7 @@ namespace Surging.Hero.Auth.Application.Permission
 
         public async Task<IEnumerable<EnumDto>> GetDataPermissionTypes()
         {
-            return typeof(DataPermissionType).GetAllEnumValues();
+            return await Task.Run(() => typeof(DataPermissionType).GetAllEnumValues());
         }
     }
 }
