@@ -6,6 +6,7 @@ using Surging.Core.Consul.Configurations;
 using Surging.Core.CPlatform;
 using Surging.Core.CPlatform.Configurations;
 using Surging.Core.CPlatform.Utilities;
+using Surging.Core.EventBusRabbitMQ.Configurations;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.ServiceHosting;
 using Surging.Core.ServiceHosting.Internal.Implementation;
@@ -46,8 +47,8 @@ namespace Surging.Hero.ServiceHost
                 {
 #if DEBUG
                     build.AddCacheFile("${cachePath}|/app/configs/cacheSettings.json", false, true);
-                    build.AddCPlatformFile("${surgingPath}|/app/configs/surgingSettings.json", false, true);
-                    //   build.AddEventBusFile("${eventBusPath}|/app/configs/eventBusSettings.json", optional: false);
+                    build.AddCPlatformFile("${surgingPath}|/app/configs/surgingSettings.json", false, true); 
+                    build.AddEventBusFile("${eventBusPath}|/app/configs/eventBusSettings.json", optional: false);
                     build.AddConsulFile("${consulPath}|/app/configs/consul.json", false, true);
                     build.AddZookeeperFile("${zookeeperPath}|/app/configs/zookeeper.json", false, true);
 
