@@ -486,7 +486,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
             switch (dataPermissionType)
             {
                 case DataPermissionType.AllOrg:
-                    checkPermission.DataPermissionOrgIds = null;
+                    checkPermission.DataPermissionOrgIds = new long[0];
                     break;
                 case DataPermissionType.OnlySelfOrg:
                     DebugCheck.NotNull(_session.OrgId);

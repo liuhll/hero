@@ -8,6 +8,8 @@ namespace Surging.Hero.Common.Runtime.Session
     {
         public long Id { get; set; }
 
+        public long OrgId { get; set; }
+
         public long DeptId { get; set; }
 
         public string DeptName { get; set; }

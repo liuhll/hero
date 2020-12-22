@@ -340,11 +340,11 @@ WHERE oar.ServiceId=@ServiceId";
                     throw new BusinessException("设置角色的数据权限为自定义数据权限,则指定的部门不允许为空");
                 }
 
-                DebugCheck.NotNull(_session.OrgId);
-                if (!orgIds.Contains(_session.OrgId.Value))
-                {
-                    throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
-                }
+                // DebugCheck.NotNull(_session.OrgId);
+                // if (!orgIds.Contains(_session.OrgId.Value))
+                // {
+                //     throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
+                // }
             }
         }
     }

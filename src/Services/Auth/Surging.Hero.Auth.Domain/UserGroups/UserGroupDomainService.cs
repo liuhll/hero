@@ -315,7 +315,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
         public async Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)
         {
-            var querySql = @"SELECT {0} 
+            var querySql = @"SELECT u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime
 FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr on ug.Id=uugr.UserGroupId AND ug.IsDeleted=@IsDeleted
 INNER JOIN UserInfo as u on uugr.UserId=u.Id AND u.IsDeleted=@IsDeleted
 WHERE UserGroupId=@UserGroupId";
@@ -463,12 +463,12 @@ WHERE UserGroupId=@UserGroupId";
                 {
                     throw new BusinessException("设置角色的数据权限为自定义数据权限,则指定的部门不允许为空");
                 }
-
-                DebugCheck.NotNull(_session.OrgId);
-                if (!orgIds.Contains(_session.OrgId.Value))
-                {
-                    throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
-                }
+                //
+                // DebugCheck.NotNull(_session.OrgId);
+                // if (!orgIds.Contains(_session.OrgId.Value))
+                // {
+                //     throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
+                // }
             }
         }
     }
