@@ -102,11 +102,6 @@ namespace Surging.Hero.Auth.Domain.Roles
                             "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
                         var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
-                            //var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
-                            //if (permission == null)
-                            //{
-                            //    throw new BusinessException($"不存在Id为{permissionId}的权限信息");
-                            //}
                             rolePermissions.Add(new RolePermission
                             {
                                 PermissionId = permissionId, RoleId = roleId, CreationTime = DateTime.Now,
@@ -125,7 +120,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             var userRoleCount = await _userRoleRepository.GetCountAsync(p => p.RoleId == roleid);
             if (userRoleCount > 0) throw new BusinessException($"{role.Name}被分配用户,请先删除相关授权的用户信息");
             var userGroupRoleCount = await _userGroupRoleRepository.GetCountAsync(p => p.RoleId == roleid);
-            if (userRoleCount > 0) throw new BusinessException($"{role.Name}被分配用户组,请先删除相关授权的用户组信息");
+            if (userGroupRoleCount > 0) throw new BusinessException($"{role.Name}被分配用户组,请先删除相关授权的用户组信息");
             using (var locker = await _lockerProvider.CreateLockAsync("DeleteRole"))
             {
                 await locker.Lock(async () =>
@@ -248,11 +243,6 @@ namespace Surging.Hero.Auth.Domain.Roles
                             "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
                         var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
-                            //var permission = await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId, conn, trans);
-                            //if (permission == null)
-                            //{
-                            //    throw new BusinessException($"不存在Id为{permissionId}的权限信息");
-                            //}
                             rolePermissions.Add(new RolePermission
                             {
                                 PermissionId = permissionId, RoleId = role.Id, CreationTime = DateTime.Now,
