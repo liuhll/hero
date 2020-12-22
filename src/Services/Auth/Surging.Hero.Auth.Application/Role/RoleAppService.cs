@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
+using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain.PagedAndSorted;
 using Surging.Core.ProxyGenerator;
@@ -10,29 +11,27 @@ using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
+using Surging.Hero.Common.Runtime.Session;
 
 namespace Surging.Hero.Auth.Application.Role
 {
     public class RoleAppService : ProxyServiceBase, IRoleAppService
     {
-        private readonly IPermissionDomainService _permissionDomainService;
         private readonly IRoleDomainService _roleDomainService;
         private readonly IDapperRepository<Domain.Roles.Role, long> _roleRepository;
-        private readonly IDapperRepository<UserInfo, long> _userRepository;
-
+        private readonly ISurgingSession _session;
+        
         public RoleAppService(IRoleDomainService roleDomainService,
-            IDapperRepository<Domain.Roles.Role, long> roleRepository,
-            IPermissionDomainService permissionDomainService,
-            IDapperRepository<UserInfo, long> userRepository)
+            IDapperRepository<Domain.Roles.Role, long> roleRepository)
         {
             _roleDomainService = roleDomainService;
             _roleRepository = roleRepository;
-            _permissionDomainService = permissionDomainService;
-            _userRepository = userRepository;
+            _session = NullSurgingSession.Instance;
         }
 
         public async Task<string> Create(CreateRoleInput input)
         {
+            _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
             await _roleDomainService.Create(input);
             return "新增角色信息成功";
@@ -70,6 +69,7 @@ namespace Surging.Hero.Auth.Application.Role
 
         public async Task<string> Update(UpdateRoleInput input)
         {
+            _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
             await _roleDomainService.Update(input);
             return "更新角色信息成功";

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain.PagedAndSorted;
@@ -18,15 +19,16 @@ using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Common.Runtime.Session;
 
 namespace Surging.Hero.Auth.Application.UserGroup
 {
     public class UserGroupAppService : ProxyServiceBase, IUserGroupAppService
     {
-        private readonly IRoleDomainService _roleDomainService;
         private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IDapperRepository<Domain.UserGroups.UserGroup, long> _userGroupRepository;
         private readonly IDapperRepository<UserInfo, long> _userInfoRepository;
+        private readonly ISurgingSession _session;
 
         public UserGroupAppService(IUserGroupDomainService userGroupDomainService,
             IDapperRepository<Domain.UserGroups.UserGroup, long> userGroupRepository,
@@ -35,8 +37,8 @@ namespace Surging.Hero.Auth.Application.UserGroup
         {
             _userGroupDomainService = userGroupDomainService;
             _userGroupRepository = userGroupRepository;
-            _roleDomainService = roleDomainService;
             _userInfoRepository = userRepository;
+            _session = NullSurgingSession.Instance;
         }
 
         public async Task<string> AllocationUsers(AllocationUserIdsInput input)
@@ -46,6 +48,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
 
         public async Task<string> Create(CreateUserGroupInput input)
         {
+            _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
             await _userGroupDomainService.Create(input);
             return "新增用户组成功";
@@ -116,6 +119,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
 
         public async Task<string> Update(UpdateUserGroupInput input)
         {
+            _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
             await _userGroupDomainService.Update(input);
             return "更新用户组成功";

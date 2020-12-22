@@ -59,5 +59,21 @@ namespace Surging.Hero.Common.Runtime.Session
         {
             session.CheckLoginUserDataPermision(session.OrgId,message);
         }
+
+        public static void CheckLoginUserDataPermision(this ISurgingSession session, DataPermissionType dataPermissionType,string message)
+        {
+            if (dataPermissionType > session.GetLoginUserDataPermission())
+            {
+                throw new BusinessException(message);
+            }
+        }
+        
+        public static void CheckLoginUserDataPermision(this ISurgingSession session, DataPermissionType dataPermissionType)
+        {
+            if (dataPermissionType > session.GetLoginUserDataPermission())
+            {
+                throw new BusinessException("您要设置的数据权限大于您拥有的数据权限,系统不允许该操作");
+            }
+        }
     }
 }
