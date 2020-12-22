@@ -8,6 +8,8 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
     {
         private string _searchKey;
 
+        public bool SelfCreate { get; set; } = false;
+        
         public string SearchKey
         {
             get

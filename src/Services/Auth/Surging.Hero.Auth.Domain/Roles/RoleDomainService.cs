@@ -201,9 +201,10 @@ namespace Surging.Hero.Auth.Domain.Roles
         {
             Expression<Func<Role, bool>> predicate = p => p.Name.Contains(query.SearchKey);
             if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);
+            if (query.SelfCreate) predicate = predicate.Or(p => p.CreatorUserId == _session.UserId);
             var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey), query.PageIndex,
                 query.PageCount);
-
+            
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items)
             {
