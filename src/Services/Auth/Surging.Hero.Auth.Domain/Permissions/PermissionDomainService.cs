@@ -71,6 +71,9 @@ namespace Surging.Hero.Auth.Domain.Permissions
                 permissionResult.Add(ClaimTypes.DataPermissionOrgIds, dataPermission.DataPermissionOrgIds);
                 permissionResult.Add(ClaimTypes.IsAllOrg, dataPermission.DataPermissionType == DataPermissionType.AllOrg);
                 
+            }else{
+                permissionResult.Add(ClaimTypes.DataPermission, DataPermissionType.AllOrg);
+                permissionResult.Add(ClaimTypes.IsAllOrg, true);
             }
 
             return permissionResult;
