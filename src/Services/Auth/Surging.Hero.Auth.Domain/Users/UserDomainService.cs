@@ -272,17 +272,17 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
 
         public async Task Update(UpdateUserInput input)
         {
-            var updateUser = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            var updateUser = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id,false);
             if (updateUser == null) throw new BusinessException($"不存在Id为{input.Id}的账号信息");
             if (input.Phone != updateUser.Phone)
             {
-                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Phone == input.Phone);
+                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Phone == input.Phone,false);
                 if (existUser != null) throw new UserFriendlyException($"已经存在手机号码为{input.Phone}的用户");
             }
 
             if (input.Email != updateUser.Email)
             {
-                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Email == input.Email);
+                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Email == input.Email,false);
                 if (existUser != null) throw new UserFriendlyException($"已经存在Email为{input.Email}的用户");
             }
 

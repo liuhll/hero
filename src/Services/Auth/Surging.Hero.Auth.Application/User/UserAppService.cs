@@ -57,6 +57,7 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<string> Update(UpdateUserInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
+            _session.CheckLoginUserDataPermision(input.OrgId,"您没有将用户设置为该部门的权限");
             await _userDomainService.Update(input);
             return "更新员工信息成功";
         }
@@ -67,6 +68,7 @@ namespace Surging.Hero.Auth.Application.User
             if (_session.UserId.Value == id) throw new BusinessException("不允许删除当前登录用户");
             var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == id);
             if (userInfo == null) throw new BusinessException($"不存在Id为{id}的账号信息");
+            _session.CheckLoginUserDataPermision(userInfo.OrgId,"您没有删除该用户的权限");
             await _userDomainService.Delete(id);
             return "删除员工成功";
         }
@@ -129,38 +131,7 @@ namespace Surging.Hero.Auth.Application.User
         {
             return await _userDomainService.GetUserNormInfoById(id);
         }
-
-        //public async Task<IEnumerable<GetUserRoleOutput>> QueryUserRoles(QueryUserRoleInput query)
-        //{
-        //    var userRoleOutputs = new List<GetUserRoleOutput>();
-
-        //    var roles = await _roleRepository.GetAllAsync();
-        //    if (query.UserId.HasValue && query.UserId.Value != 0)
-        //    {
-        //        var userInfo = await _userDomainService.GetUserNormInfoById(query.UserId.Value);
-
-        //        foreach (var role in roles)
-        //        {
-        //            userRoleOutputs.Add(new GetUserRoleOutput()
-        //            {
-        //                RoleId = role.Id,
-        //                Name = role.Name,
-        //                Checked = userInfo.Roles.Any(p => p.Id == role.Id) ? CheckStatus.Checked : CheckStatus.UnChecked
-        //            });
-        //        }
-        //    }
-
-        //    foreach (var role in roles)
-        //    {
-        //        userRoleOutputs.Add(new GetUserRoleOutput()
-        //        {
-        //            RoleId = role.Id,                  
-        //            Name = role.Name,
-        //            Checked = CheckStatus.UnChecked
-        //        });
-        //    }
-        //    return userRoleOutputs;
-        //}
+        
 
         public async Task<bool> ResetUserOrgInfo(long id)
         {
