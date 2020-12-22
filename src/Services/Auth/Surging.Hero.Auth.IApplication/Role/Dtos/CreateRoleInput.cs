@@ -6,5 +6,10 @@
         ///     选定的权限Ids
         /// </summary>
         public long[] PermissionIds { get; set; }
+
+        /// <summary>
+        ///  用户自定义数据权限指定的部门
+        /// </summary>
+        public long[] OrgIds { get; set; }
     }
 }

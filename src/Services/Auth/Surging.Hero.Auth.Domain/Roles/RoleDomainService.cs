@@ -7,6 +7,7 @@ using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Runtime.Session;
+using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain.PagedAndSorted;
@@ -15,6 +16,7 @@ using Surging.Core.Lock;
 using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
+using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.Shared.Operations;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 using Surging.Hero.Auth.Domain.UserGroups;
@@ -36,6 +38,9 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<UserInfo, long> _userInfoRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
 
+        private readonly IDapperRepository<RoleDataPermissionOrgRelation, long>
+            _roleDataPermissionOrgRelationRepository;
+
         public RoleDomainService(IDapperRepository<Role, long> roleRepository,
             IDapperRepository<RolePermission, long> rolePermissionRepository,
             IDapperRepository<Permission, long> permissionRepository,
@@ -43,7 +48,8 @@ namespace Surging.Hero.Auth.Domain.Roles
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
             IDapperRepository<UserInfo, long> userInfoRepository,
             IDapperRepository<Operation, long> operationRepository,
-            ILockerProvider lockerProvider)
+            ILockerProvider lockerProvider, 
+            IDapperRepository<RoleDataPermissionOrgRelation, long> roleDataPermissionOrgRelationRepository)
         {
             _roleRepository = roleRepository;
             _rolePermissionRepository = rolePermissionRepository;
@@ -53,6 +59,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             _userInfoRepository = userInfoRepository;
             _operationRepository = operationRepository;
             _lockerProvider = lockerProvider;
+            _roleDataPermissionOrgRelationRepository = roleDataPermissionOrgRelationRepository;
             _session = NullSurgingSession.Instance;
         }
 
@@ -86,8 +93,10 @@ namespace Surging.Hero.Auth.Domain.Roles
         {
             var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Name == input.Name);
             if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Name}的角色");
+            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
             var role = input.MapTo<Role>();
 
+            
             using (var locker = await _lockerProvider.CreateLockAsync("CreateRole"))
             {
                 await locker.Lock(async () =>
@@ -108,10 +117,30 @@ namespace Surging.Hero.Auth.Domain.Roles
                                 CreatorUserId = _session.UserId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
+                        if (input.DataPermissionType == DataPermissionType.UserDefined)
+                        {
+                            var insertDataPermissionOrgSql =
+                                "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId)";
+                            var dataPermissionOrgDatas = new List<RoleDataPermissionOrgRelation>();
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                dataPermissionOrgDatas.Add(new RoleDataPermissionOrgRelation()
+                                {
+                                    RoleId = roleId,
+                                    OrgId = orgId,
+                                    CreationTime = DateTime.Now,
+                                    CreatorUserId = _session.UserId
+                                });
+                            }
+
+                            await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
+                        }
+
                     }, Connection);
                 });
             }
         }
+        
 
         public async Task Delete(long roleid)
         {
@@ -129,6 +158,8 @@ namespace Surging.Hero.Auth.Domain.Roles
                     {
                         await _roleRepository.DeleteAsync(p => p.Id == roleid, conn, trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == roleid, conn, trans);
+                        await _roleDataPermissionOrgRelationRepository.DeleteAsync(p => p.RoleId == roleid, conn,
+                            trans);
                     }, Connection);
                 });
             }
@@ -155,6 +186,8 @@ namespace Surging.Hero.Auth.Domain.Roles
 
             roleOutput.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == role.Id))
                 .Select(p => p.PermissionId).ToArray();
+            roleOutput.OrgIds = (await _roleDataPermissionOrgRelationRepository.GetAllAsync(p => p.RoleId == role.Id))
+                .Select(p => p.OrgId).ToArray();
 
             return roleOutput;
         }
@@ -190,6 +223,8 @@ namespace Surging.Hero.Auth.Domain.Roles
 
                 output.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == output.Id))
                     .Select(p => p.PermissionId).ToArray();
+                output.OrgIds = (await _roleDataPermissionOrgRelationRepository.GetAllAsync(p => p.RoleId == output.Id))
+                    .Select(p => p.OrgId).ToArray();
             }
 
             return outputs;
@@ -227,7 +262,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Name == input.Name);
                 if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Name}的角色");
             }
-
+            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
             role = input.MapTo(role);
             using (var locker = await _lockerProvider.CreateLockAsync("UpdateRole"))
             {
@@ -239,6 +274,8 @@ namespace Surging.Hero.Auth.Domain.Roles
                         var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
                         await conn.ExecuteAsync(deleteSql, new {RoleId = role.Id}, trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
+                        await _roleDataPermissionOrgRelationRepository.DeleteAsync(p => p.RoleId == role.Id, conn,
+                            trans);
                         var insertSql =
                             "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
                         var rolePermissions = new List<RolePermission>();
@@ -249,6 +286,24 @@ namespace Surging.Hero.Auth.Domain.Roles
                                 CreatorUserId = _session.UserId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
+                        if (input.DataPermissionType == DataPermissionType.UserDefined)
+                        {
+                            var insertDataPermissionOrgSql =
+                                "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId)";
+                            var dataPermissionOrgDatas = new List<RoleDataPermissionOrgRelation>();
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                dataPermissionOrgDatas.Add(new RoleDataPermissionOrgRelation()
+                                {
+                                    RoleId = role.Id,
+                                    OrgId = orgId,
+                                    CreationTime = DateTime.Now,
+                                    CreatorUserId = _session.UserId
+                                });
+                            }
+
+                            await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
+                        }                        
                     }, Connection);
                 });
             }
@@ -273,6 +328,23 @@ WHERE oar.ServiceId=@ServiceId";
                 var permission = await Connection.QueryAsync<Permission>(sql,
                     new {ServiceId = serviceId, IsDeleted = HeroConstants.UnDeletedFlag});
                 return permission.FirstOrDefault();
+            }
+        }
+        
+        private void CheckUserDefinedDataPermission(DataPermissionType dataPermissionType, long[] orgIds)
+        {
+            if (dataPermissionType == DataPermissionType.UserDefined)
+            {
+                if (orgIds == null || !orgIds.Any())
+                {
+                    throw new BusinessException("设置角色的数据权限为自定义数据权限,则指定的部门不允许为空");
+                }
+
+                DebugCheck.NotNull(_session.OrgId);
+                if (!orgIds.Contains(_session.OrgId.Value))
+                {
+                    throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
+                }
             }
         }
     }

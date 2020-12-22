@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Surging.Hero.Auth.Domain.Shared;
+using Surging.Hero.Common.Extensions;
 
 namespace Surging.Hero.Auth.IApplication.Role.Dtos
 {
@@ -16,6 +17,15 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         ///    数据权限
         /// </summary>
         public DataPermissionType DataPermissionType { get; set; }
+
+        /// <summary>
+        /// 数据权限描述
+        /// </summary>
+        public string DataPermissionTypeDes
+        {
+            get { return this.DataPermissionType.GetDescription(); }
+        }
+
 
         /// <summary>
         ///    备注
