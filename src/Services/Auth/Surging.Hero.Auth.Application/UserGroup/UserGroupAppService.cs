@@ -28,16 +28,21 @@ namespace Surging.Hero.Auth.Application.UserGroup
         private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IDapperRepository<Domain.UserGroups.UserGroup, long> _userGroupRepository;
         private readonly IDapperRepository<UserInfo, long> _userInfoRepository;
+
+        private readonly IDapperRepository<UserGroupDataPermissionOrgRelation, long>
+            _userGroupDataPermissionOrgRelationRepository;
         private readonly ISurgingSession _session;
 
         public UserGroupAppService(IUserGroupDomainService userGroupDomainService,
             IDapperRepository<Domain.UserGroups.UserGroup, long> userGroupRepository,
             IRoleDomainService roleDomainService,
-            IDapperRepository<UserInfo, long> userRepository)
+            IDapperRepository<UserInfo, long> userRepository, 
+            IDapperRepository<UserGroupDataPermissionOrgRelation, long> userGroupDataPermissionOrgRelationRepository)
         {
             _userGroupDomainService = userGroupDomainService;
             _userGroupRepository = userGroupRepository;
             _userInfoRepository = userRepository;
+            _userGroupDataPermissionOrgRelationRepository = userGroupDataPermissionOrgRelationRepository;
             _session = NullSurgingSession.Instance;
         }
 
@@ -72,9 +77,12 @@ namespace Surging.Hero.Auth.Application.UserGroup
             if (userGroup == null) throw new UserFriendlyException($"不存在id为{id}的用户组信息");
 
             var userGroupOutput = userGroup.MapTo<GetUserEditGroupOutput>();
-            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoleOutputs(id)).Select(p => p.Id);
+            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoleOutputs(id)).Select(p => p.Id).ToArray();
             userGroupOutput.PermissionIds =
-                (await _userGroupDomainService.GetUserGroupPermissions(id)).Select(p => p.Id);
+                (await _userGroupDomainService.GetUserGroupPermissions(id)).Select(p => p.Id).ToArray();
+            userGroupOutput.OrgIds =
+                (await _userGroupDataPermissionOrgRelationRepository.GetAllAsync(p => p.UserGroupId == id))
+                .Select(p => p.Id).ToArray();
             return userGroupOutput;
         }
 
@@ -104,6 +112,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
                 output.Roles = await _userGroupDomainService.GetUserGroupRoleOutputs(output.Id);
                 output.Permissions = (await _userGroupDomainService.GetUserGroupPermissions(output.Id))
                     .MapTo<IEnumerable<GetDisplayPermissionOutput>>();
+                output.DataPermissionOrgs = await _userGroupDomainService.GetUserGroupDataPermissionOrgs(output.Id);
             }
 
             return outputs;

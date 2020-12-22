@@ -3,7 +3,7 @@ using Surging.Hero.Organization.Domain.Shared.Organizations;
 
 namespace Surging.Hero.Organization.IApplication.Organization.Dtos
 {
-    public class QueryOrganizationOutput
+    public class GetOrganizationOutput
     {
         public long Id { get; set; }
 

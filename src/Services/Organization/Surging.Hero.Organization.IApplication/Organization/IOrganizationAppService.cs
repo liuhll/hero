@@ -31,7 +31,7 @@ namespace Surging.Hero.Organization.IApplication.Organization
         [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询组织机构", AllowPermission = true)]
         [ServiceRoute("search")]
-        Task<IPagedResult<QueryOrganizationOutput>> Search(QueryOrganizationInput query);
+        Task<IPagedResult<GetOrganizationOutput>> Search(QueryOrganizationInput query);
 
         /// <summary>
         ///     获取子机构Id
@@ -43,5 +43,11 @@ namespace Surging.Hero.Organization.IApplication.Organization
         [ServiceRoute("suborgs/{orgId}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取子机构Id", DisableNetwork = true)]
         Task<IEnumerable<long>> GetSubOrgIds([CacheKey(1)] long orgId);
+
+        [HttpGet]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetOrgById, Mode = CacheTargetType.Redis)]
+        [ServiceRoute("{orgId}")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-22", Name = "根据组织id获取组织机信息")]
+        Task<GetOrganizationOutput> GetOrg([CacheKey(1)]long orgId);
     }
 }

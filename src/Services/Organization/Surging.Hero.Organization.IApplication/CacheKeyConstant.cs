@@ -21,5 +21,9 @@
         public const string GetSubOrgIds = "GetSubOrgIds_{0}";
 
         public const string RemoveGetSubOrgIds = "GetSubOrgIds_*";
+
+        public const string GetOrgById = "GetOrgById_{0}";
+        
+        public const string RemoveGetOrgId = "GetOrgById_*";
     }
 }

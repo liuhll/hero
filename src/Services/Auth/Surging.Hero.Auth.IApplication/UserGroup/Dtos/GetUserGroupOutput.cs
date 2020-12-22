@@ -28,10 +28,23 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         {
             get { return string.Join(",", Permissions.Select(p => p.Title)); }
         }
-
+        
         public IEnumerable<long> PermissionIds
         {
             get { return Permissions.Select(p => p.Id); }
+        }
+
+
+        public IEnumerable<GetDisplayDataPermissionOrgOutput> DataPermissionOrgs { get; set; }
+
+        public IEnumerable<long> OrgIds
+        {
+            get { return DataPermissionOrgs.Select(p => p.Id); }
+        }
+
+        public string DisplayDataPermissionOrgs
+        {
+            get { return string.Join(",", DataPermissionOrgs.Select(p => p.Name)); }
         }
 
         /// <summary>

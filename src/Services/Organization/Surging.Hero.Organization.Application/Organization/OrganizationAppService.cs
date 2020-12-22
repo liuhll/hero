@@ -30,6 +30,18 @@ namespace Surging.Hero.Organization.Application.Organization
             return (await _organizationDomainService.GetSubOrgs(orgId)).Select(p => p.Id);
         }
 
+        public async Task<GetOrganizationOutput> GetOrg(long orgId)
+        {
+            var organization = await _organizationRepository.SingleOrDefaultAsync(p =>
+                p.Id == orgId);
+            if (organization == null)
+            {
+                return null;
+            }
+            //  organizations = organizations.WhereIf(!query.Code.IsNullOrEmpty(), p => p.Code.Contains(query.SearchKey)).WhereIf(!query.SearchKey.IsNullOrEmpty(), p=> p.Name.Contains(query.SearchKey));
+            return organization.MapTo<GetOrganizationOutput>();
+        }
+
         public async Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree()
         {
             var organizations = await _organizationRepository.GetAllAsync();
@@ -37,12 +49,12 @@ namespace Surging.Hero.Organization.Application.Organization
             return organizationOutputs.BuildTree();
         }
 
-        public async Task<IPagedResult<QueryOrganizationOutput>> Search(QueryOrganizationInput query)
+        public async Task<IPagedResult<GetOrganizationOutput>> Search(QueryOrganizationInput query)
         {
             var organizations = await _organizationRepository.GetAllAsync(p =>
                 p.Code.Contains(query.Code) && p.Name.Contains(query.SearchKey));
             //  organizations = organizations.WhereIf(!query.Code.IsNullOrEmpty(), p => p.Code.Contains(query.SearchKey)).WhereIf(!query.SearchKey.IsNullOrEmpty(), p=> p.Name.Contains(query.SearchKey));
-            return organizations.MapTo<IEnumerable<QueryOrganizationOutput>>().PageBy(query);
+            return organizations.MapTo<IEnumerable<GetOrganizationOutput>>().PageBy(query);
         }
     }
 }

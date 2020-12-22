@@ -5,5 +5,7 @@
         public long[] RoleIds { get; set; }
 
         public long[] PermissionIds { get; set; }
+
+        public long[] OrgIds { get; set; }
     }
 }

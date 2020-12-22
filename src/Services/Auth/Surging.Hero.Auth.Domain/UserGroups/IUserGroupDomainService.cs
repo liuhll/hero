@@ -27,5 +27,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
         Task<IEnumerable<UserGroupPermissionModel>> GetUserGroupPermissions(long userGroupId,
             Status status = Status.Valid);
+
+        Task<IEnumerable<GetDisplayDataPermissionOrgOutput>> GetUserGroupDataPermissionOrgs(long userGroupId);
     }
 }

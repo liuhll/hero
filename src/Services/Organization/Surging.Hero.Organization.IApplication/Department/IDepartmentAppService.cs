@@ -29,7 +29,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         [ServiceRoute("")]
         [HttpPut]
         [InterceptMethod(CachingMethod.Remove,
-            CorrespondingKeys = new[] {CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds},
+            CorrespondingKeys = new[] {CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds, CacheKeyConstant.RemoveGetOrgId},
             Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新部门信息")]
         Task<UpdateDepartmentOutput> Update(UpdateDepartmentInput input);
@@ -42,7 +42,7 @@ namespace Surging.Hero.Organization.IApplication.Department
         [ServiceRoute("{orgId}")]
         [HttpDelete]
         [InterceptMethod(CachingMethod.Remove,
-            CorrespondingKeys = new[] {CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds},
+            CorrespondingKeys = new[] {CacheKeyConstant.RemoveGetDeptKey, CacheKeyConstant.RemoveGetSubOrgIds, CacheKeyConstant.RemoveGetOrgId},
             Mode = CacheTargetType.Redis)]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除部门信息")]
         Task<string> DeleteByOrgId(long orgId);

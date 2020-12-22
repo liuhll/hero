@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
+using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.CPlatform.Utilities;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
@@ -13,6 +16,7 @@ using Surging.Core.Lock.Provider;
 using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
+using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
@@ -36,6 +40,9 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
         private readonly IDapperRepository<UserUserGroupRelation, long> _userUserGroupRelationRepository;
+        private readonly IDapperRepository<UserGroupDataPermissionOrgRelation, long>
+            _userGroupDataPermissionOrgRelationRepository;
+        private readonly ISurgingSession _session;
 
         public UserGroupDomainService(IDapperRepository<UserGroup, long> userGroupRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
@@ -46,7 +53,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             ILockerProvider lockerProvider,
             IDapperRepository<Permission, long> permissionRepository,
             IDapperRepository<UserGroupPermission, long> userGroupPermissionRepository,
-            IOperationDomainService operationDomainService)
+            IOperationDomainService operationDomainService,
+            IDapperRepository<UserGroupDataPermissionOrgRelation, long> userGroupDataPermissionOrgRelationRepository)
         {
             _userGroupRepository = userGroupRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
@@ -58,10 +66,13 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             _permissionRepository = permissionRepository;
             _userGroupPermissionRepository = userGroupPermissionRepository;
             _operationDomainService = operationDomainService;
+            _userGroupDataPermissionOrgRelationRepository = userGroupDataPermissionOrgRelationRepository;
+            _session = NullSurgingSession.Instance;
         }
 
         public async Task Create(CreateUserGroupInput input)
         {
+            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
             var exsitUserGroup = await _userGroupRepository.FirstOrDefaultAsync(p => p.Name == input.Name.Trim());
             if (exsitUserGroup != null) throw new BusinessException($"系统中已经存在{input.Name}的用户组");
             var userGroup = input.MapTo<UserGroup>();
@@ -90,6 +101,23 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 new UserGroupPermission {UserGroupId = userGroupId, PermissionId = permissionId}, conn,
                                 trans);
                         }
+                        if (input.DataPermissionType == DataPermissionType.UserDefined)
+                        {
+                            var insertDataPermissionOrgSql =
+                                "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId)";
+                            var dataPermissionOrgDatas = new List<UserGroupDataPermissionOrgRelation>();
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                dataPermissionOrgDatas.Add(new UserGroupDataPermissionOrgRelation()
+                                {
+                                    UserGroupId = userGroupId,
+                                    OrgId = orgId,
+                                    CreationTime = DateTime.Now,
+                                    CreatorUserId = _session.UserId
+                                });
+                            }
+                            await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
+                        }                        
                     }, Connection);
                 });
             }
@@ -108,6 +136,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                         await _userGroupRepository.DeleteAsync(p => p.Id == id, conn, trans);
                         await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
                         await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
+                        await _userGroupDataPermissionOrgRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn,
+                            trans);
                     }, Connection);
                 });
             }
@@ -134,6 +164,9 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                         await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
                         await _userGroupPermissionRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn,
                             trans);
+                        await _userGroupDataPermissionOrgRelationRepository.DeleteAsync(
+                            p => p.UserGroupId == userGroup.Id, conn, trans);
+                        
                         foreach (var roleId in input.RoleIds)
                         {
                             var roleInfo = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, conn, trans);
@@ -152,6 +185,23 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 new UserGroupPermission {UserGroupId = userGroup.Id, PermissionId = permissionId}, conn,
                                 trans);
                         }
+                        if (input.DataPermissionType == DataPermissionType.UserDefined)
+                        {
+                            var insertDataPermissionOrgSql =
+                                "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId)";
+                            var dataPermissionOrgDatas = new List<UserGroupDataPermissionOrgRelation>();
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                dataPermissionOrgDatas.Add(new UserGroupDataPermissionOrgRelation()
+                                {
+                                    UserGroupId = userGroup.Id,
+                                    OrgId = orgId,
+                                    CreationTime = DateTime.Now,
+                                    CreatorUserId = _session.UserId
+                                });
+                            }
+                            await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
+                        }                         
                     }, Connection);
                 });
             }
@@ -364,6 +414,27 @@ WHERE UserGroupId=@UserGroupId";
             }
         }
 
+        public async Task<IEnumerable<GetDisplayDataPermissionOrgOutput>> GetUserGroupDataPermissionOrgs(long userGroupId)
+        {
+            var userGroupDataPermissionOrgs = new List<GetDisplayDataPermissionOrgOutput>();
+            var userGroupDataPermissionOrgIds =
+                (await _userGroupDataPermissionOrgRelationRepository.GetAllAsync(p => p.UserGroupId == userGroupId)).Select(p=> p.OrgId);
+            if (userGroupDataPermissionOrgIds.Any())
+            {
+                var orgAppServiceProxy = GetService<IOrganizationAppService>();
+                foreach (var orgId in userGroupDataPermissionOrgIds)
+                {
+                    var output = new GetDisplayDataPermissionOrgOutput()
+                    {
+                        Id = orgId,
+                        Name = (await orgAppServiceProxy.GetOrg(orgId))?.Name
+                    };
+                }
+            }
+
+            return userGroupDataPermissionOrgs;
+        }
+
         private async Task<IEnumerable<UserGroup>> GetUserGroups(long userId)
         {
             var sql = @"SELECT ug.* FROM  UserGroup as ug 
@@ -381,6 +452,23 @@ WHERE UserGroupId=@UserGroupId";
             await using (Connection)
             {
                 return await Connection.QueryAsync<Role>(sql, new {UserId = userId});
+            }
+        }
+        
+        private void CheckUserDefinedDataPermission(DataPermissionType dataPermissionType, long[] orgIds)
+        {
+            if (dataPermissionType == DataPermissionType.UserDefined)
+            {
+                if (orgIds == null || !orgIds.Any())
+                {
+                    throw new BusinessException("设置角色的数据权限为自定义数据权限,则指定的部门不允许为空");
+                }
+
+                DebugCheck.NotNull(_session.OrgId);
+                if (!orgIds.Contains(_session.OrgId.Value))
+                {
+                    throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
+                }
             }
         }
     }
