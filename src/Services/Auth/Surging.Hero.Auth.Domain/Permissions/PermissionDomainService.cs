@@ -64,17 +64,13 @@ namespace Surging.Hero.Auth.Domain.Permissions
             }
             permissionResult.Add("isPermission",isPermission);
             var operations = await _operationDomainService.GetOperationsByServiceId(serviceId);
-            if (operations.Any(p => p.Mold == OperationMold.Query || p.Mold == OperationMold.Look))
+            if (operations.Any())
             {
-                if (operations.Count(p => p.Mold == OperationMold.Query || p.Mold == OperationMold.Look) >1)
-                {
-                    throw new BusinessException($"{actionName}的权限被分配到两个以上的操作,权限分配异常,请与开发者联系");
-                }
-
-                var dataPermission = await _userDomainService.GetDataPermissions(userId, operations.First(p=>  p.Mold == OperationMold.Query || p.Mold == OperationMold.Look).PermissionId);
+                var dataPermission = await _userDomainService.GetDataPermissions(userId, operations.First().PermissionId);
                 permissionResult.Add(ClaimTypes.DataPermission, dataPermission.DataPermissionType);
                 permissionResult.Add(ClaimTypes.DataPermissionOrgIds, dataPermission.DataPermissionOrgIds);
                 permissionResult.Add(ClaimTypes.IsAllOrg, dataPermission.DataPermissionType == DataPermissionType.AllOrg);
+                
             }
 
             return permissionResult;

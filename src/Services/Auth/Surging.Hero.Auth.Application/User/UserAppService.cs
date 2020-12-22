@@ -16,6 +16,7 @@ using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.User;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Common.Runtime.Session;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Hero.Organization.IApplication.Position;
@@ -41,11 +42,12 @@ namespace Surging.Hero.Auth.Application.User
         public async Task<string> Create(CreateUserInput input)
         {
             input.CheckDataAnnotations().CheckValidResult();
-            var existUser = await _userRepository.FirstOrDefaultAsync(p => p.UserName == input.UserName);
+            _session.CheckLoginUserDataPermision(input.OrgId,"您没有新增该部门用户的权限");
+            var existUser = await _userRepository.FirstOrDefaultAsync(p => p.UserName == input.UserName,false);
             if (existUser != null) throw new UserFriendlyException($"已经存在用户名为{input.UserName}的用户");
-            existUser = await _userRepository.FirstOrDefaultAsync(p => p.Phone == input.Phone);
+            existUser = await _userRepository.FirstOrDefaultAsync(p => p.Phone == input.Phone,false);
             if (existUser != null) throw new UserFriendlyException($"已经存在手机号码为{input.Phone}的用户");
-            existUser = await _userRepository.FirstOrDefaultAsync(p => p.Email == input.Email);
+            existUser = await _userRepository.FirstOrDefaultAsync(p => p.Email == input.Email,false);
             if (existUser != null) throw new UserFriendlyException($"已经存在Email为{input.Email}的用户");
 
             await _userDomainService.Create(input);
