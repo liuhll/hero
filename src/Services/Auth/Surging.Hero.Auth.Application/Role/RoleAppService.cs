@@ -55,9 +55,9 @@ namespace Surging.Hero.Auth.Application.Role
             return queryRoles.MapTo<IEnumerable<GetRoleOutput>>();
         }
 
-        public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
+        public async Task<IPagedResult<GetRoleOutput>> Search(QueryRoleInput query)
         {
-            return await _roleDomainService.Query(query);
+            return await _roleDomainService.Search(query);
         }
 
 

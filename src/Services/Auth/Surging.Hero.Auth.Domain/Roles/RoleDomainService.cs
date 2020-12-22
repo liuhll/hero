@@ -169,7 +169,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             return await _rolePermissionRepository.GetAllAsync(p => p.RoleId == roleId);
         }
 
-        public async Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query)
+        public async Task<IPagedResult<GetRoleOutput>> Search(QueryRoleInput query)
         {
             Expression<Func<Role, bool>> predicate = p => p.Name.Contains(query.SearchKey);
             if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);

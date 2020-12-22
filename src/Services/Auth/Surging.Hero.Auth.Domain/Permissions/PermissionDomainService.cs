@@ -62,7 +62,7 @@ namespace Surging.Hero.Auth.Domain.Permissions
                     throw new AuthException($"您没有{actionName}的权限", StatusCode.UnAuthorized);
                 }
             }
-            permissionResult.Add("IsPermission",isPermission);
+            permissionResult.Add("isPermission",isPermission);
             var operations = await _operationDomainService.GetOperationsByServiceId(serviceId);
             if (operations.Any(p => p.Mold == OperationMold.Query || p.Mold == OperationMold.Look))
             {

@@ -31,7 +31,7 @@ namespace Surging.Hero.Organization.IApplication.Organization
         [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询组织机构", AllowPermission = true)]
         [ServiceRoute("search")]
-        Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query);
+        Task<IPagedResult<QueryOrganizationOutput>> Search(QueryOrganizationInput query);
 
         /// <summary>
         ///     获取子机构Id

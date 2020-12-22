@@ -37,7 +37,7 @@ namespace Surging.Hero.Organization.Application.Organization
             return organizationOutputs.BuildTree();
         }
 
-        public async Task<IPagedResult<QueryOrganizationOutput>> Query(QueryOrganizationInput query)
+        public async Task<IPagedResult<QueryOrganizationOutput>> Search(QueryOrganizationInput query)
         {
             var organizations = await _organizationRepository.GetAllAsync(p =>
                 p.Code.Contains(query.Code) && p.Name.Contains(query.SearchKey));

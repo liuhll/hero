@@ -55,7 +55,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询用户")]
         [ServiceRoute("search")]
-        Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query);
+        Task<IPagedResult<GetUserNormOutput>> Search(QueryUserInput query);
 
         /// <summary>
         ///     激活/冻结用户

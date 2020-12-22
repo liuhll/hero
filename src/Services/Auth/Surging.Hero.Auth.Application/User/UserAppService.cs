@@ -69,63 +69,8 @@ namespace Surging.Hero.Auth.Application.User
             return "删除员工成功";
         }
 
-        //public async Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query)
-        //{
 
-        //    Expression<Func<UserInfo, bool>> expression = p => p.UserName.Contains(query.SearchKey)
-        //        || p.ChineseName.Contains(query.SearchKey)
-        //        || p.Email.Contains(query.SearchKey)
-        //        || p.Phone.Contains(query.SearchKey);
-
-
-        //    if (query.Status.HasValue) 
-        //    {
-        //        expression = expression.And(p => p.Status == query.Status.Value);
-        //    }
-        //    var queryResult = await _userRepository.GetAllAsync(expression);
-
-        //    if (query.OrgId.HasValue && query.OrgId != 0)
-        //    {
-        //        var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
-        //        queryResult = queryResult.Where(p => subOrgIds.Any(q=> q == p.OrgId));
-        //    }
-
-        //    var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryResult.Count());
-        //    foreach (var userOutput in queryResultOutput.Items)
-        //    {
-        //        if (userOutput.OrgId.HasValue)
-        //        {
-        //            userOutput.DeptName = (await GetService<IDepartmentAppService>().GetByOrgId(userOutput.OrgId.Value)).Name;
-        //        }
-        //        if (userOutput.PositionId.HasValue)
-        //        {
-        //            userOutput.PositionName = (await GetService<IPositionAppService>().Get(userOutput.PositionId.Value)).Name;
-        //        }
-        //        userOutput.Roles = (await _userDomainService.GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
-        //        if (userOutput.LastModifierUserId.HasValue) 
-        //        {
-        //            var modifyUserInfo = (await _userRepository.SingleOrDefaultAsync(p=>p.Id == userOutput.LastModifierUserId.Value));
-        //            if (modifyUserInfo != null) 
-        //            {
-        //                userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-        //            }
-
-        //        }
-        //        if (userOutput.CreatorUserId.HasValue)
-        //        {
-        //            var creatorUserInfo = (await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value));
-        //            if (creatorUserInfo != null)
-        //            {
-        //                userOutput.CreatorUserName = creatorUserInfo.ChineseName;
-        //            }
-        //        }
-
-        //    }
-
-        //    return queryResultOutput;
-        //}
-
-        public async Task<IPagedResult<GetUserNormOutput>> Query(QueryUserInput query)
+        public async Task<IPagedResult<GetUserNormOutput>> Search(QueryUserInput query)
         {
             if (!query.Sorting.IsNullOrEmpty() && !AuthConstant.UserSortingFileds.Any(p => p == query.Sorting))
                 throw new BusinessException("指定的排序字段无效");

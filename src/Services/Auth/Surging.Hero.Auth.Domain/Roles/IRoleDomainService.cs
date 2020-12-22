@@ -16,6 +16,6 @@ namespace Surging.Hero.Auth.Domain.Roles
         Task Delete(long roleid);
         Task<bool> CheckPermission(long roleId, string serviceId);
         Task<GetRoleOutput> Get(long id);
-        Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query);
+        Task<IPagedResult<GetRoleOutput>> Search(QueryRoleInput query);
     }
 }

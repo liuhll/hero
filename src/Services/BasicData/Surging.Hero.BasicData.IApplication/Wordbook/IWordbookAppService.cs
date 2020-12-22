@@ -54,7 +54,7 @@ namespace Surging.Hero.BasicData.IApplication.Wordbook
         /// <returns></returns>
         [ServiceRoute("search")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询字典", AllowPermission = true)]
-        Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query);
+        Task<IPagedResult<GetWordbookOutput>> Search(QueryWordbookInput query);
 
         /// <summary>
         ///     获取字典信息

@@ -4,9 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
+using Surging.Core.CPlatform;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Runtime.Session;
+using Surging.Core.CPlatform.Serialization;
+using Surging.Core.CPlatform.Transport.Implementation;
 using Surging.Core.CPlatform.Utilities;
+using Surging.Core.Dapper.Extensions;
 using Surging.Core.Dapper.Manager;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain.PagedAndSorted;
@@ -327,11 +331,10 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
 
         public async Task<IPagedResult<GetUserNormOutput>> Search(QueryUserInput query)
         {
-            var querySql = @"SELECT {0} FROM  UserInfo as u 
-                WHERE u.IsDeleted=@IsDeleted ";
+            var querySql = @"SELECT u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime FROM  UserInfo as u 
+                WHERE 1=1 ";
 
             var sqlParams = new Dictionary<string, object>();
-            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
             if (query.OrgId.HasValue && query.OrgId.Value != 0)
             {
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
@@ -367,21 +370,21 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                 querySql += $" AND u.Id {includeKey} @UserId";
                 sqlParams.Add("UserId", query.UserIds.Ids);
             }
-
-            var queryCountSql = string.Format(querySql, "COUNT(u.Id)");
-
-            if (!query.Sorting.IsNullOrEmpty())
-                querySql += $" ORDER BY u.{query.Sorting} {query.SortType}";
-            else
-                querySql += " ORDER BY u.Id DESC";
-            querySql += $" LIMIT {(query.PageIndex - 1) * query.PageCount} , {query.PageCount} ";
-            querySql = string.Format(querySql,
-                "u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime");
+            
             await using var conn = Connection;
-            var queryResult = await conn.QueryAsync<UserInfo>(querySql, sqlParams);
-            var queryCount = await conn.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
+            var sortTypes = new Dictionary<string, SortType>();
+            if (!query.Sorting.IsNullOrEmpty())
+            {
+                sortTypes.Add($"u.{query.Sorting}",query.SortType);
+            }
+            else
+            {
+                sortTypes.Add($"u.Id",query.SortType);
+            }
 
-            var queryResultOutput = queryResult.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult(queryCount);
+            var queryResult = await conn.QueryDataPermissionPageAsync<UserInfo>(querySql, sqlParams, query.PageIndex,query.PageCount,sortTypes: sortTypes, "u.OrgId",deleteField:"u.IsDeleted");
+
+            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult((int)queryResult.Item2);
             foreach (var userOutput in queryResultOutput.Items)
             {
                 if (userOutput.OrgId.HasValue)

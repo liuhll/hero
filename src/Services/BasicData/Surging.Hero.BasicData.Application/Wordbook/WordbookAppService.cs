@@ -91,7 +91,7 @@ namespace Surging.Hero.BasicData.Application.Wordbook
             return outputs;
         }
 
-        public async Task<IPagedResult<GetWordbookOutput>> Query(QueryWordbookInput query)
+        public async Task<IPagedResult<GetWordbookOutput>> Search(QueryWordbookInput query)
         {
             var queryResult = await _wordbookDomainService.QueryWordbooks(query);
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetWordbookOutput>>().GetPagedResult(queryResult.Item2);

@@ -59,7 +59,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         [HttpPost]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "查询角色")]
         [ServiceRoute("search")]
-        Task<IPagedResult<GetRoleOutput>> Query(QueryRoleInput query);
+        Task<IPagedResult<GetRoleOutput>> Search(QueryRoleInput query);
 
         /// <summary>
         ///     获取角色列表
