@@ -9,7 +9,7 @@
       <env name="# GatewayUseEngineParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;KestrelHttpModule;SwaggerModule;ServiceProxyModule;ApiGeteWayModule;" />
       <env name="EventBusPassword" value="rabbitmq" />
       <env name="LockRedisConnection" value="127.0.0.1:16379" />
-      <env name="ForceDisplayStackTrace" value="false" />
+      <env name="ForceDisplayStackTrace" value="true" />
       <env name="RpcPort" value="1101" />
       <env name="# UseEngineParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
       <env name="# UseKestrelHttpParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;WSProtocolModule;AutoMapperModule;ServiceProxyModule;" />
