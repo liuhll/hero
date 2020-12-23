@@ -25,14 +25,21 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         /// <summary>
         /// 数据权限
         /// </summary>
-        public DataPermissionType DataPermissionType { get; set; }
+        public DataPermissionType? DataPermissionType { get; set; }
 
         /// <summary>
         ///  数据权限描述
         /// </summary>
         public string DataPermissionTypeDesc
         {
-            get { return this.DataPermissionType.GetDescription(); }
+            get {
+                if (DataPermissionType.HasValue)
+                {
+                    return this.DataPermissionType.Value.GetDescription();
+                }
+
+                return null;
+            }
         }
 
         /// <summary>

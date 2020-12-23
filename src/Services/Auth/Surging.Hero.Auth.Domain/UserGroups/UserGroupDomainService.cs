@@ -456,7 +456,7 @@ WHERE UserGroupId=@UserGroupId";
             }
         }
         
-        private void CheckUserDefinedDataPermission(DataPermissionType dataPermissionType, long[] orgIds)
+        private void CheckUserDefinedDataPermission(DataPermissionType? dataPermissionType, long[] orgIds)
         {
             if (dataPermissionType == DataPermissionType.UserDefined)
             {

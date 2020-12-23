@@ -128,5 +128,10 @@ namespace Surging.Hero.Auth.IApplication.User
             AllowPermission = true, DisableNetwork = true)]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetUserNormInfoById, Mode = CacheTargetType.Redis)]
         public Task<GetUserBasicOutput> GetUserBasicInfo([CacheKey(1)] long id);
+
+        [HttpPost]
+        [ServiceRoute("check/{orgId}")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-23", Name = "根据组织Id判断当前登录用户是否有权限创建该部门的用户")]
+        Task<bool> CheckCreateUser(long orgId);
     }
 }

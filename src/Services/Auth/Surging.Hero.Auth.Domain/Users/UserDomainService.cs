@@ -453,9 +453,9 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                     continue;
                 }
 
-                if (userGroup.DataPermissionType > dataPermissionType)
+                if (userGroup.DataPermissionType.HasValue && userGroup.DataPermissionType.Value > dataPermissionType)
                 {
-                    dataPermissionType = userGroup.DataPermissionType;
+                    dataPermissionType = userGroup.DataPermissionType.Value;
                 }
                 if (dataPermissionType == DataPermissionType.UserDefined)
                 {
@@ -505,6 +505,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
 
             return checkPermission;
         }
+        
 
         private async Task<long[]> GetUserDefinedPermissionOrgIds(List<long> userDefinedRoleIds, List<long> userDefinedUserGroupIds)
         {

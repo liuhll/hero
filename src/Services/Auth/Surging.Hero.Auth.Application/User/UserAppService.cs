@@ -153,5 +153,10 @@ namespace Surging.Hero.Auth.Application.User
             if (userInfo == null) return null;
             return userInfo.MapTo<GetUserBasicOutput>();
         }
+
+        public async Task<bool> CheckCreateUser(long orgId)
+        {
+            return await Task.Run(() => _session.IsAllOrg || _session.DataPermissionOrgIds.Contains(orgId));
+        }
     }
 }

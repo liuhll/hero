@@ -15,6 +15,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         
         public long? OrgId { get; set; }
         
-        public DataPermissionType DataPermissionType { get; set; }
+        public DataPermissionType? DataPermissionType { get; set; }
     }
 }
