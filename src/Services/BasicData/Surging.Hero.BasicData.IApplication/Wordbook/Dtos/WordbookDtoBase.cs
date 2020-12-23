@@ -4,7 +4,7 @@ using Surging.Hero.Common.FullAuditDtos;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 {
-    public abstract class WordbookDtoBase : FullAuditDto
+    public abstract class WordbookDtoBase : AuditDto
     {
         [Required(ErrorMessage = "字典类型名称不允许为空")]
         [MaxLength(50, ErrorMessage = "字典类型名称长度不允许超过50")]

@@ -18,6 +18,7 @@ using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.Users;
+using Surging.Hero.Auth.IApplication.FullAuditDtos;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
@@ -371,20 +372,7 @@ WHERE UserGroupId=@UserGroupId";
                 userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
                 userOutput.UserGroups =
                     (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
-                if (userOutput.LastModifierUserId.HasValue)
-                {
-                    var modifyUserInfo =
-                        await _userRepository.SingleOrDefaultAsync(p =>
-                            p.Id == userOutput.LastModifierUserId.Value);
-                    if (modifyUserInfo != null) userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-                }
-
-                if (userOutput.CreatorUserId.HasValue)
-                {
-                    var creatorUserInfo =
-                        await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value);
-                    if (creatorUserInfo != null) userOutput.CreatorUserName = creatorUserInfo.ChineseName;
-                }
+                await userOutput.SetAuditInfo();
             }
 
             return queryResultOutput;

@@ -21,6 +21,7 @@ using Surging.Hero.Auth.Domain.Shared.Operations;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.Domain.Users;
+using Surging.Hero.Auth.IApplication.FullAuditDtos;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Common;
 
@@ -169,19 +170,8 @@ namespace Surging.Hero.Auth.Domain.Roles
             var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == id);
             if (role == null) throw new BusinessException($"不存在Id为{id}的角色信息");
             var roleOutput = role.MapTo<GetRoleOutput>();
-            if (roleOutput.LastModifierUserId.HasValue)
-            {
-                var modifyUserInfo =
-                    await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == roleOutput.LastModifierUserId.Value);
-                if (modifyUserInfo != null) roleOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-            }
 
-            if (roleOutput.CreatorUserId.HasValue)
-            {
-                var creatorUserInfo =
-                    await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == roleOutput.CreatorUserId.Value);
-                if (creatorUserInfo != null) roleOutput.CreatorUserName = creatorUserInfo.ChineseName;
-            }
+             await roleOutput.SetAuditInfo();
 
             roleOutput.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == role.Id))
                 .Select(p => p.PermissionId).ToArray();
@@ -212,20 +202,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items)
             {
-                if (output.LastModifierUserId.HasValue)
-                {
-                    var modifyUserInfo =
-                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.LastModifierUserId.Value,false);
-                    if (modifyUserInfo != null) output.LastModificationUserName = modifyUserInfo.ChineseName;
-                }
-
-                if (output.CreatorUserId.HasValue)
-                {
-                    var creatorUserInfo =
-                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.CreatorUserId.Value,false);
-                    if (creatorUserInfo != null) output.CreatorUserName = creatorUserInfo.ChineseName;
-                }
-
+                await output.SetAuditInfo();
                 output.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == output.Id))
                     .Select(p => p.PermissionId).ToArray();
                 output.OrgIds = (await _roleDataPermissionOrgRelationRepository.GetAllAsync(p => p.RoleId == output.Id))

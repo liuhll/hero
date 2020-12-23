@@ -1,10 +1,11 @@
 ﻿using System;
 using Surging.Hero.Common;
 using Surging.Hero.Common.Extensions;
+using Surging.Hero.Common.FullAuditDtos;
 
 namespace Surging.Hero.Auth.IApplication.Role.Dtos
 {
-    public class GetRoleOutput : RoleDtoBase
+    public class GetRoleOutput : RoleDtoBase, IAuditedDto
     {
         /// <summary>
         ///     主键Id

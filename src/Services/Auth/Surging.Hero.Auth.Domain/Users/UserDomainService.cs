@@ -23,6 +23,7 @@ using Surging.Hero.Auth.Domain.Permissions.Operations;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.UserGroups;
+using Surging.Hero.Auth.IApplication.FullAuditDtos;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
@@ -223,15 +224,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                     (await GetService<IDepartmentAppService>().GetByOrgId(userInfoOutput.OrgId.Value)).Name;
             }
 
-            if (userInfoOutput.PositionId.HasValue)
-                userInfoOutput.PositionName =
-                    (await GetService<IPositionAppService>().Get(userInfoOutput.PositionId.Value)).Name;
-            if (userInfoOutput.LastModifierUserId.HasValue)
-            {
-                var modifyUserInfo =
-                    await _userRepository.SingleOrDefaultAsync(p => p.Id == userInfoOutput.LastModifierUserId.Value);
-                if (modifyUserInfo != null) userInfoOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-            }
+            await userInfoOutput.SetAuditInfo();
 
             if (userInfoOutput.CreatorUserId.HasValue)
             {
@@ -400,20 +393,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                 userOutput.Roles = (await GetUserRoles(userOutput.Id)).MapTo<IEnumerable<GetDisplayRoleOutput>>();
                 userOutput.UserGroups =
                     (await GetUserGroups(userOutput.Id)).MapTo<IEnumerable<GetDisplayUserGroupOutput>>();
-                if (userOutput.LastModifierUserId.HasValue)
-                {
-                    var modifyUserInfo =
-                        await _userRepository.SingleOrDefaultAsync(p =>
-                            p.Id == userOutput.LastModifierUserId.Value);
-                    if (modifyUserInfo != null) userOutput.LastModificationUserName = modifyUserInfo.ChineseName;
-                }
-
-                if (userOutput.CreatorUserId.HasValue)
-                {
-                    var creatorUserInfo =
-                        await _userRepository.SingleOrDefaultAsync(p => p.Id == userOutput.CreatorUserId.Value);
-                    if (creatorUserInfo != null) userOutput.CreatorUserName = creatorUserInfo.ChineseName;
-                }
+                await userOutput.SetAuditInfo();
             }
 
             return queryResultOutput;

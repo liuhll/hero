@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Common.FullAuditDtos;
 
 namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 {
-    public class GetUserGroupOutput : UserGroupDtoBase
+    public class GetUserGroupOutput : UserGroupDtoBase, IAuditedDto
     {
         public long Id { get; set; }
 

@@ -15,6 +15,7 @@ using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.Roles;
 using Surging.Hero.Auth.Domain.UserGroups;
 using Surging.Hero.Auth.Domain.Users;
+using Surging.Hero.Auth.IApplication.FullAuditDtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
@@ -97,20 +98,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetUserGroupOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items)
             {
-                if (output.LastModifierUserId.HasValue)
-                {
-                    var modifyUserInfo =
-                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.LastModifierUserId.Value);
-                    if (modifyUserInfo != null) output.LastModificationUserName = modifyUserInfo.ChineseName;
-                }
-
-                if (output.CreatorUserId.HasValue)
-                {
-                    var creatorUserInfo =
-                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.CreatorUserId.Value);
-                    if (creatorUserInfo != null) output.CreatorUserName = creatorUserInfo.ChineseName;
-                }
-
+                await output.SetAuditInfo();
                 output.Roles = await _userGroupDomainService.GetUserGroupRoleOutputs(output.Id);
                 output.Permissions = (await _userGroupDomainService.GetUserGroupPermissions(output.Id))
                     .MapTo<IEnumerable<GetDisplayPermissionOutput>>();

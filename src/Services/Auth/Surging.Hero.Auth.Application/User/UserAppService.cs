@@ -149,7 +149,7 @@ namespace Surging.Hero.Auth.Application.User
 
         public async Task<GetUserBasicOutput> GetUserBasicInfo([CacheKey(1)] long id)
         {
-            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == id);
+            var userInfo = await _userRepository.SingleOrDefaultAsync(p => p.Id == id,false);
             if (userInfo == null) return null;
             return userInfo.MapTo<GetUserBasicOutput>();
         }
