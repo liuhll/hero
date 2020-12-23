@@ -430,6 +430,7 @@ WHERE UserGroupId=@UserGroupId";
                         Id = orgId,
                         Name = (await orgAppServiceProxy.GetOrg(orgId))?.Name
                     };
+                    userGroupDataPermissionOrgs.Add(output);
                 }
             }
 
