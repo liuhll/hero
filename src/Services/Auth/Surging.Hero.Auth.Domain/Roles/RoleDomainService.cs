@@ -198,11 +198,16 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task<IPagedResult<GetRoleOutput>> Search(QueryRoleInput query)
         {
-            Expression<Func<Role, bool>> predicate = p => p.Name.Contains(query.SearchKey);
-            if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);
-            if (query.SelfCreate) predicate = predicate.Or(p => p.CreatorUserId == _session.UserId);
-            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey), query.PageIndex,
-                query.PageCount);
+            Tuple<IEnumerable<Role>,int> queryResult = null;
+            if (_session.IsAllOrg)
+            {
+                queryResult = await SearchAllRoles(query);
+            }
+            else
+            {
+                queryResult = await SearchPermissionRoles(query);
+            }
+            
             
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items)
@@ -210,14 +215,14 @@ namespace Surging.Hero.Auth.Domain.Roles
                 if (output.LastModifierUserId.HasValue)
                 {
                     var modifyUserInfo =
-                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.LastModifierUserId.Value);
+                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.LastModifierUserId.Value,false);
                     if (modifyUserInfo != null) output.LastModificationUserName = modifyUserInfo.ChineseName;
                 }
 
                 if (output.CreatorUserId.HasValue)
                 {
                     var creatorUserInfo =
-                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.CreatorUserId.Value);
+                        await _userInfoRepository.SingleOrDefaultAsync(p => p.Id == output.CreatorUserId.Value,false);
                     if (creatorUserInfo != null) output.CreatorUserName = creatorUserInfo.ChineseName;
                 }
 
@@ -228,6 +233,55 @@ namespace Surging.Hero.Auth.Domain.Roles
             }
 
             return outputs;
+        }
+
+        private async Task<Tuple<IEnumerable<Role>, int>> SearchPermissionRoles(QueryRoleInput query)
+        {
+            var sql = @"
+SELECT {0} FROM Role as r WHERE r.Id IN(SELECT DISTINCT rd.RoleId FROM RoleDataPermissionOrgRelation as rd WHERE rd.OrgId IN @DatPermissionOrgIds)
+AND r.IsDeleted=@IsDeleted 
+";
+            var sqlParams = new Dictionary<string, object>();
+            sqlParams.Add("DatPermissionOrgIds",_session.DataPermissionOrgIds);
+            sqlParams.Add("IsDeleted",HeroConstants.UnDeletedFlag);
+            
+            if (query.Status.HasValue)
+            {
+                sql += " AND r.Status=@Status";
+                sqlParams.Add("Status",query.Status);
+            }
+
+            if (!query.SearchKey.IsNullOrEmpty())
+            {
+                sql += " AND r.Name like @SearchKey";
+                sqlParams.Add("SearchKey",$"%{query.SearchKey}%");
+            }
+
+            if (query.IncludeSelfCreate)
+            {
+                sql += " OR r.CreateBy=@Create OR r.UpdateBy=@Create ";
+                sqlParams.Add("Create",_session.UserId);
+            }
+
+            var queryCountSql = string.Format(sql, "COUNT(r.Id)");
+            sql += $" LIMIT {(query.PageIndex - 1) * query.PageCount},{query.PageCount}";
+            sql = string.Format(sql, "r.*,r.CreateBy as CreatorUserId, r.CreateTime as CreationTime, r.UpdateBy as LastModifierUserId, r.UpdateTime as LastModificationTime");
+            await using(Connection)
+            {
+                var roles = await Connection.QueryAsync<Role>(sql, sqlParams);
+                var count = await Connection.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
+                return new Tuple<IEnumerable<Role>, int>(roles, count);
+            }
+
+        }
+
+        private async Task<Tuple<IEnumerable<Role>, int>> SearchAllRoles(QueryRoleInput query)
+        {
+            Expression<Func<Role, bool>> predicate = p => p.Name.Contains(query.SearchKey);
+            if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);
+            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey), query.PageIndex,
+                query.PageCount,false);
+            return queryResult;
         }
 
         public async Task SetPermissions(SetRolePermissionInput input)
@@ -261,7 +315,11 @@ namespace Surging.Hero.Auth.Domain.Roles
             {
                 await locker.Lock(async () =>
                 {
-                    var role = await _roleRepository.GetAsync(input.Id);
+                    var role = await _roleRepository.GetAsync(input.Id,false);
+                    if (role.DataPermissionType == DataPermissionType.UserDefined && _session.UserId != role.CreatorUserId)
+                    {
+                        throw new BusinessException("自定义数据权限的角色只允许用户创建者自己修改");
+                    }
                     if (input.Identification != role.Identification)
                     {
                         var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);

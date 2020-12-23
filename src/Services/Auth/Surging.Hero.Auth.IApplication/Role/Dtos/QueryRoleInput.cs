@@ -8,7 +8,7 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
     {
         private string _searchKey;
 
-        public bool SelfCreate { get; set; } = false;
+        public bool IncludeSelfCreate { get; set; } = false;
 
         public string SearchKey
         {
