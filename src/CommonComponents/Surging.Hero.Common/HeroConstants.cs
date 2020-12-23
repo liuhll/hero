@@ -1,4 +1,6 @@
-﻿namespace Surging.Hero.Common
+﻿using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
+
+namespace Surging.Hero.Common
 {
     public static class HeroConstants
     {
@@ -7,6 +9,8 @@
         public const int UnDeletedFlag = 0;
 
         public const int DeletedFlag = 1;
+
+        public static string CacheProviderKey = "ddlCache.Redis"; 
 
         public static class CodeRuleRestrain
         {
@@ -17,6 +21,11 @@
             public const int CodeCoverBit = 4;
 
             public const string FullNameSeparator = "-";
+        }
+        
+        public static class CacheKey
+        {
+            public const string PermissionCheck = "PermissionCheck:{0}:{1}";
         }
     }
 }

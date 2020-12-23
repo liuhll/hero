@@ -2,11 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
+using Surging.Core.Caching;
+using Surging.Core.CPlatform.Cache;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.ProxyGenerator;
+using Surging.Core.System.Intercept;
 using Surging.Core.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.Permissions;
 using Surging.Hero.Auth.Domain.Permissions.Actions;
@@ -16,6 +19,7 @@ using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.Shared.Permissions;
 using Surging.Hero.Auth.IApplication.Permission;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
+using Surging.Hero.Common;
 using Surging.Hero.Common.Extensions;
 
 namespace Surging.Hero.Auth.Application.Permission
@@ -30,6 +34,7 @@ namespace Surging.Hero.Auth.Application.Permission
         private readonly IDapperRepository<Operation, long> _operationRepository;
         private readonly IPermissionDomainService _permissionDomainService;
         private readonly ISurgingSession _session;
+        private readonly ICacheProvider _cacheProvider;
 
         public PermissionAppService(IMenuDomainService menuDomainService,
             IOperationDomainService operationDomainService,
@@ -45,6 +50,7 @@ namespace Surging.Hero.Auth.Application.Permission
             _actionDomainService = actionDomainService;
             _permissionDomainService = permissionDomainService;
             _session = NullSurgingSession.Instance;
+            _cacheProvider = CacheContainer.GetService<ICacheProvider>(HeroConstants.CacheProviderKey);
         }
 
         public async Task<CreateMenuOutput> CreateMenu(CreateMenuInput input)
@@ -114,7 +120,8 @@ namespace Surging.Hero.Auth.Application.Permission
         {
             if (_session == null || !_session.UserId.HasValue) throw new AuthException("您还没有登录系统");
 
-            return await _permissionDomainService.Check(_session.UserId.Value, serviceId);
+            var checkPermission = await _cacheProvider.GetFromCacheFirst(string.Format(HeroConstants.CacheKey.PermissionCheck,serviceId,_session.UserId.Value),async () => { return await _permissionDomainService.Check(_session.UserId.Value, serviceId);},typeof(IDictionary<string,object>));
+            return checkPermission;
         }
 
         public async Task<IEnumerable<EnumDto>> GetDataPermissionTypes()
