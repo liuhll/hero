@@ -40,38 +40,6 @@ drop table if exists UserRole;
 
 drop table if exists UserUserGroupRelation;
 
-drop table if exists Action;
-
-drop table if exists File;
-
-drop table if exists Menu;
-
-drop table if exists Operation;
-
-drop table if exists OperationActionRelation;
-
-drop table if exists Permission;
-
-drop table if exists Role;
-
-drop table if exists RoleDataPermissionOrgRelation;
-
-drop table if exists RolePermission;
-
-drop table if exists UserGroup;
-
-drop table if exists UserGroupDataPermissionOrgRelation;
-
-drop table if exists UserGroupPermission;
-
-drop table if exists UserGroupRole;
-
-drop table if exists UserInfo;
-
-drop table if exists UserRole;
-
-drop table if exists UserUserGroupRelation;
-
 /*==============================================================*/
 /* Table: Action                                                */
 /*==============================================================*/
@@ -232,7 +200,6 @@ create table Role
    Name                 varchar(50) not null comment '角色名称',
    Memo                 varchar(100) comment '备注',
    Status               int not null comment '状态',
-   OrgId                bigint comment '组织机构Id',
    DataPermissionType   int not null default 1 comment '数据权限类型',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
@@ -288,7 +255,6 @@ create table UserGroup
    Name                 varchar(50) not null comment '用户组名称',
    Memo                 varchar(200),
    Status               int not null comment '状态',
-   OrgId                bigint comment '组织机构Id',
    DataPermissionType   int not null default 1 comment '数据权限类型',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
@@ -647,7 +613,7 @@ INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `Cr
 INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (49, 'role-status', 1, NULL, 1, 1, '2020-12-15 14:41:15', 1, '2020-12-15 14:41:15', 0, NULL, NULL);
 
 
-INSERT INTO `hero_auth`.`Role`(`Id`, `Name`, `Memo`, `Status`, `OrgId`, `DataPermissionType`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, '管理员', '初始化系统时新增', 1, NULL, 1, NULL, '2020-12-14 16:07:27', 1, '2020-12-14 16:07:27', 0, NULL, NULL);
+INSERT INTO `hero_auth`.`Role`(`Id`, `Name`, `Memo`, `Status`, `DataPermissionType`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, '管理员', '初始化系统时新增', 1, 1, NULL, '2020-12-14 16:07:27', 1, '2020-12-14 16:07:27', 0, NULL, NULL);
 
 INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (65, 1, 1, 1, '2020-12-16 19:14:31', NULL, NULL);
 INSERT INTO `hero_auth`.`RolePermission`(`Id`, `RoleId`, `PermissionId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (66, 1, 2, 1, '2020-12-16 19:14:31', NULL, NULL);
