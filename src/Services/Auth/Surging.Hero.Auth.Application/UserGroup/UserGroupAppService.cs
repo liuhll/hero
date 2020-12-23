@@ -90,7 +90,6 @@ namespace Surging.Hero.Auth.Application.UserGroup
         public async Task<IPagedResult<GetUserGroupOutput>> Search(QueryUserGroupInput query)
         {
             Expression<Func<Domain.UserGroups.UserGroup, bool>> predicate = p => p.Name.Contains(query.SearchKey);
-            if (query.SelfCreate) predicate = predicate.Or(p => p.CreatorUserId == _session.UserId);
             if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);
             
             var queryResult = await _userGroupRepository.GetPageAsync(predicate, query.PageIndex, query.PageCount);

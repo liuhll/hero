@@ -4,7 +4,7 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Roles
 {
-    public class Role : FullAuditedEntity<long>, IOrgAudited
+    public class Role : FullAuditedEntity<long>
     {
         public string Name { get; set; }
 
@@ -13,8 +13,6 @@ namespace Surging.Hero.Auth.Domain.Roles
         public string Memo { get; set; }
 
         public Status Status { get; set; }
-        
-        public long? OrgId { get; set; }
         
         public DataPermissionType DataPermissionType { get; set; }
     }

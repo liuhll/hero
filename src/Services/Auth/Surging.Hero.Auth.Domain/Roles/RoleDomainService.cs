@@ -24,6 +24,7 @@ using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.FullAuditDtos;
 using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Common.Runtime.Session;
 
 namespace Surging.Hero.Auth.Domain.Roles
 {
@@ -188,16 +189,10 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task<IPagedResult<GetRoleOutput>> Search(QueryRoleInput query)
         {
-            Tuple<IEnumerable<Role>,int> queryResult = null;
-            if (_session.IsAllOrg)
-            {
-                queryResult = await SearchAllRoles(query);
-            }
-            else
-            {
-                queryResult = await SearchPermissionRoles(query);
-            }
-            
+            Expression<Func<Role, bool>> predicate = p => p.Name.Contains(query.SearchKey);
+            if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);
+            var queryResult = await _roleRepository.GetPageAsync(predicate, query.PageIndex,
+                query.PageCount);
             
             var outputs = queryResult.Item1.MapTo<IEnumerable<GetRoleOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var output in outputs.Items)
@@ -212,54 +207,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             return outputs;
         }
 
-        private async Task<Tuple<IEnumerable<Role>, int>> SearchPermissionRoles(QueryRoleInput query)
-        {
-            var sql = @"
-SELECT {0} FROM Role as r WHERE r.Id IN(SELECT DISTINCT rd.RoleId FROM RoleDataPermissionOrgRelation as rd WHERE rd.OrgId IN @DatPermissionOrgIds)
-AND r.IsDeleted=@IsDeleted 
-";
-            var sqlParams = new Dictionary<string, object>();
-            sqlParams.Add("DatPermissionOrgIds",_session.DataPermissionOrgIds);
-            sqlParams.Add("IsDeleted",HeroConstants.UnDeletedFlag);
-            
-            if (query.Status.HasValue)
-            {
-                sql += " AND r.Status=@Status";
-                sqlParams.Add("Status",query.Status);
-            }
-
-            if (!query.SearchKey.IsNullOrEmpty())
-            {
-                sql += " AND r.Name like @SearchKey";
-                sqlParams.Add("SearchKey",$"%{query.SearchKey}%");
-            }
-
-            if (query.IncludeSelfCreate)
-            {
-                sql += " OR r.CreateBy=@Create OR r.UpdateBy=@Create ";
-                sqlParams.Add("Create",_session.UserId);
-            }
-
-            var queryCountSql = string.Format(sql, "COUNT(r.Id)");
-            sql += $" LIMIT {(query.PageIndex - 1) * query.PageCount},{query.PageCount}";
-            sql = string.Format(sql, "r.*,r.CreateBy as CreatorUserId, r.CreateTime as CreationTime, r.UpdateBy as LastModifierUserId, r.UpdateTime as LastModificationTime");
-            await using(Connection)
-            {
-                var roles = await Connection.QueryAsync<Role>(sql, sqlParams);
-                var count = await Connection.ExecuteScalarAsync<int>(queryCountSql, sqlParams);
-                return new Tuple<IEnumerable<Role>, int>(roles, count);
-            }
-
-        }
-
-        private async Task<Tuple<IEnumerable<Role>, int>> SearchAllRoles(QueryRoleInput query)
-        {
-            Expression<Func<Role, bool>> predicate = p => p.Name.Contains(query.SearchKey);
-            if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);
-            var queryResult = await _roleRepository.GetPageAsync(p => p.Name.Contains(query.SearchKey), query.PageIndex,
-                query.PageCount,false);
-            return queryResult;
-        }
+        
 
         public async Task SetPermissions(SetRolePermissionInput input)
         {
