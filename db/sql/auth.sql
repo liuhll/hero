@@ -228,6 +228,7 @@ alter table Permission comment '权限表';
 create table Role
 (
    Id                   bigint not null auto_increment comment '主键',
+   Identification       varchar(50) not null comment '唯一标识',
    Name                 varchar(50) not null comment '角色名称',
    Memo                 varchar(100) comment '备注',
    Status               int not null comment '状态',
@@ -283,6 +284,7 @@ alter table RolePermission comment '角色权限表';
 create table UserGroup
 (
    Id                   bigint not null auto_increment comment '主键',
+   Identification       varchar(50) not null comment '唯一标识',
    Name                 varchar(50) not null comment '用户组名称',
    Memo                 varchar(200),
    Status               int not null comment '状态',
