@@ -89,10 +89,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [ServiceRoute("org")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "根据组织id获取部门的用户", DisableNetwork = true)]
         Task<IEnumerable<GetUserBasicOutput>> GetOrgUser(long orgId, bool includeSubOrg);
-
-        //[ServiceRoute("{corporationId}")]
-        //[HttpGet]
-        //Task<IEnumerable<GetUserBasicOutput>> GetCorporationUser(long corporationId);
+        
 
         /// <summary>
         ///     获取用户信息
