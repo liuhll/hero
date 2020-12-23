@@ -16,5 +16,7 @@
         public const string DepartmentCode = "^[a-zA-Z0-9_-]{4,50}$";
 
         public const string PositionCode = "^[a-zA-Z0-9_-]{4,50}$";
+
+        public const string NormalIdentificationCode = "^[a-zA-Z][a-zA-Z0-9]{4,50}$";
     }
 }

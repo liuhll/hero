@@ -91,16 +91,15 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task Create(CreateRoleInput input)
         {
-            var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Name == input.Name);
-            if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Name}的角色");
-            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
-            var role = input.MapTo<Role>();
-
-            
             using (var locker = await _lockerProvider.CreateLockAsync("CreateRole"))
             {
                 await locker.Lock(async () =>
                 {
+                    var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);
+                    if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Identification}的角色");
+                    CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
+                    var role = input.MapTo<Role>();
+                    
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         var roleId = await _roleRepository.InsertAndGetIdAsync(role, conn, trans);
@@ -257,18 +256,19 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task Update(UpdateRoleInput input)
         {
-            var role = await _roleRepository.GetAsync(input.Id);
-            if (input.Name != role.Name)
-            {
-                var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Name == input.Name);
-                if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Name}的角色");
-            }
             CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
-            role = input.MapTo(role);
             using (var locker = await _lockerProvider.CreateLockAsync("UpdateRole"))
             {
                 await locker.Lock(async () =>
                 {
+                    var role = await _roleRepository.GetAsync(input.Id);
+                    if (input.Identification != role.Identification)
+                    {
+                        var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);
+                        if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Identification}的角色");
+                    }
+
+                    role = input.MapTo(role);
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         await _roleRepository.UpdateAsync(role, conn, trans);

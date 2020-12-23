@@ -73,13 +73,14 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task Create(CreateUserGroupInput input)
         {
             CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
-            var exsitUserGroup = await _userGroupRepository.FirstOrDefaultAsync(p => p.Name == input.Name.Trim());
-            if (exsitUserGroup != null) throw new BusinessException($"系统中已经存在{input.Name}的用户组");
-            var userGroup = input.MapTo<UserGroup>();
             using (var locker = await _lockerProvider.CreateLockAsync("CreateUserGroup"))
             {
                 await locker.Lock(async () =>
                 {
+
+                    var exsitUserGroup = await _userGroupRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);
+                    if (exsitUserGroup != null) throw new BusinessException($"系统中已经存在{input.Identification}的用户组");
+                    var userGroup = input.MapTo<UserGroup>();
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         var userGroupId = await _userGroupRepository.InsertAndGetIdAsync(userGroup, conn, trans);
@@ -145,19 +146,19 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
         public async Task Update(UpdateUserGroupInput input)
         {
-            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
-            if (userGroup == null) throw new BusinessException($"不存在Id为{input.Id}的用户组");
-            if (!userGroup.Name.Equals(input.Name))
-            {
-                var exsitUserGroup = await _userGroupRepository.FirstOrDefaultAsync(p => p.Name == input.Name.Trim());
-                if (exsitUserGroup != null) throw new BusinessException($"系统中已经存在{input.Name}的用户组");
-            }
-
-            userGroup = input.MapTo(userGroup);
+            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
             using (var locker = await _lockerProvider.CreateLockAsync("UpdateUserGroup"))
             {
                 await locker.Lock(async () =>
                 {
+                    var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+                    if (userGroup == null) throw new BusinessException($"不存在Id为{input.Id}的用户组");
+                    if (!userGroup.Identification.Equals(input.Identification))
+                    {
+                        var exsitUserGroup = await _userGroupRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);
+                        if (exsitUserGroup != null) throw new BusinessException($"系统中已经存在{input.Identification}的用户组");
+                    }
+                    userGroup = input.MapTo(userGroup);
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         await _userGroupRepository.UpdateAsync(userGroup, conn, trans);

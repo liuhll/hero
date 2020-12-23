@@ -7,6 +7,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
     public class UserGroup : FullAuditedEntity<long>, IOrgAudited
     {
         public string Name { get; set; }
+        
+        public string Identification { get; set; }
 
         public string Memo { get; set; }
         public Status Status { get; set; }

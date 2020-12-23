@@ -8,6 +8,8 @@ namespace Surging.Hero.Auth.Domain.Roles
     {
         public string Name { get; set; }
 
+        public string Identification { get; set; }
+
         public string Memo { get; set; }
 
         public Status Status { get; set; }
