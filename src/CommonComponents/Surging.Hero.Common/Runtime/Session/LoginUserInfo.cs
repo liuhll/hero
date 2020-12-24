@@ -50,10 +50,10 @@ namespace Surging.Hero.Common.Runtime.Session
 
         public Status Status { get; set; }
 
-        public IEnumerable<GetDisplayRoleOutput> Roles { get; set; }
+        public IEnumerable<GetLoginUserDisplayRoleOutput> Roles { get; set; }
     }
 
-    public class GetDisplayRoleOutput
+    public class GetLoginUserDisplayRoleOutput
     {
         public long Id { get; set; }
 

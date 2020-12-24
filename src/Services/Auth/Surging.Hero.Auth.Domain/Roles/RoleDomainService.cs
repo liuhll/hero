@@ -5,6 +5,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
+using Surging.Core.Caching;
+using Surging.Core.CPlatform.Cache;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.CPlatform.Utilities;
@@ -37,8 +39,8 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<Role, long> _roleRepository;
         private readonly ISurgingSession _session;
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
-        private readonly IDapperRepository<UserInfo, long> _userInfoRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
+        private readonly ICacheProvider _cacheProvider;
 
         private readonly IDapperRepository<RoleDataPermissionOrgRelation, long>
             _roleDataPermissionOrgRelationRepository;
@@ -48,7 +50,6 @@ namespace Surging.Hero.Auth.Domain.Roles
             IDapperRepository<Permission, long> permissionRepository,
             IDapperRepository<UserRole, long> userRoleRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
-            IDapperRepository<UserInfo, long> userInfoRepository,
             IDapperRepository<Operation, long> operationRepository,
             ILockerProvider lockerProvider, 
             IDapperRepository<RoleDataPermissionOrgRelation, long> roleDataPermissionOrgRelationRepository)
@@ -58,11 +59,11 @@ namespace Surging.Hero.Auth.Domain.Roles
             _permissionRepository = permissionRepository;
             _userRoleRepository = userRoleRepository;
             _userGroupRoleRepository = userGroupRoleRepository;
-            _userInfoRepository = userInfoRepository;
             _operationRepository = operationRepository;
             _lockerProvider = lockerProvider;
             _roleDataPermissionOrgRelationRepository = roleDataPermissionOrgRelationRepository;
             _session = NullSurgingSession.Instance;
+            _cacheProvider = CacheContainer.GetService<ICacheProvider>(HeroConstants.CacheProviderKey);
         }
 
         public async Task<bool> CheckPermission(long roleId, string serviceId)
@@ -147,6 +148,7 @@ namespace Surging.Hero.Auth.Domain.Roles
         {
             var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleid);
             if (role == null) throw new BusinessException($"不存在Id为{roleid}的角色信息");
+            _session.CheckLoginUserDataPermision(role.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             var userRoleCount = await _userRoleRepository.GetCountAsync(p => p.RoleId == roleid);
             if (userRoleCount > 0) throw new BusinessException($"{role.Name}被分配用户,请先删除相关授权的用户信息");
             var userGroupRoleCount = await _userGroupRoleRepository.GetCountAsync(p => p.RoleId == roleid);
@@ -161,6 +163,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == roleid, conn, trans);
                         await _roleDataPermissionOrgRelationRepository.DeleteAsync(p => p.RoleId == roleid, conn,
                             trans);
+                        await RemoveRoleCheckPemissionCache(roleid);
                     }, Connection);
                 });
             }
@@ -228,6 +231,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                             await _rolePermissionRepository.InsertAsync(
                                 new RolePermission {PermissionId = permissionId, RoleId = input.RoleId}, conn, trans);
                         }
+                        await RemoveRoleCheckPemissionCache(input.RoleId);
                     }, Connection);
                 });
             }
@@ -287,6 +291,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                             }
 
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
+                            await RemoveRoleCheckPemissionCache(role.Id);
                         }                        
                     }, Connection);
                 });
@@ -298,7 +303,28 @@ namespace Surging.Hero.Auth.Domain.Roles
             var role = await _roleRepository.GetAsync(input.Id);
             role.Status = input.Status;
             await _roleRepository.UpdateAsync(role);
+            await RemoveRoleCheckPemissionCache(role.Id);
         }
+        
+        public async Task RemoveRoleCheckPemissionCache(long roleId)
+        {
+            var sql = @"
+SELECT oar.ServiceId FROM OperationActionRelation as oar 
+INNER JOIN Operation as o on oar.OperationId=o.Id AND o.IsDeleted=@IsDeleted
+INNER JOIN RolePermission as rp on o.PermissionId=rp.PermissionId 
+WHERE RoleId=@RoleId
+";
+            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag },{ "RoleId", roleId } };
+            await using (Connection)
+            {
+                var roleServiceIds = await Connection.QueryAsync<string>(sql, sqlParams);
+                foreach (var serviceId in roleServiceIds)
+                {
+                    var cacheKey = string.Format(HeroConstants.CacheKey.PermissionCheck,serviceId,"*");
+                    await _cacheProvider.RemoveAsync(cacheKey);
+                }
+            }
+        }       
 
         private async Task<Permission> GetservicePemission(string serviceId)
         {
@@ -331,5 +357,6 @@ WHERE oar.ServiceId=@ServiceId";
                 // }
             }
         }
+        
     }
 }

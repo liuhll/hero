@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Surging.Core.AutoMapper;
+using Surging.Core.Caching;
+using Surging.Core.CPlatform.Cache;
 using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.CPlatform.Utilities;
@@ -23,6 +25,7 @@ using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;
+using Surging.Hero.Common.Runtime.Session;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Organization;
 using Surging.Hero.Organization.IApplication.Position;
@@ -44,6 +47,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         private readonly IDapperRepository<UserGroupDataPermissionOrgRelation, long>
             _userGroupDataPermissionOrgRelationRepository;
         private readonly ISurgingSession _session;
+        private readonly ICacheProvider _cacheProvider;
 
         public UserGroupDomainService(IDapperRepository<UserGroup, long> userGroupRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
@@ -69,6 +73,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
             _operationDomainService = operationDomainService;
             _userGroupDataPermissionOrgRelationRepository = userGroupDataPermissionOrgRelationRepository;
             _session = NullSurgingSession.Instance;
+            _cacheProvider = CacheContainer.GetService<ICacheProvider>(HeroConstants.CacheProviderKey);
         }
 
         public async Task Create(CreateUserGroupInput input)
@@ -129,6 +134,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         {
             var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == id);
             if (userGroup == null) throw new BusinessException($"不存在Id为{id}的用户组信息");
+            _session.CheckLoginUserDataPermision(userGroup.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
             using (var locker = await _lockerProvider.CreateLockAsync("DeleteUserGroup"))
             {
                 await locker.Lock(async () =>
@@ -140,6 +146,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                         await _userUserGroupRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn, trans);
                         await _userGroupDataPermissionOrgRelationRepository.DeleteAsync(p => p.UserGroupId == id, conn,
                             trans);
+                        await RemoveUserGroupCheckPemissionCache(id);
                     }, Connection);
                 });
             }
@@ -203,6 +210,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 });
                             }
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
+                            await RemoveUserGroupCheckPemissionCache(userGroup.Id);
                         }                         
                     }, Connection);
                 });
@@ -303,6 +311,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                     new UserUserGroupRelation {UserGroupId = userGroup.Id, UserId = userId}, conn,
                                     trans);
                         }
+                        // todo 可只删除受影响的用户
+                        await RemoveUserGroupCheckPemissionCache(userGroup.Id);
                     }, Connection);
                     return $"为用户组{userGroup.Name}分配用户成功";
                 });
@@ -313,6 +323,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         {
             await _userUserGroupRelationRepository.DeleteAsync(p =>
                 p.UserId == input.UserId && p.UserGroupId == input.UserGroupId);
+            // todo 可以只删除受影响的用户
+            await RemoveUserGroupCheckPemissionCache(input.UserGroupId);
         }
 
         public async Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)
@@ -399,7 +411,9 @@ WHERE UserGroupId=@UserGroupId";
             sqlParams.Add("Status", status);
             await using (Connection)
             {
+                await RemoveUserGroupCheckPemissionCache(userGroupId);
                 return await Connection.QueryAsync<UserGroupPermissionModel>(sql, sqlParams);
+                
             }
         }
 
@@ -459,6 +473,32 @@ WHERE UserGroupId=@UserGroupId";
                 // {
                 //     throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
                 // }
+            }
+        }
+
+
+        private async Task RemoveUserGroupCheckPemissionCache(long userGroupId)
+        {
+            var sql = @"SELECT oar.ServiceId FROM OperationActionRelation as oar 
+INNER JOIN Operation as o on oar.OperationId=o.Id AND o.IsDeleted=@IsDeleted
+INNER JOIN UserGroupPermission as ugp on o.PermissionId=ugp.PermissionId 
+WHERE UserGroupId=@UserGroupId";
+            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag },{ "UserGroupId", userGroupId } };
+            await using (Connection)
+            {
+                var userGroupServiceIds = await Connection.QueryAsync<string>(sql, sqlParams);
+                foreach (var serviceId in userGroupServiceIds)
+                {
+                    var cacheKey = string.Format(HeroConstants.CacheKey.PermissionCheck,serviceId,"*");
+                    await _cacheProvider.RemoveAsync(cacheKey);
+                }
+            }
+
+            var userGroupRoleIds =
+                (await _userGroupRoleRepository.GetAllAsync(p => p.UserGroupId == userGroupId)).Select(p => p.RoleId);
+            foreach (var roleId in userGroupRoleIds)
+            {
+                await _roleDomainService.RemoveRoleCheckPemissionCache(roleId);
             }
         }
     }

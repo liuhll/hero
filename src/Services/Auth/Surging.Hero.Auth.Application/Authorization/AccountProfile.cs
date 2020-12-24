@@ -13,7 +13,7 @@ namespace Surging.Hero.Auth.Application.Authorization
         public AccountProfile()
         {
             CreateMap<GetUserNormOutput, LoginUserInfo>();
-            CreateMap<GetDisplayRoleOutput, Common.Runtime.Session.GetDisplayRoleOutput>();
+            CreateMap<GetDisplayRoleOutput, GetLoginUserDisplayRoleOutput>();
             CreateMap<Menu, GetUserMenuTreeOutput>().ForMember(p => p.Children, opt => opt.Ignore())
                 .ForMember(p => p.FullName, opt => opt.Ignore());
             CreateMap<Menu, GetUserMenuOutput>().ForMember(p => p.FullName, opt => opt.Ignore());
