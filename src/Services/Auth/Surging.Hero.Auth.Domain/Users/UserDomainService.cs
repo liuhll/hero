@@ -372,7 +372,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
             }
             else
             {
-                sortTypes.Add($"u.Id",query.SortType);
+                sortTypes.Add($"u.Id", SortType.Desc);
             }
 
             var queryResult = await conn.QueryDataPermissionPageAsync<UserInfo>(querySql, sqlParams, query.PageIndex,query.PageCount,sortTypes: sortTypes, "u.OrgId",deleteField:"u.IsDeleted");

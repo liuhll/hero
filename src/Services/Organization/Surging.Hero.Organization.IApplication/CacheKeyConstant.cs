@@ -25,5 +25,7 @@
         public const string GetOrgById = "GetOrgById_{0}";
         
         public const string RemoveGetOrgId = "GetOrgById_*";
+        
+        public const string RemoveDeptPositionById = "GetDeptPositionBy_*";
     }
 }
