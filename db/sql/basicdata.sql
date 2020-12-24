@@ -108,6 +108,4 @@ INSERT INTO `hero_basicdata`.`WordbookItem`(`Id`, `WordBookId`, `Key`, `Value`, 
 INSERT INTO `hero_basicdata`.`WordbookItem`(`Id`, `WordBookId`, `Key`, `Value`, `Memo`, `Sort`, `IsDeleted`, `DeleteBy`, `DeleteTime`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (17, 3, 'Test', '测试', '负责产品测试', 2, 0, NULL, NULL, NULL, '2019-08-11', NULL, NULL);
 INSERT INTO `hero_basicdata`.`WordbookItem`(`Id`, `WordBookId`, `Key`, `Value`, `Memo`, `Sort`, `IsDeleted`, `DeleteBy`, `DeleteTime`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (18, 3, 'Product', '产品', '负责产品规划', 3, 0, NULL, NULL, NULL, '2019-08-11', NULL, NULL);
 INSERT INTO `hero_basicdata`.`WordbookItem`(`Id`, `WordBookId`, `Key`, `Value`, `Memo`, `Sort`, `IsDeleted`, `DeleteBy`, `DeleteTime`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (19, 3, 'Market', '市场', '负责产品市场推广', 4, 0, NULL, NULL, NULL, '2019-08-11', NULL, NULL);
-INSERT INTO `hero_basicdata`.`WordbookItem`(`Id`, `WordBookId`, `Key`, `Value`, `Memo`, `Sort`, `IsDeleted`, `DeleteBy`, `DeleteTime`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (20, 3, 'Logistics', '后勤', '负责公司后勤管理', 5, 0, NULL, NULL, NULL, '2019-08-11', NULL, NULL);
-
-
+INSERT INTO `hero_basicdata`.`WordbookItem`(`Id`, `WordBookId`, `Key`, `Value`, `Memo`, `Sort`, `IsDeleted`, `DeleteBy`, `DeleteTime`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (20, 3, 'Logistics', '后勤', '负责公司后勤管理', 5, 0, NULL, NULL, NULL, '2019-08-11', 1, '2020-12-15');
