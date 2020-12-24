@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
 using Surging.Core.CPlatform.Exceptions;
@@ -106,7 +108,20 @@ namespace Surging.Hero.Auth.Application.User
             if (includeSubOrg)
             {
                 var subOrdIds = await GetService<IOrganizationAppService>().GetSubOrgIds(orgId);
-                orgUsers = (await _userRepository.GetAllAsync()).Where(p => subOrdIds.Any(q => q == p.OrgId));
+                Expression<Func<UserInfo, bool>> expression = null;
+                foreach (var subOrdId in subOrdIds)
+                {
+                    if (expression == null)
+                    {
+                        expression = p => p.OrgId == subOrdId;
+                    }
+                    else
+                    {
+                        expression = expression.Or(p => p.OrgId == subOrdId);
+                    }
+                }
+
+                orgUsers = await _userRepository.GetAllAsync(expression);
             }
             else
             {
@@ -125,6 +140,35 @@ namespace Surging.Hero.Auth.Application.User
             }
 
             return orgUserOutputs;
+        }
+
+        public async Task<int> GetOrgUserCount(long orgId, bool includeSubOrg)
+        {
+            var orgUserCount = 0;
+            if (includeSubOrg)
+            {
+                var subOrdIds = await GetService<IOrganizationAppService>().GetSubOrgIds(orgId);
+                Expression<Func<UserInfo, bool>> expression = null;
+                foreach (var subOrdId in subOrdIds)
+                {
+                    if (expression == null)
+                    {
+                        expression = p => p.OrgId == subOrdId;
+                    }
+                    else
+                    {
+                        expression = expression.Or(p => p.OrgId == subOrdId);
+                    }
+                }
+
+                orgUserCount = await _userRepository.GetCountAsync(expression);
+            }
+            else
+            {
+                orgUserCount = await _userRepository.GetCountAsync(p => p.OrgId == orgId);
+            }
+
+            return orgUserCount;
         }
 
         public async Task<GetUserNormOutput> Get(long id)
