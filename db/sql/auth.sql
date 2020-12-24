@@ -746,3 +746,12 @@ INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `Create
 INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (43, 13, 8, 1, '2020-12-24 22:32:09', 1, '2020-12-24 22:32:09');
 INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (44, 14, 9, 1, '2020-12-24 22:34:28', 1, '2020-12-24 22:34:28');
 INSERT INTO `hero_auth`.`UserRole`(`Id`, `UserId`, `RoleId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (46, 10, 9, 1, '2020-12-24 22:53:14', 1, '2020-12-24 22:53:14');
+
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (60, 8, 2, 1, '2020-12-24 22:17:42');
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (61, 8, 3, 1, '2020-12-24 22:17:42');
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (62, 8, 7, 1, '2020-12-24 22:17:42');
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (63, 8, 8, 1, '2020-12-24 22:17:42');
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (64, 8, 26, 1, '2020-12-24 22:17:42');
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (65, 8, 27, 1, '2020-12-24 22:17:42');
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (66, 8, 28, 1, '2020-12-24 22:17:42');
+INSERT INTO `hero_auth`.`RoleDataPermissionOrgRelation`(`Id`, `RoleId`, `OrgId`, `CreateBy`, `CreateTime`) VALUES (67, 8, 29, 1, '2020-12-24 22:17:42');
