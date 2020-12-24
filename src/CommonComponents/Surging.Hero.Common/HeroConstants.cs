@@ -26,6 +26,8 @@ namespace Surging.Hero.Common
         public static class CacheKey
         {
             public const string PermissionCheck = "PermissionCheck:{0}:{1}";
+
+            public const string RemoveUserPermissionCheck = "PermissionCheck:*:{0}";
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpPut]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "更新用户")]
         [ServiceRoute("")]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById},
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById, HeroConstants.CacheKey.RemoveUserPermissionCheck},
             Mode = CacheTargetType.Redis)]
         Task<string> Update(UpdateUserInput input);
 
@@ -43,7 +43,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpDelete]
         [ServiceRoute("{id}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "删除用户")]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById},
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById, HeroConstants.CacheKey.RemoveUserPermissionCheck},
             Mode = CacheTargetType.Redis)]
         Task<string> Delete(long id);
 
@@ -65,7 +65,7 @@ namespace Surging.Hero.Auth.IApplication.User
         [HttpPut]
         [ServiceRoute("status")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "激活/冻结用户")]
-        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById},
+        [InterceptMethod(CachingMethod.Remove, CorrespondingKeys = new[] {CacheKeyConstant.GetUserNormInfoById, HeroConstants.CacheKey.RemoveUserPermissionCheck},
             Mode = CacheTargetType.Redis)]
         Task<string> UpdateStatus(UpdateUserStatusInput input);
 
