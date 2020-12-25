@@ -1,18 +1,18 @@
 using System;
 using Autofac;
 using Microsoft.Extensions.Logging;
-using Surging.Core.Caching.Configurations;
-using Surging.Core.Consul.Configurations;
-using Surging.Core.CPlatform;
-using Surging.Core.CPlatform.Configurations;
-using Surging.Core.CPlatform.Utilities;
-using Surging.Core.EventBusRabbitMQ.Configurations;
-using Surging.Core.ProxyGenerator;
-using Surging.Core.ServiceHosting;
-using Surging.Core.ServiceHosting.Internal.Implementation;
-using Surging.Core.System.Intercept;
-using Surging.Core.Zookeeper.Configurations;
-using SurgingConfig = Surging.Core.CPlatform.AppConfig;
+using Surging.Cloud.Caching.Configurations;
+using Surging.Cloud.Consul.Configurations;
+using Surging.Cloud.CPlatform;
+using Surging.Cloud.CPlatform.Configurations;
+using Surging.Cloud.CPlatform.Utilities;
+using Surging.Cloud.EventBusRabbitMQ.Configurations;
+using Surging.Cloud.ProxyGenerator;
+using Surging.Cloud.ServiceHosting;
+using Surging.Cloud.ServiceHosting.Internal.Implementation;
+using Surging.Cloud.System.Intercept;
+using Surging.Cloud.Zookeeper.Configurations;
+using SurgingConfig = Surging.Cloud.CPlatform.AppConfig;
 
 namespace Surging.Hero.ServiceHost
 {

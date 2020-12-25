@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Surging.Core.AutoMapper;
-using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.Dapper.Manager;
-using Surging.Core.Dapper.Repositories;
+using Surging.Cloud.AutoMapper;
+using Surging.Cloud.CPlatform.Exceptions;
+using Surging.Cloud.Dapper.Manager;
+using Surging.Cloud.Dapper.Repositories;
 using Surging.Hero.Auth.IApplication.User;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.Domain.Shared;

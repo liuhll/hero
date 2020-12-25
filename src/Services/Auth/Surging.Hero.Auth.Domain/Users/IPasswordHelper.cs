@@ -1,4 +1,4 @@
-﻿using Surging.Core.CPlatform.Ioc;
+﻿using Surging.Cloud.CPlatform.Ioc;
 
 namespace Surging.Hero.Auth.Domain.Users
 {

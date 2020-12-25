@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surging.Core.Dapper.Manager;
-using Surging.Core.Dapper.Repositories;
+using Surging.Cloud.Dapper.Manager;
+using Surging.Cloud.Dapper.Repositories;
 
 namespace Surging.Hero.Organization.Domain
 {

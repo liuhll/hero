@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surging.Core.CPlatform.Ioc;
-using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
-using Surging.Core.Domain.PagedAndSorted;
-using Surging.Core.Domain.Trees;
-using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
-using Surging.Core.System.Intercept;
+using Surging.Cloud.CPlatform.Ioc;
+using Surging.Cloud.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Cloud.Domain.PagedAndSorted;
+using Surging.Cloud.Domain.Trees;
+using Surging.Cloud.ProxyGenerator.Interceptors.Implementation.Metadatas;
+using Surging.Cloud.System.Intercept;
 using Surging.Hero.Common;
 using Surging.Hero.Organization.IApplication.Organization.Dtos;
 

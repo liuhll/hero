@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Autofac;
 using Org.BouncyCastle.Utilities;
-using Surging.Core.Caching.DependencyResolution;
-using Surging.Core.CPlatform.Utilities;
-using Surging.Core.Domain.Entities.Auditing;
-using Surging.Core.ProxyGenerator;
+using Surging.Cloud.Caching.DependencyResolution;
+using Surging.Cloud.CPlatform.Utilities;
+using Surging.Cloud.Domain.Entities.Auditing;
+using Surging.Cloud.ProxyGenerator;
 using Surging.Hero.Auth.IApplication.User;
 using Surging.Hero.Common.FullAuditDtos;
 

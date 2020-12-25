@@ -1,4 +1,4 @@
-﻿using Surging.Core.Domain.Entities.Auditing;
+﻿using Surging.Cloud.Domain.Entities.Auditing;
 using Surging.Hero.Auth.Domain.Shared.Menus;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Menus

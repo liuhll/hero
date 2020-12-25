@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surging.Core.CPlatform;
-using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.Dapper.Repositories;
+using Surging.Cloud.CPlatform;
+using Surging.Cloud.CPlatform.Exceptions;
+using Surging.Cloud.Dapper.Repositories;
 using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Users

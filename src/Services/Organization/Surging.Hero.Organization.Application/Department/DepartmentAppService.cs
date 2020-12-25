@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Surging.Core.Dapper.Repositories;
-using Surging.Core.ProxyGenerator;
-using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Cloud.Dapper.Repositories;
+using Surging.Cloud.ProxyGenerator;
+using Surging.Cloud.Validation.DataAnnotationValidation;
 using Surging.Hero.Organization.Domain.Organizations.Departments;
 using Surging.Hero.Organization.IApplication.Department;
 using Surging.Hero.Organization.IApplication.Department.Dtos;

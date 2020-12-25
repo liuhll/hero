@@ -2,7 +2,7 @@
   "CachingSettings": [
     {
       "Id": "ddlCache",
-      "Class": "Surging.Core.Caching.RedisCache.RedisContext,Surging.Core.Caching",
+      "Class": "Surging.Cloud.Caching.RedisCache.RedisContext,Surging.Cloud.Caching",
       "InitMethod": "",
       "Maps": null,
       "Properties": [

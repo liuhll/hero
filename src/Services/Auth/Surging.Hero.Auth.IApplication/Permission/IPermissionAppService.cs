@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surging.Core.CPlatform.Ioc;
-using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Cloud.CPlatform.Ioc;
+using Surging.Cloud.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Common.Extensions;

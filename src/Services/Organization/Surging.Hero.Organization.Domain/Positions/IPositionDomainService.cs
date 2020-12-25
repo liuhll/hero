@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
-using Surging.Core.CPlatform.Ioc;
+using Surging.Cloud.CPlatform.Ioc;
 using Surging.Hero.Organization.IApplication.Position.Dtos;
 
 namespace Surging.Hero.Organization.Domain.Positions

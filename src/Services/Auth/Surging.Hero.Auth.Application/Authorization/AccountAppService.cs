@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surging.Core.AutoMapper;
-using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.CPlatform.Ioc;
-using Surging.Core.CPlatform.Runtime.Session;
-using Surging.Core.Domain.Trees;
-using Surging.Core.ProxyGenerator;
+using Surging.Cloud.AutoMapper;
+using Surging.Cloud.CPlatform.Exceptions;
+using Surging.Cloud.CPlatform.Ioc;
+using Surging.Cloud.CPlatform.Runtime.Session;
+using Surging.Cloud.Domain.Trees;
+using Surging.Cloud.ProxyGenerator;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Authorization;
 using Surging.Hero.Auth.IApplication.Authorization.Dtos;

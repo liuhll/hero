@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Surging.Core.CPlatform.Ioc;
+using Surging.Cloud.CPlatform.Ioc;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;
 
 namespace Surging.Hero.Organization.Domain.Organizations

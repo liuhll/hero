@@ -1,5 +1,5 @@
 ﻿using System;
-using Surging.Core.Domain.Entities.Auditing;
+using Surging.Cloud.Domain.Entities.Auditing;
 
 namespace Surging.Hero.Common.FullAuditDtos
 {

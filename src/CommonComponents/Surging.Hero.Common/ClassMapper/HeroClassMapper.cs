@@ -1,6 +1,6 @@
 ﻿using DapperExtensions.Mapper;
-using Surging.Core.Domain.Entities;
-using Surging.Core.Domain.Entities.Auditing;
+using Surging.Cloud.Domain.Entities;
+using Surging.Cloud.Domain.Entities.Auditing;
 
 namespace Surging.Hero.Common.ClassMapper
 {

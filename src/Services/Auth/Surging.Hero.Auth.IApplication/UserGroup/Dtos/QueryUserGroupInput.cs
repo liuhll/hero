@@ -1,5 +1,5 @@
-﻿using Surging.Core.CPlatform.Utilities;
-using Surging.Core.Domain.PagedAndSorted;
+﻿using Surging.Cloud.CPlatform.Utilities;
+using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos

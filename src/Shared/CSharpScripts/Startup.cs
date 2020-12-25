@@ -6,10 +6,10 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Surging.Core.CPlatform.Runtime;
-using Surging.Core.CPlatform.Runtime.Server;
-using Surging.Core.CPlatform.Utilities;
-using Surging.Core.ProxyGenerator;
+using Surging.Cloud.CPlatform.Runtime;
+using Surging.Cloud.CPlatform.Runtime.Server;
+using Surging.Cloud.CPlatform.Utilities;
+using Surging.Cloud.ProxyGenerator;
 
 namespace Surging.Hero.ServiceHost
 {

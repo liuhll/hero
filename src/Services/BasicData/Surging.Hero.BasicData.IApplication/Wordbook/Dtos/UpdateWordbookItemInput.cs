@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Surging.Core.System.Intercept;
+using Surging.Cloud.System.Intercept;
 
 namespace Surging.Hero.BasicData.IApplication.Wordbook.Dtos
 {

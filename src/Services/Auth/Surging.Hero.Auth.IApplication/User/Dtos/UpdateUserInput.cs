@@ -1,4 +1,4 @@
-﻿using Surging.Core.System.Intercept;
+﻿using Surging.Cloud.System.Intercept;
 
 namespace Surging.Hero.Auth.IApplication.User.Dtos
 {

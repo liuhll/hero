@@ -2,10 +2,10 @@
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
-using Surging.Core.AutoMapper;
-using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.Dapper.Manager;
-using Surging.Core.Dapper.Repositories;
+using Surging.Cloud.AutoMapper;
+using Surging.Cloud.CPlatform.Exceptions;
+using Surging.Cloud.Dapper.Manager;
+using Surging.Cloud.Dapper.Repositories;
 using Surging.Hero.BasicData.Domain.Shared.Wordbooks;
 using Surging.Hero.BasicData.IApplication.Wordbook;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;

@@ -1,4 +1,4 @@
-﻿using Surging.Core.ProxyGenerator.Interceptors.Implementation.Metadatas;
+﻿using Surging.Cloud.ProxyGenerator.Interceptors.Implementation.Metadatas;
 
 namespace Surging.Hero.Common
 {

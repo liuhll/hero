@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surging.Core.AutoMapper;
-using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.Dapper.Repositories;
-using Surging.Core.ProxyGenerator;
+using Surging.Cloud.AutoMapper;
+using Surging.Cloud.CPlatform.Exceptions;
+using Surging.Cloud.Dapper.Repositories;
+using Surging.Cloud.ProxyGenerator;
 using Surging.Hero.Auth.IApplication.User;
 using Surging.Hero.Organization.Domain.Positions;
 using Surging.Hero.Organization.Domain.Shared.Organizations;

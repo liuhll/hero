@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surging.Core.CPlatform.Ioc;
+using Surging.Cloud.CPlatform.Ioc;
 using Surging.Hero.Auth.IApplication.Action.Dtos;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Actions

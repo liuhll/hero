@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Surging.Core.CPlatform.Ioc;
-using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
-using Surging.Core.Domain.PagedAndSorted;
+using Surging.Cloud.CPlatform.Ioc;
+using Surging.Cloud.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
+using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Hero.Auth.IApplication.User.Dtos;
 using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Common;

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Surging.Core.AutoMapper;
-using Surging.Core.CPlatform.Exceptions;
-using Surging.Core.Dapper.Manager;
-using Surging.Core.Dapper.Repositories;
-using Surging.Core.Domain.PagedAndSorted;
-using Surging.Core.Domain.PagedAndSorted.Extensions;
+using Surging.Cloud.AutoMapper;
+using Surging.Cloud.CPlatform.Exceptions;
+using Surging.Cloud.Dapper.Manager;
+using Surging.Cloud.Dapper.Repositories;
+using Surging.Cloud.Domain.PagedAndSorted;
+using Surging.Cloud.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.Auth.IApplication.FullAuditDtos;
 using Surging.Hero.BasicData.IApplication.Wordbook.Dtos;
 

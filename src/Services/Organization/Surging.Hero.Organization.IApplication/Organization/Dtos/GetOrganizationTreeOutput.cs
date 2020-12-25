@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Surging.Core.Domain.Trees;
+using Surging.Cloud.Domain.Trees;
 using Surging.Hero.Organization.Domain.Shared.Organizations;
 
 namespace Surging.Hero.Organization.IApplication.Organization.Dtos

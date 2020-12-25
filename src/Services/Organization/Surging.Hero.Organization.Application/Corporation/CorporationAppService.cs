@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Surging.Core.ProxyGenerator;
-using Surging.Core.Validation.DataAnnotationValidation;
+using Surging.Cloud.ProxyGenerator;
+using Surging.Cloud.Validation.DataAnnotationValidation;
 using Surging.Hero.Organization.Domain.Organizations;
 using Surging.Hero.Organization.IApplication.Corporation;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;
