@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.Auth.Domain.Roles
 {
-    public class RoleDataPermissionOrgRelation : AuditedEntity<long>
+    public class RoleOrganization : AuditedEntity<long>
     {
         public long RoleId { get; set; }
 
