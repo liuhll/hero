@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Surging.Hero.Common;
 using Surging.Hero.Common.Extensions;
 using Surging.Hero.Common.FullAuditDtos;
@@ -21,6 +22,12 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         /// 如果是用户自定义数据权限,则该角色拥有的数据权限的部门
         /// </summary>
         public long[] DataPermissionOrgIds { get; set; }
+
+        public GetDisplayRoleOrganizationOutput[] Organizations { get; set; }
+
+        public long[] OrgId => Organizations.Select(p => p.OrgId).ToArray();
+
+        public string DisplayOrganizations => string.Join(",", Organizations.Select(p => p.Name));
 
         /// <summary>
         ///     状态
@@ -48,5 +55,6 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         ///     最后修改人
         /// </summary>
         public long? LastModifierUserId { get; set; }
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.CPlatform.Ioc;
 using Surging.Core.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
@@ -69,6 +70,7 @@ namespace Surging.Hero.Auth.IApplication.Role
         [HttpGet]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取角色列表", AllowPermission = true)]
         [ServiceRoute("list")]
+        [Obsolete]
         Task<IEnumerable<GetRoleOutput>> List(string searchKey);
 
         //[HttpGet]

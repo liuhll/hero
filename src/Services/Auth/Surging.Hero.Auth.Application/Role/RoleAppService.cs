@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Core.AutoMapper;
+using Surging.Core.CPlatform.Exceptions;
 using Surging.Core.CPlatform.Runtime.Session;
 using Surging.Core.Dapper.Repositories;
 using Surging.Core.Domain.PagedAndSorted;
@@ -31,6 +32,10 @@ namespace Surging.Hero.Auth.Application.Role
 
         public async Task<string> Create(CreateRoleInput input)
         {
+            if (input.OrgIds == null || input.OrgIds.Length <=0)
+            {
+                throw new BusinessException("角色所属部门不允许为空");
+            }
             _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
             await _roleDomainService.Create(input);
@@ -38,7 +43,8 @@ namespace Surging.Hero.Auth.Application.Role
         }
 
         public async Task<string> Delete(long id)
-        {
+        {  
+            _session.CheckLoginUserDataPermision("您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             await _roleDomainService.Delete(id);
             return "删除角色信息成功";
         }
@@ -69,6 +75,10 @@ namespace Surging.Hero.Auth.Application.Role
 
         public async Task<string> Update(UpdateRoleInput input)
         {
+            if (input.OrgIds == null || input.OrgIds.Length <=0)
+            {
+                throw new BusinessException("角色所属部门不允许为空");
+            }
             _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
             await _roleDomainService.Update(input);

@@ -4,7 +4,7 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.Role.Dtos
 {
-    public class QueryRoleInput : PagedResultRequestDto
+    public class QueryRoleInput : PagedAndSingleSortedResultRequest
     {
         private string _searchKey;
 
@@ -15,8 +15,9 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
                 if (_searchKey.IsNullOrWhiteSpace()) return null;
                 return _searchKey;
             }
-            set => _searchKey = value;
         }
+
+        public bool OnlySelfOrgRole { get; set; } = true;
 
         public Status? Status { get; set; }
     }
