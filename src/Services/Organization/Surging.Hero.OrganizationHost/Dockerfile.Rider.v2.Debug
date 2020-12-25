@@ -3,7 +3,7 @@ WORKDIR /app
 ARG sln_name
 ARG host_workdir
 ARG host_name
-ARG publish_app_dir=${host_workdir}/bin/Debug/netcoreapp3.1
+ARG publish_app_dir=${host_workdir}/bin/Debug/net5.0
 ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
