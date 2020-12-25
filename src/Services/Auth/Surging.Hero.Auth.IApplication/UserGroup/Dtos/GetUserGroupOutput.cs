@@ -48,6 +48,12 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
             get { return string.Join(",", DataPermissionOrgs.Select(p => p.Name)); }
         }
 
+        public GetDisplayOrganizationOutput[] Organizations { get; set; }
+
+        public long[] OrgId => Organizations.Select(p => p.OrgId).ToArray();
+
+        public string DisplayOrganizations => string.Join(",", Organizations.Select(p => p.Name));
+        
         /// <summary>
         ///     用户组状态
         /// </summary>

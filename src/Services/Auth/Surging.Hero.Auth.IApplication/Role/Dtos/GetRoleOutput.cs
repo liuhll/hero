@@ -23,7 +23,7 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         /// </summary>
         public long[] DataPermissionOrgIds { get; set; }
 
-        public GetDisplayRoleOrganizationOutput[] Organizations { get; set; }
+        public GetDisplayOrganizationOutput[] Organizations { get; set; }
 
         public long[] OrgId => Organizations.Select(p => p.OrgId).ToArray();
 

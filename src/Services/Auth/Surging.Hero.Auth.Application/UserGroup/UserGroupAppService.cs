@@ -89,7 +89,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
 
         public async Task<IPagedResult<GetUserGroupOutput>> Search(QueryUserGroupInput query)
         {
-            Expression<Func<Domain.UserGroups.UserGroup, bool>> predicate = p => p.Name.Contains(query.SearchKey);
+            /*Expression<Func<Domain.UserGroups.UserGroup, bool>> predicate = p => p.Name.Contains(query.SearchKey);
             if (query.Status.HasValue) predicate = predicate.And(p => p.Status == query.Status);
             
             var queryResult = await _userGroupRepository.GetPageAsync(predicate, query.PageIndex, query.PageCount);
@@ -102,9 +102,9 @@ namespace Surging.Hero.Auth.Application.UserGroup
                 output.Permissions = (await _userGroupDomainService.GetUserGroupPermissions(output.Id))
                     .MapTo<IEnumerable<GetDisplayPermissionOutput>>();
                 output.DataPermissionOrgs = await _userGroupDomainService.GetUserGroupDataPermissionOrgs(output.Id);
-            }
-
-            return outputs;
+            }*/
+                
+            return await _userGroupDomainService.Search(query);
         }
 
         public async Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)

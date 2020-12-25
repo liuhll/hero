@@ -1,6 +1,6 @@
 ﻿namespace Surging.Hero.Auth.IApplication.Role.Dtos
 {
-    public class GetDisplayRoleOrganizationOutput
+    public class GetDisplayOrganizationOutput
     {
         public long OrgId { get; set; }
 

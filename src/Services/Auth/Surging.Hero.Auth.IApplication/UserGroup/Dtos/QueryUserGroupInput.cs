@@ -4,19 +4,12 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 {
-    public class QueryUserGroupInput : PagedResultRequestDto
+    public class QueryUserGroupInput : PagedAndSingleSortedResultRequest
     {
-        private string _searchKey;
+        
+        public string SearchKey { get; set; }
 
-        public string SearchKey
-        {
-            get
-            {
-                if (_searchKey.IsNullOrWhiteSpace()) return null;
-                return _searchKey;
-            }
-            set => _searchKey = value;
-        }
+        public bool OnlySelfOrgUserGroup { get; set; } = true;
 
         public Status? Status { get; set; }
     }

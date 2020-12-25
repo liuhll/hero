@@ -1,4 +1,6 @@
-﻿namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
+﻿using System.Collections.Generic;
+
+namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 {
     public class UpdateUserGroupInput : UserGroupDtoBase
     {
@@ -9,5 +11,7 @@
         public long[] PermissionIds { get; set; }
         
         public long[] DataPermissionOrgIds { get; set; }
+       
+        public long[] OrgIds { get; set; }
     }
 }

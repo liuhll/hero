@@ -388,16 +388,16 @@ WHERE oar.ServiceId=@ServiceId";
             }
         }
         
-        private async Task<GetDisplayRoleOrganizationOutput[]> GetRoleOrgInfo(long roleId)
+        private async Task<GetDisplayOrganizationOutput[]> GetRoleOrgInfo(long roleId)
         {
             var organziationAppServiceProxy = GetService<IOrganizationAppService>();
             var orgIds =
                 (await _roleOrganizationRepository.GetAllAsync(p => p.RoleId == roleId)).Select(p => p.OrgId).ToArray();
-            var roleOrgs = new List<GetDisplayRoleOrganizationOutput>();
+            var roleOrgs = new List<GetDisplayOrganizationOutput>();
             foreach (var orgId in orgIds)
             {
                 var orginInfo = await organziationAppServiceProxy.GetOrg(orgId);
-                roleOrgs.Add(new GetDisplayRoleOrganizationOutput() {OrgId = orgId, Name = orginInfo.Name});
+                roleOrgs.Add(new GetDisplayOrganizationOutput() {OrgId = orgId, Name = orginInfo.Name});
             }
             
             return roleOrgs.ToArray();
