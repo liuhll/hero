@@ -40,6 +40,11 @@ drop table if exists UserRole;
 
 drop table if exists UserUserGroupRelation;
 
+drop table if exists RoleOrganization;
+
+drop table if exists UserGroupOrganization;
+
+
 /*==============================================================*/
 /* Table: Action                                                */
 /*==============================================================*/
@@ -223,6 +228,8 @@ create table RoleDataPermissionOrgRelation
    OrgId                bigint not null comment '组织机构Id',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
    primary key (Id)
 );
 
@@ -278,6 +285,8 @@ create table UserGroupDataPermissionOrgRelation
    OrgId                bigint not null comment '组织机构Id',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
    primary key (Id)
 );
 
@@ -389,6 +398,40 @@ create table UserUserGroupRelation
 );
 
 alter table UserUserGroupRelation comment '用户与用户关系表';
+
+/*==============================================================*/
+/* Table: RoleOrganization                                      */
+/*==============================================================*/
+create table RoleOrganization
+(
+   Id                   bigint not null auto_increment comment '主键',
+   RoleId               bigint not null comment '角色Id',
+   OrgId                bigint not null comment '所属组织Id',
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
+   primary key (Id)
+);
+
+alter table RoleOrganization comment '角色组织关系表';
+
+create table UserGroupOrganization
+(
+   Id                   bigint not null auto_increment comment '主键',
+   UserGroupId          bigint not null comment '用户组Id',
+   OrgId                bigint not null comment '所属组织Id',
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
+   primary key (Id)
+);
+
+alter table UserGroupOrganization comment '用户组组织关系表';
+
+
+
 
 INSERT INTO `hero_auth`.`Action`(`Id`, `ServiceId`, `ServiceHost`, `Application`, `Name`, `WebApi`, `Method`, `DisableNetwork`, `EnableAuthorization`, `AllowPermission`, `Developer`, `Date`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (1, 'Surging.Core.CPlatform.Module.IEchoService.Locate_key_routePath_httpMethod', 'Surging.Core.CPlatform', 'IEchoService', NULL, '/locate', 'GET', b'0', b'1', b'0', NULL, NULL, 1, 1, '2020-12-14 16:21:26', 1, '2020-12-23 15:16:24');
 INSERT INTO `hero_auth`.`Action`(`Id`, `ServiceId`, `ServiceHost`, `Application`, `Name`, `WebApi`, `Method`, `DisableNetwork`, `EnableAuthorization`, `AllowPermission`, `Developer`, `Date`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (2, 'Surging.Hero.Auth.IApplication.User.IUserAppService.Create_input', 'Surging.Hero.Auth', 'IUserAppService', '新增用户', 'api/user', 'POST', b'0', b'1', b'0', '刘洪亮', '2020-07-04', 1, 1, '2020-12-14 16:21:27', 1, '2020-12-23 15:16:25');
