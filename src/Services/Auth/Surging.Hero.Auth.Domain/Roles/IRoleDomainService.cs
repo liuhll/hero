@@ -11,11 +11,8 @@ namespace Surging.Hero.Auth.Domain.Roles
         Task Create(CreateRoleInput input);
         Task Update(UpdateRoleInput input);
         Task UpdateStatus(UpdateRoleStatusInput input);
-
         Task RemoveRoleCheckPemissionCache(long roleId);
-        
         Task<IEnumerable<RolePermission>> GetRolePermissions(long roleId);
-        Task SetPermissions(SetRolePermissionInput input);
         Task Delete(long roleid);
         Task<bool> CheckPermission(long roleId, string serviceId);
         Task<GetRoleOutput> Get(long id);

@@ -22,7 +22,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         [RegularExpression(RegExpConstants.NormalIdentificationCode, ErrorMessage = "用户组唯一标识不正确")]
         public string Identification { get; set; }
         
-        /// <summary>
+        /// <summary>+
         /// 数据权限
         /// </summary>
         public DataPermissionType? DataPermissionType { get; set; }

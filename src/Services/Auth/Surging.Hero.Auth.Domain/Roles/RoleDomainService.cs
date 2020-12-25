@@ -267,31 +267,6 @@ WHERE r.IsDeleted=@IsDeleted
 
         }
         
-        public async Task SetPermissions(SetRolePermissionInput input)
-        {
-            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == input.RoleId);
-            if (role == null) throw new BusinessException($"不存在Id为{input.RoleId}的角色信息");
-            using (var locker = await _lockerProvider.CreateLockAsync("SetPermissions"))
-            {
-                await locker.Lock(async () =>
-                {
-                    await UnitOfWorkAsync(async (conn, trans) =>
-                    {
-                        await _rolePermissionRepository.DeleteAsync(p => p.RoleId == input.RoleId, conn, trans);
-                        foreach (var permissionId in input.PermissionIds)
-                        {
-                            var permission =
-                                await _permissionRepository.SingleOrDefaultAsync(p => p.Id == permissionId);
-                            if (permission == null) throw new BusinessException($"不存在Id为{permissionId}的权限信息");
-                            await _rolePermissionRepository.InsertAsync(
-                                new RolePermission {PermissionId = permissionId, RoleId = input.RoleId}, conn, trans);
-                        }
-                        await RemoveRoleCheckPemissionCache(input.RoleId);
-                    }, Connection);
-                });
-            }
-        }
-
         public async Task Update(UpdateRoleInput input)
         {
             CheckUserDefinedDataPermission(input.DataPermissionType,input.DataPermissionOrgIds);
@@ -410,12 +385,6 @@ WHERE oar.ServiceId=@ServiceId";
                 {
                     throw new BusinessException("设置角色的数据权限为自定义数据权限,则指定的部门不允许为空");
                 }
-
-                // DebugCheck.NotNull(_session.OrgId);
-                // if (!orgIds.Contains(_session.OrgId.Value))
-                // {
-                //     throw new BusinessException("用户自定义数据权限指定的部门必须包含您所在的部门");
-                // }
             }
         }
         
