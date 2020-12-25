@@ -6,6 +6,6 @@
 
         public long[] PermissionIds { get; set; }
 
-        public long[] OrgIds { get; set; }
+        public long[] DataPermissionOrgIds { get; set; }
     }
 }

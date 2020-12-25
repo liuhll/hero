@@ -81,7 +81,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
             userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoleOutputs(id)).Select(p => p.Id).ToArray();
             userGroupOutput.PermissionIds =
                 (await _userGroupDomainService.GetUserGroupPermissions(id)).Select(p => p.Id).ToArray();
-            userGroupOutput.OrgIds =
+            userGroupOutput.DataPermissionOrgIds =
                 (await _userGroupDataPermissionOrgRelationRepository.GetAllAsync(p => p.UserGroupId == id))
                 .Select(p => p.Id).ToArray();
             return userGroupOutput;

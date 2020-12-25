@@ -100,7 +100,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 {
                     var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);
                     if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Identification}的角色");
-                    CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
+                    CheckUserDefinedDataPermission(input.DataPermissionType,input.DataPermissionOrgIds);
                     var role = input.MapTo<Role>();
                     
                     await UnitOfWorkAsync(async (conn, trans) =>
@@ -124,7 +124,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                             var insertDataPermissionOrgSql =
                                 "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId)";
                             var dataPermissionOrgDatas = new List<RoleDataPermissionOrgRelation>();
-                            foreach (var orgId in input.OrgIds)
+                            foreach (var orgId in input.DataPermissionOrgIds)
                             {
                                 dataPermissionOrgDatas.Add(new RoleDataPermissionOrgRelation()
                                 {
@@ -179,7 +179,7 @@ namespace Surging.Hero.Auth.Domain.Roles
 
             roleOutput.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == role.Id))
                 .Select(p => p.PermissionId).ToArray();
-            roleOutput.OrgIds = (await _roleDataPermissionOrgRelationRepository.GetAllAsync(p => p.RoleId == role.Id))
+            roleOutput.DataPermissionOrgIds = (await _roleDataPermissionOrgRelationRepository.GetAllAsync(p => p.RoleId == role.Id))
                 .Select(p => p.OrgId).ToArray();
 
             return roleOutput;
@@ -203,7 +203,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 await output.SetAuditInfo();
                 output.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == output.Id))
                     .Select(p => p.PermissionId).ToArray();
-                output.OrgIds = (await _roleDataPermissionOrgRelationRepository.GetAllAsync(p => p.RoleId == output.Id))
+                output.DataPermissionOrgIds = (await _roleDataPermissionOrgRelationRepository.GetAllAsync(p => p.RoleId == output.Id))
                     .Select(p => p.OrgId).ToArray();
             }
 
@@ -239,7 +239,7 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task Update(UpdateRoleInput input)
         {
-            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
+            CheckUserDefinedDataPermission(input.DataPermissionType,input.DataPermissionOrgIds);
             using (var locker = await _lockerProvider.CreateLockAsync("UpdateRole"))
             {
                 await locker.Lock(async () =>
@@ -279,7 +279,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                             var insertDataPermissionOrgSql =
                                 "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId)";
                             var dataPermissionOrgDatas = new List<RoleDataPermissionOrgRelation>();
-                            foreach (var orgId in input.OrgIds)
+                            foreach (var orgId in input.DataPermissionOrgIds)
                             {
                                 dataPermissionOrgDatas.Add(new RoleDataPermissionOrgRelation()
                                 {

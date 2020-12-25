@@ -20,7 +20,7 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         /// <summary>
         /// 如果是用户自定义数据权限,则该角色拥有的数据权限的部门
         /// </summary>
-        public long[] OrgIds { get; set; }
+        public long[] DataPermissionOrgIds { get; set; }
 
         /// <summary>
         ///     状态

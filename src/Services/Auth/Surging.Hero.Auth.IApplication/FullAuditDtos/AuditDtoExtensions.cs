@@ -27,9 +27,9 @@ namespace Surging.Hero.Auth.IApplication.FullAuditDtos
                 if (modificationUser != null) auditDto.LastModificationUserName = modificationUser.ChineseName;
             }
         }
-        
 
-        public static IUserAppService GetUserAppService()
+
+        private static IUserAppService GetUserAppService()
         {
             if (ServiceLocator.Current.IsRegistered<IUserAppService>())
             {

@@ -38,7 +38,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 
         public IEnumerable<GetDisplayDataPermissionOrgOutput> DataPermissionOrgs { get; set; }
 
-        public IEnumerable<long> OrgIds
+        public IEnumerable<long> DataPermissionOrgIds
         {
             get { return DataPermissionOrgs.Select(p => p.Id); }
         }

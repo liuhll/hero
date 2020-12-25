@@ -78,7 +78,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
         public async Task Create(CreateUserGroupInput input)
         {
-            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
+            CheckUserDefinedDataPermission(input.DataPermissionType,input.DataPermissionOrgIds);
             using (var locker = await _lockerProvider.CreateLockAsync("CreateUserGroup"))
             {
                 await locker.Lock(async () =>
@@ -113,7 +113,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                             var insertDataPermissionOrgSql =
                                 "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId)";
                             var dataPermissionOrgDatas = new List<UserGroupDataPermissionOrgRelation>();
-                            foreach (var orgId in input.OrgIds)
+                            foreach (var orgId in input.DataPermissionOrgIds)
                             {
                                 dataPermissionOrgDatas.Add(new UserGroupDataPermissionOrgRelation()
                                 {
@@ -154,7 +154,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
         public async Task Update(UpdateUserGroupInput input)
         {
-            CheckUserDefinedDataPermission(input.DataPermissionType,input.OrgIds);
+            CheckUserDefinedDataPermission(input.DataPermissionType,input.DataPermissionOrgIds);
             using (var locker = await _lockerProvider.CreateLockAsync("UpdateUserGroup"))
             {
                 await locker.Lock(async () =>
@@ -199,7 +199,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                             var insertDataPermissionOrgSql =
                                 "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId)";
                             var dataPermissionOrgDatas = new List<UserGroupDataPermissionOrgRelation>();
-                            foreach (var orgId in input.OrgIds)
+                            foreach (var orgId in input.DataPermissionOrgIds)
                             {
                                 dataPermissionOrgDatas.Add(new UserGroupDataPermissionOrgRelation()
                                 {
@@ -339,8 +339,8 @@ WHERE UserGroupId=@UserGroupId";
             if (query.OrgId.HasValue && query.OrgId.Value != 0)
             {
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
-                querySql += " AND u.OrgId in @OrgIds";
-                sqlParams.Add("OrgIds", subOrgIds);
+                querySql += " AND u.OrgId in @DataPermissionOrgIds";
+                sqlParams.Add("DataPermissionOrgIds", subOrgIds);
             }
 
             if (query.PositionId.HasValue && query.PositionId.Value != 0)

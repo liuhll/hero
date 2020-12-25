@@ -331,8 +331,8 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
             if (query.OrgId.HasValue && query.OrgId.Value != 0)
             {
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
-                querySql += " AND u.OrgId in @OrgIds";
-                sqlParams.Add("OrgIds", subOrgIds);
+                querySql += " AND u.OrgId in @DataPermissionOrgIds";
+                sqlParams.Add("DataPermissionOrgIds", subOrgIds);
             }
 
             if (query.Status.HasValue)
