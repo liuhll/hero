@@ -34,12 +34,23 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         {
             get { return this.DataPermissionType.GetDescription(); }
         }
+        
+        /// <summary>
+        /// 角色是否可以被分配给所有用户
+        /// </summary>
+        public bool IsAllOrg { get; set; }
 
-
+        /// <summary>
+        /// 所属部门
+        /// </summary>
+        [Required(ErrorMessage = "所属部门不允许为空")]
+        public virtual long[] OrgIds { get; set; }
+        
         /// <summary>
         ///    备注
         /// </summary>
         [MaxLength(200, ErrorMessage = "备注长度不允许超过200个字符")]
         public string Memo { get; set; }
+
     }
 }

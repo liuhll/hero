@@ -98,11 +98,14 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 new UserGroupRole {UserGroupId = userGroupId, RoleId = roleId}, conn, trans);
                         }
                         
-                        foreach (var orgId in input.OrgIds)
+                        if (!input.IsAllOrg)
                         {
-                            var roleOrg = new UserGroupOrganization() { UserGroupId = orgId, OrgId = orgId };
-                            await _userGroupOrganizationRepository.InsertAsync(roleOrg, conn, trans);
-                        }  
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                var roleOrg = new UserGroupOrganization() { UserGroupId = orgId, OrgId = orgId };
+                                await _userGroupOrganizationRepository.InsertAsync(roleOrg, conn, trans);
+                            }                              
+                        } 
                         var insertSql =
                             "INSERT INTO UserGroupPermission(PermissionId,UserGroupId,CreateTime,CreateBy) VALUES(@PermissionId,@UserGroupId,@CreationTime,@CreatorUserId)";
                         var userGroupPermissions = new List<UserGroupPermission>();
@@ -143,7 +146,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         {
             var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == id);
             if (userGroup == null) throw new BusinessException($"不存在Id为{id}的用户组信息");
-            _session.CheckLoginUserDataPermision(userGroup.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
+           // _session.CheckLoginUserDataPermision(userGroup.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
             using (var locker = await _lockerProvider.CreateLockAsync("DeleteUserGroup"))
             {
                 await locker.Lock(async () =>
@@ -194,11 +197,15 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 new UserGroupRole {UserGroupId = userGroup.Id, RoleId = roleId}, conn, trans);
                         }
 
-                        foreach (var orgId in input.OrgIds)
+                        if (!input.IsAllOrg)
                         {
-                            var roleOrg = new UserGroupOrganization() { UserGroupId = orgId, OrgId = orgId };
-                            await _userGroupOrganizationRepository.InsertAsync(roleOrg, conn, trans);
-                        }  
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                var roleOrg = new UserGroupOrganization() { UserGroupId = orgId, OrgId = orgId };
+                                await _userGroupOrganizationRepository.InsertAsync(roleOrg, conn, trans);
+                            }                              
+                        }
+
                         var insertSql =
                             "INSERT INTO UserGroupPermission(PermissionId,UserGroupId,CreateTime,CreateBy) VALUES(@PermissionId,@UserGroupId,@CreationTime,@CreatorUserId)";
                         var userGroupPermissions = new List<UserGroupPermission>();
@@ -432,8 +439,9 @@ WHERE ug.IsDeleted=@IsDeleted
             if (query.OrgId.HasValue)
             {
                 sql = string.Format(sql, " LEFT JOIN UserGroupOrganization as ugo On ugo.UserGroupId=ug.Id ");
-                sql += " AND ugo.OrgId=@OrgId";
+                sql += " AND (ugo.OrgId=@OrgId OR r.IsAllOrg=@IsAllOrg)";
                 sqlParams.Add("OrgId",query.OrgId.Value);
+                sqlParams.Add("IsAllOrg", true);
             }
             else
             {

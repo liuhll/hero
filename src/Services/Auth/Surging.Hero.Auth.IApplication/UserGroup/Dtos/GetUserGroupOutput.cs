@@ -50,16 +50,20 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
 
         public GetDisplayOrganizationOutput[] Organizations { get; set; }
 
-        public long[] OrgId => Organizations.Select(p => p.OrgId).ToArray();
+        private long[] _orgIds;
+        public override long[] OrgIds
+        {
+            get { return   IsAllOrg ? null : Organizations.Select(p => p.OrgId).ToArray(); }
+        }
+        public string DisplayOrganizations => IsAllOrg ? "所有部门" : string.Join(",", Organizations.Select(p => p.Name));
 
-        public string DisplayOrganizations => string.Join(",", Organizations.Select(p => p.Name));
-        
         /// <summary>
         ///     用户组状态
         /// </summary>
         public Status Status { get; set; }
 
         public virtual DateTime CreationTime { get; set; }
+        
         public virtual long? CreatorUserId { get; set; }
 
         public virtual string CreatorUserName { get; set; }

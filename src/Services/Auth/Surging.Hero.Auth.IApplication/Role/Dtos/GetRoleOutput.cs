@@ -24,10 +24,14 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         public long[] DataPermissionOrgIds { get; set; }
 
         public GetDisplayOrganizationOutput[] Organizations { get; set; }
+        
+        public override long[] OrgIds
+        {
+            get { return   IsAllOrg ? null : Organizations.Select(p => p.OrgId).ToArray(); }
+        }
+      
 
-        public long[] OrgId => Organizations.Select(p => p.OrgId).ToArray();
-
-        public string DisplayOrganizations => string.Join(",", Organizations.Select(p => p.Name));
+        public string DisplayOrganizations => IsAllOrg ? "所有部门" : string.Join(",", Organizations.Select(p => p.Name));
 
         /// <summary>
         ///     状态

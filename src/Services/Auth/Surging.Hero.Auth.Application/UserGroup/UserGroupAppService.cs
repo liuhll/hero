@@ -54,8 +54,9 @@ namespace Surging.Hero.Auth.Application.UserGroup
 
         public async Task<string> Create(CreateUserGroupInput input)
         {
-            _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
+            //_session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
+            CheckIsAllOrg(input);
             await _userGroupDomainService.Create(input);
             return "新增用户组成功";
         }
@@ -117,8 +118,9 @@ namespace Surging.Hero.Auth.Application.UserGroup
 
         public async Task<string> Update(UpdateUserGroupInput input)
         {
-            _session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
+            //_session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的用户组的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
+            CheckIsAllOrg(input);
             await _userGroupDomainService.Update(input);
             return "更新用户组成功";
             ;
@@ -129,6 +131,19 @@ namespace Surging.Hero.Auth.Application.UserGroup
             await _userGroupDomainService.UpdateStatus(input);
             if (input.Status == Status.Valid) return "激活用户组状态成功";
             return "冻结用户组状态成功";
+        }
+        
+        private static void CheckIsAllOrg(UserGroupDtoBase input)
+        {
+            if (!input.IsAllOrg && (input.OrgIds == null || input.OrgIds.Length <= 0))
+            {
+                throw new BusinessException("角色所属部门不允许为空");
+            }
+
+            if (input.IsAllOrg && input.OrgIds?.Length > 0)
+            {
+                throw new BusinessException("角色设置为可被分配所有部门,则不需要传递orgIds参数");
+            }
         }
     }
 }

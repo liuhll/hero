@@ -11,7 +11,6 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         public long[] PermissionIds { get; set; }
         
         public long[] DataPermissionOrgIds { get; set; }
-       
-        public long[] OrgIds { get; set; }
+        
     }
 }

@@ -32,17 +32,9 @@ namespace Surging.Hero.Auth.Application.Role
 
         public async Task<string> Create(CreateRoleInput input)
         {
-            if (!input.IsAllOrg && (input.OrgIds == null || input.OrgIds.Length <= 0))
-            {
-                throw new BusinessException("角色所属部门不允许为空");
-            }
-
-            if (input.IsAllOrg && input.OrgIds?.Length > 0)
-            {
-                throw new BusinessException("角色设置为可被分配所有部门,则不需要传递orgIds参数");
-            }
-            //_session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             input.CheckDataAnnotations().CheckValidResult();
+            CheckIsAllOrg(input);
+            //_session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             await _roleDomainService.Create(input);
             return "新增角色信息成功";
         }
@@ -80,6 +72,16 @@ namespace Surging.Hero.Auth.Application.Role
 
         public async Task<string> Update(UpdateRoleInput input)
         {
+            input.CheckDataAnnotations().CheckValidResult();
+            
+            CheckIsAllOrg(input);
+            //_session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
+            await _roleDomainService.Update(input);
+            return "更新角色信息成功";
+        }
+
+        private static void CheckIsAllOrg(RoleDtoBase input)
+        {
             if (!input.IsAllOrg && (input.OrgIds == null || input.OrgIds.Length <= 0))
             {
                 throw new BusinessException("角色所属部门不允许为空");
@@ -89,10 +91,6 @@ namespace Surging.Hero.Auth.Application.Role
             {
                 throw new BusinessException("角色设置为可被分配所有部门,则不需要传递orgIds参数");
             }
-            //_session.CheckLoginUserDataPermision(input.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
-            input.CheckDataAnnotations().CheckValidResult();
-            await _roleDomainService.Update(input);
-            return "更新角色信息成功";
         }
     }
 }
