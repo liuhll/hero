@@ -114,11 +114,11 @@
             </DockerEnvVarImpl>
             <DockerEnvVarImpl>
               <option name="name" value="EXECUTION_TIMEOUT" />
-              <option name="value" value="60000" />
+              <option name="value" value="2000" />
             </DockerEnvVarImpl>
             <DockerEnvVarImpl>
               <option name="name" value="GATEWAY_EXECUTION_TIMEOUT" />
-              <option name="value" value="5000" />
+              <option name="value" value="2000" />
             </DockerEnvVarImpl>
             <DockerEnvVarImpl>
               <option name="name" value="ENABLE_HEALTH_CHECK" />
