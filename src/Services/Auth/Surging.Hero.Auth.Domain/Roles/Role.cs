@@ -12,6 +12,8 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public string Memo { get; set; }
 
+        public bool IsAllOrg { get; set; }
+
         public Status Status { get; set; }
         
         public DataPermissionType DataPermissionType { get; set; }

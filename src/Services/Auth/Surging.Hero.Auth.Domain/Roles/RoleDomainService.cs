@@ -122,11 +122,14 @@ namespace Surging.Hero.Auth.Domain.Roles
                                 CreatorUserId = _session.UserId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
-                        foreach (var orgId in input.OrgIds)
+                        if (!input.IsAllOrg)
                         {
-                            var roleOrg = new RoleOrganization() { RoleId = roleId, OrgId = orgId };
-                            await _roleOrganizationRepository.InsertAsync(roleOrg, conn, trans);
-                        }                        
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                var roleOrg = new RoleOrganization() { RoleId = roleId, OrgId = orgId };
+                                await _roleOrganizationRepository.InsertAsync(roleOrg, conn, trans);
+                            }  
+                        }
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
                             var insertDataPermissionOrgSql =
@@ -227,8 +230,9 @@ WHERE r.IsDeleted=@IsDeleted
             if (query.OrgId.HasValue)
             {
                 sql = string.Format(sql, " LEFT JOIN RoleOrganization as ro On ro.RoleId=r.Id ");
-                sql += "AND ro.OrgId=@OrgId";
+                sql += "AND (ro.OrgId=@OrgId OR r.IsAllOrg=@IsAllOrg)";
                 sqlParams.Add("OrgId",query.OrgId.Value);
+                sqlParams.Add("IsAllOrg",true);
             }
             else
             {
@@ -305,11 +309,14 @@ WHERE r.IsDeleted=@IsDeleted
                                 CreatorUserId = _session.UserId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
-                        foreach (var orgId in input.OrgIds)
+                        if (!input.IsAllOrg)
                         {
-                            var roleOrg = new RoleOrganization() { RoleId = role.Id, OrgId = orgId };
-                            await _roleOrganizationRepository.InsertAsync(roleOrg, conn, trans);
-                        }                             
+                            foreach (var orgId in input.OrgIds)
+                            {
+                                var roleOrg = new RoleOrganization() { RoleId = role.Id, OrgId = orgId };
+                                await _roleOrganizationRepository.InsertAsync(roleOrg, conn, trans);
+                            }  
+                        }                           
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
                             var insertDataPermissionOrgSql =
