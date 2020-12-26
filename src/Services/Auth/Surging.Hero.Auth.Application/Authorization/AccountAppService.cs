@@ -4,8 +4,10 @@ using Surging.Cloud.AutoMapper;
 using Surging.Cloud.CPlatform.Exceptions;
 using Surging.Cloud.CPlatform.Ioc;
 using Surging.Cloud.CPlatform.Runtime.Session;
+using Surging.Cloud.Dapper.Repositories;
 using Surging.Cloud.Domain.Trees;
 using Surging.Cloud.ProxyGenerator;
+using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.Authorization;
 using Surging.Hero.Auth.IApplication.Authorization.Dtos;
@@ -19,12 +21,15 @@ namespace Surging.Hero.Auth.Application.Authorization
         private readonly ILoginManager _loginManager;
         private readonly ISurgingSession _surgingSession;
         private readonly IUserDomainService _userDomainService;
+        private readonly IDapperRepository<Menu, long> _menuRepository;
 
         public AccountAppService(ILoginManager loginManager,
-            IUserDomainService userDomainService)
+            IUserDomainService userDomainService,
+            IDapperRepository<Menu, long> menuRepository)
         {
             _loginManager = loginManager;
             _userDomainService = userDomainService;
+            _menuRepository = menuRepository;
             _surgingSession = NullSurgingSession.Instance;
         }
 
@@ -56,6 +61,16 @@ namespace Surging.Hero.Auth.Application.Authorization
             if (_surgingSession == null || !_surgingSession.UserId.HasValue) throw new BusinessException("您当前没有登录系统");
             var userOperations = await _userDomainService.GetUserOperation(_surgingSession.UserId.Value, menuId);
             return userOperations.MapTo<IEnumerable<GetUserOperationOutput>>();
+        }
+
+        public async Task<IEnumerable<GetUserOperationOutput>> GetUserOperationByMenuName(string menuName)
+        {
+            var menu = await _menuRepository.SingleOrDefaultAsync(p => p.Name == menuName);
+            if (menu == null)
+            {
+                throw new BusinessException($"系统中不存在{menuName}的菜单");
+            }
+            return await GetUserOperation(menu.Id);
         }
 
         public async Task<IDictionary<string, object>> Login(LoginInput input)

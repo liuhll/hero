@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Cloud.CPlatform.Ioc;
 using Surging.Cloud.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
@@ -60,6 +61,18 @@ namespace Surging.Hero.Auth.IApplication.Authorization
         [Service(Director = Developers.Liuhll, Date = "2019-09-23", Name = "通过菜单Id获取用户的操作权限",
             EnableAuthorization = true, AllowPermission = true)]
         [ServiceRoute("operation/{menuId}")]
+        [Obsolete]
         Task<IEnumerable<GetUserOperationOutput>> GetUserOperation(long menuId);
+
+        /// <summary>
+        ///    根据菜单名称获取用户的操作权限
+        /// </summary>
+        /// <param name="menuName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Service(Director = Developers.Liuhll, Date = "2019-09-23", Name = "通过菜单名称获取用户的操作权限",
+            EnableAuthorization = true, AllowPermission = true)]
+        [ServiceRoute("operation/name/{menuName}")]
+        Task<IEnumerable<GetUserOperationOutput>> GetUserOperationByMenuName(string menuName);
     }
 }
