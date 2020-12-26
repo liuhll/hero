@@ -224,11 +224,11 @@ WHERE r.IsDeleted=@IsDeleted
                 sqlParams.Add("Status",query.Status);
             }
 
-            if (query.OnlySelfOrgRole)
+            if (query.OrgId.HasValue)
             {
                 sql = string.Format(sql, " LEFT JOIN RoleOrganization as ro On ro.RoleId=r.Id ");
                 sql += "AND ro.OrgId=@OrgId";
-                sqlParams.Add("OrgId",_session.OrgId);
+                sqlParams.Add("OrgId",query.OrgId.Value);
             }
             else
             {

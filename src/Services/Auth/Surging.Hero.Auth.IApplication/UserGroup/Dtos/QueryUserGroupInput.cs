@@ -9,7 +9,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         
         public string SearchKey { get; set; }
 
-        public bool OnlySelfOrgUserGroup { get; set; } = true;
+        public long? OrgId { get; set; } 
 
         public Status? Status { get; set; }
     }

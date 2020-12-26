@@ -429,11 +429,11 @@ WHERE ug.IsDeleted=@IsDeleted
                 sqlParams.Add("Status",query.Status);
             }
 
-            if (query.OnlySelfOrgUserGroup)
+            if (query.OrgId.HasValue)
             {
                 sql = string.Format(sql, " LEFT JOIN UserGroupOrganization as ugo On ugo.UserGroupId=ug.Id ");
                 sql += " AND ugo.OrgId=@OrgId";
-                sqlParams.Add("OrgId",_session.OrgId);
+                sqlParams.Add("OrgId",query.OrgId.Value);
             }
             else
             {
