@@ -202,6 +202,7 @@ create table Role
 (
    Id                   bigint not null auto_increment comment '主键',
    Identification       varchar(50) not null comment '唯一标识',
+   IsAllOrg             bit not null default 1 comment '是否归属所有部门',
    Name                 varchar(50) not null comment '角色名称',
    Memo                 varchar(100) comment '备注',
    Status               int not null comment '状态',
@@ -213,10 +214,12 @@ create table Role
    IsDeleted            int comment '软删除标识',
    DeleteBy             bigint comment '删除用户',
    DeleteTime           datetime comment '删除时间',
+   Column_15            char(10),
    primary key (Id)
 );
 
 alter table Role comment '角色表';
+
 
 /*==============================================================*/
 /* Table: RoleDataPermissionOrgRelation                         */
@@ -259,6 +262,7 @@ create table UserGroup
 (
    Id                   bigint not null auto_increment comment '主键',
    Identification       varchar(50) not null comment '唯一标识',
+   IsAllOrg             bit not null default 1 comment '是否归属所有部门',
    Name                 varchar(50) not null comment '用户组名称',
    Memo                 varchar(200),
    Status               int not null comment '状态',
@@ -274,6 +278,7 @@ create table UserGroup
 );
 
 alter table UserGroup comment '用户组表';
+
 
 /*==============================================================*/
 /* Table: UserGroupDataPermissionOrgRelation                    */
