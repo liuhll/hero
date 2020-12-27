@@ -8,8 +8,8 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
     {
 
         public string SearchKey { get; set; }
-        
-        public long? OrgId { get; set; }
+
+        public long[] OrgIds { get; set; }
 
         public Status? Status { get; set; }
     }

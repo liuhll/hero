@@ -215,7 +215,7 @@ WHERE r.IsDeleted=@IsDeleted
 ";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("IsDeleted",HeroConstants.UnDeletedFlag);
-            if (!query.SearchKey.IsNullOrEmpty())
+            if (!query.SearchKey.IsNullOrWhiteSpace())
             {
                 sql += " AND r.`Name` LIKE @SearchKey OR r.Identification LIKE @SearchKey ";
                 sqlParams.Add("SearchKey",$"%{query.SearchKey}%");
@@ -227,11 +227,11 @@ WHERE r.IsDeleted=@IsDeleted
                 sqlParams.Add("Status",query.Status);
             }
 
-            if (query.OrgId.HasValue)
+            if (query.OrgIds !=null && query.OrgIds.Length > 0)
             {
                 sql = string.Format(sql, " LEFT JOIN RoleOrganization as ro On ro.RoleId=r.Id ");
-                sql += "AND (ro.OrgId=@OrgId OR r.IsAllOrg=@IsAllOrg)";
-                sqlParams.Add("OrgId",query.OrgId.Value);
+                sql += "AND (ro.OrgId in @OrgId OR r.IsAllOrg=@IsAllOrg)";
+                sqlParams.Add("OrgId",query.OrgIds);
                 sqlParams.Add("IsAllOrg",true);
             }
             else

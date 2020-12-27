@@ -48,6 +48,7 @@ namespace Surging.Hero.Auth.Domain.Users
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<UserUserGroupRelation, long> _userUserGroupRelationRepository;
         private readonly IDapperRepository<UserGroupPermission, long> _userGroupPermissionRepository;
+        private readonly IDapperRepository<UserGroupOrganization, long> _userGroupOrganizationDapperRepository;
         private readonly ISurgingSession _session;
 
         public UserDomainService(IDapperRepository<UserInfo, long> userRepository,
@@ -61,7 +62,8 @@ namespace Surging.Hero.Auth.Domain.Users
             IMenuDomainService menuDomainService,
             ILockerProvider lockerProvider,
             IDapperRepository<UserGroup, long> userGroupRepository,
-            IDapperRepository<UserGroupPermission, long> userGroupPermissionRepository)
+            IDapperRepository<UserGroupPermission, long> userGroupPermissionRepository,
+            IDapperRepository<UserGroupOrganization, long> userGroupOrganizationDapperRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -75,6 +77,7 @@ namespace Surging.Hero.Auth.Domain.Users
             _lockerProvider = lockerProvider;
             _userGroupRepository = userGroupRepository;
             _userGroupPermissionRepository = userGroupPermissionRepository;
+            _userGroupOrganizationDapperRepository = userGroupOrganizationDapperRepository;
             _session = NullSurgingSession.Instance;
         }
 
@@ -265,17 +268,17 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
 
         public async Task Update(UpdateUserInput input)
         {
-            var updateUser = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id,false);
+            var updateUser = await _userRepository.SingleOrDefaultAsync(p => p.Id == input.Id, false);
             if (updateUser == null) throw new BusinessException($"不存在Id为{input.Id}的账号信息");
             if (input.Phone != updateUser.Phone)
             {
-                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Phone == input.Phone,false);
+                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Phone == input.Phone, false);
                 if (existUser != null) throw new UserFriendlyException($"已经存在手机号码为{input.Phone}的用户");
             }
 
             if (input.Email != updateUser.Email)
             {
-                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Email == input.Email,false);
+                var existUser = await _userRepository.FirstOrDefaultAsync(p => p.Email == input.Email, false);
                 if (existUser != null) throw new UserFriendlyException($"已经存在Email为{input.Email}的用户");
             }
 
@@ -324,7 +327,8 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
 
         public async Task<IPagedResult<GetUserNormOutput>> Search(QueryUserInput query)
         {
-            var querySql = @"SELECT u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime FROM  UserInfo as u 
+            var querySql =
+                @"SELECT u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime FROM  UserInfo as u 
                 WHERE 1=1 ";
 
             var sqlParams = new Dictionary<string, object>();
@@ -333,6 +337,33 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
                 querySql += " AND u.OrgId in @DataPermissionOrgIds";
                 sqlParams.Add("DataPermissionOrgIds", subOrgIds);
+            }
+
+            if (query.UserGroupId.HasValue && query.UserGroupId.Value > 0)
+            {
+                var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == query.UserGroupId);
+                if (userGroup == null)
+                {
+                    throw new BusinessException($"不存在IUserGroupId为{query.UserGroupId}的用户组");
+                }
+
+                if (!userGroup.IsAllOrg)
+                {
+                    var userGroupOrgIds =
+                        (await _userGroupOrganizationDapperRepository.GetAllAsync(p =>
+                            p.UserGroupId == query.UserGroupId))
+                        .Select(p => p.OrgId);
+
+                    if (sqlParams.ContainsKey("DataPermissionOrgIds"))
+                    {
+                        sqlParams["DataPermissionOrgIds"] = userGroupOrgIds;
+                    }
+                    else
+                    {
+                        querySql += " AND u.OrgId in @DataPermissionOrgIds";
+                        sqlParams.Add("DataPermissionOrgIds", userGroupOrgIds);
+                    }
+                }
             }
 
             if (query.Status.HasValue)
@@ -363,21 +394,23 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                 querySql += $" AND u.Id {includeKey} @UserId";
                 sqlParams.Add("UserId", query.UserIds.Ids);
             }
-            
+
             await using var conn = Connection;
             var sortTypes = new Dictionary<string, SortType>();
             if (!query.Sorting.IsNullOrEmpty())
             {
-                sortTypes.Add($"u.{query.Sorting}",query.SortType);
+                sortTypes.Add($"u.{query.Sorting}", query.SortType);
             }
             else
             {
                 sortTypes.Add($"u.Id", SortType.Desc);
             }
 
-            var queryResult = await conn.QueryDataPermissionPageAsync<UserInfo>(querySql, sqlParams, query.PageIndex,query.PageCount,sortTypes: sortTypes, "u.OrgId",deleteField:"u.IsDeleted");
+            var queryResult = await conn.QueryDataPermissionPageAsync<UserInfo>(querySql, sqlParams, query.PageIndex,
+                query.PageCount, sortTypes: sortTypes, "u.OrgId", deleteField: "u.IsDeleted");
 
-            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserNormOutput>>().GetPagedResult((int)queryResult.Item2);
+            var queryResultOutput = queryResult.Item1.MapTo<IEnumerable<GetUserNormOutput>>()
+                .GetPagedResult((int) queryResult.Item2);
             foreach (var userOutput in queryResultOutput.Items)
             {
                 if (userOutput.OrgId.HasValue)
@@ -411,6 +444,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                 {
                     continue;
                 }
+
                 if (role.DataPermissionType > dataPermissionType)
                 {
                     dataPermissionType = role.DataPermissionType;
@@ -426,7 +460,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
             var userDefinedUserGroupIds = new List<long>();
             foreach (var userGroup in userGroups)
             {
-                var userGroupPermissions = await 
+                var userGroupPermissions = await
                     _userGroupPermissionRepository.GetAllAsync(p => p.UserGroupId == userGroup.Id);
                 if (!userGroupPermissions.Any(p => p.PermissionId == permissionId))
                 {
@@ -437,6 +471,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                 {
                     dataPermissionType = userGroup.DataPermissionType.Value;
                 }
+
                 if (dataPermissionType == DataPermissionType.UserDefined)
                 {
                     userDefinedUserGroupIds.Add(userGroup.Id);
@@ -450,6 +485,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                     {
                         continue;
                     }
+
                     if (userGroupRole.DataPermissionType > dataPermissionType)
                     {
                         dataPermissionType = userGroupRole.DataPermissionType;
@@ -461,7 +497,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                     }
                 }
             }
-            
+
             var checkPermission = new CheckPermissionResult(dataPermissionType);
             switch (dataPermissionType)
             {
@@ -470,7 +506,7 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                     break;
                 case DataPermissionType.OnlySelfOrg:
                     DebugCheck.NotNull(_session.OrgId);
-                    checkPermission.DataPermissionOrgIds = new[] { _session.OrgId.Value };
+                    checkPermission.DataPermissionOrgIds = new[] {_session.OrgId.Value};
                     break;
                 case DataPermissionType.SelfAndLowerOrg:
                     DebugCheck.NotNull(_session.OrgId);
@@ -479,15 +515,17 @@ WHERE ugp.UserGroupId in @UserGroupIds AND o.MenuId=@MenuId
                     checkPermission.DataPermissionOrgIds = subOrgIds.ToArray();
                     break;
                 case DataPermissionType.UserDefined:
-                    checkPermission.DataPermissionOrgIds = await GetUserDefinedPermissionOrgIds(userDefinedRoleIds,userDefinedUserGroupIds);
+                    checkPermission.DataPermissionOrgIds =
+                        await GetUserDefinedPermissionOrgIds(userDefinedRoleIds, userDefinedUserGroupIds);
                     break;
             }
 
             return checkPermission;
         }
-        
 
-        private async Task<long[]> GetUserDefinedPermissionOrgIds(List<long> userDefinedRoleIds, List<long> userDefinedUserGroupIds)
+
+        private async Task<long[]> GetUserDefinedPermissionOrgIds(List<long> userDefinedRoleIds,
+            List<long> userDefinedUserGroupIds)
         {
             var sql = @"
 SELECT up.OrgId FROM UserGroupDataPermissionOrgRelation up WHERE up.UserGroupId IN @UserGroupId
@@ -496,7 +534,8 @@ SELECT rp.OrgId FROM RoleDataPermissionOrgRelation as rp WHERE rp.RoleId IN @Rol
 ";
             await using (Connection)
             {
-                return (await Connection.QueryAsync<long>(sql, new { RoleId = userDefinedRoleIds, UserGroupId = userDefinedUserGroupIds })).ToArray();
+                return (await Connection.QueryAsync<long>(sql,
+                    new {RoleId = userDefinedRoleIds, UserGroupId = userDefinedUserGroupIds})).ToArray();
             }
         }
 
@@ -535,6 +574,7 @@ SELECT rp.OrgId FROM RoleDataPermissionOrgRelation as rp WHERE rp.RoleId IN @Rol
                 sql += " AND ug.Status=@Status";
                 sqlParams.Add("Status", status);
             }
+
             await using (Connection)
             {
                 return await Connection.QueryAsync<UserGroup>(sql, sqlParams);

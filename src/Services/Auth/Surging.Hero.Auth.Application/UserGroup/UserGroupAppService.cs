@@ -28,7 +28,7 @@ namespace Surging.Hero.Auth.Application.UserGroup
     {
         private readonly IUserGroupDomainService _userGroupDomainService;
         private readonly IDapperRepository<Domain.UserGroups.UserGroup, long> _userGroupRepository;
-        private readonly IDapperRepository<UserInfo, long> _userInfoRepository;
+        private readonly IDapperRepository<UserGroupOrganization, long> _userGroupOrganizationDapperRepository;
 
         private readonly IDapperRepository<UserGroupDataPermissionOrgRelation, long>
             _userGroupDataPermissionOrgRelationRepository;
@@ -38,12 +38,13 @@ namespace Surging.Hero.Auth.Application.UserGroup
             IDapperRepository<Domain.UserGroups.UserGroup, long> userGroupRepository,
             IRoleDomainService roleDomainService,
             IDapperRepository<UserInfo, long> userRepository, 
-            IDapperRepository<UserGroupDataPermissionOrgRelation, long> userGroupDataPermissionOrgRelationRepository)
+            IDapperRepository<UserGroupDataPermissionOrgRelation, long> userGroupDataPermissionOrgRelationRepository, 
+            IDapperRepository<UserGroupOrganization, long> userGroupOrganizationDapperRepository)
         {
             _userGroupDomainService = userGroupDomainService;
             _userGroupRepository = userGroupRepository;
-            _userInfoRepository = userRepository;
             _userGroupDataPermissionOrgRelationRepository = userGroupDataPermissionOrgRelationRepository;
+            _userGroupOrganizationDapperRepository = userGroupOrganizationDapperRepository;
             _session = NullSurgingSession.Instance;
         }
 
@@ -73,19 +74,10 @@ namespace Surging.Hero.Auth.Application.UserGroup
             return "删除用户成功";
         }
 
-        public async Task<GetUserEditGroupOutput> Get(long id)
+        public async Task<GetUserGroupOutput> Get(long id)
         {
-            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == id);
-            if (userGroup == null) throw new UserFriendlyException($"不存在id为{id}的用户组信息");
-
-            var userGroupOutput = userGroup.MapTo<GetUserEditGroupOutput>();
-            userGroupOutput.RoleIds = (await _userGroupDomainService.GetUserGroupRoleOutputs(id)).Select(p => p.Id).ToArray();
-            userGroupOutput.PermissionIds =
-                (await _userGroupDomainService.GetUserGroupPermissions(id)).Select(p => p.Id).ToArray();
-            userGroupOutput.DataPermissionOrgIds =
-                (await _userGroupDataPermissionOrgRelationRepository.GetAllAsync(p => p.UserGroupId == id))
-                .Select(p => p.Id).ToArray();
-            return userGroupOutput;
+            
+            return await _userGroupDomainService.Get(id);
         }
 
         public async Task<IPagedResult<GetUserGroupOutput>> Search(QueryUserGroupInput query)

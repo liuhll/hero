@@ -8,6 +8,8 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
     {
         public long? OrgId { get; set; }
 
+        public long? UserGroupId { get; set; }
+
         public long? PositionId { get; set; }
 
         public Status? Status { get; set; }

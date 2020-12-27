@@ -102,8 +102,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                         {
                             foreach (var orgId in input.OrgIds)
                             {
-                                var roleOrg = new UserGroupOrganization() { UserGroupId = orgId, OrgId = orgId };
-                                await _userGroupOrganizationRepository.InsertAsync(roleOrg, conn, trans);
+                                var userGroupOrg = new UserGroupOrganization() { UserGroupId = userGroupId, OrgId = orgId };
+                                await _userGroupOrganizationRepository.InsertAsync(userGroupOrg, conn, trans);
                             }                              
                         } 
                         var insertSql =
@@ -183,6 +183,9 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     userGroup = input.MapTo(userGroup);
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
+                        var userGroupOrganizationIds =
+                            (await _userGroupOrganizationRepository.GetAllAsync(p => p.UserGroupId == userGroup.Id, conn,
+                                trans)).Select(p=> p.OrgId).ToArray();
                         await _userGroupRepository.UpdateAsync(userGroup, conn, trans);
                         await _userGroupRoleRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn, trans);
                         await _userGroupPermissionRepository.DeleteAsync(p => p.UserGroupId == userGroup.Id, conn,
@@ -199,10 +202,15 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
                         if (!input.IsAllOrg)
                         {
+                            if (!await UpdateOrgIdsEqExistOrgIds(input.OrgIds, userGroupOrganizationIds,userGroup.Id))
+                            {
+                                throw new BusinessException("用户组所属类型为自定义的且已经存在用户的,不允许修改用户组的所属部门");
+                            }
+
                             foreach (var orgId in input.OrgIds)
                             {
-                                var roleOrg = new UserGroupOrganization() { UserGroupId = orgId, OrgId = orgId };
-                                await _userGroupOrganizationRepository.InsertAsync(roleOrg, conn, trans);
+                                var userGroupOrg = new UserGroupOrganization() { UserGroupId = userGroup.Id, OrgId = orgId };
+                                await _userGroupOrganizationRepository.InsertAsync(userGroupOrg, conn, trans);
                             }                              
                         }
 
@@ -241,6 +249,22 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                     }, Connection);
                 });
             }
+        }
+
+        private async Task<bool> UpdateOrgIdsEqExistOrgIds(long[] inputOrgIds, long[] userGroupOrganizationIds,long userGroupId)
+        {
+            var userGroupUserCount = await _userUserGroupRelationRepository.GetCountAsync(p => p.UserGroupId == userGroupId);
+            if (userGroupUserCount <= 0)
+            {
+                return true;
+            }
+
+            if (inputOrgIds.Length != userGroupOrganizationIds.Length)
+            {
+                return false;
+            }
+
+            return !inputOrgIds.Where((t, i) => t != userGroupOrganizationIds[i]).Any();
         }
 
         public async Task<IEnumerable<GetDisplayRoleOutput>> GetUserGroupRoleOutputs(long userGroupId, Status? status = null)
@@ -471,10 +495,26 @@ WHERE ug.IsDeleted=@IsDeleted
                     output.Permissions = (await GetUserGroupPermissions(output.Id))
                         .MapTo<IEnumerable<GetDisplayPermissionOutput>>();
                     output.Organizations = await GetUserGroupOrgInfo(output.Id);
+                    output.DataPermissionOrgs = await GetUserGroupDataPermissionOrgs(output.Id);
                 }
 
                 return outputs;
             }            
+        }
+
+        public async Task<GetUserGroupOutput> Get(long id)
+        {
+            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (userGroup == null) throw new UserFriendlyException($"不存在id为{id}的用户组信息");
+
+            var userGroupOutput = userGroup.MapTo<GetUserGroupOutput>(); 
+            userGroupOutput.Roles = await GetUserGroupRoleOutputs(id);
+            userGroupOutput.Permissions = (await GetUserGroupPermissions(id))
+                .MapTo<IEnumerable<GetDisplayPermissionOutput>>();
+            userGroupOutput.Organizations = await GetUserGroupOrgInfo(id);
+            userGroupOutput.DataPermissionOrgs = await GetUserGroupDataPermissionOrgs(id);
+            return userGroupOutput;
+
         }
 
         private async Task<GetDisplayOrganizationOutput[]> GetUserGroupOrgInfo(long userGroupId)

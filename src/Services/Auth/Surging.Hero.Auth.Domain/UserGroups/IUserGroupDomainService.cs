@@ -30,5 +30,6 @@ namespace Surging.Hero.Auth.Domain.UserGroups
 
         Task<IEnumerable<GetDisplayDataPermissionOrgOutput>> GetUserGroupDataPermissionOrgs(long userGroupId);
         Task<IPagedResult<GetUserGroupOutput>> Search(QueryUserGroupInput query);
+        Task<GetUserGroupOutput> Get(long id);
     }
 }
