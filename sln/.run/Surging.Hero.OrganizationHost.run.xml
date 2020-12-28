@@ -1,8 +1,8 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Surging.Hero.OrganizationHost" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/../src/Services/Organization/Surging.Hero.OrganizationHost/bin/Debug/netcoreapp3.1/Surging.Hero.OrganizationHost.dll" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/../src/Services/Organization/Surging.Hero.OrganizationHost/bin/Debug/net5.0/Surging.Hero.OrganizationHost.dll" />
     <option name="PROGRAM_PARAMETERS" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../src/Services/Organization/Surging.Hero.OrganizationHost/bin/Debug/netcoreapp3.1" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../src/Services/Organization/Surging.Hero.OrganizationHost/bin/Debug/net5.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
       <env name="EventBusUserName" value="rabbitmq" />
@@ -38,6 +38,7 @@
       <env name="Environment" value="Development" />
       <env name="AnnotationXmlDir" value="AnnotationXmlDir" />
       <env name="ConnectionString" value="Server=www.liuhl-hero.top;Database=hero_organization;Uid=root;Port=3306;Pwd=qwe!P4ss;pooling=true;min pool size=5;max pool size=512;" />
+      <env name="LogLevel" value="Information" />
     </envs>
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
@@ -47,7 +48,7 @@
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
     <option name="PROJECT_KIND" value="DotNetCore" />
-    <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+    <option name="PROJECT_TFM" value="net5.0" />
     <method v="2">
       <option name="Build" />
     </method>
