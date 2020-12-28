@@ -448,7 +448,7 @@ WHERE ug.IsDeleted=@IsDeleted
 ";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("IsDeleted",HeroConstants.UnDeletedFlag);
-            if (!query.SearchKey.IsNullOrEmpty())
+            if (!query.SearchKey.IsNullOrWhiteSpace())
             {
                 sql += " AND ug.`Name` LIKE @SearchKey OR ug.Identification LIKE @SearchKey ";
                 sqlParams.Add("SearchKey",$"%{query.SearchKey}%");
@@ -463,7 +463,7 @@ WHERE ug.IsDeleted=@IsDeleted
             if (query.OrgId.HasValue)
             {
                 sql = string.Format(sql, " LEFT JOIN UserGroupOrganization as ugo On ugo.UserGroupId=ug.Id ");
-                sql += " AND (ugo.OrgId=@OrgId OR r.IsAllOrg=@IsAllOrg)";
+                sql += " AND (ugo.OrgId=@OrgId OR ug.IsAllOrg=@IsAllOrg)";
                 sqlParams.Add("OrgId",query.OrgId.Value);
                 sqlParams.Add("IsAllOrg", true);
             }
