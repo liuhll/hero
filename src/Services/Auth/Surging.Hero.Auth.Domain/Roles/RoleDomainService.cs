@@ -334,8 +334,8 @@ WHERE r.IsDeleted=@IsDeleted
                             }
 
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
-                            await RemoveRoleCheckPemissionCache(role.Id);
-                        }                        
+                        }
+                        await RemoveRoleCheckPemissionCache(role.Id);
                     }, Connection);
                 });
             }

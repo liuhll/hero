@@ -43,7 +43,6 @@ namespace Surging.Hero.Auth.IApplication.Role.Dtos
         /// <summary>
         /// 所属部门
         /// </summary>
-        [Required(ErrorMessage = "所属部门不允许为空")]
         public virtual long[] OrgIds { get; set; }
         
         /// <summary>

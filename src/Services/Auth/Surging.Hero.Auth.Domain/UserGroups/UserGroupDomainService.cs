@@ -244,8 +244,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 });
                             }
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
-                            await RemoveUserGroupCheckPemissionCache(userGroup.Id);
-                        }                         
+                        }
+                        await RemoveUserGroupCheckPemissionCache(userGroup.Id);
                     }, Connection);
                 });
             }

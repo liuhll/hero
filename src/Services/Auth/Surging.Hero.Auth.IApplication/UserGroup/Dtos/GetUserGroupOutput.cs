@@ -65,8 +65,7 @@ namespace Surging.Hero.Auth.IApplication.UserGroup.Dtos
         }
 
         public GetDisplayOrganizationOutput[] Organizations { get; set; }
-
-        private long[] _orgIds;
+        
         public override long[] OrgIds
         {
             get { return   IsAllOrg ? null : Organizations.Select(p => p.OrgId).ToArray(); }
