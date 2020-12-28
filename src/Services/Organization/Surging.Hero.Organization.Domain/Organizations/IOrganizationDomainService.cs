@@ -8,5 +8,7 @@ namespace Surging.Hero.Organization.Domain
     {
         Task<IEnumerable<Organization>> GetOrganizations();
         Task<IEnumerable<Organization>> GetSubOrgs(long orgId);
+
+        Task<IEnumerable<Organization>> GetParentsOrganizations(long orgId);
     }
 }

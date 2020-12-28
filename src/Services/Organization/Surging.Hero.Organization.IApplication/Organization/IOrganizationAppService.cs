@@ -23,6 +23,12 @@ namespace Surging.Hero.Organization.IApplication.Organization
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取组织结构树形结构", AllowPermission = true)]
         Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetTree();
 
+        [HttpGet]
+        [ServiceRoute("own/tree")]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-28", Name = "获取当前登录用户有数据权限的组织树")]
+        Task<IEnumerable<ITree<GetOrganizationTreeOutput>>> GetOwnTree();
+        
+
         /// <summary>
         ///     查询组织机构
         /// </summary>
@@ -43,6 +49,13 @@ namespace Surging.Hero.Organization.IApplication.Organization
         [ServiceRoute("suborgs/{orgId}")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "获取子机构Id", DisableNetwork = true)]
         Task<IEnumerable<long>> GetSubOrgIds([CacheKey(1)] long orgId);
+        
+        [HttpGet]
+        [ServiceRoute("parents/{orgId}")]
+        [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetParentsOrgsById, Mode = CacheTargetType.Redis)]
+        [Service(Director = Developers.Liuhll, Date = "2020-12-28", Name = "获取指定Org的父级组织机构", DisableNetwork = true)]
+        Task<IEnumerable<GetOrganizationTreeOutput>> GetParentsOrgs([CacheKey(1)]long orgId);
+        
 
         [HttpGet]
         [InterceptMethod(CachingMethod.Get, Key = CacheKeyConstant.GetOrgById, Mode = CacheTargetType.Redis)]
