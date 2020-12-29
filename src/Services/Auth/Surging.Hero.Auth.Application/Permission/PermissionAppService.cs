@@ -120,7 +120,7 @@ namespace Surging.Hero.Auth.Application.Permission
         {
             if (_session == null || !_session.UserId.HasValue) throw new AuthException("您还没有登录系统");
 
-            return await _cacheProvider.GetFromCacheFirst(string.Format(HeroConstants.CacheKey.PermissionCheck,serviceId,_session.UserId.Value),async () => { return await _permissionDomainService.Check(_session.UserId.Value, serviceId);},typeof(IDictionary<string,object>));
+            return await _cacheProvider.GetFromCacheFirst(string.Format(HeroConstants.CacheKey.PermissionCheck,serviceId,_session.UserId.Value),async () => await _permissionDomainService.Check(_session.UserId.Value, serviceId),typeof(IDictionary<string,object>));
             // return await _permissionDomainService.Check(_session.UserId.Value, serviceId);
         }
 
