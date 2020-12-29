@@ -1,5 +1,5 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Surging.Hero.AuthHost" type="DotNetProject" factoryName=".NET Project" singleton="false">
+  <configuration default="false" name="Surging.Hero.AuthHost" type="DotNetProject" factoryName=".NET Project" singleton="true">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../src/Services/Auth/Surging.Hero.AuthHost/bin/Debug/net5.0/Surging.Hero.AuthHost.dll" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../src/Services/Auth/Surging.Hero.AuthHost/bin/Debug/net5.0" />
@@ -10,6 +10,7 @@
       <env name="EventBusPassword" value="rabbitmq" />
       <env name="LockRedisConnection" value="127.0.0.1:16379" />
       <env name="ForceDisplayStackTrace" value="true" />
+      <env name="LogLevel" value="Information" />
       <env name="RpcPort" value="1101" />
       <env name="# UseEngineParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
       <env name="# UseKestrelHttpParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;WSProtocolModule;AutoMapperModule;ServiceProxyModule;" />
@@ -38,7 +39,6 @@
       <env name="Environment" value="Development" />
       <env name="AnnotationXmlDir" value="AnnotationXmlDir" />
       <env name="ConnectionString" value="Server=www.liuhl-hero.top;Database=hero_auth;Uid=root;Port=3306;Pwd=qwe!P4ss;pooling=true;min pool size=5;max pool size=512;" />
-      <env name="LogLevel" value="Information" />
     </envs>
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
