@@ -42,6 +42,7 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<RoleOrganization, long> _roleOrganizationRepository;
+        private readonly IDapperRepository<Permissions.Actions.Action,long> _actionRepository;
         private readonly ICacheProvider _cacheProvider;
 
         private readonly IDapperRepository<RoleDataPermissionOrgRelation, long>
@@ -55,7 +56,8 @@ namespace Surging.Hero.Auth.Domain.Roles
             IDapperRepository<Operation, long> operationRepository,
             ILockerProvider lockerProvider, 
             IDapperRepository<RoleDataPermissionOrgRelation, long> roleDataPermissionOrgRelationRepository, 
-            IDapperRepository<RoleOrganization, long> roleOrganizationRepository)
+            IDapperRepository<RoleOrganization, long> roleOrganizationRepository, 
+            IDapperRepository<Permissions.Actions.Action, long> actionRepository)
         {
             _roleRepository = roleRepository;
             _rolePermissionRepository = rolePermissionRepository;
@@ -66,6 +68,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             _lockerProvider = lockerProvider;
             _roleDataPermissionOrgRelationRepository = roleDataPermissionOrgRelationRepository;
             _roleOrganizationRepository = roleOrganizationRepository;
+            _actionRepository = actionRepository;
             _session = NullSurgingSession.Instance;
             _cacheProvider = CacheContainer.GetService<ICacheProvider>(HeroConstants.CacheProviderKey);
         }
@@ -76,23 +79,25 @@ namespace Surging.Hero.Auth.Domain.Roles
             if (role == null) throw new BusinessException($"不存在Id为{roleId}的角色信息");
             if (role.Status == Status.Invalid) return false;
             var rolePermissions = await GetRolePermissions(roleId);
-            var servicePemission = await GetservicePemission(serviceId);
-            if (servicePemission == null)
+            var servicePemissions = await GetservicePemission(serviceId);
+            var action = await _actionRepository.SingleOrDefaultAsync(p => p.ServiceId == serviceId);
+            if (!servicePemissions.Any())
                 throw new AuthException($"通过{serviceId}未查询到相关权限信息,请于管理员联系", StatusCode.UnAuthorized);
-            if (servicePemission.Status == Status.Invalid)
-                throw new AuthException($"{servicePemission.Name}--{servicePemission.Memo}权限状态无效",
+            if (action.Status == Status.Invalid)
+                throw new AuthException($"{action.Application}--{action.Name}权限状态无效",
                     StatusCode.UnAuthorized);
-            if (servicePemission.Mold == PermissionMold.Operation)
-            {
-                var serviceOperation =
-                    await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == servicePemission.Id);
-                if (serviceOperation == null)
-                    throw new AuthException($"通过{serviceId}未查询到相关操作,请于管理员联系", StatusCode.UnAuthorized);
-                if (serviceOperation.Mold == OperationMold.Look || serviceOperation.Mold == OperationMold.Query)
-                    return true;
+            foreach (var servicePemission in servicePemissions)
+            {   
+                if (servicePemission.Mold == PermissionMold.Operation)
+                {
+                    var serviceOperation =
+                        await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == servicePemission.Id);
+                    if (serviceOperation.Mold == OperationMold.Look || serviceOperation.Mold == OperationMold.Query)
+                        return true;
+                }
+                
             }
-
-            if (rolePermissions.Any(p => p.PermissionId == servicePemission.Id)) return true;
+            if (rolePermissions.Any(p => servicePemissions.Any(q=> q.Id == p.PermissionId))) return true;
             return false;
         }
 
@@ -369,18 +374,18 @@ WHERE RoleId=@RoleId
             }
         }       
 
-        private async Task<Permission> GetservicePemission(string serviceId)
+        private async Task<IEnumerable<Permission>> GetservicePemission(string serviceId)
         {
             var sql = @"SELECT p.* FROM OperationActionRelation as oar 
 LEFT JOIN Operation as o on oar.OperationId = o.Id AND o.IsDeleted = @IsDeleted
-LEFT JOIN Permission as p on p.Id = o.PermissionId AND p.Mold=1 AND  p.IsDeleted = @IsDeleted
+LEFT JOIN Permission as p on p.Id = o.PermissionId AND p.Mold=@Mold AND  p.IsDeleted = @IsDeleted
 WHERE oar.ServiceId=@ServiceId";
 
             await using (Connection)
             {
-                var permission = await Connection.QueryAsync<Permission>(sql,
-                    new {ServiceId = serviceId, IsDeleted = HeroConstants.UnDeletedFlag});
-                return permission.FirstOrDefault();
+                var permissions = await Connection.QueryAsync<Permission>(sql,
+                    new {ServiceId = serviceId, IsDeleted = HeroConstants.UnDeletedFlag, Mold=PermissionMold.Operation });
+                return permissions;
             }
         }
         

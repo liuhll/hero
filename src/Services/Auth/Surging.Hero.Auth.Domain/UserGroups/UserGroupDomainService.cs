@@ -553,7 +553,6 @@ WHERE ug.IsDeleted=@IsDeleted
             sqlParams.Add("Status", status);
             await using (Connection)
             {
-                await RemoveUserGroupCheckPemissionCache(userGroupId);
                 return await Connection.QueryAsync<UserGroupPermissionModel>(sql, sqlParams);
                 
             }
