@@ -130,7 +130,9 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
             }
             if (AppConfig.ServerOptions.Environment == RuntimeEnvironment.Test)
             {
-                throw new AuthException("项目演示环境，不能操作！", StatusCode.UnAuthorized);
+                if (AuthDomainConstants.PermissionServiceIdWhiteList.Contains(serviceId))
+                    return true;
+                throw new AuthException("项目演示环境，不允许操作！", StatusCode.UnAuthorized);
             }
             
             var operationActionRelations =

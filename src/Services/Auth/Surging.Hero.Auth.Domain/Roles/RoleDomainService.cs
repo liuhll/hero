@@ -94,11 +94,15 @@ namespace Surging.Hero.Auth.Domain.Roles
                 {
                     var serviceOperation =
                         await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == servicePemission.Id);
+                    if (serviceOperation == null)
+                        throw new BusinessException($"不存在{servicePemission.Name}的操作信息");
                     if (serviceOperation.Mold == OperationMold.Look || serviceOperation.Mold == OperationMold.Query)
                         return true;
                     if (AppConfig.ServerOptions.Environment == RuntimeEnvironment.Test)
                     {
-                        throw new AuthException("项目演示环境，不能操作！", StatusCode.UnAuthorized);
+                        if (AuthDomainConstants.PermissionServiceIdWhiteList.Contains(serviceId))
+                            return true;
+                        throw new AuthException("项目演示环境，不允许操作！", StatusCode.UnAuthorized);
                     }
                 }
                 

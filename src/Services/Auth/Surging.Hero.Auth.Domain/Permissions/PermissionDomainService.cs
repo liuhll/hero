@@ -57,10 +57,7 @@ namespace Surging.Hero.Auth.Domain.Permissions
             {
                 isPermission = await _userDomainService.CheckPermission(userId, serviceId);
                 if (!isPermission)
-                {
-                
                     throw new AuthException($"您没有{actionName}的权限", StatusCode.UnAuthorized);
-                }
             }
             permissionResult.Add("isPermission",isPermission);
             var operations = await _operationDomainService.GetOperationsByServiceId(serviceId);
