@@ -7,6 +7,7 @@ using Dapper;
 using Surging.Cloud.AutoMapper;
 using Surging.Cloud.Caching;
 using Surging.Cloud.CPlatform.Cache;
+using Surging.Cloud.CPlatform.Configurations;
 using Surging.Cloud.CPlatform.Exceptions;
 using Surging.Cloud.CPlatform.Runtime.Session;
 using Surging.Cloud.CPlatform.Utilities;
@@ -28,6 +29,7 @@ using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Common;
 using Surging.Hero.Common.Runtime.Session;
 using Surging.Hero.Organization.IApplication.Organization;
+using AppConfig = Surging.Cloud.CPlatform.AppConfig;
 
 namespace Surging.Hero.Auth.Domain.Roles
 {
@@ -94,6 +96,10 @@ namespace Surging.Hero.Auth.Domain.Roles
                         await _operationRepository.SingleOrDefaultAsync(p => p.PermissionId == servicePemission.Id);
                     if (serviceOperation.Mold == OperationMold.Look || serviceOperation.Mold == OperationMold.Query)
                         return true;
+                    if (AppConfig.ServerOptions.Environment == RuntimeEnvironment.Test)
+                    {
+                        throw new AuthException("项目演示环境，不能操作！", StatusCode.UnAuthorized);
+                    }
                 }
                 
             }

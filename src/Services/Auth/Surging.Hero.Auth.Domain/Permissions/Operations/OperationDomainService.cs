@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Surging.Cloud.AutoMapper;
+using Surging.Cloud.CPlatform.Configurations;
 using Surging.Cloud.CPlatform.Exceptions;
 using Surging.Cloud.Dapper.Manager;
 using Surging.Cloud.Dapper.Repositories;
@@ -14,6 +15,7 @@ using Surging.Hero.Auth.Domain.Permissions.Menus;
 using Surging.Hero.Auth.Domain.Shared.Operations;
 using Surging.Hero.Auth.IApplication.Permission.Dtos;
 using Surging.Hero.Common;
+using AppConfig = Surging.Cloud.CPlatform.AppConfig;
 
 namespace Surging.Hero.Auth.Domain.Permissions.Operations
 {
@@ -115,8 +117,25 @@ namespace Surging.Hero.Auth.Domain.Permissions.Operations
 
         public async Task<bool> CheckPermission(long operationId, string serviceId)
         {
+            
+            var operation = await _operationRepository.SingleOrDefaultAsync(p => p.Id == operationId);
+            if (operation == null)
+            {
+                throw new BusinessException($"系统中不存在{operationId}的操作");
+            }
+
+            if (operation.Mold == OperationMold.Query || operation.Mold == OperationMold.Query)
+            {
+                return true;
+            }
+            if (AppConfig.ServerOptions.Environment == RuntimeEnvironment.Test)
+            {
+                throw new AuthException("项目演示环境，不能操作！", StatusCode.UnAuthorized);
+            }
+            
             var operationActionRelations =
                 await _operationActionRepository.GetAllAsync(p => p.OperationId == operationId);
+            
             return operationActionRelations.Any(p => p.ServiceId == serviceId);
         }
 
