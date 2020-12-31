@@ -75,7 +75,7 @@ namespace Surging.Hero.Auth.Application.Authorization
 
         public async Task<IDictionary<string, object>> Login(LoginInput input)
         {
-            return await _loginManager.Login(input.UserName, input.Password);
+            return await _loginManager.Login(input);
         }
     }
 }
