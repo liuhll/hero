@@ -65,10 +65,10 @@ services:
     image: surgingcloud/surging.hero.fileservice:${TAG:-latest}
     build:
       context: ../..
-      dockerfile: src/Services/FileService/Surging.Hero.FileService/Dockerfile.Rider.v2.Debug
+      dockerfile: src/Services/FileService/Surging.Hero.FileServiceHost/Dockerfile
       args:
-        host_workdir: src/Services/FileService/Surging.Hero.FileService
-        host_name: Surging.Hero.FileService.dll
+        host_workdir: src/Services/FileService/Surging.Hero.FileServiceHost
+        host_name: Surging.Hero.FileServiceHost.dll
         sln_name: sln/Surging.Hero.sln        
     depends_on:
       - surging.hero.basicdata
