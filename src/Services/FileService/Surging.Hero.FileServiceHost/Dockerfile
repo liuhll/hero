@@ -5,6 +5,7 @@ ARG http_port=8080
 ARG ws_port=96
 ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8 
+RUN apt-get update && apt-get install -y libfontconfig1
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
 EXPOSE ${rpc_port} ${http_port} ${ws_port}
 

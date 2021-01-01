@@ -7,6 +7,7 @@ COPY . .
 ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
+RUN apt-get update && apt-get install -y libfontconfig1
 RUN dotnet restore ${sln_name} && \
     dotnet build --no-restore ${sln_name}
 WORKDIR ${host_workdir}    
