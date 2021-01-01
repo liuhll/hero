@@ -3,7 +3,7 @@ using Surging.Cloud.Dapper.Manager;
 using Surging.Cloud.KestrelHttpServer;
 using Surging.Hero.BasicData.IApplication.Captcha;
 
-namespace Surging.Hero.FileService.Domain.Captcha
+namespace Surging.Hero.FileService.Domain.Captchas
 {
     public class CaptchaDomainService : ManagerBase, ICaptchaDomainService
     {

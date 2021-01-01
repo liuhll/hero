@@ -3,10 +3,9 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
-
     <ItemGroup>
-      <ProjectReference Include="..\..\BasicData\Surging.Hero.BasicData.IApplication\Surging.Hero.BasicData.IApplication.csproj" />
-      <ProjectReference Include="..\Surging.Hero.FileService.IApplication\Surging.Hero.FileService.IApplication.csproj" />
+        <ProjectReference Include="..\..\BasicData\Surging.Hero.BasicData.IApplication\Surging.Hero.BasicData.IApplication.csproj" />
+        <ProjectReference Include="..\Surging.Hero.FileService.IApplication\Surging.Hero.FileService.IApplication.csproj" />
     </ItemGroup>
 
     <ItemGroup>

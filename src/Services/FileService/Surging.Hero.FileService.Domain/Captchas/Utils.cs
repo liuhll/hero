@@ -1,16 +1,16 @@
 using System;
-using System.IO;
 using System.Linq;
 using SkiaSharp;
 
-namespace Surging.Hero.FileService.Domain.Captcha
+namespace Surging.Hero.FileService.Domain.Captchas
 {
     internal static class Utils
     {
         public static byte[] CreateCaptcha(string code)
         {
             var charList = code.ToList();
-            var bmp = new SKBitmap(80, 30);
+            
+            var bmp = new SKBitmap((charList.Count() * 20), 30);
             using (var canvas = new SKCanvas(bmp))
             {
                 //背景色
@@ -18,9 +18,7 @@ namespace Surging.Hero.FileService.Domain.Captcha
                 canvas.DrawColor(SKColors.White);
 
                 using (SKPaint sKPaint = new SKPaint())
-
                 {
-
                     sKPaint.TextSize = 16; //字体大小
                     sKPaint.IsAntialias = true; //开启抗锯齿                  
                     sKPaint.Typeface = SKTypeface.FromFamilyName("微软雅黑");
@@ -30,7 +28,7 @@ namespace Surging.Hero.FileService.Domain.Captcha
                     var temp1 = bmp.Height - (bmp.Height - size.Size.Height) / 2;
                     var random = new Random();
                     //画文字
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < charList.Count; i++)
                     {
                         sKPaint.Color = new SKColor((byte) random.Next(0, 255), (byte) random.Next(0, 255),
                             (byte) random.Next(0, 255));
@@ -39,7 +37,7 @@ namespace Surging.Hero.FileService.Domain.Captcha
                     }
 
                     //画干扰线
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         sKPaint.Color = new SKColor((byte) random.Next(0, 255), (byte) random.Next(0, 255),
                             (byte) random.Next(0, 255));

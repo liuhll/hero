@@ -7,7 +7,7 @@ using Surging.Hero.Common;
 namespace Surging.Hero.FileService.IApplication.Captcha
 {
     [ServiceBundle(HeroConstants.RouteTemplet)]
-    public interface ICaptchaAppService : IServiceKey
+    public interface ICaptchaImageAppService : IServiceKey
     {
         [HttpGet]
         [ServiceRoute("image/{uuid}")]

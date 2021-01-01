@@ -2,16 +2,16 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Surging.Cloud.KestrelHttpServer;
 using Surging.Cloud.ProxyGenerator;
-using Surging.Hero.FileService.Domain.Captcha;
+using Surging.Hero.FileService.Domain.Captchas;
 using Surging.Hero.FileService.IApplication.Captcha;
 
 namespace Surging.Hero.FileService.Application.Captcha
 {
-    public class CaptchaAppService : ProxyServiceBase, ICaptchaAppService
+    public class CaptchaImageAppService : ProxyServiceBase, ICaptchaImageAppService
     {
         private readonly ICaptchaDomainService _captchaDomainService;
-
-        public CaptchaAppService(ICaptchaDomainService captchaDomainService)
+        
+        public CaptchaImageAppService(ICaptchaDomainService captchaDomainService)
         {
             _captchaDomainService = captchaDomainService;
         }
