@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\..\..\Shared\Props\domainpackage.props" />
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\BasicData\Surging.Hero.BasicData.IApplication\Surging.Hero.BasicData.IApplication.csproj" />
+      <ProjectReference Include="..\Surging.Hero.FileService.IApplication\Surging.Hero.FileService.IApplication.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SkiaSharp" Version="2.80.3-preview.18" />
+    </ItemGroup>
+
+</Project>

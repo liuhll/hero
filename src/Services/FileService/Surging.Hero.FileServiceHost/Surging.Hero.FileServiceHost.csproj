@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\..\..\Shared\Props\hostpackage.props" />
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Surging.Hero.FileService.Application\Surging.Hero.FileService.Application.csproj" />
+    </ItemGroup>
+
+</Project>

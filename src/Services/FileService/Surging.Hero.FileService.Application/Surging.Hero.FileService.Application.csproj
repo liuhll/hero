@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Surging.Hero.FileService.Domain\Surging.Hero.FileService.Domain.csproj" />
+      <ProjectReference Include="..\Surging.Hero.FileService.IApplication\Surging.Hero.FileService.IApplication.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Nest;
 using Surging.Cloud.CPlatform.Ioc;
@@ -14,9 +15,7 @@ namespace Surging.Hero.BasicData.IApplication.Captcha
         /// </summary>
         /// <param name="uuid">表单唯一id</param>
         /// <returns></returns>
-        [HttpGet]
-        [ServiceRoute("")]
-        [Service(EnableAuthorization = false, Director = Developers.Liuhll,Name = "获取随机验证码", Date = "2020-12-31")]
+        [Service(EnableAuthorization = false, DisableNetwork = true, Director = Developers.Liuhll,Name = "获取随机验证码", Date = "2020-12-31")]
         Task<string> GetCaptcha(string uuid);
     }
 }
