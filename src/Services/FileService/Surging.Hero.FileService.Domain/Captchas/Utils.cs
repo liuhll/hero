@@ -10,7 +10,7 @@ namespace Surging.Hero.FileService.Domain.Captchas
         {
             var charList = code.ToList();
             
-            var bmp = new SKBitmap((charList.Count() * 20), 30);
+            var bmp = new SKBitmap((charList.Count() * 25), 30);
             using (var canvas = new SKCanvas(bmp))
             {
                 //背景色
