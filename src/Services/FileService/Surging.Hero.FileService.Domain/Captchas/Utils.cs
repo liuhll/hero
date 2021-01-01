@@ -37,7 +37,7 @@ namespace Surging.Hero.FileService.Domain.Captchas
                     }
 
                     //画干扰线
-                    for (int i = 0; i < 3; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         sKPaint.Color = new SKColor((byte) random.Next(0, 255), (byte) random.Next(0, 255),
                             (byte) random.Next(0, 255));

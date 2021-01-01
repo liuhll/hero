@@ -6,11 +6,11 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.FileService.IApplication.Captcha
 {
-    [ServiceBundle(HeroConstants.RouteTemplet)]
+    [ServiceBundle(HeroConstants.CaptachaRouteTemplet)]
     public interface ICaptchaImageAppService : IServiceKey
     {
         [HttpGet]
-        [ServiceRoute("image/{uuid}")]
+        [ServiceRoute("{uuid}")]
         [Service(EnableAuthorization = false, Director = Developers.Liuhll,Name = "获取随机验证码", Date = "2021-1-1")]
         Task<IActionResult> GetCaptcha(string uuid);
     }

@@ -5,6 +5,8 @@ namespace Surging.Hero.Common
     public static class HeroConstants
     {
         public const string RouteTemplet = "api/{appService}";
+        
+        public const string CaptachaRouteTemplet = "api/{ImageAppService}";
 
         public const int UnDeletedFlag = 0;
 
