@@ -1,0 +1,15 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+ARG sln_name
+ARG host_workdir
+ARG host_name
+COPY . .
+ENV TZ=Asia/Shanghai
+ENV LANG C.UTF-8 
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
+RUN dotnet restore ${sln_name} && \
+    dotnet build --no-restore ${sln_name}
+WORKDIR ${host_workdir}    
+RUN dotnet publish --no-restore -o /app
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Surging.Hero.FileServiceHost.dll"]
