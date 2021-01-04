@@ -4,7 +4,7 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Roles
 {
-    public class Role : FullAuditedEntity<long>
+    public class Role : FullAuditedEntity<long>, IMultiTenant
     {
         public string Name { get; set; }
 
@@ -17,5 +17,7 @@ namespace Surging.Hero.Auth.Domain.Roles
         public Status Status { get; set; }
         
         public DataPermissionType DataPermissionType { get; set; }
+        
+        public long? TenantId { get; set; }
     }
 }

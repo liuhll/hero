@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.BasicData.Domain.Wordbooks
 {
-    public class WordbookItem : FullAuditedEntity<long>
+    public class WordbookItem : FullAuditedEntity<long>, IMultiTenant
     {
         public long WordbookId { get; set; }
 
@@ -13,5 +13,7 @@ namespace Surging.Hero.BasicData.Domain.Wordbooks
         public string Memo { get; set; }
 
         public int Sort { get; set; }
+        
+        public long? TenantId { get; set; }
     }
 }

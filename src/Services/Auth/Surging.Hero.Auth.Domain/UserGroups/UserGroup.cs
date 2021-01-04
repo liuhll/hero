@@ -4,7 +4,7 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.UserGroups
 {
-    public class UserGroup : FullAuditedEntity<long>
+    public class UserGroup : FullAuditedEntity<long>, IMultiTenant
     {
         public string Name { get; set; }
         
@@ -17,5 +17,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public Status Status { get; set; }
 
         public DataPermissionType? DataPermissionType { get; set; }
+        
+        public long? TenantId { get; set; }
     }
 }

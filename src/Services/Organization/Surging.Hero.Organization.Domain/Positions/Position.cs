@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.Organization.Domain.Positions
 {
-    public class Position : FullAuditedEntity<long>
+    public class Position : FullAuditedEntity<long>, IMultiTenant
     {
         public long DeptId { get; set; }
 
@@ -19,5 +19,7 @@ namespace Surging.Hero.Organization.Domain.Positions
         public bool IsLeadingOfficial { get; set; }
 
         public bool IsLeadershipPost { get; set; }
+        
+        public long? TenantId { get; set; }
     }
 }

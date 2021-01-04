@@ -5,7 +5,7 @@ using Surging.Hero.Common;
 
 namespace Surging.Hero.Auth.Domain.Users
 {
-    public class UserInfo : FullAuditedEntity<long>, IOrgAudited
+    public class UserInfo : FullAuditedEntity<long>, IOrgAudited, IMultiTenant
     {
         public UserInfo()
         {
@@ -53,5 +53,7 @@ namespace Surging.Hero.Auth.Domain.Users
         public int LoginFailedCount { get; set; }
 
         public Status Status { get; set; }
+        
+        public long? TenantId { get; set; }
     }
 }

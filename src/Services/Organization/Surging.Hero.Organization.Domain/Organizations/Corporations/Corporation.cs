@@ -4,7 +4,7 @@ using Surging.Hero.Organization.Domain.Shared;
 
 namespace Surging.Hero.Organization.Domain
 {
-    public class Corporation : FullAuditedEntity<long>
+    public class Corporation : FullAuditedEntity<long>, IMultiTenant
     {
         public CorporationMold Mold { get; set; }
 
@@ -25,5 +25,7 @@ namespace Surging.Hero.Organization.Domain
         public string Memo { get; set; }
 
         public long OrgId { get; set; }
+        
+        public long? TenantId { get; set; }
     }
 }

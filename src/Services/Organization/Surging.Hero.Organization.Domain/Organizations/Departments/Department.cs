@@ -2,7 +2,7 @@
 
 namespace Surging.Hero.Organization.Domain
 {
-    public class Department : FullAuditedEntity<long>
+    public class Department : FullAuditedEntity<long>, IMultiTenant
     {
         public long OrgId { get; set; }
 
@@ -11,5 +11,7 @@ namespace Surging.Hero.Organization.Domain
         public string DeptTypeKey { get; set; }
 
         public string BriefIntro { get; set; }
+        
+        public long? TenantId { get; set; }
     }
 }
