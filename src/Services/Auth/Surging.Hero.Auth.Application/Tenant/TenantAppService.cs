@@ -1,14 +1,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Surging.Cloud.CPlatform.Ioc;
 using Surging.Cloud.Domain.PagedAndSorted;
+using Surging.Cloud.ProxyGenerator;
 using Surging.Cloud.Validation.DataAnnotationValidation;
+using Surging.Hero.Auth.Domain.Shared;
 using Surging.Hero.Auth.Domain.Tenants;
 using Surging.Hero.Auth.IApplication.Tenant;
 using Surging.Hero.Auth.IApplication.Tenant.Dtos;
 
 namespace Surging.Hero.Auth.Application.Tenant
 {
-    public class TenantAppService : ITenantAppService
+    public class TenantAppService : ProxyServiceBase, ITenantAppService
     {
         private readonly ITenantDomainService _tenantDomainService;
 
