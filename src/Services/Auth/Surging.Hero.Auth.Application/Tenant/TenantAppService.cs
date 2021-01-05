@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Cloud.Validation.DataAnnotationValidation;
 using Surging.Hero.Auth.Domain.Tenants;
 using Surging.Hero.Auth.IApplication.Tenant;
@@ -30,6 +31,11 @@ namespace Surging.Hero.Auth.Application.Tenant
         public async Task<string> Delete(long id)
         {
             return await _tenantDomainService.Delete(id);
+        }
+
+        public async Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query)
+        {
+            return await _tenantDomainService.Search(query);
         }
     }
 }

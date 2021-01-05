@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Surging.Cloud.CPlatform.Ioc;
+using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Hero.Auth.IApplication.Tenant.Dtos;
 
 namespace Surging.Hero.Auth.Domain.Tenants
@@ -11,5 +12,6 @@ namespace Surging.Hero.Auth.Domain.Tenants
         Task<string> Update(UpdateTenantInput input);
         
         Task<string> Delete(long id);
+        Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query);
     }
 }

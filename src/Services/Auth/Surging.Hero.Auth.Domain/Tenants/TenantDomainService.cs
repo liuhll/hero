@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Cloud.AutoMapper;
 using Surging.Cloud.CPlatform.Exceptions;
+using Surging.Cloud.CPlatform.Utilities;
 using Surging.Cloud.Dapper.Manager;
 using Surging.Cloud.Dapper.Repositories;
+using Surging.Cloud.Domain.PagedAndSorted;
+using Surging.Cloud.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.Auth.IApplication.Tenant.Dtos;
 
 namespace Surging.Hero.Auth.Domain.Tenants
@@ -61,6 +65,22 @@ namespace Surging.Hero.Auth.Domain.Tenants
             await _tenantRepository.DeleteAsync(p => p.Id == id);
             return "租户删除成功";
 
+        }
+
+        public async Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query)
+        {
+            var sort = new Dictionary<string, SortType>();
+            if (!query.Sorting.IsNullOrEmpty())
+            {
+                sort.Add(query.Sorting,query.SortType);
+            }
+            else
+            {
+                sort.Add("Id",SortType.Desc);
+            }
+
+            var queryResult = await _tenantRepository.GetPageAsync(p => p.Name.Contains(query.Name),query.PageIndex,query.PageCount, sort);
+            return queryResult.Item1.MapTo<IEnumerable<GetTenantOutput>>().GetPagedResult(queryResult.Item2);
         }
     }
 }
