@@ -2,6 +2,9 @@
 {
     public class UpdateTenantInput : TenantDtoBase
     {
+        /// <summary>
+        /// 租户Id
+        /// </summary>
         public long Id { get; set; }
     }
 }
