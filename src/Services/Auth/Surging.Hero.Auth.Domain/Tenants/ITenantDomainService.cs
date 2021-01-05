@@ -9,5 +9,7 @@ namespace Surging.Hero.Auth.Domain.Tenants
         Task<string> Create(CreateTenantInput input);
         
         Task<string> Update(UpdateTenantInput input);
+        
+        Task<string> Delete(long id);
     }
 }

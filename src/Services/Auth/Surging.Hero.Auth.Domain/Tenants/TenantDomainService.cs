@@ -49,5 +49,18 @@ namespace Surging.Hero.Auth.Domain.Tenants
             await _tenantRepository.UpdateAsync(tenant);
             return "更新租户信息成功";
         }
+
+        public async Task<string> Delete(long id)
+        {
+            var tenant = await _tenantRepository.SingleOrDefaultAsync(p => p.Id == id);
+            if (tenant == null)
+            {
+                throw new BusinessException($"不存在Id为{id}的租户信息");
+            }
+
+            await _tenantRepository.DeleteAsync(p => p.Id == id);
+            return "租户删除成功";
+
+        }
     }
 }

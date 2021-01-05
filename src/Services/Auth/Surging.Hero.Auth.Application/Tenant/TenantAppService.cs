@@ -26,5 +26,10 @@ namespace Surging.Hero.Auth.Application.Tenant
             input.CheckDataAnnotations().CheckValidResult();
             return await _tenantDomainService.Update(input);
         }
+
+        public async Task<string> Delete(long id)
+        {
+            return await _tenantDomainService.Delete(id);
+        }
     }
 }
