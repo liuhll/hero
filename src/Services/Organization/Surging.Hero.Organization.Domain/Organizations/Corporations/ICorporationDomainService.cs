@@ -11,5 +11,6 @@ namespace Surging.Hero.Organization.Domain.Organizations
         Task DeleteCorporation(long orgId);
 
         Task<GetCorporationOutput> GetCorporation(long orgId);
+        Task<CreateCorporationOutput> CreateByTenant(CreateCorporationByTenantInput input);
     }
 }

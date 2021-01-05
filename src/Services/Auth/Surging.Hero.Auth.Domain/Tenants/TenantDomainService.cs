@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Cloud.AutoMapper;
@@ -8,6 +9,9 @@ using Surging.Cloud.Dapper.Repositories;
 using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Cloud.Domain.PagedAndSorted.Extensions;
 using Surging.Hero.Auth.IApplication.Tenant.Dtos;
+using Surging.Hero.Organization.Domain.Shared;
+using Surging.Hero.Organization.IApplication.Corporation;
+using Surging.Hero.Organization.IApplication.Corporation.Dtos;
 
 namespace Surging.Hero.Auth.Domain.Tenants
 {
@@ -28,7 +32,24 @@ namespace Surging.Hero.Auth.Domain.Tenants
                 throw new BusinessException($"已经存在{input.Name}的租户");
             }
 
-            await _tenantRepository.InsertAsync(input.MapTo<Tenant>());
+            var corporationAppServiceProxy = GetService<ICorporationAppService>();
+            await UnitOfWorkAsync(async (conn, trans) =>
+            {
+                var tenantId =  await _tenantRepository.InsertAndGetIdAsync(input.MapTo<Tenant>(),conn,trans);
+                await corporationAppServiceProxy.CreateByTenant(new CreateCorporationByTenantInput()
+                {
+                    Name = input.Name,
+                    Identification = input.Identification,
+                    ParentId = 0,
+                    OpenDate = DateTime.Now,
+                    RegisterDate = DateTime.Now,
+                    Mold = CorporationMold.Group,
+                    TenantId = tenantId
+                    
+                });
+                
+            }, Connection);
+            
             return "新增租户成功";
         }
 

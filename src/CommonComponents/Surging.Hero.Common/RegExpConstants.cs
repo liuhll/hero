@@ -18,5 +18,7 @@
         public const string PositionCode = "^[a-zA-Z0-9_-]{4,50}$";
 
         public const string NormalIdentificationCode = "^[a-zA-Z][a-zA-Z0-9]{4,50}$";
+        
+        public const string OrgIdentificationRegex = "^[A-Za-z0-9_-]{4,50}+$";
     }
 }

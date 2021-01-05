@@ -22,6 +22,12 @@ namespace Surging.Hero.Organization.Application.Corporation
             return await _corporationDomainService.CreateCorporation(input);
         }
 
+        public async Task<CreateCorporationOutput> CreateByTenant(CreateCorporationByTenantInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            return await _corporationDomainService.CreateByTenant(input);
+        }
+
         public async Task<string> DeleteByOrgId(long orgId)
         {
             await _corporationDomainService.DeleteCorporation(orgId);

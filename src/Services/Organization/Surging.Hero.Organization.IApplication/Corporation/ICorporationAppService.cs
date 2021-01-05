@@ -18,6 +18,10 @@ namespace Surging.Hero.Organization.IApplication.Corporation
         [ServiceRoute("")]
         [Service(Director = Developers.Liuhll, Date = "2020-07-04", Name = "新增公司信息")]
         Task<CreateCorporationOutput> Create(CreateCorporationInput input);
+        
+        
+        [Service(Director = Developers.Liuhll, DisableNetwork = true,Date = "2021-01-05", Name = "新增租户时,默认增加对应的组织机构")]
+        Task<CreateCorporationOutput> CreateByTenant(CreateCorporationByTenantInput input);
 
         /// <summary>
         ///     更新公司信息

@@ -39,6 +39,17 @@ namespace Surging.Hero.Organization.Domain.Organizations
                 return await CreateTopCorporation(input);
             return await CreateSubCorporation(input);
         }
+        
+        public async Task<CreateCorporationOutput> CreateByTenant(CreateCorporationByTenantInput input)
+        {
+            var exsitOrg =
+                await _organizationRepository.SingleOrDefaultAsync(p => p.Identification == input.Identification);
+            if (exsitOrg != null) throw new BusinessException($"系统中已经存在标识为{input.Identification}的组织机构");
+
+            if (!input.ParentId.HasValue || input.ParentId == 0)
+                return await CreateTopCorporation(input, input.TenantId);
+            return await CreateSubCorporation(input, input.TenantId);
+        }
 
         public async Task DeleteCorporation(long orgId)
         {
@@ -71,6 +82,8 @@ namespace Surging.Hero.Organization.Domain.Organizations
             return output;
         }
 
+
+
         public async Task<UpdateCorporationOutput> UpdateCorporation(UpdateCorporationInput input)
         {
             var corporation = await _corporationRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
@@ -101,7 +114,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
             };
         }
 
-        private async Task<CreateCorporationOutput> CreateSubCorporation(CreateCorporationInput input)
+        private async Task<CreateCorporationOutput> CreateSubCorporation(CreateCorporationInput input,long? tenantId = null)
         {
             var parentCorporation =
                 await _corporationRepository.SingleOrDefaultAsync(p => p.OrgId == input.ParentId.Value);
@@ -109,6 +122,11 @@ namespace Surging.Hero.Organization.Domain.Organizations
             var parentOrg = await _organizationRepository.GetAsync(input.ParentId.Value);
             var corporation = input.MapTo<Corporation>();
             var orgInfo = input.MapTo<Organization>();
+            if (tenantId.HasValue)
+            {
+                orgInfo.TenantId = tenantId;
+                corporation.TenantId = tenantId;
+            }
             var orgCode = string.Empty;
             var maxLevelOrg = (await _organizationRepository.GetAllAsync(p => p.ParentId == parentOrg.Id))
                 .OrderByDescending(p => p.Id).FirstOrDefault();
@@ -136,7 +154,7 @@ namespace Surging.Hero.Organization.Domain.Organizations
             };
         }
 
-        private async Task<CreateCorporationOutput> CreateTopCorporation(CreateCorporationInput input)
+        private async Task<CreateCorporationOutput> CreateTopCorporation(CreateCorporationInput input,long? tenantId = null)
         {
             if (input.Mold != CorporationMold.Group && input.Mold != CorporationMold.Monomer)
                 throw new BusinessException("公司类型不正确,顶层公司只能指定为:集团公司或单体公司");
@@ -155,6 +173,12 @@ namespace Surging.Hero.Organization.Domain.Organizations
             var topOrgInfo = input.MapTo<Organization>();
             topOrgInfo.Code = orgCode;
             topOrgInfo.Level = 1;
+            if (tenantId.HasValue)
+            {
+                topCorporation.TenantId = tenantId;
+                topOrgInfo.TenantId = tenantId;
+            }
+
             await UnitOfWorkAsync(async (conn, trans) =>
             {
                 var orgId = await _organizationRepository.InsertAndGetIdAsync(topOrgInfo, conn, trans);
