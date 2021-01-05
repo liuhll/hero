@@ -97,5 +97,11 @@ namespace Surging.Hero.Auth.Domain.Tenants
             return "禁用租户成功";
             
         }
+
+        public async Task<IEnumerable<GetTenantOutput>> List()
+        {
+            return (await _tenantRepository.GetAllAsync(p => p.Status == Common.Status.Valid))
+                .MapTo<IEnumerable<GetTenantOutput>>();
+        }
     }
 }

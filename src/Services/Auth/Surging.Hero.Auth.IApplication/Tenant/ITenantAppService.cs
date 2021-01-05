@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Cloud.CPlatform.Ioc;
 using Surging.Cloud.CPlatform.Runtime.Server.Implementation.ServiceDiscovery.Attributes;
@@ -26,10 +27,15 @@ namespace Surging.Hero.Auth.IApplication.Tenant
         Task<string> Delete(long id);
 
         [ServiceRoute("search")]
-        [HttpPut]
+        [HttpPost]
         [Service(Name = "搜索租户", Director = Developers.Liuhll, Date = "2021-01-05")]
         Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query);
         
+        [ServiceRoute("list")]
+        [HttpPost]
+        [Service(Name = "获取租户列表", Director = Developers.Liuhll, Date = "2021-01-05")]
+        Task<IEnumerable<GetTenantOutput>> List();        
+
         [HttpPut]
         [Service( Name = "激活/冻结租户", Director = Developers.Liuhll, Date = "2021-01-05")]
         [ServiceRoute("status")]

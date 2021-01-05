@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Cloud.Validation.DataAnnotationValidation;
@@ -36,6 +37,11 @@ namespace Surging.Hero.Auth.Application.Tenant
         public async Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query)
         {
             return await _tenantDomainService.Search(query);
+        }
+
+        public async Task<IEnumerable<GetTenantOutput>> List()
+        {
+            return await _tenantDomainService.List();
         }
 
         public async Task<string> Status(UpdateTenantStatusInput input)
