@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using Surging.Cloud.Caching;
 using Surging.Cloud.CPlatform;
 using Surging.Cloud.CPlatform.Cache;
+using Surging.Cloud.CPlatform.Configurations;
 using Surging.Cloud.CPlatform.Exceptions;
 using Surging.Cloud.Dapper.Repositories;
 using Surging.Hero.Auth.Domain.Tenants;
 using Surging.Hero.Auth.IApplication.Authorization.Dtos;
 using Surging.Hero.Common;
+using AppConfig = Surging.Cloud.CPlatform.AppConfig;
 
 namespace Surging.Hero.Auth.Domain.Users
 {
@@ -31,9 +33,12 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public async Task<IDictionary<string, object>> Login(LoginInput input)
         {
-            await ValidCaptcha(input);
+            if (AppConfig.ServerOptions.Environment != RuntimeEnvironment.Development)
+            {
+                await ValidCaptcha(input);
+            }
+           
             await ValidTenant(input.TenantId);
-
             var userInfo = await _userRepository.SingleOrDefaultAsync(p =>
                ( p.UserName == input.UserName || p.Phone == input.UserName || p.Email == input.UserName) && p.TenantId == input.TenantId);
             if (userInfo == null) throw new BusinessException($"不存在账号为{input.UserName}的用户");
@@ -45,8 +50,12 @@ namespace Surging.Hero.Auth.Domain.Users
                 {ClaimTypes.UserId, userInfo.Id},
                 {ClaimTypes.UserName, userInfo.UserName},
                 {ClaimTypes.OrgId, userInfo.OrgId},
-                {ClaimTypes.TenantId, userInfo.TenantId}
+              
             };
+            if (userInfo.TenantId.HasValue)
+            {
+                payload.Add(ClaimTypes.TenantId, userInfo.TenantId);
+            }
             return payload;
         }
 

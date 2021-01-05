@@ -15,7 +15,6 @@ using Surging.Hero.Common.Runtime.Session;
 
 namespace Surging.Hero.Auth.Application.Authorization
 {
-    [ModuleName(AuthConstant.V1.AccountMoudleName, Version = AuthConstant.V1.Version)]
     public class AccountAppService : ProxyServiceBase, IAccountAppService
     {
         private readonly ILoginManager _loginManager;

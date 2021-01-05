@@ -24,7 +24,6 @@ using Surging.Hero.Common.Extensions;
 
 namespace Surging.Hero.Auth.Application.Permission
 {
-    [ModuleName(AuthConstant.V1.PermissionMoudleName, Version = AuthConstant.V1.Version)]
     public class PermissionAppService : ProxyServiceBase, IPermissionAppService
     {
         private readonly IActionDomainService _actionDomainService;

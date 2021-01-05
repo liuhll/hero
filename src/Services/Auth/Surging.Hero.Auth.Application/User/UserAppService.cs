@@ -25,7 +25,6 @@ using Surging.Hero.Organization.IApplication.Position;
 
 namespace Surging.Hero.Auth.Application.User
 {
-    [ModuleName(ModuleNameConstants.UserModule, Version = ModuleNameConstants.ModuleVersionV1)]
     public class UserAppService : ProxyServiceBase, IUserAppService
     {
         private readonly ISurgingSession _session;
