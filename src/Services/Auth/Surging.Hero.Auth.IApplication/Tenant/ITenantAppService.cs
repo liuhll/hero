@@ -12,5 +12,9 @@ namespace Surging.Hero.Auth.IApplication.Tenant
         [ServiceRoute("")]
         [Service(Name = "新增租户", Director = Developers.Liuhll, Date = "2021-01-04")]
         Task<string> Create(CreateTenantInput input);
+        
+        [ServiceRoute("")]
+        [Service(Name = "新增租户", Director = Developers.Liuhll, Date = "2021-01-04")]
+        Task<string> Update(UpdateTenantInput input);
     }
 }

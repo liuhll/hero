@@ -20,5 +20,11 @@ namespace Surging.Hero.Auth.Application.Tenant
             input.CheckDataAnnotations().CheckValidResult();
             return await _tenantDomainService.Create(input);
         }
+
+        public async Task<string> Update(UpdateTenantInput input)
+        {
+            input.CheckDataAnnotations().CheckValidResult();
+            return await _tenantDomainService.Update(input);
+        }
     }
 }

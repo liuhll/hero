@@ -7,5 +7,7 @@ namespace Surging.Hero.Auth.Domain.Tenants
     public interface ITenantDomainService : ITransientDependency
     {
         Task<string> Create(CreateTenantInput input);
+        
+        Task<string> Update(UpdateTenantInput input);
     }
 }

@@ -27,5 +27,27 @@ namespace Surging.Hero.Auth.Domain.Tenants
             await _tenantRepository.InsertAsync(input.MapTo<Tenant>());
             return "新增租户成功";
         }
+
+        public async Task<string> Update(UpdateTenantInput input)
+        {
+            var tenant = await _tenantRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (tenant == null)
+            {
+                throw new BusinessException($"不存在Id为{input.Id}的租户信息");
+            }
+
+            if (!input.Name.Equals(tenant.Name))
+            {   
+                var exsitTenant = await _tenantRepository.FirstOrDefaultAsync(p => p.Name == input.Name.Trim());
+                if (exsitTenant != null)
+                {
+                    throw new BusinessException($"已经存在{input.Name}的租户");
+                }
+            }
+
+            tenant = input.MapTo(tenant);
+            await _tenantRepository.UpdateAsync(tenant);
+            return "更新租户信息成功";
+        }
     }
 }
