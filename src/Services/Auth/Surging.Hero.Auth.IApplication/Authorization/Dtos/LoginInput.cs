@@ -17,5 +17,7 @@ namespace Surging.Hero.Auth.IApplication.Authorization.Dtos
 
         [Required(ErrorMessage = "表单标识不允许为空")]
         public string Uuid { get; set; }
+
+        public long? TenantId { get; set; }
     }
 }

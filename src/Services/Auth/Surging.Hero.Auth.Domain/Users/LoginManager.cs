@@ -6,6 +6,7 @@ using Surging.Cloud.CPlatform;
 using Surging.Cloud.CPlatform.Cache;
 using Surging.Cloud.CPlatform.Exceptions;
 using Surging.Cloud.Dapper.Repositories;
+using Surging.Hero.Auth.Domain.Tenants;
 using Surging.Hero.Auth.IApplication.Authorization.Dtos;
 using Surging.Hero.Common;
 
@@ -15,20 +16,26 @@ namespace Surging.Hero.Auth.Domain.Users
     {
         private readonly IPasswordHelper _passwordHelper;
         private readonly IDapperRepository<UserInfo, long> _userRepository;
+        private readonly IDapperRepository<Tenant, long> _tenantRepository;
         private readonly ICacheProvider _cacheProvider;
 
-        public LoginManager(IPasswordHelper passwordHelper, IDapperRepository<UserInfo, long> userRepository)
+        public LoginManager(IPasswordHelper passwordHelper, 
+            IDapperRepository<UserInfo, long> userRepository, 
+            IDapperRepository<Tenant, long> tenantRepository)
         {
             _passwordHelper = passwordHelper;
             _userRepository = userRepository;
+            _tenantRepository = tenantRepository;
             _cacheProvider = CacheContainer.GetService<ICacheProvider>(HeroConstants.CacheProviderKey);;
         }
 
         public async Task<IDictionary<string, object>> Login(LoginInput input)
         {
             await ValidCaptcha(input);
+            await ValidTenant(input.TenantId);
+
             var userInfo = await _userRepository.SingleOrDefaultAsync(p =>
-                p.UserName == input.UserName || p.Phone == input.UserName || p.Email == input.UserName);
+               ( p.UserName == input.UserName || p.Phone == input.UserName || p.Email == input.UserName) && p.TenantId == input.TenantId);
             if (userInfo == null) throw new BusinessException($"不存在账号为{input.UserName}的用户");
             if (userInfo.Status == Status.Invalid) throw new BusinessException("账号为被激活,请先激活该账号");
             if (!_passwordHelper.EncryptPassword(userInfo.UserName, input.Password).Equals(userInfo.Password))
@@ -37,9 +44,27 @@ namespace Surging.Hero.Auth.Domain.Users
             {
                 {ClaimTypes.UserId, userInfo.Id},
                 {ClaimTypes.UserName, userInfo.UserName},
-                {ClaimTypes.OrgId, userInfo.OrgId}
+                {ClaimTypes.OrgId, userInfo.OrgId},
+                {ClaimTypes.TenantId, userInfo.TenantId}
             };
             return payload;
+        }
+
+        private async Task ValidTenant(long? tenantId)
+        {
+            if (tenantId.HasValue)
+            {
+                var tenant = await _tenantRepository.SingleOrDefaultAsync(p => p.Id == tenantId);
+                if (tenant == null)
+                {
+                    throw new BusinessException($"不存在id为{tenantId}的租户");
+                }
+
+                if (tenant.Status == Status.Invalid)
+                {
+                    throw new BusinessException("当前租户被冻结,您没有权限登录该系统");
+                }
+            }
         }
 
         private async Task ValidCaptcha(LoginInput input)
