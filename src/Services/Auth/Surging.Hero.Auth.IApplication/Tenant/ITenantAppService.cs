@@ -29,5 +29,10 @@ namespace Surging.Hero.Auth.IApplication.Tenant
         [HttpPut]
         [Service(Name = "搜索租户", Director = Developers.Liuhll, Date = "2021-01-05")]
         Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query);
+        
+        [HttpPut]
+        [Service( Name = "激活/冻结租户", Director = Developers.Liuhll, Date = "2021-01-05")]
+        [ServiceRoute("status")]
+        Task<string> Status(UpdateTenantStatusInput input);
     }
 }

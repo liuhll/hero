@@ -37,5 +37,10 @@ namespace Surging.Hero.Auth.Application.Tenant
         {
             return await _tenantDomainService.Search(query);
         }
+
+        public async Task<string> Status(UpdateTenantStatusInput input)
+        {
+            return await _tenantDomainService.Status(input);
+        }
     }
 }

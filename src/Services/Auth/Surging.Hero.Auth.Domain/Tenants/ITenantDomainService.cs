@@ -13,5 +13,6 @@ namespace Surging.Hero.Auth.Domain.Tenants
         
         Task<string> Delete(long id);
         Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query);
+        Task<string> Status(UpdateTenantStatusInput input);
     }
 }

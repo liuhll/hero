@@ -82,5 +82,20 @@ namespace Surging.Hero.Auth.Domain.Tenants
             var queryResult = await _tenantRepository.GetPageAsync(p => p.Name.Contains(query.Name),query.PageIndex,query.PageCount, sort);
             return queryResult.Item1.MapTo<IEnumerable<GetTenantOutput>>().GetPagedResult(queryResult.Item2);
         }
+
+        public async Task<string> Status(UpdateTenantStatusInput input)
+        {
+            var tenant = await _tenantRepository.SingleOrDefaultAsync(p => p.Id == input.Id);
+            if (tenant == null)
+            {
+                throw new BusinessException($"不存在Id为{input.Id}的租户信息");
+            }
+
+            tenant.Status = input.Status;
+            await _tenantRepository.UpdateAsync(tenant);
+            if (input.Status == Common.Status.Valid) return "启用租户成功";
+            return "禁用租户成功";
+            
+        }
     }
 }
