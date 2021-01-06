@@ -44,7 +44,7 @@ namespace Surging.Hero.Auth.Domain.Roles
         private readonly IDapperRepository<UserGroupRole, long> _userGroupRoleRepository;
         private readonly IDapperRepository<UserRole, long> _userRoleRepository;
         private readonly IDapperRepository<RoleOrganization, long> _roleOrganizationRepository;
-        private readonly IDapperRepository<Permissions.Actions.Action,long> _actionRepository;
+        private readonly IDapperRepository<Permissions.Actions.Action, long> _actionRepository;
         private readonly ICacheProvider _cacheProvider;
 
         private readonly IDapperRepository<RoleDataPermissionOrgRelation, long>
@@ -56,9 +56,9 @@ namespace Surging.Hero.Auth.Domain.Roles
             IDapperRepository<UserRole, long> userRoleRepository,
             IDapperRepository<UserGroupRole, long> userGroupRoleRepository,
             IDapperRepository<Operation, long> operationRepository,
-            ILockerProvider lockerProvider, 
-            IDapperRepository<RoleDataPermissionOrgRelation, long> roleDataPermissionOrgRelationRepository, 
-            IDapperRepository<RoleOrganization, long> roleOrganizationRepository, 
+            ILockerProvider lockerProvider,
+            IDapperRepository<RoleDataPermissionOrgRelation, long> roleDataPermissionOrgRelationRepository,
+            IDapperRepository<RoleOrganization, long> roleOrganizationRepository,
             IDapperRepository<Permissions.Actions.Action, long> actionRepository)
         {
             _roleRepository = roleRepository;
@@ -77,7 +77,7 @@ namespace Surging.Hero.Auth.Domain.Roles
 
         public async Task<bool> CheckPermission(long roleId, string serviceId)
         {
-            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId,false);
+            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId, false);
             if (role == null) throw new BusinessException($"不存在Id为{roleId}的角色信息");
             if (role.Status == Status.Invalid) return false;
             var rolePermissions = await GetRolePermissions(roleId);
@@ -89,7 +89,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                 throw new AuthException($"{action.Application}--{action.Name}权限状态无效",
                     StatusCode.UnAuthorized);
             foreach (var servicePemission in servicePemissions)
-            {   
+            {
                 if (servicePemission.Mold == PermissionMold.Operation)
                 {
                     var serviceOperation =
@@ -105,9 +105,9 @@ namespace Surging.Hero.Auth.Domain.Roles
                         throw new AuthException("项目演示环境，不允许操作！", StatusCode.UnAuthorized);
                     }
                 }
-                
+
             }
-            if (rolePermissions.Any(p => servicePemissions.Any(q=> q.Id == p.PermissionId))) return true;
+            if (rolePermissions.Any(p => servicePemissions.Any(q => q.Id == p.PermissionId))) return true;
             return false;
         }
 
@@ -117,12 +117,12 @@ namespace Surging.Hero.Auth.Domain.Roles
             {
                 await locker.Lock(async () =>
                 {
-                    
-                    var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);
+
+                    var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification, false);
                     if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Identification}的角色");
-                    CheckUserDefinedDataPermission(input.DataPermissionType,input.DataPermissionOrgIds);
+                    CheckUserDefinedDataPermission(input.DataPermissionType, input.DataPermissionOrgIds);
                     var role = input.MapTo<Role>();
-                    
+
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         var roleId = await _roleRepository.InsertAndGetIdAsync(role, conn, trans);
@@ -133,7 +133,9 @@ namespace Surging.Hero.Auth.Domain.Roles
                         foreach (var permissionId in input.PermissionIds)
                             rolePermissions.Add(new RolePermission
                             {
-                                PermissionId = permissionId, RoleId = roleId, CreationTime = DateTime.Now,
+                                PermissionId = permissionId,
+                                RoleId = roleId,
+                                CreationTime = DateTime.Now,
                                 CreatorUserId = _session.UserId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
@@ -143,7 +145,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                             {
                                 var roleOrg = new RoleOrganization() { RoleId = roleId, OrgId = orgId };
                                 await _roleOrganizationRepository.InsertAsync(roleOrg, conn, trans);
-                            }  
+                            }
                         }
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
@@ -167,13 +169,13 @@ namespace Surging.Hero.Auth.Domain.Roles
                 });
             }
         }
-        
+
 
         public async Task Delete(long roleid)
         {
             var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleid);
             if (role == null) throw new BusinessException($"不存在Id为{roleid}的角色信息");
-            _session.CheckLoginUserDataPermision(role.DataPermissionType,"您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
+            _session.CheckLoginUserDataPermision(role.DataPermissionType, "您设置的角色的数据权限大于您拥有数据权限,系统不允许该操作");
             var userRoleCount = await _userRoleRepository.GetCountAsync(p => p.RoleId == roleid);
             if (userRoleCount > 0) throw new BusinessException($"{role.Name}被分配用户,请先删除相关授权的用户信息");
             var userGroupRoleCount = await _userGroupRoleRepository.GetCountAsync(p => p.RoleId == roleid);
@@ -201,7 +203,7 @@ namespace Surging.Hero.Auth.Domain.Roles
             if (role == null) throw new BusinessException($"不存在Id为{id}的角色信息");
             var roleOutput = role.MapTo<GetRoleOutput>();
 
-             await roleOutput.SetAuditInfo();
+            await roleOutput.SetAuditInfo();
 
             roleOutput.PermissionIds = (await _rolePermissionRepository.GetAllAsync(p => p.RoleId == role.Id))
                 .Select(p => p.PermissionId).ToArray();
@@ -226,28 +228,30 @@ namespace Surging.Hero.Auth.Domain.Roles
 
             var sql = @"
 SELECT DISTINCT r.* ,r.CreateBy as CreatorUserId, r.CreateTime as CreationTime, r.UpdateBy as LastModifierUserId, r.UpdateTime as LastModificationTime FROM Role as r {0}
-WHERE r.IsDeleted=@IsDeleted
+WHERE r.IsDeleted=@IsDeleted AND r.TenantId=@TenantId
 ";
             var sqlParams = new Dictionary<string, object>();
-            sqlParams.Add("IsDeleted",HeroConstants.UnDeletedFlag);
+            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
+            sqlParams.Add("TenantId", _session.TenantId);
             if (!query.SearchKey.IsNullOrWhiteSpace())
             {
                 sql += " AND r.`Name` LIKE @SearchKey OR r.Identification LIKE @SearchKey ";
-                sqlParams.Add("SearchKey",$"%{query.SearchKey}%");
+                sqlParams.Add("SearchKey", $"%{query.SearchKey}%");
             }
 
             if (query.Status.HasValue)
             {
                 sql += " AND r.Status=@Status ";
-                sqlParams.Add("Status",query.Status);
+                sqlParams.Add("Status", query.Status);
             }
 
-            if (query.OrgIds !=null && query.OrgIds.Length > 0)
+
+            if (query.OrgIds != null && query.OrgIds.Length > 0)
             {
-                sql = string.Format(sql, " LEFT JOIN RoleOrganization as ro On ro.RoleId=r.Id ");
+                sql = string.Format(sql, " LEFT JOIN RoleOrganization as ro On ro.RoleId=r.Id AND ro.TenantId=@TenantId");
                 sql += "AND (ro.OrgId in @OrgId OR r.IsAllOrg=@IsAllOrg)";
-                sqlParams.Add("OrgId",query.OrgIds);
-                sqlParams.Add("IsAllOrg",true);
+                sqlParams.Add("OrgId", query.OrgIds);
+                sqlParams.Add("IsAllOrg", true);
             }
             else
             {
@@ -285,22 +289,22 @@ WHERE r.IsDeleted=@IsDeleted
 
 
         }
-        
+
         public async Task Update(UpdateRoleInput input)
         {
-            CheckUserDefinedDataPermission(input.DataPermissionType,input.DataPermissionOrgIds);
+            CheckUserDefinedDataPermission(input.DataPermissionType, input.DataPermissionOrgIds);
             using (var locker = await _lockerProvider.CreateLockAsync("UpdateRole"))
             {
                 await locker.Lock(async () =>
                 {
-                    var role = await _roleRepository.GetAsync(input.Id,false);
+                    var role = await _roleRepository.GetAsync(input.Id, false);
                     if (role.DataPermissionType == DataPermissionType.UserDefined && _session.UserId != role.CreatorUserId)
                     {
                         throw new BusinessException("自定义数据权限的角色只允许用户创建者自己修改");
                     }
                     if (input.Identification != role.Identification)
                     {
-                        var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification,false);
+                        var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification, false);
                         if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Identification}的角色");
                     }
 
@@ -309,18 +313,20 @@ WHERE r.IsDeleted=@IsDeleted
                     {
                         await _roleRepository.UpdateAsync(role, conn, trans);
                         var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
-                        await conn.ExecuteAsync(deleteSql, new {RoleId = role.Id}, trans);
+                        await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
                         await _roleDataPermissionOrgRelationRepository.DeleteAsync(p => p.RoleId == role.Id, conn,
                             trans);
-                        await _roleOrganizationRepository.DeleteAsync(p => p.RoleId == role.Id,conn,trans);
+                        await _roleOrganizationRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
                         var insertSql =
                             "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
                         var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
                             rolePermissions.Add(new RolePermission
                             {
-                                PermissionId = permissionId, RoleId = role.Id, CreationTime = DateTime.Now,
+                                PermissionId = permissionId,
+                                RoleId = role.Id,
+                                CreationTime = DateTime.Now,
                                 CreatorUserId = _session.UserId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
@@ -330,8 +336,8 @@ WHERE r.IsDeleted=@IsDeleted
                             {
                                 var roleOrg = new RoleOrganization() { RoleId = role.Id, OrgId = orgId };
                                 await _roleOrganizationRepository.InsertAsync(roleOrg, conn, trans);
-                            }  
-                        }                           
+                            }
+                        }
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
                             var insertDataPermissionOrgSql =
@@ -363,26 +369,26 @@ WHERE r.IsDeleted=@IsDeleted
             await _roleRepository.UpdateAsync(role);
             await RemoveRoleCheckPemissionCache(role.Id);
         }
-        
+
         public async Task RemoveRoleCheckPemissionCache(long roleId)
         {
             var sql = @"
 SELECT oar.ServiceId FROM OperationActionRelation as oar 
 INNER JOIN Operation as o on oar.OperationId=o.Id AND o.IsDeleted=@IsDeleted
 INNER JOIN RolePermission as rp on o.PermissionId=rp.PermissionId 
-WHERE RoleId=@RoleId
+WHERE RoleId=@RoleId AND rp.TenantId=@TenantId
 ";
-            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag },{ "RoleId", roleId } };
+            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag }, { "RoleId", roleId }, { "TenantId", _session.TenantId } };
             await using (Connection)
             {
                 var roleServiceIds = await Connection.QueryAsync<string>(sql, sqlParams);
                 foreach (var serviceId in roleServiceIds)
                 {
-                    var cacheKey = string.Format(HeroConstants.CacheKey.PermissionCheck,serviceId,"*");
+                    var cacheKey = string.Format(HeroConstants.CacheKey.PermissionCheck, serviceId, "*");
                     await _cacheProvider.RemoveAsync(cacheKey);
                 }
             }
-        }       
+        }
 
         private async Task<IEnumerable<Permission>> GetservicePemission(string serviceId)
         {
@@ -394,11 +400,11 @@ WHERE oar.ServiceId=@ServiceId";
             await using (Connection)
             {
                 var permissions = await Connection.QueryAsync<Permission>(sql,
-                    new {ServiceId = serviceId, IsDeleted = HeroConstants.UnDeletedFlag, Mold=PermissionMold.Operation });
+                    new { ServiceId = serviceId, IsDeleted = HeroConstants.UnDeletedFlag, Mold = PermissionMold.Operation });
                 return permissions;
             }
         }
-        
+
         private void CheckUserDefinedDataPermission(DataPermissionType dataPermissionType, long[] orgIds)
         {
             if (dataPermissionType == DataPermissionType.UserDefined)
@@ -409,7 +415,7 @@ WHERE oar.ServiceId=@ServiceId";
                 }
             }
         }
-        
+
         private async Task<GetDisplayOrganizationOutput[]> GetRoleOrgInfo(long roleId)
         {
             var organziationAppServiceProxy = GetService<IOrganizationAppService>();
@@ -419,11 +425,11 @@ WHERE oar.ServiceId=@ServiceId";
             foreach (var orgId in orgIds)
             {
                 var orginInfo = await organziationAppServiceProxy.GetOrg(orgId);
-                roleOrgs.Add(new GetDisplayOrganizationOutput() {OrgId = orgId, Name = orginInfo.Name});
+                roleOrgs.Add(new GetDisplayOrganizationOutput() { OrgId = orgId, Name = orginInfo.Name });
             }
-            
+
             return roleOrgs.ToArray();
         }
-        
+
     }
 }

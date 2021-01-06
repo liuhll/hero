@@ -275,9 +275,12 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task<IEnumerable<Role>> GetUserGroupRoles(long userGroupId, Status? status = null)
         {
             var sql = @"SELECT r.* FROM UserGroupRole as ugr 
-                        LEFT JOIN Role as r on ugr.RoleId = r.Id AND r.IsDeleted=@IsDeleted WHERE ugr.UserGroupId=@UserGroupId ";
+                        LEFT JOIN Role as r on ugr.RoleId = r.Id AND r.IsDeleted=@IsDeleted AND r.TenantId=@TenantId
+                        WHERE ugr.UserGroupId=@UserGroupId 
+                        AND ugr.TenantId=@TenantId";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("UserGroupId", userGroupId);
+            sqlParams.Add("TenantId", _session.TenantId);
             sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
             if (status.HasValue)
             {
@@ -294,7 +297,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task<IEnumerable<GetUserBasicOutput>> GetUserGroupUsers(long userGroupId)
         {
             var sql = @"SELECT uugr.*,u.* FROM UserUserGroupRelation as uugr 
-                        LEFT JOIN UserInfo as u on uugr.UserId = u.Id WHERE uugr.UserGroupId=@UserGroupId";
+                        LEFT JOIN UserInfo as u on uugr.UserId = u.Id AND u.TenantId=@TenantId 
+                        WHERE uugr.UserGroupId=@UserGroupId AND uugr.TenantId=@TenantId";
             await using (Connection)
             {
                 return await Connection.QueryAsync<UserUserGroupRelation, UserInfo, GetUserBasicOutput>(sql,
@@ -310,17 +314,20 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                             output.DeptName = positionAppServiceProxy.Get(u.PositionId.Value).Result.Name;
 
                         return output;
-                    }, new {UserGroupId = userGroupId}, splitOn: "Id");
+                    }, new { UserGroupId = userGroupId, TenantId = _session.TenantId }, splitOn: "Id");
             }
         }
 
         public async Task<bool> CheckPermission(long userId, string serviceId)
         {
             var querySql =
-                @"SELECT ug.* FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr ON ug.Id = uugr.UserGroupId
-                            WHERE  ug.IsDeleted=@IsDeleted AND ug.`Status`=@Status  AND uugr.UserId=@UserId ";
+                @"SELECT ug.* FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr ON ug.Id = uugr.UserGroupId AND ug.TenantId=@TenantId
+                            WHERE  ug.IsDeleted=@IsDeleted 
+                            AND ug.`Status`=@Status 
+                            AND uugr.UserId=@UserId 
+                            AND uugr.TenantId=@TenantId";
             var sqlParams = new Dictionary<string, object>
-                {{"IsDeleted", HeroConstants.UnDeletedFlag}, {"Status", Status.Valid}, {"UserId", userId}};
+                {{"IsDeleted", HeroConstants.UnDeletedFlag}, {"Status", Status.Valid}, {"UserId", userId}, { "TenantId", _session.TenantId }};
             await using var conn = Connection;
             var userGroups = await conn.QueryAsync<UserGroup>(querySql, sqlParams);
             foreach (var userGroup in userGroups)
@@ -380,12 +387,14 @@ namespace Surging.Hero.Auth.Domain.UserGroups
         public async Task<IPagedResult<GetUserNormOutput>> SearchUserGroupUser(QueryUserGroupUserInput query)
         {
             var querySql = @"SELECT u.*,u.CreateBy as CreatorUserId, u.CreateTime as CreationTime, u.UpdateBy as LastModifierUserId, u.UpdateTime as LastModificationTime
-FROM UserGroup as ug INNER JOIN UserUserGroupRelation as uugr on ug.Id=uugr.UserGroupId AND ug.IsDeleted=@IsDeleted
-INNER JOIN UserInfo as u on uugr.UserId=u.Id AND u.IsDeleted=@IsDeleted
-WHERE UserGroupId=@UserGroupId";
+FROM UserGroup as ug 
+INNER JOIN UserUserGroupRelation as uugr on ug.Id=uugr.UserGroupId AND ug.IsDeleted=@IsDeleted AND ug.TenantId=@TenantId
+INNER JOIN UserInfo as u on uugr.UserId=u.Id AND u.IsDeleted=@IsDeleted AND u.TenantId=@TenantId
+WHERE uugr.UserGroupId=@UserGroupId AND uugr.TenantId=@TenantId";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("UserGroupId", query.UserGroupId);
             sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
+            sqlParams.Add("TenantId", _session.TenantId);
             if (query.OrgId.HasValue && query.OrgId.Value != 0)
             {
                 var subOrgIds = await GetService<IOrganizationAppService>().GetSubOrgIds(query.OrgId.Value);
@@ -444,10 +453,11 @@ WHERE UserGroupId=@UserGroupId";
         {
             var sql = @"
 SELECT DISTINCT ug.* ,ug.CreateBy as CreatorUserId, ug.CreateTime as CreationTime, ug.UpdateBy as LastModifierUserId, ug.UpdateTime as LastModificationTime FROM UserGroup as ug {0}
-WHERE ug.IsDeleted=@IsDeleted
+WHERE ug.IsDeleted=@IsDeleted AND ug.TenantId=@TenantId
 ";
             var sqlParams = new Dictionary<string, object>();
-            sqlParams.Add("IsDeleted",HeroConstants.UnDeletedFlag);
+            sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
+            sqlParams.Add("TenantId", _session.TenantId);
             if (!query.SearchKey.IsNullOrWhiteSpace())
             {
                 sql += " AND ug.`Name` LIKE @SearchKey OR ug.Identification LIKE @SearchKey ";
@@ -462,7 +472,7 @@ WHERE ug.IsDeleted=@IsDeleted
 
             if (query.OrgId.HasValue)
             {
-                sql = string.Format(sql, " LEFT JOIN UserGroupOrganization as ugo On ugo.UserGroupId=ug.Id ");
+                sql = string.Format(sql, " LEFT JOIN UserGroupOrganization as ugo On ugo.UserGroupId=ug.Id AND ugo.TenantId=@TenantId");
                 sql += " AND (ugo.OrgId=@OrgId OR ug.IsAllOrg=@IsAllOrg)";
                 sqlParams.Add("OrgId",query.OrgId.Value);
                 sqlParams.Add("IsAllOrg", true);
@@ -546,11 +556,12 @@ WHERE ug.IsDeleted=@IsDeleted
             var sql = @"SELECT p.Id,o.`Name`,o.Title,o.Id as OperationId FROM UserGroupPermission as ugp 
                         LEFT JOIN Permission as p on ugp.PermissionId = p.Id AND p.IsDeleted=@IsDeleted 
 												LEFT JOIN Operation as o on o.PermissionId = ugp.PermissionId AND o.IsDeleted=@IsDeleted
-												WHERE ugp.UserGroupId=@UserGroupId AND p.Status=@Status";
+												WHERE ugp.UserGroupId=@UserGroupId AND p.Status=@Status AND ugp.TenantId=@TenantId";
             var sqlParams = new Dictionary<string, object>();
             sqlParams.Add("UserGroupId", userGroupId);
             sqlParams.Add("IsDeleted", HeroConstants.UnDeletedFlag);
             sqlParams.Add("Status", status);
+            sqlParams.Add("TenantId", _session.TenantId);
             await using (Connection)
             {
                 return await Connection.QueryAsync<UserGroupPermissionModel>(sql, sqlParams);
@@ -583,20 +594,22 @@ WHERE ug.IsDeleted=@IsDeleted
         private async Task<IEnumerable<UserGroup>> GetUserGroups(long userId)
         {
             var sql = @"SELECT ug.* FROM  UserGroup as ug 
-                        LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id WHERE uugr.UserId=@UserId";
+                        LEFT JOIN UserUserGroupRelation as uugr on uugr.UserGroupId = ug.Id AND ug.TenantId=@TenantId
+                        WHERE uugr.UserId=@UserId AND uugr.TenantId=@TenantId";
             await using (Connection)
             {
-                return await Connection.QueryAsync<UserGroup>(sql, new {UserId = userId});
+                return await Connection.QueryAsync<UserGroup>(sql, new {UserId = userId, TenantId = _session.TenantId});
             }
         }
 
         private async Task<IEnumerable<Role>> GetUserRoles(long userId)
         {
             var sql = @"SELECT r.* FROM UserRole as ur 
-                        LEFT JOIN Role as r on ur.RoleId = r.Id WHERE ur.UserId=@UserId";
+                        LEFT JOIN Role as r on ur.RoleId = r.Id AND r.TenantId=@TenantId
+                        WHERE ur.UserId=@UserId AND ur.TenantId=@TenantId";
             await using (Connection)
             {
-                return await Connection.QueryAsync<Role>(sql, new {UserId = userId});
+                return await Connection.QueryAsync<Role>(sql, new {UserId = userId, TenantId = _session.TenantId});
             }
         }
         
@@ -622,9 +635,9 @@ WHERE ug.IsDeleted=@IsDeleted
         {
             var sql = @"SELECT oar.ServiceId FROM OperationActionRelation as oar 
 INNER JOIN Operation as o on oar.OperationId=o.Id AND o.IsDeleted=@IsDeleted
-INNER JOIN UserGroupPermission as ugp on o.PermissionId=ugp.PermissionId 
-WHERE UserGroupId=@UserGroupId";
-            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag },{ "UserGroupId", userGroupId } };
+INNER JOIN UserGroupPermission as ugp on o.PermissionId=ugp.PermissionId
+WHERE ugp.UserGroupId=@UserGroupId AND TenantId=@TenantId";
+            var sqlParams = new Dictionary<string, object>() { { "IsDeleted", HeroConstants.UnDeletedFlag },{ "UserGroupId", userGroupId }, { "TenantId", _session.TenantId } };
             await using (Connection)
             {
                 var userGroupServiceIds = await Connection.QueryAsync<string>(sql, sqlParams);
