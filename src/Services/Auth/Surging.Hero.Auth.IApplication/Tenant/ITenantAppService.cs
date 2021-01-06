@@ -57,7 +57,7 @@ namespace Surging.Hero.Auth.IApplication.Tenant
         /// <returns></returns>
         [ServiceRoute("list")]
         [HttpPost]
-        [Service(Name = "获取租户列表", Director = Developers.Liuhll, Date = "2021-01-05")]
+        [Service(Name = "获取租户列表", EnableAuthorization = false, Director = Developers.Liuhll, Date = "2021-01-05")]
         Task<IEnumerable<GetTenantOutput>> List();        
 
         /// <summary>
