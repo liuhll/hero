@@ -37,7 +37,7 @@ namespace Surging.Hero.Auth.Application.Tenant
             return await _tenantDomainService.Delete(id);
         }
 
-        public async Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query)
+        public async Task<IPagedResult<GetTenantPageOutput>> Search(QueryTenantInput query)
         {
             return await _tenantDomainService.Search(query);
         }

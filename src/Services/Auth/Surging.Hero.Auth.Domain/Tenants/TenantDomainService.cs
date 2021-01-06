@@ -8,6 +8,7 @@ using Surging.Cloud.Dapper.Manager;
 using Surging.Cloud.Dapper.Repositories;
 using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Cloud.Domain.PagedAndSorted.Extensions;
+using Surging.Hero.Auth.IApplication.FullAuditDtos;
 using Surging.Hero.Auth.IApplication.Tenant.Dtos;
 using Surging.Hero.Organization.Domain.Shared;
 using Surging.Hero.Organization.IApplication.Corporation;
@@ -88,7 +89,7 @@ namespace Surging.Hero.Auth.Domain.Tenants
 
         }
 
-        public async Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query)
+        public async Task<IPagedResult<GetTenantPageOutput>> Search(QueryTenantInput query)
         {
             var sort = new Dictionary<string, SortType>();
             if (!query.Sorting.IsNullOrEmpty())
@@ -101,7 +102,14 @@ namespace Surging.Hero.Auth.Domain.Tenants
             }
 
             var queryResult = await _tenantRepository.GetPageAsync(p => p.Name.Contains(query.Name),query.PageIndex,query.PageCount, sort);
-            return queryResult.Item1.MapTo<IEnumerable<GetTenantOutput>>().GetPagedResult(queryResult.Item2);
+       
+            var output = queryResult.Item1.MapTo<IEnumerable<GetTenantPageOutput>>().GetPagedResult(queryResult.Item2);
+            foreach (var item in output.Items)
+            {
+                await item.SetAuditInfo();
+            }
+
+            return output;
         }
 
         public async Task<string> Status(UpdateTenantStatusInput input)

@@ -36,8 +36,8 @@ namespace Surging.Hero.Auth.IApplication.Tenant
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ServiceRoute("")]
-        [HttpPut]
+        [ServiceRoute("{id}")]
+        [HttpDelete]
         [Service(Name = "删除租户", Director = Developers.Liuhll, Date = "2021-01-05")]
         Task<string> Delete(long id);
 
@@ -49,7 +49,7 @@ namespace Surging.Hero.Auth.IApplication.Tenant
         [ServiceRoute("search")]
         [HttpPost]
         [Service(Name = "搜索租户", Director = Developers.Liuhll, Date = "2021-01-05")]
-        Task<IPagedResult<GetTenantOutput>> Search(QueryTenantInput query);
+        Task<IPagedResult<GetTenantPageOutput>> Search(QueryTenantInput query);
         
         /// <summary>
         /// 获取有效的租户列表

@@ -11,7 +11,7 @@ namespace Surging.Hero.Organization.IApplication.Department.Dtos
 
         [Required(ErrorMessage = "组织机构标识不允许为空")]
         [MaxLength(50, ErrorMessage = "组织机构唯一标识长度不允许超过50")]
-        [RegularExpression(RegExpConstants.OrgIdentificationRegex, ErrorMessage = "组织机构标识不正确,只能是字母和数字组合")]
+        [RegularExpression(RegExpConstants.NormalIdentificationCode, ErrorMessage = "组织机构标识不正确,只能是字母和数字组合")]
         public string Identification { get; set; }
 
         public string Location { get; set; }

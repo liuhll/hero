@@ -13,8 +13,8 @@ namespace Surging.Hero.Auth.Application.Tenant
                 dest.Status = Status.Valid;
             });
             CreateMap<UpdateTenantInput, Domain.Tenants.Tenant>();
-
             CreateMap<Domain.Tenants.Tenant, GetTenantOutput>();
+            CreateMap<Domain.Tenants.Tenant, GetTenantPageOutput>();
 
         }
     }
