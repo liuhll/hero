@@ -193,12 +193,13 @@ namespace Surging.Hero.Organization.Domain.Organizations.Departments
                         throw new BusinessException("部门只允许设置一个负责人岗位");
                     var positionIds = input.Positions.Where(p => p.Id != 0 && p.Id.HasValue).Select(p => p.Id);
                     var deletePositionSql =
-                        "UPDATE `Position` SET IsDeleted=@IsDeleted,DeleteBy=@DeleteBy,DeleteTime=@DeleteTime WHERE DeptId=@DeptId AND Id NOT in @Id";
+                        "UPDATE `Position` SET IsDeleted=@IsDeleted,DeleteBy=@DeleteBy,DeleteTime=@DeleteTime WHERE DeptId=@DeptId AND Id NOT in @Id AND TenantId=@TenantId";
                     await conn.ExecuteAsync(deletePositionSql,
                         new
                         {
                             IsDeleted = HeroConstants.DeletedFlag, DeleteBy = _session.UserId.Value,
-                            DeleteTime = DateTime.Now, DeptId = department.Id, Id = positionIds
+                            DeleteTime = DateTime.Now, DeptId = department.Id, Id = positionIds,
+                            TenantId = _session.TenantId
                         }, trans);
                     var sort = 1;
                     foreach (var positionInput in input.Positions)

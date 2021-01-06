@@ -107,7 +107,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                             }                              
                         } 
                         var insertSql =
-                            "INSERT INTO UserGroupPermission(PermissionId,UserGroupId,CreateTime,CreateBy) VALUES(@PermissionId,@UserGroupId,@CreationTime,@CreatorUserId)";
+                            "INSERT INTO UserGroupPermission(PermissionId,UserGroupId,CreateTime,CreateBy,TenantId) VALUES(@PermissionId,@UserGroupId,@CreationTime,@CreatorUserId,@TenantId)";
                         var userGroupPermissions = new List<UserGroupPermission>();
                         foreach (var permissionId in input.PermissionIds)
                         {
@@ -116,14 +116,15 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 PermissionId = permissionId, 
                                 UserGroupId = userGroupId,
                                 CreationTime = DateTime.Now,
-                                CreatorUserId = _session.UserId
+                                CreatorUserId = _session.UserId,
+                                TenantId = _session.TenantId
                             });
                         }
                         await conn.ExecuteAsync(insertSql, userGroupPermissions, trans);
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
                             var insertDataPermissionOrgSql =
-                                "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId)";
+                                "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy,TenantId) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId,@TenantId)";
                             var dataPermissionOrgDatas = new List<UserGroupDataPermissionOrgRelation>();
                             foreach (var orgId in input.DataPermissionOrgIds)
                             {
@@ -132,7 +133,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                     UserGroupId = userGroupId,
                                     OrgId = orgId,
                                     CreationTime = DateTime.Now,
-                                    CreatorUserId = _session.UserId
+                                    CreatorUserId = _session.UserId,
+                                    TenantId = _session.TenantId
                                 });
                             }
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
@@ -215,7 +217,7 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                         }
 
                         var insertSql =
-                            "INSERT INTO UserGroupPermission(PermissionId,UserGroupId,CreateTime,CreateBy) VALUES(@PermissionId,@UserGroupId,@CreationTime,@CreatorUserId)";
+                            "INSERT INTO UserGroupPermission(PermissionId,UserGroupId,CreateTime,CreateBy,TenantId) VALUES(@PermissionId,@UserGroupId,@CreationTime,@CreatorUserId,@TenantId)";
                         var userGroupPermissions = new List<UserGroupPermission>();
                         foreach (var permissionId in input.PermissionIds)
                         {
@@ -224,14 +226,15 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                 PermissionId = permissionId, 
                                 UserGroupId = userGroup.Id,
                                 CreationTime = DateTime.Now,
-                                CreatorUserId = _session.UserId
+                                CreatorUserId = _session.UserId,
+                                TenantId = _session.TenantId
                             });
                         }
                         await conn.ExecuteAsync(insertSql, userGroupPermissions, trans);
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
                             var insertDataPermissionOrgSql =
-                                "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId)";
+                                "INSERT INTO UserGroupDataPermissionOrgRelation(UserGroupId,OrgId,CreateTime,CreateBy,TenantId) VALUES(@UserGroupId,@OrgId,@CreationTime,@CreatorUserId,@TenantId)";
                             var dataPermissionOrgDatas = new List<UserGroupDataPermissionOrgRelation>();
                             foreach (var orgId in input.DataPermissionOrgIds)
                             {
@@ -240,7 +243,8 @@ namespace Surging.Hero.Auth.Domain.UserGroups
                                     UserGroupId = userGroup.Id,
                                     OrgId = orgId,
                                     CreationTime = DateTime.Now,
-                                    CreatorUserId = _session.UserId
+                                    CreatorUserId = _session.UserId,
+                                    TenantId = _session.TenantId
                                 });
                             }
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);

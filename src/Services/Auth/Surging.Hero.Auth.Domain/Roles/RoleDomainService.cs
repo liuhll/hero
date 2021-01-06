@@ -128,7 +128,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                         var roleId = await _roleRepository.InsertAndGetIdAsync(role, conn, trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
                         var insertSql =
-                            "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
+                            "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy,TenantId) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId,@TenantId)";
                         var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
                             rolePermissions.Add(new RolePermission
@@ -136,7 +136,8 @@ namespace Surging.Hero.Auth.Domain.Roles
                                 PermissionId = permissionId,
                                 RoleId = roleId,
                                 CreationTime = DateTime.Now,
-                                CreatorUserId = _session.UserId
+                                CreatorUserId = _session.UserId,
+                                TenantId = _session.TenantId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
                         if (!input.IsAllOrg)
@@ -150,7 +151,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
                             var insertDataPermissionOrgSql =
-                                "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId)";
+                                "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy,TenantId) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId,@TenantId)";
                             var dataPermissionOrgDatas = new List<RoleDataPermissionOrgRelation>();
                             foreach (var orgId in input.DataPermissionOrgIds)
                             {
@@ -159,7 +160,8 @@ namespace Surging.Hero.Auth.Domain.Roles
                                     RoleId = roleId,
                                     OrgId = orgId,
                                     CreationTime = DateTime.Now,
-                                    CreatorUserId = _session.UserId
+                                    CreatorUserId = _session.UserId,
+                                    TenantId = _session.TenantId
                                 });
                             }
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
@@ -312,14 +314,14 @@ WHERE r.IsDeleted=@IsDeleted AND r.TenantId=@TenantId
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
                         await _roleRepository.UpdateAsync(role, conn, trans);
-                        var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId";
-                        await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id }, trans);
+                        var deleteSql = "DELETE FROM RolePermission WHERE RoleId=@RoleId AND TenantId=@TenantId";
+                        await conn.ExecuteAsync(deleteSql, new { RoleId = role.Id, TenantId = _session.TenantId }, trans);
                         await _rolePermissionRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
                         await _roleDataPermissionOrgRelationRepository.DeleteAsync(p => p.RoleId == role.Id, conn,
                             trans);
                         await _roleOrganizationRepository.DeleteAsync(p => p.RoleId == role.Id, conn, trans);
                         var insertSql =
-                            "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId)";
+                            "INSERT INTO RolePermission(PermissionId,RoleId,CreateTime,CreateBy,TenantId) VALUES(@PermissionId,@RoleId,@CreationTime,@CreatorUserId,@TenantId)";
                         var rolePermissions = new List<RolePermission>();
                         foreach (var permissionId in input.PermissionIds)
                             rolePermissions.Add(new RolePermission
@@ -327,7 +329,8 @@ WHERE r.IsDeleted=@IsDeleted AND r.TenantId=@TenantId
                                 PermissionId = permissionId,
                                 RoleId = role.Id,
                                 CreationTime = DateTime.Now,
-                                CreatorUserId = _session.UserId
+                                CreatorUserId = _session.UserId,
+                                TenantId = _session.TenantId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
                         if (!input.IsAllOrg)
@@ -341,7 +344,7 @@ WHERE r.IsDeleted=@IsDeleted AND r.TenantId=@TenantId
                         if (input.DataPermissionType == DataPermissionType.UserDefined)
                         {
                             var insertDataPermissionOrgSql =
-                                "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId)";
+                                "INSERT INTO RoleDataPermissionOrgRelation(RoleId,OrgId,CreateTime,CreateBy,TenantId) VALUES(@RoleId,@OrgId,@CreationTime,@CreatorUserId,@TenantId)";
                             var dataPermissionOrgDatas = new List<RoleDataPermissionOrgRelation>();
                             foreach (var orgId in input.DataPermissionOrgIds)
                             {
@@ -350,7 +353,8 @@ WHERE r.IsDeleted=@IsDeleted AND r.TenantId=@TenantId
                                     RoleId = role.Id,
                                     OrgId = orgId,
                                     CreationTime = DateTime.Now,
-                                    CreatorUserId = _session.UserId
+                                    CreatorUserId = _session.UserId,
+                                    TenantId = _session.TenantId
                                 });
                             }
 
