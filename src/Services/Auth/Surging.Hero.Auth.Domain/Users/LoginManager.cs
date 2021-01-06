@@ -59,20 +59,17 @@ namespace Surging.Hero.Auth.Domain.Users
             return payload;
         }
 
-        private async Task ValidTenant(long? tenantId)
+        private async Task ValidTenant(long tenantId)
         {
-            if (tenantId.HasValue)
+            var tenant = await _tenantRepository.SingleOrDefaultAsync(p => p.Id == tenantId);
+            if (tenant == null)
             {
-                var tenant = await _tenantRepository.SingleOrDefaultAsync(p => p.Id == tenantId);
-                if (tenant == null)
-                {
-                    throw new BusinessException($"不存在id为{tenantId}的租户");
-                }
+                throw new BusinessException($"不存在id为{tenantId}的租户");
+            }
 
-                if (tenant.Status == Status.Invalid)
-                {
-                    throw new BusinessException("当前租户被冻结,您没有权限登录该系统");
-                }
+            if (tenant.Status == Status.Invalid)
+            {
+                throw new BusinessException("当前租户被冻结,您没有权限登录该系统");
             }
         }
 
