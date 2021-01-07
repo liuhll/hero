@@ -12,8 +12,8 @@ using Surging.Hero.Common;
 namespace Surging.Hero.Auth.Domain.Users
 {
     public interface IUserDomainService : ITransientDependency
-    {
-        Task Create(CreateUserInput input);
+    {  
+        Task<long> Create (CreateUserInput input,long? tenanId = null);
         Task ResetPassword(UserInfo userInfo, string newPassword);
         Task Update(UpdateUserInput input);
         Task Delete(long id);

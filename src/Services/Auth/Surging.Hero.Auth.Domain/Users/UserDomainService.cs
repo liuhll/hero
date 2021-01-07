@@ -90,9 +90,14 @@ namespace Surging.Hero.Auth.Domain.Users
             return await _userGroupDomainService.CheckPermission(userId, serviceId);
         }
 
-        public async Task Create(CreateUserInput input)
+        public async Task<long> Create(CreateUserInput input,long? tenanId = null)
         {
             var userInfo = input.MapTo<UserInfo>();
+            if (tenanId.HasValue)
+            {
+                userInfo.TenantId = tenanId.Value;
+            }
+
             var departAppServiceProxy = GetService<IDepartmentAppService>();
             if (userInfo.OrgId.HasValue)
                 if (!await departAppServiceProxy.Check(userInfo.OrgId.Value))
@@ -105,7 +110,7 @@ namespace Surging.Hero.Auth.Domain.Users
             userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);
             using (var locker = await _lockerProvider.CreateLockAsync("CreateUser"))
             {
-                await locker.Lock(async () =>
+               return await locker.Lock(async () =>
                 {
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
@@ -128,6 +133,7 @@ namespace Surging.Hero.Auth.Domain.Users
                                 new UserUserGroupRelation {UserId = userId, UserGroupId = userGroupId}, conn, trans);
                         }
                     }, Connection);
+                    return userInfo.Id;
                 });
             }
         }

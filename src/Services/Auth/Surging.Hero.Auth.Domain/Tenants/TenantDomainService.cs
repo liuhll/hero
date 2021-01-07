@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using Surging.Cloud.AutoMapper;
 using Surging.Cloud.CPlatform.Exceptions;
@@ -8,8 +10,15 @@ using Surging.Cloud.Dapper.Manager;
 using Surging.Cloud.Dapper.Repositories;
 using Surging.Cloud.Domain.PagedAndSorted;
 using Surging.Cloud.Domain.PagedAndSorted.Extensions;
+using Surging.Hero.Auth.Domain.Permissions;
+using Surging.Hero.Auth.Domain.Roles;
+using Surging.Hero.Auth.Domain.Shared;
+using Surging.Hero.Auth.Domain.Users;
 using Surging.Hero.Auth.IApplication.FullAuditDtos;
+using Surging.Hero.Auth.IApplication.Role.Dtos;
 using Surging.Hero.Auth.IApplication.Tenant.Dtos;
+using Surging.Hero.Auth.IApplication.User.Dtos;
+using Surging.Hero.Auth.IApplication.UserGroup.Dtos;
 using Surging.Hero.Organization.Domain.Shared;
 using Surging.Hero.Organization.IApplication.Corporation;
 using Surging.Hero.Organization.IApplication.Corporation.Dtos;
@@ -19,10 +28,19 @@ namespace Surging.Hero.Auth.Domain.Tenants
     public class TenantDomainService : ManagerBase, ITenantDomainService
     {
         private readonly IDapperRepository<Tenant, long> _tenantRepository;
+        private readonly IRoleDomainService _roleDomainService;
+        private readonly IUserDomainService _userDomainService;
+        private readonly IDapperRepository<Permission, long> _permissionRepository;
 
-        public TenantDomainService(IDapperRepository<Tenant, long> tenantRepository)
+        public TenantDomainService(IDapperRepository<Tenant, long> tenantRepository,
+            IRoleDomainService roleDomainService,
+            IUserDomainService userDomainService, 
+            IDapperRepository<Permission, long> permissionRepository)
         {
             _tenantRepository = tenantRepository;
+            _roleDomainService = roleDomainService;
+            _userDomainService = userDomainService;
+            _permissionRepository = permissionRepository;
         }
 
         public async Task<string> Create(CreateTenantInput input)
@@ -37,6 +55,10 @@ namespace Surging.Hero.Auth.Domain.Tenants
             await UnitOfWorkAsync(async (conn, trans) =>
             {
                 var tenantId =  await _tenantRepository.InsertAndGetIdAsync(input.MapTo<Tenant>(),conn,trans);
+                if (input.CreateSuper)
+                {
+                    await CreateAdminAndRole(tenantId,input);
+                }
                 await corporationAppServiceProxy.CreateByTenant(new CreateCorporationByTenantInput()
                 {
                     Name = input.Name,
@@ -52,6 +74,32 @@ namespace Surging.Hero.Auth.Domain.Tenants
             }, Connection);
             
             return "新增租户成功";
+        }
+
+        private async Task CreateAdminAndRole(long tenantId, CreateTenantInput input)
+        {
+            var permissions = await _permissionRepository.GetAllAsync();
+            var createRole = new CreateRoleInput()
+            {
+                Identification = input.Identification + "_admin",
+                Name = "管理员",
+                PermissionIds = permissions.Select(p=> p.Id).ToArray(),
+                DataPermissionType = DataPermissionType.AllOrg,
+                IsAllOrg = true,
+                Memo = "创建租户时,初始化的角色",
+
+            };
+            var roleId = await _roleDomainService.Create(createRole,tenantId);
+            var createUser = new CreateUserInput()
+            {
+                UserName = "admin",
+                Password = "123qwe",
+                ChineseName = "管理员",
+                Memo = "创建租户时,初始化的用户",
+                RoleIds = new []{ roleId },
+                Status = Common.Status.Valid
+            };
+            await _userDomainService.Create(createUser,tenantId);
         }
 
         public async Task<string> Update(UpdateTenantInput input)

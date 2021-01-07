@@ -111,17 +111,21 @@ namespace Surging.Hero.Auth.Domain.Roles
             return false;
         }
 
-        public async Task Create(CreateRoleInput input)
+        public async Task<long> Create(CreateRoleInput input, long? tenantId = null)
         {
             using (var locker = await _lockerProvider.CreateLockAsync("CreateRole"))
             {
-                await locker.Lock(async () =>
+                return await locker.Lock(async () =>
                 {
-
                     var exsitRole = await _roleRepository.FirstOrDefaultAsync(p => p.Identification == input.Identification, false);
                     if (exsitRole != null) throw new BusinessException($"系统中已经存在{input.Identification}的角色");
                     CheckUserDefinedDataPermission(input.DataPermissionType, input.DataPermissionOrgIds);
                     var role = input.MapTo<Role>();
+                    role.TenantId = _session.TenantId;
+                    if (tenantId.HasValue)
+                    {
+                        role.TenantId = tenantId.Value;
+                    }
 
                     await UnitOfWorkAsync(async (conn, trans) =>
                     {
@@ -137,7 +141,7 @@ namespace Surging.Hero.Auth.Domain.Roles
                                 RoleId = roleId,
                                 CreationTime = DateTime.Now,
                                 CreatorUserId = _session.UserId,
-                                TenantId = _session.TenantId
+                                TenantId = role.TenantId
                             });
                         await conn.ExecuteAsync(insertSql, rolePermissions, trans);
                         if (!input.IsAllOrg)
@@ -161,13 +165,14 @@ namespace Surging.Hero.Auth.Domain.Roles
                                     OrgId = orgId,
                                     CreationTime = DateTime.Now,
                                     CreatorUserId = _session.UserId,
-                                    TenantId = _session.TenantId
+                                    TenantId = role.TenantId
                                 });
                             }
                             await conn.ExecuteAsync(insertDataPermissionOrgSql, dataPermissionOrgDatas, trans);
                         }
 
                     }, Connection);
+                    return role.Id;
                 });
             }
         }

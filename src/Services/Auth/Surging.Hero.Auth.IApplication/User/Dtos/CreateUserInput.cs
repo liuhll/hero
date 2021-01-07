@@ -5,6 +5,12 @@ namespace Surging.Hero.Auth.IApplication.User.Dtos
 {
     public class CreateUserInput : UserDtoBase
     {
+        public CreateUserInput()
+        {
+            RoleIds = new long[0];
+            UserGroupIds = new long[0];
+        }
+
         [Required(ErrorMessage = "部门信息不允许为空")]
         public long? OrgId { get; set; }
 

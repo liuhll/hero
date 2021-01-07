@@ -8,7 +8,7 @@ namespace Surging.Hero.Auth.Domain.Roles
 {
     public interface IRoleDomainService : ITransientDependency
     {
-        Task Create(CreateRoleInput input);
+        Task<long> Create(CreateRoleInput input, long? tenantId = null);
         Task Update(UpdateRoleInput input);
         Task UpdateStatus(UpdateRoleStatusInput input);
         Task RemoveRoleCheckPemissionCache(long roleId);
