@@ -7,5 +7,6 @@ namespace Surging.Hero.BasicData.Domain.SystemConfigs
     public interface ISystemConfigDomainService : ITransientDependency
     {
         Task<GetSystemConfigOutput> GetSystemConfig();
+        Task<string> SetSystemConfig(SetSystemConfigInput input);
     }
 }

@@ -12,7 +12,9 @@ namespace Surging.Hero.Common
 
         public const int DeletedFlag = 1;
 
-        public static string CacheProviderKey = "ddlCache.Redis"; 
+        public const string CacheProviderKey = "ddlCache.Redis";
+        
+        public const string DefaultSysName = "Hero权限管理系统";
 
         public static class CodeRuleRestrain
         {
