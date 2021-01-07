@@ -47,6 +47,10 @@
   "Automapper": {
     "Assemblies": "Surging.Hero.*.Application;Surging.Hero.Common;Surging.*.Common;"
   },
+  "Tenant": {
+    "SuperUserAccount": "admin",
+    "SuperUserPassword": "123qwe"
+  },
   "Stage": {
     "EnableHttps": false, // 不设置ports，默认httpsPort:443
     "CertificateFileName": "${CertificateFileName}|",

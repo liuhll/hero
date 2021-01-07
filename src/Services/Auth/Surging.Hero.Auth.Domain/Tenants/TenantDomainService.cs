@@ -32,16 +32,18 @@ namespace Surging.Hero.Auth.Domain.Tenants
         private readonly IRoleDomainService _roleDomainService;
         private readonly IUserDomainService _userDomainService;
         private readonly IDapperRepository<Permission, long> _permissionRepository;
-
+        private readonly ITenantConfigProvider _tenantConfigProvider;
         public TenantDomainService(IDapperRepository<Tenant, long> tenantRepository,
             IRoleDomainService roleDomainService,
             IUserDomainService userDomainService,
-            IDapperRepository<Permission, long> permissionRepository)
+            IDapperRepository<Permission, long> permissionRepository, 
+            ITenantConfigProvider tenantConfigProvider)
         {
             _tenantRepository = tenantRepository;
             _roleDomainService = roleDomainService;
             _userDomainService = userDomainService;
             _permissionRepository = permissionRepository;
+            _tenantConfigProvider = tenantConfigProvider;
         }
 
         public async Task<string> Create(CreateTenantInput input)
@@ -79,6 +81,13 @@ namespace Surging.Hero.Auth.Domain.Tenants
         private async Task CreateAdminAndRole(long tenantId, CreateTenantInput input, DbConnection conn,
             DbTransaction trans)
         {
+            var tenantConfig = _tenantConfigProvider.Get();
+            if (tenantConfig == null || tenantConfig.SuperUserPassword.IsNullOrWhiteSpace() ||
+                tenantConfig.SuperUserPassword.IsNullOrWhiteSpace())
+            {
+                throw new BusinessException("获取租户默认管理员账号和密码失败");
+            }
+
             var permissions = await _permissionRepository.GetAllAsync();
             var createRole = new CreateRoleInput()
             {
@@ -93,9 +102,9 @@ namespace Surging.Hero.Auth.Domain.Tenants
             var createUser = new CreateUserInput()
             {
                 OrgId = null,
-                UserName = "admin",
-                Password = "123qwe",
-                ChineseName = "管理员",
+                UserName = tenantConfig.SuperUserAccount,
+                Password = tenantConfig.SuperUserPassword,
+                ChineseName = tenantConfig.ChineseName?? "管理员",
                 Memo = "创建租户时,初始化的用户",
                 RoleIds = new[] {roleId},
                 Status = Common.Status.Valid
