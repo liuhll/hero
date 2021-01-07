@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -92,6 +93,67 @@ namespace Surging.Hero.Auth.Domain.Users
 
         public async Task<long> Create(CreateUserInput input,long? tenanId = null)
         {
+            var userInfo = await CheckUserInfo(input, tenanId);
+
+            userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);
+            using (var locker = await _lockerProvider.CreateLockAsync("CreateUser"))
+            {
+               return await locker.Lock(async () =>
+                {
+                    await UnitOfWorkAsync(async (conn, trans) =>
+                    {
+                        var userId = await _userRepository.InsertAndGetIdAsync(userInfo, conn, trans);
+                        foreach (var roleId in input.RoleIds)
+                        {
+                            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId,conn,trans);
+                            if (role == null) throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
+
+                            await _userRoleRepository.InsertAsync(new UserRole {UserId = userId, RoleId = roleId, TenantId = userInfo.TenantId}, conn,
+                                trans);
+                        }
+
+                        foreach (var userGroupId in input.UserGroupIds)
+                        {
+                            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == userGroupId);
+                            if (userGroup == null) throw new BusinessException($"系统中不存在Id为{userGroupId}的用户组信息");
+                            await _userUserGroupRelationRepository.InsertAsync(
+                                new UserUserGroupRelation {UserId = userId, UserGroupId = userGroupId, TenantId = userInfo.TenantId}, conn, trans);
+                        }
+                    }, Connection);
+                    return userInfo.Id;
+                });
+            }
+        }
+
+        public async Task<long> Create(CreateUserInput input, DbConnection conn, DbTransaction trans, long? tenanId = null)
+        {
+            var userInfo = await CheckUserInfo(input, tenanId);
+
+            userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);
+            using (var locker = await _lockerProvider.CreateLockAsync("CreateUser"))
+            {
+                return await locker.Lock(async () =>
+                {
+                
+                        var userId = await _userRepository.InsertAndGetIdAsync(userInfo, conn, trans);
+                        foreach (var roleId in input.RoleIds)
+                        {
+                            await _userRoleRepository.InsertAsync(new UserRole {UserId = userId, RoleId = roleId, TenantId = userInfo.TenantId}, conn,
+                                trans);
+                        }
+
+                        foreach (var userGroupId in input.UserGroupIds)
+                        {
+                            await _userUserGroupRelationRepository.InsertAsync(
+                                new UserUserGroupRelation {UserId = userId, UserGroupId = userGroupId, TenantId = userInfo.TenantId}, conn, trans);
+                        }
+                        return userInfo.Id;
+                });
+            }
+        }
+
+        private async Task<UserInfo> CheckUserInfo(CreateUserInput input, long? tenanId)
+        {
             var userInfo = input.MapTo<UserInfo>();
             if (tenanId.HasValue)
             {
@@ -106,38 +168,9 @@ namespace Surging.Hero.Auth.Domain.Users
             if (userInfo.PositionId.HasValue)
                 if (!await positionAppServiceProxy.CheckExsit(userInfo.PositionId.Value))
                     throw new BusinessException($"不存在Id为{userInfo.PositionId}的职位信息");
-
-            userInfo.Password = _passwordHelper.EncryptPassword(userInfo.UserName, userInfo.Password);
-            using (var locker = await _lockerProvider.CreateLockAsync("CreateUser"))
-            {
-               return await locker.Lock(async () =>
-                {
-                    await UnitOfWorkAsync(async (conn, trans) =>
-                    {
-                        var userId = await _userRepository.InsertAndGetIdAsync(userInfo, conn, trans);
-                        foreach (var roleId in input.RoleIds)
-                        {
-                            var role = await _roleRepository.SingleOrDefaultAsync(p => p.Id == roleId);
-                            if (role == null) throw new BusinessException($"系统中不存在Id为{roleId}的角色信息");
-
-                            await _userRoleRepository.InsertAsync(new UserRole {UserId = userId, RoleId = roleId}, conn,
-                                trans);
-                        }
-
-                        foreach (var userGroupId in input.UserGroupIds)
-                        {
-                            var userGroup = await _userGroupRepository.SingleOrDefaultAsync(p => p.Id == userGroupId);
-                            if (userGroup == null) throw new BusinessException($"系统中不存在Id为{userGroupId}的用户组信息");
-
-                            await _userUserGroupRelationRepository.InsertAsync(
-                                new UserUserGroupRelation {UserId = userId, UserGroupId = userGroupId}, conn, trans);
-                        }
-                    }, Connection);
-                    return userInfo.Id;
-                });
-            }
+            return userInfo;
         }
-
+        
         public async Task Delete(long id)
         {
             using (var locker = await _lockerProvider.CreateLockAsync("DeleteUser"))

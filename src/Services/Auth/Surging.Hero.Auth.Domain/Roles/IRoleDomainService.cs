@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 using Surging.Cloud.CPlatform.Ioc;
 using Surging.Cloud.Domain.PagedAndSorted;
@@ -9,6 +11,7 @@ namespace Surging.Hero.Auth.Domain.Roles
     public interface IRoleDomainService : ITransientDependency
     {
         Task<long> Create(CreateRoleInput input, long? tenantId = null);
+        Task<long> Create(CreateRoleInput input, DbConnection conn, DbTransaction trans, long? tenantId = null);
         Task Update(UpdateRoleInput input);
         Task UpdateStatus(UpdateRoleStatusInput input);
         Task RemoveRoleCheckPemissionCache(long roleId);
@@ -17,5 +20,6 @@ namespace Surging.Hero.Auth.Domain.Roles
         Task<bool> CheckPermission(long roleId, string serviceId);
         Task<GetRoleOutput> Get(long id);
         Task<IPagedResult<GetRoleOutput>> Search(QueryRoleInput query);
+        
     }
 }

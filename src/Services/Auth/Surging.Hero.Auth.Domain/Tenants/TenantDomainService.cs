@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace Surging.Hero.Auth.Domain.Tenants
 
         public TenantDomainService(IDapperRepository<Tenant, long> tenantRepository,
             IRoleDomainService roleDomainService,
-            IUserDomainService userDomainService, 
+            IUserDomainService userDomainService,
             IDapperRepository<Permission, long> permissionRepository)
         {
             _tenantRepository = tenantRepository;
@@ -54,11 +55,12 @@ namespace Surging.Hero.Auth.Domain.Tenants
             var corporationAppServiceProxy = GetService<ICorporationAppService>();
             await UnitOfWorkAsync(async (conn, trans) =>
             {
-                var tenantId =  await _tenantRepository.InsertAndGetIdAsync(input.MapTo<Tenant>(),conn,trans);
+                var tenantId = await _tenantRepository.InsertAndGetIdAsync(input.MapTo<Tenant>(), conn, trans);
                 if (input.CreateSuper)
                 {
-                    await CreateAdminAndRole(tenantId,input);
+                    await CreateAdminAndRole(tenantId, input, conn, trans);
                 }
+
                 await corporationAppServiceProxy.CreateByTenant(new CreateCorporationByTenantInput()
                 {
                     Name = input.Name,
@@ -68,38 +70,37 @@ namespace Surging.Hero.Auth.Domain.Tenants
                     RegisterDate = DateTime.Now,
                     Mold = CorporationMold.Group,
                     TenantId = tenantId
-                    
                 });
-                
             }, Connection);
-            
+
             return "新增租户成功";
         }
 
-        private async Task CreateAdminAndRole(long tenantId, CreateTenantInput input)
+        private async Task CreateAdminAndRole(long tenantId, CreateTenantInput input, DbConnection conn,
+            DbTransaction trans)
         {
             var permissions = await _permissionRepository.GetAllAsync();
             var createRole = new CreateRoleInput()
             {
                 Identification = input.Identification + "_admin",
                 Name = "管理员",
-                PermissionIds = permissions.Select(p=> p.Id).ToArray(),
+                PermissionIds = permissions.Select(p => p.Id).ToArray(),
                 DataPermissionType = DataPermissionType.AllOrg,
                 IsAllOrg = true,
                 Memo = "创建租户时,初始化的角色",
-
             };
-            var roleId = await _roleDomainService.Create(createRole,tenantId);
+            var roleId = await _roleDomainService.Create(createRole, conn, trans, tenantId);
             var createUser = new CreateUserInput()
             {
+                OrgId = null,
                 UserName = "admin",
                 Password = "123qwe",
                 ChineseName = "管理员",
                 Memo = "创建租户时,初始化的用户",
-                RoleIds = new []{ roleId },
+                RoleIds = new[] {roleId},
                 Status = Common.Status.Valid
             };
-            await _userDomainService.Create(createUser,tenantId);
+            await _userDomainService.Create(createUser, conn, trans, tenantId);
         }
 
         public async Task<string> Update(UpdateTenantInput input)
@@ -111,7 +112,7 @@ namespace Surging.Hero.Auth.Domain.Tenants
             }
 
             if (!input.Name.Equals(tenant.Name))
-            {   
+            {
                 var exsitTenant = await _tenantRepository.FirstOrDefaultAsync(p => p.Name == input.Name.Trim());
                 if (exsitTenant != null)
                 {
@@ -134,7 +135,6 @@ namespace Surging.Hero.Auth.Domain.Tenants
 
             await _tenantRepository.DeleteAsync(p => p.Id == id);
             return "租户删除成功";
-
         }
 
         public async Task<IPagedResult<GetTenantPageOutput>> Search(QueryTenantInput query)
@@ -142,15 +142,16 @@ namespace Surging.Hero.Auth.Domain.Tenants
             var sort = new Dictionary<string, SortType>();
             if (!query.Sorting.IsNullOrEmpty())
             {
-                sort.Add(query.Sorting,query.SortType);
+                sort.Add(query.Sorting, query.SortType);
             }
             else
             {
-                sort.Add("Id",SortType.Desc);
+                sort.Add("Id", SortType.Desc);
             }
 
-            var queryResult = await _tenantRepository.GetPageAsync(p => p.Name.Contains(query.Name),query.PageIndex,query.PageCount, sort);
-       
+            var queryResult = await _tenantRepository.GetPageAsync(p => p.Name.Contains(query.Name), query.PageIndex,
+                query.PageCount, sort);
+
             var output = queryResult.Item1.MapTo<IEnumerable<GetTenantPageOutput>>().GetPagedResult(queryResult.Item2);
             foreach (var item in output.Items)
             {
@@ -172,7 +173,6 @@ namespace Surging.Hero.Auth.Domain.Tenants
             await _tenantRepository.UpdateAsync(tenant);
             if (input.Status == Common.Status.Valid) return "启用租户成功";
             return "禁用租户成功";
-            
         }
 
         public async Task<IEnumerable<GetTenantOutput>> List()

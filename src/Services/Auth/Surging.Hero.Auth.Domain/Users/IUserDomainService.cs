@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Threading.Tasks;
 using Surging.Cloud.CPlatform.Ioc;
 using Surging.Cloud.Domain.PagedAndSorted;
@@ -14,6 +15,9 @@ namespace Surging.Hero.Auth.Domain.Users
     public interface IUserDomainService : ITransientDependency
     {  
         Task<long> Create (CreateUserInput input,long? tenanId = null);
+
+        Task<long> Create(CreateUserInput input, DbConnection conn, DbTransaction trans, long? tenanId = null);
+        
         Task ResetPassword(UserInfo userInfo, string newPassword);
         Task Update(UpdateUserInput input);
         Task Delete(long id);
