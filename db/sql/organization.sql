@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2021/1/6 17:46:01                            */
+/* Created on:     2021/1/7 9:31:41                             */
 /*==============================================================*/
 
 
@@ -20,7 +20,7 @@ create table Corporation
    Id                   bigint not null auto_increment comment '主键',
    OrgId                bigint not null comment '对应的组织机构Id',
    Mold                 int not null comment '0.集团公司;1.单体公司;2.子公司3.控股公司',
-   Address              varchar(200) not null comment '公司地址',
+   Address              varchar(200) comment '公司地址',
    Logo                 varchar(50) comment 'logo名称',
    LogoPosition         varchar(50) comment 'logo存放位置',
    CorporateRepresentative varchar(50) comment '法人代表',
