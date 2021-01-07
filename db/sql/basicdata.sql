@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2021/1/6 17:45:36                            */
+/* Created on:     2021/1/7 16:49:20                            */
 /*==============================================================*/
 
 
@@ -22,6 +22,7 @@ create table SystemConfig
    Logo                 varchar(50) comment 'login',
    LogoPosition         varchar(100) comment 'login存放位置',
    LogoSite             varchar(50) comment 'logosite',
+   NonPermissionOperationStyle int not null comment '没有操作权限的按钮显示风格',
    CreateBy             bigint comment '创建人',
    CreateTime           datetime comment '创建日期',
    UpdateBy             bigint comment '修改人',
