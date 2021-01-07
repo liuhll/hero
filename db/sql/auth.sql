@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2021/1/6 17:44:52                            */
+/* Created on:     2021/1/7 9:36:04                             */
 /*==============================================================*/
 
 
@@ -378,8 +378,8 @@ create table UserInfo
    PositionId           bigint comment '职位Id',
    Password             varchar(100) not null comment '密码',
    ChineseName          varchar(50) not null comment '中文名',
-   Email                varchar(50) not null comment '电子邮件',
-   Phone                varchar(22) not null comment '联系电话',
+   Email                varchar(50) comment '电子邮件',
+   Phone                varchar(22) comment '联系电话',
    Gender               int comment '性别',
    Birth                date comment '生日',
    NativePlace          varchar(50) comment '籍贯',
