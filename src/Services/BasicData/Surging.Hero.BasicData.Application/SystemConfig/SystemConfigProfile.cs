@@ -8,6 +8,7 @@ namespace Surging.Hero.BasicData.Application.SystemConfig
         public SystemConfigProfile()
         {
             CreateMap<Domain.SystemConfigs.SystemConfig, GetSystemConfigOutput>();
+            CreateMap<SetSystemConfigInput, Domain.SystemConfigs.SystemConfig>();
         }
     }
 }
