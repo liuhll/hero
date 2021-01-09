@@ -4,7 +4,7 @@ namespace Surging.Hero.BasicData.IApplication.SystemConfig.Dtos
 {
     public abstract class SystemConfigDtoBase
     {
-        public long? Id { get; set; }
+        public long Id { get; set; }
         
         public string SysName { get; set; }
 

@@ -26,11 +26,13 @@ namespace Surging.Hero.BasicData.Domain.SystemConfigs
             var sysConfig = await _systemConfigRepository.FirstOrDefaultAsync(p=> p.TenantId == _session.TenantId);
             if (sysConfig == null)
             {
-                return new GetSystemConfigOutput()
+                var newSysconfig = new SystemConfig()
                 {
                     SysName = HeroConstants.DefaultSysName,
-                    NonPermissionOperationStyle = NonPermissionOperationStyle.Disabled
+                    NonPermissionOperationStyle = NonPermissionOperationStyle.Displayed
                 };
+                await _systemConfigRepository.InsertAsync(newSysconfig);
+                return newSysconfig.MapTo<GetSystemConfigOutput>();
             }
 
             return sysConfig.MapTo<GetSystemConfigOutput>();
@@ -38,17 +40,8 @@ namespace Surging.Hero.BasicData.Domain.SystemConfigs
 
         public async Task<string> SetSystemConfig(SetSystemConfigInput input)
         {
-            SystemConfig systemConfig;
-            if (input.Id.HasValue && input.Id > 0)
-            {
-                systemConfig = await _systemConfigRepository.GetAsync(input.Id.Value);
-                systemConfig = input.MapTo(systemConfig);
-            }
-            else
-            {
-                systemConfig = input.MapTo<SystemConfig>();
-            }
-
+            var systemConfig = input.MapTo<SystemConfig>();
+            systemConfig.TenantId = _session.TenantId;
             if (!input.Logo.IsNullOrEmpty())
             {
                 // todo 设置logo的地址
