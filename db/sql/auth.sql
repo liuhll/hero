@@ -45,6 +45,8 @@ drop table if exists UserRole;
 
 drop table if exists UserUserGroupRelation;
 
+drop table if exists Tenant;
+
 /*==============================================================*/
 /* Table: Action                                                */
 /*==============================================================*/
@@ -447,6 +449,28 @@ create table UserUserGroupRelation
 );
 
 alter table UserUserGroupRelation comment '用户与用户关系表';
+
+/*==============================================================*/
+/* Table: Tenant                                                */
+/*==============================================================*/
+create table Tenant
+(
+   Id                   bigint not null auto_increment comment '主键',
+   Name                 varchar(50) not null comment '名称',
+   Memo                 varchar(100) comment '备注',
+   Status               int not null comment '状态',
+   CreateBy             bigint comment '创建人',
+   CreateTime           datetime comment '创建日期',
+   UpdateBy             bigint comment '修改人',
+   UpdateTime           datetime comment '修改日期',
+   IsDeleted            int comment '软删除标识',
+   DeleteBy             bigint comment '删除用户',
+   DeleteTime           datetime comment '删除时间',
+   primary key (Id)
+);
+
+alter table Tenant comment '租户表';
+
 
 INSERT INTO `hero_auth`.`Action`(`Id`, `ServiceId`, `ServiceHost`, `Application`, `Name`, `WebApi`, `Method`, `DisableNetwork`, `EnableAuthorization`, `AllowPermission`, `Developer`, `Date`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (1, 'Surging.Core.CPlatform.Module.IEchoService.Locate_key_routePath_httpMethod', 'Surging.Core.CPlatform', 'IEchoService', NULL, '/locate', 'GET', b'0', b'1', b'0', NULL, NULL, 1, 1, '2020-12-14 16:21:26', 1, '2020-12-23 15:16:24');
 INSERT INTO `hero_auth`.`Action`(`Id`, `ServiceId`, `ServiceHost`, `Application`, `Name`, `WebApi`, `Method`, `DisableNetwork`, `EnableAuthorization`, `AllowPermission`, `Developer`, `Date`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (2, 'Surging.Hero.Auth.IApplication.User.IUserAppService.Create_input', 'Surging.Hero.Auth', 'IUserAppService', '新增用户', 'api/user', 'POST', b'0', b'1', b'0', '刘洪亮', '2020-07-04', 1, 1, '2020-12-14 16:21:27', 1, '2021-01-07 21:32:35');
