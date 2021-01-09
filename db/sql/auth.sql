@@ -683,6 +683,7 @@ INSERT INTO `hero_auth`.`OperationActionRelation`(`Id`, `OperationId`, `ActionId
 INSERT INTO `hero_auth`.`OperationActionRelation`(`Id`, `OperationId`, `ActionId`, `ServiceId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (78, 1, 2, 'Surging.Hero.Auth.IApplication.User.IUserAppService.Create_input', 11, '2021-01-08 22:24:55', 11, '2021-01-08 22:24:55');
 INSERT INTO `hero_auth`.`OperationActionRelation`(`Id`, `OperationId`, `ActionId`, `ServiceId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (79, 1, 97, 'Surging.Hero.Auth.IApplication.User.IUserAppService.CheckCreateUser_orgId', 11, '2021-01-08 22:24:55', 11, '2021-01-08 22:24:55');
 INSERT INTO `hero_auth`.`OperationActionRelation`(`Id`, `OperationId`, `ActionId`, `ServiceId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (80, 1, 102, 'Surging.Hero.Organization.IApplication.Organization.IOrganizationAppService.GetOwnTree', 11, '2021-01-08 22:24:55', 11, '2021-01-08 22:24:55');
+INSERT INTO `hero_auth`.`OperationActionRelation`(`Id`, `OperationId`, `ActionId`, `ServiceId`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`) VALUES (81, 24, 72, 'Surging.Hero.Organization.IApplication.Department.IDepartmentAppService.DeleteByOrgId_orgId', 1, '2021-01-09 21:04:14', 1, '2021-01-09 21:04:14');
 
 
 INSERT INTO `hero_auth`.`Permission`(`Id`, `Name`, `Mold`, `Memo`, `Status`, `CreateBy`, `CreateTime`, `UpdateBy`, `UpdateTime`, `IsDeleted`, `DeleteBy`, `DeleteTime`) VALUES (1, 'auth', 0, NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL);
