@@ -17,6 +17,7 @@ services:
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
       InitAction: "${INIT_ACTION:-false}"
       ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
+      LogLevel: ${LogLevel:-Information}
 
   surging.hero.basicdata:
     environment:
@@ -33,6 +34,7 @@ services:
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
       InitAction: "${INIT_ACTION:-false}"
       ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
+      LogLevel: ${LogLevel:-Information}
 
   surging.hero.organization:
     environment:
@@ -49,6 +51,7 @@ services:
       EnableRouteWatch: ${ENABLE_ROUTE_WATCH:-false}
       InitAction: "${INIT_ACTION:-false}"
       ExecutionTimeoutInMilliseconds: ${EXECUTION_TIMEOUT:-4000}
+      LogLevel: ${LogLevel:-Information}
 
   surging.hero.gateway:
     environment:
@@ -67,6 +70,7 @@ services:
       SupportEmail: "1029765111@qq.com"
       InitAction: "${INIT_ACTION:-false}"
       ExecutionTimeoutInMilliseconds: ${GATEWAY_EXECUTION_TIMEOUT:-4000}
+      LogLevel: ${LogLevel:-Information}      
     ports:
       - "18081:8080"
 
@@ -88,5 +92,6 @@ services:
       InitAction: "${INIT_ACTION:-false}"
       EnableHealthCheck: ${ENABLE_HEALTH_CHECK:-true}        
       ExecutionTimeoutInMilliseconds: ${GATEWAY_EXECUTION_TIMEOUT:-4000}
+      LogLevel: ${LogLevel:-Information}      
     ports:
       - "18091:8080"       
