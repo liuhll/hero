@@ -3,6 +3,12 @@
 /* Created on:     2021/1/7 16:49:20                            */
 /*==============================================================*/
 
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+drop database if exists hero_basicdata;
+create database hero_basicdata;
+use hero_basicdata;
+
 
 drop table if exists SystemConfig;
 

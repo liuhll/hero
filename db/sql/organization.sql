@@ -3,6 +3,11 @@
 /* Created on:     2021/1/7 9:31:41                             */
 /*==============================================================*/
 
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+drop database if exists hero_organization;
+create database hero_organization;
+use hero_organization;
 
 drop table if exists Corporation;
 

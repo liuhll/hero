@@ -3,6 +3,11 @@
 /* Created on:     2021/1/7 9:36:04                             */
 /*==============================================================*/
 
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+drop database if exists hero_auth;
+create database hero_auth;
+use hero_auth;
 
 drop table if exists Action;
 
