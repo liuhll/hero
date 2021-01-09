@@ -73,8 +73,8 @@ create table WordbookItem
 (
    Id                   bigint not null auto_increment comment '主键Id',
    WordBookId           bigint not null comment '字典Id',
-   Key                  varchar(50) not null comment 'Key值',
-   Value                varchar(50) not null comment 'Value值',
+   `Key`                  varchar(50) not null comment 'Key值',
+   `Value`                varchar(50) not null comment 'Value值',
    Memo                 varchar(100) comment '备注',
    Sort                 int comment '排序',
    IsDeleted            int not null default 0 comment '软删除标识',
