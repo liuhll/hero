@@ -6,21 +6,17 @@
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
       <env name="EventBusUserName" value="rabbitmq" />
-      <env name="# GatewayUseEngineParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;KestrelHttpModule;SwaggerModule;ServiceProxyModule;ApiGeteWayModule;" />
       <env name="EventBusPassword" value="rabbitmq" />
       <env name="LockRedisConnection" value="127.0.0.1:16379" />
       <env name="ForceDisplayStackTrace" value="true" />
       <env name="LogLevel" value="Information" />
       <env name="RpcPort" value="1101" />
-      <env name="# UseEngineParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
-      <env name="# UseKestrelHttpParts" value="DotNettyModule;Log4netModule;ConsulModule;EventBusRabbitMQModule;CachingModule;LockModule;WSProtocolModule;AutoMapperModule;ServiceProxyModule;" />
       <env name="EventBusConnection" value="127.0.0.1" />
       <env name="UseEngineParts" value="ServiceProxyModule;DotNettyModule;Log4netModule;MessagePackModule;LockModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;ApiGeteWayModule;AutoMapperModule;DapperModule;" />
       <env name="HostIp" value="0.0.0.0" />
       <env name="HttpPort" value="8091" />
       <env name="ConnectTimeout" value="500" />
       <env name="FORCED_DISPLAY_STACKTRACE" value="false" />
-      <env name="# Register_Conn" value="hero.consul:8500" />
       <env name="surgingPath" value="configs/surgingSettings.json" />
       <env name="Libuv" value="true" />
       <env name="MaxConcurrentRequests" value="100" />
@@ -29,7 +25,6 @@
       <env name="eventBusPath" value="configs/eventBusSettings.json" />
       <env name="DbType" value="MySql" />
       <env name="consulPath" value="configs/consul.json" />
-      <env name="#UseEngineParts" value="DotNettyModule;Log4netModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;LockModule;DapperModule;AutoMapperModule;ServiceProxyModule;" />
       <env name="ExecutionTimeoutInMilliseconds" value="50000" />
       <env name="Register_SessionTimeout" value="1000" />
       <env name="EventBusPort" value="5672" />
