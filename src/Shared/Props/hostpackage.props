@@ -20,7 +20,6 @@
   <ItemGroup>
     <Compile Include="..\..\..\Shared\CSharpScripts\Program.cs" Link="Program.cs" />
     <Compile Include="..\..\..\Shared\CSharpScripts\SurgingServiceEngine.cs" Link="SurgingServiceEngine.cs" />
-    <Compile Include="..\..\..\Shared\CSharpScripts\Startup.cs" Link="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Shared\Configs\cacheSettings.json" Link="configs\cacheSettings.json" >
