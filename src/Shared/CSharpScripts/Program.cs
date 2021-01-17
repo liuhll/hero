@@ -29,7 +29,7 @@ namespace Surging.Hero.ServiceHost
                     configure.AddCacheFile("${cachePath}|configs/cacheSettings.json", optional: false, reloadOnChange: true);
                     configure.AddCPlatformFile("${surgingPath}|configs/surgingSettings.json", optional: false, reloadOnChange: true);
                     configure.AddEventBusFile("${eventBusPath}|configs/eventBusSettings.json", optional: false);
-                    configure.AddConsulFile("${consulPath}|configs/consul.json", optional: false, reloadOnChange: true);
+                    // configure.AddConsulFile("${consulPath}|configs/consul.json", optional: false, reloadOnChange: true);
                     configure.AddZookeeperFile("${zookeeperPath}|configs/zookeeper.json", optional: false, reloadOnChange: true);
 #endif
                 })
