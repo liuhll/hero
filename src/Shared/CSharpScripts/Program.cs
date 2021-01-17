@@ -4,6 +4,7 @@ using Surging.Cloud.Caching.Configurations;
 using Surging.Cloud.CPlatform;
 using Surging.Cloud.CPlatform.Configurations;
 using Surging.Cloud.EventBusRabbitMQ.Configurations;
+using Surging.Cloud.System;
 using Surging.Cloud.Zookeeper.Configurations;
 
 namespace Surging.Hero.ServiceHost
@@ -34,6 +35,7 @@ namespace Surging.Hero.ServiceHost
                 })
                 .UseServer()
                 .UseClient()
+                .UseDefaultCacheInterceptor()
                 .Build().RunAsync();
         }
     }
