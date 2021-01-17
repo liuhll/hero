@@ -1,8 +1,8 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Surging.Hero.Gateway" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/../src/Services/Gateway/Surging.Hero.Gateway/bin/Debug/net5.0/Surging.Hero.Gateway.dll" />
+  <configuration default="false" name="Surging.Hero.FileServiceHost" type="DotNetProject" factoryName=".NET Project">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/../src/Services/FileService/Surging.Hero.FileServiceHost/bin/Debug/net5.0/Surging.Hero.FileServiceHost.dll" />
     <option name="PROGRAM_PARAMETERS" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../src/Services/Gateway/Surging.Hero.Gateway/bin/Debug/net5.0" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../src/Services/FileService/Surging.Hero.FileServiceHost/bin/Debug/net5.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
       <env name="EventBusUserName" value="rabbitmq" />
@@ -10,11 +10,11 @@
       <env name="LockRedisConnection" value="127.0.0.1:16379" />
       <env name="ForceDisplayStackTrace" value="true" />
       <env name="LogLevel" value="Information" />
-      <env name="RpcPort" value="1104" />
+      <env name="RpcPort" value="1105" />
       <env name="EventBusConnection" value="127.0.0.1" />
       <env name="UseEngineParts" value="ServiceProxyModule;DotNettyModule;Log4netModule;MessagePackModule;LockModule;ZookeeperModule;EventBusRabbitMQModule;CachingModule;KestrelHttpModule;ApiGeteWayModule;AutoMapperModule;DapperModule;" />
       <env name="HostIp" value="0.0.0.0" />
-      <env name="HttpPort" value="8094" />
+      <env name="HttpPort" value="8095" />
       <env name="ConnectTimeout" value="500" />
       <env name="surgingPath" value="configs/surgingSettings.json" />
       <env name="Libuv" value="true" />
@@ -35,7 +35,7 @@
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
-    <option name="PROJECT_PATH" value="$PROJECT_DIR$/../src/Services/Gateway/Surging.Hero.Gateway/Surging.Hero.Gateway.csproj" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/../src/Services/FileService/Surging.Hero.FileServiceHost/Surging.Hero.FileServiceHost.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
