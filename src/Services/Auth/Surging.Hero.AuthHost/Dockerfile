@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 ARG rpc_port=100
 ARG http_port=8080
